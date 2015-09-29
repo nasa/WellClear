@@ -1,0 +1,125 @@
+DAIDALUS: Detect and Avoid Alerting Logic for Unmanned Systems
+-----------------------------------------------------
+Version:  0.99, September 26, 2015
+Authors: Cesar Munoz, George Hagen, Anthony Narkawicz, Jeff Maddalon
+
+Copyright: Copyright (c) 2014 United States Government as represented by 
+the National Aeronautics and Space Administration.  No copyright 
+is claimed in the United States under Title 17, U.S.Code. All Other 
+Rights Reserved.
+
+Release DAIDALUS 0.99, September 26, 2015  
+---------------------
+* Removed unused configuration parameters, e.g. time_delay,
+recovery_bands_iff_ca_bands, etc.
+* Removed dependency in Daidalus from Plans. This change allows  for
+a simpler interface to add aircraft states.
+* Added PVS output for validation purposes
+* Added C++ interface to DAIDALUS
+* Added missing get and setter methods to DAIDALUS
+
+Release DAIDALUS 0.9a, July 26, 2015  
+---------------------
+* Fixed the null pointer exception caused by time synchronization problem.
+* Changed preventive thresholds so that they use "strict less" instead of "less or equal".
+* Supplied new configuration file that only contains parameters relevant to CASSAT 2.
+
+Release DAIDALUS 0.9, July 17, 2015
+--------------------- 
+Added configuration parameters to alerting logic to set preventive thresholds.
+
+Release DAIDALUS 0.d, June 1, 2015
+--------------------- 
+Added interface to turn off/off recovery bands. 
+
+Release DAIDALUS 0.c, April 23, 2015
+--------------------- 
+Minor configuration changes.
+
+Release DAIDALUS 0.b, April 7, 2015
+--------------------- 
+Included an alerting algorithm that incorporates recommendations from
+attendants of the 2-day UAS Workshop held at NASA Langley Research
+Center on March 26-27, 2015.
+
+Release DAIDALUS 0.a, March 17, 2015
+---------------------
+Initial release of DAIDALUS interface. References to Chorus and
+Stratway+ objects have been removed. DAIDALUS only depends on Util and
+ACCoRD.
+
+Release Stratway+ 2.3.4, February, 2015
+--------------------------------
+* Decoupled lookahead time and alert time. This adds a new parameter for
+alert time. It also adds the ability to specify a base configuration
+file.
+
+* Improved stability of well-clear bands by adding a time
+stabilization parameter.
+
+Release Stratway+ 2.3.3b, January, 2015
+-------------------------------
+Added interface methods for setting independent lookahead times for
+conflict and well-clear bands.
+
+Release Stratway+ 2.3.3a, January, 2015
+-------------------------------
+Added conflict detection logic to be used in conjunction with
+prevention bands logic in PT5 experiment.
+
+Release Stratway+ 2.3.3, January, 2015
+-------------------------------
+* Added alerting logic and altitude bands interface to be used in PT5 experiment.
+
+* Redesigned core architectural components of Stratway to support
+integration of Well-Clear algorithms in the Appendix of RTCA SC 228
+Detection and Avoid.
+
+* Implemented prototype interface of Stratway's well-clear alerting
+concept.
+
+* Implemented prototype interface of Stratway's altitude bands concept.
+
+* Implemented prototype interface of Stratway's well-clear recovery bands. Current
+implementation supports strategies for selecting most urgent aircraft
+based on DCPA and Time to Closest Point of Apporach (TCPA).
+
+Release Stratway+ 1.8.4a, July, 2013
+-------------------------------
+* Modified interface to the TCAS prevention bands computed by Stratway+ to
+enable different time and distance threshold tables for different aircraft.
+* Initiated the development of prevention bands for flight levels. These
+kinds of prevention bands indicate flight levels that are predicted to
+be in conflict or cause a TCAS alert. In addition to aircraft state of
+information (position and velocity vector information), the computation of
+these bands require vertical acceleration and target rate of climb for the
+ownship.
+
+Release Stratway+ 1.8.3, April, 2013
+-------------------------------
+* Added table of time and distance thresholds for TCAS II Traffic
+Alerts (TA).
+* Added configurable TCAS II DMOD, TAU, ZTHR, and HMD threshold 
+parameters.
+* Added configurable on/off HMD filter for the TCAS II RA detection
+logic.
+* Added methods to access distance-based and TCAS-based conflict
+information including most urgent conflict and for every conflict:
+time to conflict, time out of conflict, and time of closest approach
+(or time of minimum tau depending of configuration parameters).
+
+February 21, 2013
+--------------
+Implemented a new interface to the TCAS-II RA detection code in
+Stratway. The new interface will enable more sophisticated aircraft
+kinematic models for predicting RAs and computing RA prevention bands.
+
+December 5 2012
+--------------
+Developed a software interface in Stratway to support Langley's SSA
+concept of integration. The software interface provides the following
+functionality: creation of Stratway objects for onwnship and traffic
+aircraft, setting of configurable parameters such as time delays,
+lookahead times, and maximum aircraft performance values, checking if
+an aircraft is well-clear for TCAS-II RAs, and computing kinematics
+prevention bands for conflict-free areas in the airspace.
