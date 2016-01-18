@@ -92,7 +92,7 @@ namespace larcfm {
  */ 
   class SeparatedInput : public ParameterReader, ErrorReporter {
   public:
-    const static int maxLineSize = 800;
+    static const int maxLineSize = 800;
     
     class SeparatedInputException : public std::logic_error
     {

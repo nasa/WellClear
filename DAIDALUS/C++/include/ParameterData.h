@@ -39,8 +39,8 @@ struct stringCaseInsensitive {
 class ParameterData {
 
 public:
-	const static std::string parenPattern;
-    const static std::string defaultEntrySeparator;
+	static const std::string parenPattern;
+    static const std::string defaultEntrySeparator;
 
 
 	ParameterData();

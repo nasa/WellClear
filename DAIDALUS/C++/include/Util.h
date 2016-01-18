@@ -27,7 +27,7 @@
 #include "stdint.h" // you may need to download this header file to use with MS Visual Studio
 
 typedef long long INT64FM;
-const static double Pi  = 3.141592653589793;
+static const double Pi  = 3.141592653589793;
 #define M_PI Pi
 
 const unsigned long lnan[2]={0xffffffff, 0x7fffffff};
@@ -57,20 +57,20 @@ typedef int64_t INT64FM;
 namespace larcfm {
 
 #if defined(_MSC_VER)
-  const static INT64FM PRECISION13 = 16348;
-  const static INT64FM PRECISION5 = 1ULL << 40;
-  const static INT64FM PRECISION7 = 1ULL << 34;
-  const static INT64FM PRECISION9 = 1ULL << 27;
-  const static INT64FM PRECISION_DEFAULT = PRECISION13;
-  const static INT64FM HIGH_BIT = 0x8000000000000000ULL;
+  static const INT64FM PRECISION13 = 16348;
+  static const INT64FM PRECISION5 = 1ULL << 40;
+  static const INT64FM PRECISION7 = 1ULL << 34;
+  static const INT64FM PRECISION9 = 1ULL << 27;
+  static const INT64FM PRECISION_DEFAULT = PRECISION13;
+  static const INT64FM HIGH_BIT = 0x8000000000000000ULL;
 # else
-  const static double Pi  = M_PI; 
-  const static INT64FM PRECISION13 = 16348;
-  const static INT64FM PRECISION5 = 1ULL << 40; // UINT64_C(1) << 40; //1LLU << 40;  
-  const static INT64FM PRECISION7 = 1LLU << 34;
-  const static INT64FM PRECISION9 = 1LLU << 27;
-  const static INT64FM PRECISION_DEFAULT = PRECISION13;
-  const static INT64FM HIGH_BIT = 0x8000000000000000LLU;
+  static const double Pi  = M_PI; 
+  static const INT64FM PRECISION13 = 16348;
+  static const INT64FM PRECISION5 = 1ULL << 40; // UINT64_C(1) << 40; //1LLU << 40;  
+  static const INT64FM PRECISION7 = 1LLU << 34;
+  static const INT64FM PRECISION9 = 1LLU << 27;
+  static const INT64FM PRECISION_DEFAULT = PRECISION13;
+  static const INT64FM HIGH_BIT = 0x8000000000000000LLU;
 #endif
 
 // M_PI = 3.1415926535897931

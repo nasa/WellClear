@@ -343,65 +343,65 @@ class Units {
 public:
 
 	/** Units were not specified */
-	const static double unspecified;
+	static const double unspecified;
 	/** Quantity without units */
-	const static double unitless;
+	static const double unitless;
 	/** Use the internal representation for this quantity */
-	const static double internal;
+	static const double internal;
 
 	/** meter */
-	const static double m;
+	static const double m;
 	/** kilometer */
-	const static double km;
+	static const double km;
 	/** nautical mile */
-	const static double nmi;
+	static const double nmi;
 	/** nautical mile */
-	const static double NM;
+	static const double NM;
 	/** foot */
-	const static double foot;
+	static const double foot;
 	/** foot */
-	const static double ft;
+	static const double ft;
 	/** millimeter */
-	const static double mm;
+	static const double mm;
 
 	/** meter squared, a unit of area */
-	const static double meter2;
+	static const double meter2;
 
 	/** seconds */
-	const static double s;
+	static const double s;
 	/** seconds */
-	const static double sec;
+	static const double sec;
 	/** minutes */
-	const static double min;
+	static const double min;
 	/** hours */
-	const static double hour;
+	static const double hour;
 
 	/** radians */
-	const static double rad;
+	static const double rad;
 	/** degrees */
-	const static double deg;
+	static const double deg;
 	/** degrees */
-	const static double degree;
+	static const double degree;
 
 	/** kilograms */
-	const static double kg;
+	static const double kg;
 	/** pounds of mass */
-	const static double pound_mass;
+	static const double pound_mass;
 
 	/** Meters per second */
-	const static double mps;
+	static const double mps;
 	/** meters per second */
-	const static double meter_per_second;
+	static const double meter_per_second;
 	/** kilometers per hour */
-	const static double kph;
+	static const double kph;
 	/** knots, (nautical miles per hour) */
-	const static double knot;
+	static const double knot;
 	/** knots, (nautical miles per hour) */
-	const static double kn;
+	static const double kn;
 	/** knots, (nautical miles per hour) */
-	const static double kts;
+	static const double kts;
 	/** feet per minute */
-	const static double fpm;
+	static const double fpm;
 
 	/**
 	 * gn is the adopted physical constant of gravity. It is given (out of
@@ -421,28 +421,28 @@ public:
 	 * International System of Units (SI), 1991 edition, p17.
 	 * <p>
 	 */
-	const static double gn;
+	static const double gn;
 
-	const static double G;
+	static const double G;
 
 	/** meters per second^2 */
-	const static double meter_per_second2;
+	static const double meter_per_second2;
 
 	/** unit of force */
-	const static double newton;
+	static const double newton;
 
 	/** pascal, a unit of pressure */
-	const static double pascal;
+	static const double pascal;
 	/** pascal, unit of pressure, defined as a newton per meter squared */
-	const static double Pa;
+	static const double Pa;
 	/**
 	 * P0, the adopted standard atmosphere. This quanity equals 101325 Pa. This
 	 * definition comes from NIST Special Publication 330, the International
 	 * System of Units (SI), 1991 edition, p15.
 	 */
-	const static double P0;
+	static const double P0;
 	/** atmosphere, a unit of pressure, defined as one P0 */
-	const static double atm;
+	static const double atm;
 
 
 	/** Convert the value in internal units to the given units */

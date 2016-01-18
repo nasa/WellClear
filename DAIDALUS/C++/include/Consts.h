@@ -15,24 +15,24 @@
 namespace larcfm {
 
   /** Flag indicating an entry into the protected zone */
-  const static int Entry       = -1;
+  static const int Entry       = -1;
   /** Flag indicating an exit from the protected zone */
-  const static int Exit        =  1;
+  static const int Exit        =  1;
   
   // Type of resolution
 
   /** Conflict resolution is not needed (0) */
-  const static int Unnecessary =  0;
+  static const int Unnecessary =  0;
   /** No resolution available (-1) */
-  const static int None        =  -1;
+  static const int None        =  -1;
   /**  Conflict resolution (1) */
-  const static int Conflict    =  1;
+  static const int Conflict    =  1;
   /**  Loss of separation resolution (2) */
-  const static int LoS         =  2;
+  static const int LoS         =  2;
   /**  Loss of separation (Convergent) resolution (2) */
-  const static int LoSConv     =  2;
+  static const int LoSConv     =  2;
   /**  Loss of separation (Divergent) resolution (2) */
-  const static int LoSDivg     =  3;
+  static const int LoSDivg     =  3;
 
 }
 

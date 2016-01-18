@@ -6,8 +6,8 @@
 #ifndef DAIDALUSFILEWALKER_H_
 #define DAIDALUSFILEWALKER_H_
 
-#import "SequenceReader.h"
-#import "Daidalus.h"
+#include "SequenceReader.h"
+#include "Daidalus.h"
 
 namespace larcfm {
 
