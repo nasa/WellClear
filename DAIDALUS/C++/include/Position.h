@@ -336,8 +336,6 @@ namespace larcfm {
 	/** Return a string representation, with a user-specified digits of precision (0-15) without parentheses. */
     std::string toStringNP(int precision) const;
 
-    std::string toStringNP(const std::string&, const std::string&, const std::string&, int precision) const;
-
 	/** This interprets a string as a LatLonAlt position with units in deg/deg/ft or the specified units (inverse of toString()) */
 	static const Position parseLL(const std::string& s);
 
