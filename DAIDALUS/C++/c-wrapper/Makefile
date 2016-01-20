@@ -16,7 +16,7 @@ dynamic: compile
 
 static: compile
 	cp -f ../lib/libdaidalus.a ../lib/libdaidalus-wrapped.a
-	ar -cvq ../lib/libdaidalus-wrapped.a *.o && ranlib ../lib/libdaidalus-wrapped.a
+	ar -cvq ../lib/libdaidalus-wrapped.a Daidalus_proxy.o Daidalus_wrap.o && ranlib ../lib/libdaidalus-wrapped.a
 	$(CC) -c DaidalusWrapped.c
 	$(CPP) -o DaidalusWrapped DaidalusWrapped.o -L../lib -ldaidalus-wrapped
 	@./DaidalusWrapped
