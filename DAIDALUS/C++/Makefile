@@ -17,7 +17,7 @@ lib: $(OBJS)
 example:
 	@echo
 	@echo "** Building DaidalusExample application"
-	$(CPP) -o DaidalusExample $(CPPFLAGS) -Llib -ldaidalus DaidalusExample.cpp 
+	$(CPP) -o DaidalusExample $(CPPFLAGS) -Llib DaidalusExample.cpp -ldaidalus 
 	@echo 
 	@echo "** To run DaidalusExample type:"
 	@echo "./DaidalusExample"
