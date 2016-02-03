@@ -3,8 +3,7 @@
 SRCS   = $(wildcard src/*.cpp)
 OBJS   = $(SRCS:.cpp=.o)
 INCLUDEFLAGS = -Iinclude 
-CPPFLAGS = $(INCLUDEFLAGS) -Wall -O 
-CPP = g++
+CXXFLAGS = $(INCLUDEFLAGS) -Wall -O 
 
 all: lib example
 
@@ -17,7 +16,7 @@ lib: $(OBJS)
 example:
 	@echo
 	@echo "** Building DaidalusExample application"
-	$(CPP) -o DaidalusExample $(CPPFLAGS) -Llib DaidalusExample.cpp -ldaidalus 
+	$(CXX) -o DaidalusExample $(CXXFLAGS) -Llib DaidalusExample.cpp -ldaidalus 
 	@echo 
 	@echo "** To run DaidalusExample type:"
 	@echo "./DaidalusExample"
