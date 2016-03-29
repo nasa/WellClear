@@ -8,7 +8,7 @@ C++ of *DAIDALUS* (Detect and Aovid Alerting Logic for Unmanned Systems).
 intended to support the integration of Unmanned Aircraft Systems into civil airspace.
 
 For technical information about the definitions and algorithms in this
-repository, visit [http://shemesh.larc.nasa.gov/people/cam/UAS_NAS](http://shemesh.larc.nasa.gov/people/cam/UAS_NAS).
+repository, visit [http://shemesh.larc.nasa.gov/people/cam/DAIDALUS](http://shemesh.larc.nasa.gov/people/cam/DAIDALUS).
 
 ### License
 
