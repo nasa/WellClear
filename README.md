@@ -5,7 +5,10 @@ This repository includes definitions in Matlab of a family of
 well-clear violation volumes and prototype implementations written in Java and
 C++ of *DAIDALUS* (Detect and Aovid Alerting Logic for Unmanned Systems).
 *DAIDALUS* is a reference implementation of a detect and avoid concept
-intended to support the integration of Unmanned Aircraft Systems into civil airspace.
+intended to support the integration of Unmanned Aircraft Systems into
+civil airspace.
+
+Current Release: v0.991 (April 29, 2016)
 
 For technical information about the definitions and algorithms in this
 repository, visit [http://shemesh.larc.nasa.gov/people/cam/DAIDALUS](http://shemesh.larc.nasa.gov/people/cam/DAIDALUS).
