@@ -39,7 +39,15 @@ public:
   std::string getCanonicalClassName() const {
     return "gov.nasa.larcfm.ACCoRD."+getSimpleClassName();
   }
+
+  std::string getCanonicalSuperClassName() const {
+    return "gov.nasa.larcfm.ACCoRD."+getSimpleSuperClassName();
+  }
+
   virtual std::string getSimpleClassName() const = 0;
+  virtual std::string getSimpleSuperClassName() const {
+    return getSimpleClassName();
+  }
   virtual std::string toString() const = 0;
 
   virtual std::string getIdentifier() const = 0;

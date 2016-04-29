@@ -169,6 +169,7 @@ namespace larcfm {
     virtual void setParameters(const ParameterData& p);
 
     virtual std::string getSimpleClassName() const;
+  
     virtual std::string toString() const;
 
     virtual std::string getIdentifier() const;

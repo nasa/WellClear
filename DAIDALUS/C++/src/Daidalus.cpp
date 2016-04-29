@@ -24,7 +24,7 @@ namespace larcfm {
 /**
  * std::string indicating the DAIDALUS version
  */
-const char*  Daidalus::VERSION = "0.99";
+const char*  Daidalus::VERSION = "0.991";
 
 /**
  * Create a  Daidalus object. This object will default to using WCV_TAUMOD as state detector.
@@ -43,6 +43,7 @@ Daidalus::Daidalus() : error("Daidalus") {
 Daidalus::Daidalus(Detection3D* d) : error("Daidalus") {
   parameters = DaidalusParameters(DefaultDaidalusParameters::getParameters());
   detector = d->copy();
+  set_parameters_from_detector();
   init();
 }
 
@@ -119,12 +120,25 @@ Detection3D* Daidalus::getDetector()  const {
   return detector;
 }
 
+void Daidalus::set_parameters_from_detector() {
+  if (equals(detector->getCanonicalSuperClassName(),"gov.nasa.larcfm.ACCoRD.WCV_tvar")) {
+    parameters.setDTHR(((WCV_tvar *)detector)->getDTHR());
+    parameters.setZTHR(((WCV_tvar *)detector)->getZTHR());
+    parameters.setTTHR(((WCV_tvar *)detector)->getTTHR());
+    parameters.setTCOA(((WCV_tvar *)detector)->getTCOA());
+  } else if (equals(detector->getCanonicalSuperClassName(),"gov.nasa.larcfm.ACCoRD.CDCylinder")) {
+    parameters.setD(((CDCylinder *)detector)->getHorizontalSeparation());
+    parameters.setH(((CDCylinder *)detector)->getVerticalSeparation());
+  }
+}
+
 /**
  * Set this object's Detection3D method to be a copy of the given method.
  */
 void Daidalus::setDetector(const Detection3D* d) {
   delete detector;
   detector = d->copy();
+  set_parameters_from_detector();
 }
 
 std::vector<AlertThresholds> Daidalus::PT5() {
@@ -505,7 +519,7 @@ int Daidalus::bands_alerting(const OwnshipState& own, const TrafficState& ac, co
         return 3; // Corrective
       }
     } else if (parameters.getPreventiveAltitudeThreshold() < 0 ||
-        abs(so.z-si.z) <= parameters.getPreventiveAltitudeThreshold()) {
+	       std::abs(so.z-si.z) <= parameters.getPreventiveAltitudeThreshold()) {
       // Preventive alert is only issued when aircraft are vertically separated by less than preventive altitudethreshold
       if ((parameters.isEnabledTrackAlerting() && bands.trackLength() > 0 &&
           (parameters.getPreventiveTrackThreshold() < 0 ||
@@ -743,10 +757,8 @@ KinematicBands Daidalus::getKinematicBands() {
  * @return DTHR threshold in internal units.
  */
 double Daidalus::getDTHR()  const {
-  if (!(equals(detector->getCanonicalClassName(), "gov.nasa.larcfm.ACCoRD.WCV_TAUMOD") ||
-      equals(detector->getCanonicalClassName(), "gov.nasa.larcfm.ACCoRD.WCV_TEP") ||
-      equals(detector->getCanonicalClassName(), "gov.nasa.larcfm.ACCoRD.WCV_TCPA"))) {
-    error.addWarning("[getDTHR] Detector is not an instance of WCV detector");
+  if (!(equals(detector->getCanonicalSuperClassName(),"gov.nasa.larcfm.ACCoRD.WCV_tvar"))) {
+    error.addWarning("[getDTHR] Detector "+detector->getCanonicalClassName()+" is not an instance of WCV detector");
   }
   return parameters.getDTHR();
 }
@@ -755,10 +767,8 @@ double Daidalus::getDTHR()  const {
  * @return ZTHR threshold in internal units.
  */
 double Daidalus::getZTHR()  const {
-  if (!(equals(detector->getCanonicalClassName(), "gov.nasa.larcfm.ACCoRD.WCV_TAUMOD") ||
-      equals(detector->getCanonicalClassName(), "gov.nasa.larcfm.ACCoRD.WCV_TEP") ||
-      equals(detector->getCanonicalClassName(), "gov.nasa.larcfm.ACCoRD.WCV_TCPA"))) {
-    error.addWarning("[getZTHR] Detector is not an instance of WCV detector");
+  if (!(equals(detector->getCanonicalSuperClassName(),"gov.nasa.larcfm.ACCoRD.WCV_tvar"))) {
+    error.addWarning("[getZTHR] Detector "+detector->getCanonicalClassName()+" is not an instance of WCV detector");
   }
   return parameters.getZTHR();
 }
@@ -767,10 +777,8 @@ double Daidalus::getZTHR()  const {
  * @return TTHR threshold in seconds.
  */
 double Daidalus::getTTHR()  const {
-  if (!(equals(detector->getCanonicalClassName(), "gov.nasa.larcfm.ACCoRD.WCV_TAUMOD") ||
-      equals(detector->getCanonicalClassName(), "gov.nasa.larcfm.ACCoRD.WCV_TEP") ||
-      equals(detector->getCanonicalClassName(), "gov.nasa.larcfm.ACCoRD.WCV_TCPA"))) {
-    error.addWarning("[getTTHR] Detector is not an instance of WCV detector");
+  if (!(equals(detector->getCanonicalSuperClassName(),"gov.nasa.larcfm.ACCoRD.WCV_tvar"))) {
+    error.addWarning("[getTTHR] Detector "+detector->getCanonicalClassName()+" is not an instance of WCV detector");
   }
   return parameters.getTTHR();
 }
@@ -779,10 +787,8 @@ double Daidalus::getTTHR()  const {
  * @return TCOA threshold in seconds.
  */
 double Daidalus::getTCOA()  const {
-  if (!(equals(detector->getCanonicalClassName(), "gov.nasa.larcfm.ACCoRD.WCV_TAUMOD") ||
-      equals(detector->getCanonicalClassName(), "gov.nasa.larcfm.ACCoRD.WCV_TEP") ||
-      equals(detector->getCanonicalClassName(), "gov.nasa.larcfm.ACCoRD.WCV_TCPA"))) {
-    error.addWarning("[getTCOA] Detector is not an instance of WCV detector");
+  if (!(equals(detector->getCanonicalSuperClassName(),"gov.nasa.larcfm.ACCoRD.WCV_tvar"))) {
+    error.addWarning("[getTCOA] Detector "+detector->getCanonicalClassName()+" is not an instance of WCV detector");
   }
   return parameters.getTCOA();
 }
@@ -791,10 +797,8 @@ double Daidalus::getTCOA()  const {
  * @return D threshold in internal units.
  */
 double Daidalus::getD()  const {
-  if (!(equals(detector->getCanonicalClassName(), "gov.nasa.larcfm.ACCoRD.WCV_TAUMOD") ||
-      equals(detector->getCanonicalClassName(), "gov.nasa.larcfm.ACCoRD.WCV_TEP") ||
-      equals(detector->getCanonicalClassName(), "gov.nasa.larcfm.ACCoRD.WCV_TCPA"))) {
-    error.addWarning("[getD] Detector is not an instance of CD3D detector");
+  if (!(equals(detector->getCanonicalSuperClassName(),"gov.nasa.larcfm.ACCoRD.CDCylinder"))) {
+    error.addWarning("[getD] Detector "+detector->getCanonicalClassName()+" is not an instance of CD3D detector");
   }
   return parameters.getD();
 }
@@ -803,8 +807,8 @@ double Daidalus::getD()  const {
  * @return H threshold in internal units.
  */
 double Daidalus::getH()  const {
-  if (!(equals(detector->getCanonicalClassName(), "gov.nasa.larcfm.ACCoRD.CDCylinder"))) {
-    error.addWarning("[getH] Detector is not an instance of CD3D detector");
+  if (!(equals(detector->getCanonicalSuperClassName(),"gov.nasa.larcfm.ACCoRD.CDCylinder"))) {
+    error.addWarning("[getH] Detector "+detector->getCanonicalClassName()+" is not an instance of CD3D detector");
   }
   return parameters.getH();
 }
@@ -814,8 +818,8 @@ double Daidalus::getH()  const {
  */
 void Daidalus::setDTHR(double val) {
   if (error.isPositive("setD",val)) {
-    if (!(equals(detector->getCanonicalClassName(), "gov.nasa.larcfm.ACCoRD.CDCylinder"))) {
-      error.addWarning("[setDTHR] Detector is not an instance of WCV detector");
+    if (!(equals(detector->getCanonicalSuperClassName(),"gov.nasa.larcfm.ACCoRD.WCV_tvar"))) {
+      error.addWarning("[setDTHR] Detector "+detector->getCanonicalClassName()+" is not an instance of WCV detector");
     } else {
       ((WCV_tvar*)detector)->setDTHR(val);
     }
@@ -828,10 +832,8 @@ void Daidalus::setDTHR(double val) {
  */
 void Daidalus::setZTHR(double val) {
   if (error.isPositive("setZTHR",val)) {
-    if (!(equals(detector->getCanonicalClassName(), "gov.nasa.larcfm.ACCoRD.WCV_TAUMOD") ||
-        equals(detector->getCanonicalClassName(), "gov.nasa.larcfm.ACCoRD.WCV_TEP") ||
-        equals(detector->getCanonicalClassName(), "gov.nasa.larcfm.ACCoRD.WCV_TCPA"))) {
-      error.addWarning("[setZTHR] Detector is not an instance of WCV detector");
+    if (!(equals(detector->getCanonicalSuperClassName(),"gov.nasa.larcfm.ACCoRD.WCV_tvar"))) {
+      error.addWarning("[setZTHR] Detector "+detector->getCanonicalClassName()+" is not an instance of WCV detector");
     } else {
       ((WCV_tvar*)detector)->setZTHR(val);
     }
@@ -844,10 +846,8 @@ void Daidalus::setZTHR(double val) {
  */
 void Daidalus::setTTHR(double val) {
   if (error.isNonNegative("setTTHR",val)) {
-    if (!(equals(detector->getCanonicalClassName(), "gov.nasa.larcfm.ACCoRD.WCV_TAUMOD") ||
-        equals(detector->getCanonicalClassName(), "gov.nasa.larcfm.ACCoRD.WCV_TEP") ||
-        equals(detector->getCanonicalClassName(), "gov.nasa.larcfm.ACCoRD.WCV_TCPA"))) {
-      error.addWarning("[setTTHR] Detector is not an instance of WCV detector");
+    if (!(equals(detector->getCanonicalSuperClassName(),"gov.nasa.larcfm.ACCoRD.WCV_tvar"))) {
+      error.addWarning("[setTTHR] Detector "+detector->getCanonicalClassName()+" is not an instance of WCV detector");
     } else {
       ((WCV_tvar*)detector)->setTTHR(val);
     }
@@ -860,10 +860,8 @@ void Daidalus::setTTHR(double val) {
  */
 void Daidalus::setTCOA(double val) {
   if (error.isNonNegative("setTCOA",val)) {
-    if (!(equals(detector->getCanonicalClassName(), "gov.nasa.larcfm.ACCoRD.WCV_TAUMOD") ||
-        equals(detector->getCanonicalClassName(), "gov.nasa.larcfm.ACCoRD.WCV_TEP") ||
-        equals(detector->getCanonicalClassName(), "gov.nasa.larcfm.ACCoRD.WCV_TCPA"))) {
-      error.addWarning("[setTCOA] Detector is not an instance of WCV detector");
+    if (!(equals(detector->getCanonicalSuperClassName(),"gov.nasa.larcfm.ACCoRD.WCV_tvar"))) {
+      error.addWarning("[setTCOA] Detector "+detector->getCanonicalClassName()+" is not an instance of WCV detector");
     } else {
       ((WCV_tvar*)detector)->setTCOA(val);
     }
@@ -876,8 +874,8 @@ void Daidalus::setTCOA(double val) {
  */
 void Daidalus::setD(double val) {
   if (error.isPositive("setD",val)) {
-    if (!(equals(detector->getCanonicalClassName(), "gov.nasa.larcfm.ACCoRD.CDCylinder"))) {
-      error.addWarning("[setD] Detector is not an instance of CD3D detector");
+    if (!(equals(detector->getCanonicalSuperClassName(),"gov.nasa.larcfm.ACCoRD.CDCylinder"))) {
+      error.addWarning("[setD] Detector "+detector->getCanonicalClassName()+" is not an instance of CD3D detector");
     } else {
       ((CDCylinder*)detector)->setHorizontalSeparation(val);
     }
@@ -890,8 +888,8 @@ void Daidalus::setD(double val) {
  */
 void Daidalus::setH(double val) {
   if (error.isPositive("setH",val)) {
-    if (!(equals(detector->getCanonicalClassName(), "gov.nasa.larcfm.ACCoRD.CDCylinder"))) {
-      error.addWarning("[setH] Detector is not an instance of CD3D detector");
+    if (!(equals(detector->getCanonicalSuperClassName(),"gov.nasa.larcfm.ACCoRD.CDCylinder"))) {
+      error.addWarning("[setH] Detector "+detector->getCanonicalClassName()+" is not an instance of CD3D detector");
     } else {
       ((CDCylinder*)detector)->setVerticalSeparation(val);
     }
@@ -2022,11 +2020,25 @@ void Daidalus::disableCollisionAvoidanceBands() {
   parameters.disableCollisionAvoidanceBands();
 }
 
+void Daidalus::set_detector_from_parameters() {
+  if (equals(detector->getCanonicalSuperClassName(),"gov.nasa.larcfm.ACCoRD.WCV_tvar")) {
+    ((WCV_tvar *)detector)->setDTHR(parameters.getDTHR());
+    ((WCV_tvar *)detector)->setZTHR(parameters.getZTHR());
+    ((WCV_tvar *)detector)->setTTHR(parameters.getTTHR());
+    ((WCV_tvar *)detector)->setTCOA(parameters.getTCOA());
+  } else if (equals(detector->getCanonicalSuperClassName(),"gov.nasa.larcfm.ACCoRD.CDCylinder")) {
+    ((CDCylinder *)detector)->setHorizontalSeparation(parameters.getD());
+    ((CDCylinder *)detector)->setVerticalSeparation((parameters.getH()));
+  }
+}
+
 /**
  *  Load parameters from file.
  */
 bool Daidalus::loadParametersFromFile(const std::string& file) {
-  return parameters.loadFromFile(file);
+  bool b = parameters.loadFromFile(file);
+  set_detector_from_parameters();
+  return b;
 }
 
 /**
@@ -2042,6 +2054,7 @@ void Daidalus::updateParameterData(ParameterData& p) const {
 
 void Daidalus::setParameters(const ParameterData& p) {
   parameters.setParameters(p);
+  set_detector_from_parameters();
 }
 
 std::string Daidalus::toString() const {

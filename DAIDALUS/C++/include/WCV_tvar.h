@@ -88,6 +88,9 @@ public:
   virtual Detection3D* copy() const = 0;
   virtual Detection3D* make() const = 0;
   virtual std::string getSimpleClassName() const = 0;
+  virtual std::string getSimpleSuperClassName() const {
+    return "WCV_tvar";
+  }
 
   std::string getIdentifier() const;
 

@@ -34,7 +34,7 @@ public class Daidalus implements ErrorReporter {
   /**
    * String indicating the DAIDALUS version
    */
-  public static final String VERSION = "0.99";
+  public static final String VERSION = "0.991";
 
   private List<TrafficState> acs;
   private List<Double> times;
@@ -64,6 +64,7 @@ public class Daidalus implements ErrorReporter {
   public Daidalus(Detection3D d) {
     parameters = new DaidalusParameters(DefaultDaidalusParameters.getParameters());
     detector = d.copy();
+    set_parameters_from_detector();
     init();
   }
 
@@ -129,11 +130,24 @@ public class Daidalus implements ErrorReporter {
     return detector;
   }
 
+  private void set_parameters_from_detector() {
+    if (detector instanceof WCV_tvar) {
+	parameters.setDTHR(((WCV_tvar)detector).getDTHR());
+	parameters.setZTHR(((WCV_tvar)detector).getZTHR());
+	parameters.setTTHR(((WCV_tvar)detector).getTTHR());
+	parameters.setTCOA(((WCV_tvar)detector).getTCOA());
+    } else if (detector instanceof CDCylinder) {
+	parameters.setD(((CDCylinder)detector).getHorizontalSeparation());
+	parameters.setH(((CDCylinder)detector).getVerticalSeparation());
+    }
+  }
+
   /**
    * Set this object's Detection3D method to be a copy of the given method.
    */
   public void setDetector(Detection3D d) {
     detector = d.copy();
+    set_parameters_from_detector();
   }
 
   static public List<AlertThresholds> PT5() {
@@ -773,7 +787,7 @@ public class Daidalus implements ErrorReporter {
    */
   public double getDTHR() {
     if (!(detector instanceof WCV_tvar)) {
-      error.addWarning("[getDTHR] Detector is not an instance of WCV detector");
+      error.addWarning("[getDTHR] Detector "+detector.getClass().getCanonicalName()+" is not an instance of WCV detector");
     }
     return parameters.getDTHR();
   }
@@ -783,7 +797,7 @@ public class Daidalus implements ErrorReporter {
    */
   public double getZTHR() {
     if (!(detector instanceof WCV_tvar)) {
-      error.addWarning("[getZTHR] Detector is not an instance of WCV detector");
+      error.addWarning("[getZTHR] Detector "+detector.getClass().getCanonicalName()+" is not an instance of WCV detector");
     }
     return parameters.getZTHR();
   }
@@ -793,7 +807,7 @@ public class Daidalus implements ErrorReporter {
    */
   public double getTTHR() {
     if (!(detector instanceof WCV_tvar)) {
-      error.addWarning("[getTTHR] Detector is not an instance of WCV detector");
+      error.addWarning("[getTTHR] Detector "+detector.getClass().getCanonicalName()+" is not an instance of WCV detector");
     }
     return parameters.getTTHR();
   }
@@ -803,7 +817,7 @@ public class Daidalus implements ErrorReporter {
    */
   public double getTCOA() {
     if (!(detector instanceof WCV_tvar)) {
-      error.addWarning("[getTCOA] Detector is not an instance of WCV detector");
+      error.addWarning("[getTCOA] Detector "+detector.getClass().getCanonicalName()+" is not an instance of WCV detector");
     }
     return parameters.getTCOA();
   }
@@ -813,7 +827,7 @@ public class Daidalus implements ErrorReporter {
    */
   public double getD() {
     if (!(detector instanceof CDCylinder)) {
-      error.addWarning("[getD] Detector is not an instance of CD3D detector");
+      error.addWarning("[getD] Detector "+detector.getClass().getCanonicalName()+" is not an instance of CD3D detector");
     }
     return parameters.getD();
   }
@@ -823,7 +837,7 @@ public class Daidalus implements ErrorReporter {
    */
   public double getH() {
     if (!(detector instanceof CDCylinder)) {
-      error.addWarning("[getH] Detector is not an instance of CD3D detector");
+      error.addWarning("[getH] Detector "+detector.getClass().getCanonicalName()+" is not an instance of CD3D detector");
     }
     return parameters.getH();
   }
@@ -834,7 +848,7 @@ public class Daidalus implements ErrorReporter {
   public void setDTHR(double val) {
     if (error.isPositive("setD",val)) {
       if (!(detector instanceof WCV_tvar)) {
-        error.addWarning("[setDTHR] Detector is not an instance of WCV detector");
+        error.addWarning("[setDTHR] Detector "+detector.getClass().getCanonicalName()+" is not an instance of WCV detector");
       } else {
         ((WCV_tvar)detector).setDTHR(val);
       }
@@ -848,7 +862,7 @@ public class Daidalus implements ErrorReporter {
   public void setZTHR(double val) {
     if (error.isPositive("setZTHR",val)) {
       if (!(detector instanceof WCV_tvar)) {
-        error.addWarning("[setZTHR] Detector is not an instance of WCV detector");
+        error.addWarning("[setZTHR] Detector "+detector.getClass().getCanonicalName()+" is not an instance of WCV detector");
       } else {
         ((WCV_tvar)detector).setZTHR(val);
       }
@@ -862,7 +876,7 @@ public class Daidalus implements ErrorReporter {
   public void setTTHR(double val) {
     if (error.isNonNegative("setTTHR",val)) {
       if (!(detector instanceof WCV_tvar)) {
-        error.addWarning("[setTTHR] Detector is not an instance of WCV detector");
+        error.addWarning("[setTTHR] Detector "+detector.getClass().getCanonicalName()+" is not an instance of WCV detector");
       } else {
         ((WCV_tvar)detector).setTTHR(val);
       }
@@ -876,7 +890,7 @@ public class Daidalus implements ErrorReporter {
   public void setTCOA(double val) {
     if (error.isNonNegative("setTCOA",val)) {
       if (!(detector instanceof WCV_tvar)) {
-        error.addWarning("[setTCOA] Detector is not an instance of WCV detector");
+        error.addWarning("[setTCOA] Detector "+detector.getClass().getCanonicalName()+" is not an instance of WCV detector");
       } else {
         ((WCV_tvar)detector).setTCOA(val);
       }
@@ -890,7 +904,7 @@ public class Daidalus implements ErrorReporter {
   public void setD(double val) {
     if (error.isPositive("setD",val)) {
       if (!(detector instanceof CDCylinder)) {
-        error.addWarning("[setD] Detector is not an instance of CD3D detector");
+        error.addWarning("[setD] Detector "+detector.getClass().getCanonicalName()+" is not an instance of CD3D detector");
       } else {
         ((CDCylinder)detector).setHorizontalSeparation(val);
       }
@@ -904,7 +918,7 @@ public class Daidalus implements ErrorReporter {
   public void setH(double val) {
     if (error.isPositive("setH",val)) {
       if (!(detector instanceof CDCylinder)) {
-        error.addWarning("[setH] Detector is not an instance of CD3D detector");
+        error.addWarning("[setH] Detector "+detector.getClass().getCanonicalName()+" is not an instance of CD3D detector");
       } else {
         ((CDCylinder)detector).setVerticalSeparation(val);
       }
@@ -2035,7 +2049,7 @@ public class Daidalus implements ErrorReporter {
     parameters.disableCollisionAvoidanceBands();
   }
 
-  private void set_WCV_or_DH() {
+  private void set_detector_from_parameters() {
     if (detector instanceof WCV_tvar) {
       ((WCV_tvar)detector).setDTHR(parameters.getDTHR());
       ((WCV_tvar)detector).setZTHR(parameters.getZTHR());
@@ -2052,7 +2066,7 @@ public class Daidalus implements ErrorReporter {
    */
   public boolean loadParametersFromFile(String file) {
     boolean b = parameters.loadFromFile(file);
-    set_WCV_or_DH();
+    set_detector_from_parameters();
     return b;
   }
 
@@ -2069,7 +2083,7 @@ public class Daidalus implements ErrorReporter {
 
   public void setParameters(ParameterData p) {
     parameters.setParameters(p);
-    set_WCV_or_DH();
+    set_detector_from_parameters();
   }
 
   public String toString() {

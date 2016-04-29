@@ -172,7 +172,6 @@ void CDCylinder::setParameters(const ParameterData& p) {
   if (p.contains("id")) {
     id = p.getString("id");
   }
-
 }
 
 std::string CDCylinder::getSimpleClassName() const {

@@ -37,6 +37,8 @@ private:
   Detection3D* detector; // State-based detector
   UrgencyStrategy* urgency_strat; // Strategy for most urgent aircraft
   DaidalusParameters parameters;
+  void set_detector_from_parameters();
+  void set_parameters_from_detector();
 
   /**
    * @return alerting time. If set to 0, returns lookahead time instead.

@@ -1,12 +1,19 @@
 DAIDALUS: Detect and Avoid Alerting Logic for Unmanned Systems
 -----------------------------------------------------
-Version:  0.99, September 26, 2015
+Release: 0.991, April 29, 2016
 Authors: Cesar Munoz, George Hagen, Anthony Narkawicz, Jeff Maddalon
 
 Copyright: Copyright (c) 2014 United States Government as represented by 
 the National Aeronautics and Space Administration.  No copyright 
 is claimed in the United States under Title 17, U.S.Code. All Other 
 Rights Reserved.
+
+Release DAIDALUS 0.991, April 29, 2016
+---------------------
+* Fixed error in interface functions setDTHR, setZTHR, setTTHR, and
+setTCOA, where those functions didn't properly set the respective
+configuration parameters.
+* Added namespace std to absolute value function in C++
 
 Release DAIDALUS 0.99, September 26, 2015  
 ---------------------
