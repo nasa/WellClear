@@ -1,0 +1,17 @@
+_plarcfm_ -> _
+_pclarcfm_ -> _
+_rclarcfm_ -> _
+_rcstd_string -> _s
+_std_string -> _s
+_rcL -> _L
+_rcP -> _P
+_rcV -> _V
+_rcT -> _T
+_pD -> _D
+_cd -> _d
+&cppresult -> cppresult
+&_result_ref -> result_ref  
+cppresult = \((.+)\*\) result_ref -> cppresult = new \1(result_ref)
+\$.resolved_type  -> void
+\$resolved_type -> void
+

@@ -19,7 +19,7 @@
 
 namespace larcfm {
 
-class Daidalus : ErrorReporter {
+class Daidalus : public ErrorReporter {
 
   /**
    * std::string indicating the DAIDALUS version
