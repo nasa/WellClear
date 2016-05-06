@@ -1,4 +1,6 @@
-WellClear
+![](logo/DAIDALUS.jpeg "")
+
+Detect and AvoID Alerting Logic for Unmanned Systems
 ========
 
 This repository includes definitions in Matlab of a family of
@@ -8,10 +10,12 @@ C++ of *DAIDALUS* (Detect and Aovid Alerting Logic for Unmanned Systems).
 intended to support the integration of Unmanned Aircraft Systems into
 civil airspace.
 
-Current Release: v0.991 (April 29, 2016)
-
 For technical information about the definitions and algorithms in this
 repository, visit [http://shemesh.larc.nasa.gov/people/cam/DAIDALUS](http://shemesh.larc.nasa.gov/people/cam/DAIDALUS).
+
+### Current Release
+
+v0.991 (April 29, 2016)
 
 ### License
 
@@ -21,4 +25,9 @@ Agreement. See the file NOSA.pdf in the directories Matlab, Java, and C++.
 ### Contact
 
 Cesar A. Munoz (cesar.a.munoz@nasa.gov), NASA Langley Research Center
+
+
+## Logo
+The DAIDALUS logo was designed by 
+[Mahyar Malekpour](http://shemesh.larc.nasa.gov/people/mrm/publications.htm#ETC) (NASA).
 
