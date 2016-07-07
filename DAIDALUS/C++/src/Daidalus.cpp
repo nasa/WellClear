@@ -24,7 +24,7 @@ namespace larcfm {
 /**
  * std::string indicating the DAIDALUS version
  */
-const char*  Daidalus::VERSION = "0.991";
+const char*  Daidalus::VERSION = "0.992";
 
 /**
  * Create a  Daidalus object. This object will default to using WCV_TAUMOD as state detector.

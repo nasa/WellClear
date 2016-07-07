@@ -106,10 +106,8 @@ ConflictData TCAS3D::RA3D(const Vect3& so, const Velocity& vo, const Vect3& si, 
   //  return time_in <= time_out;
 }
 
+// Assumes 0 <= B < T
 ConflictData TCAS3D::RA3D_interval(const Vect3& so, const Velocity& vo, const Vect3& si, const Velocity& vi, double B, double T) const {
-  if (T <= B) {
-    T = DBL_MAX;
-  }
   double time_in     = T;
   double time_out    = B;
   double time_mintau = -1;

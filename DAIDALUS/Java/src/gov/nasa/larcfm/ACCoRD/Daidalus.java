@@ -34,7 +34,7 @@ public class Daidalus implements ErrorReporter {
   /**
    * String indicating the DAIDALUS version
    */
-  public static final String VERSION = "0.991";
+  public static final String VERSION = "0.992";
 
   private List<TrafficState> acs;
   private List<Double> times;

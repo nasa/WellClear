@@ -155,10 +155,8 @@ public abstract class WCV_tvar implements Detection3D {
     return WCV_interval(so,vo,si,vi,B,T);
   }
 
+  // Assumes 0 <= B < T
   public LossData WCV_interval(Vect3 so, Velocity vo, Vect3 si, Velocity vi, double B, double T) {
-    if (T <= B) {
-      T = Double.MAX_VALUE;
-    }
     double time_in = T;
     double time_out = B;
 

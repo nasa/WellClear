@@ -336,7 +336,12 @@ bool KinematicIntegerBands::cd_future_traj(Detection3D* det, double B, double T,
   Vect3 si = ownship.traffic_s(ac);
   Velocity vi = ownship.traffic_v(ac);
   Vect3 sit = vi.ScalAdd(t,si);
-  if (B > t) return det->conflict(sot, vot, sit, vi, B-t, T-t);
+  if (B > t) {
+    return det->conflict(sot, vot, sit, vi, B-t, T-t);
+  }
+  if (Util::almost_equals(T,t)) {
+    return det->violation(sot, vot, sit, vi);
+  }
   return det->conflict(sot, vot, sit, vi, 0, T-t);
 }
 

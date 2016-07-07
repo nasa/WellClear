@@ -396,6 +396,13 @@ SWIGINTERN void SWIG_runtime_init() {
 
 
 #include "Daidalus.h"
+  //#include "Vect3.h"
+  //#include "WCVTable.h"
+  //#include "WCV_tvar.h"
+  //#include "WCV_TAUMOD.h"
+  //#include "WCV_TCPA.h"
+  //#include "TCASTable.h"
+  //#include "TCAS3D.h"
 using namespace larcfm;
 
 const char* Swig_typename_Position = "larcfm::Position";

@@ -110,10 +110,8 @@ public class TCAS3D implements Detection3D {
     return RA3D_interval(so,vo,si,vi,B,T);
   }
 
+  // Assumes 0 <= B < T
   public ConflictData RA3D_interval(Vect3 so, Velocity vo, Vect3 si, Velocity vi, double B, double T) {
-    if (T <= B) {
-      T = Double.MAX_VALUE;
-    }
     double time_in     = T;
     double time_out    = B;
     double time_mintau = -1;

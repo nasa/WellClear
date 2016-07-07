@@ -121,10 +121,8 @@ LossData WCV_tvar::WCV3D(const Vect3& so, const Velocity& vo, const Vect3& si, c
   return WCV_interval(so,vo,si,vi,B,T);
 }
 
+// Assumes 0 <= B < T
 LossData WCV_tvar::WCV_interval(const Vect3& so, const Velocity& vo, const Vect3& si, const Velocity& vi, double B, double T) const {
-  if (T <= B) {
-    T = DBL_MAX;
-  }
   double time_in = T;
   double time_out = B;
 

@@ -1,12 +1,18 @@
 DAIDALUS: Detect and Avoid Alerting Logic for Unmanned Systems
 -----------------------------------------------------
-Release: 0.991, April 29, 2016
+Release: 0.992, July 7, 2016
 Authors: Cesar Munoz, George Hagen, Anthony Narkawicz, Jeff Maddalon
 
 Copyright: Copyright (c) 2014 United States Government as represented by 
 the National Aeronautics and Space Administration.  No copyright 
 is claimed in the United States under Title 17, U.S.Code. All Other 
 Rights Reserved.
+
+Release DAIDALUS 0.992, July 7, 2016
+---------------------
+* Removed MAX_VALUE setting from WCV_interval in WCV_tvar and from
+RA3D_interval in TCAS3D . Those functions assume that  0 <= B < T.
+* Called violation instead of conflict when B=T=0 in cd_future_traj (KinematicIntegerBands)
 
 Release DAIDALUS 0.991, April 29, 2016
 ---------------------
