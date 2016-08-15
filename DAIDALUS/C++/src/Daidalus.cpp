@@ -67,6 +67,8 @@ Daidalus::Daidalus(const Daidalus& dda) : error("Daidalus") {
 }
 
 Daidalus::~Daidalus() {
+  reset();
+  clearAlertThresholds();
   delete detector;
   delete urgency_strat;
 }
