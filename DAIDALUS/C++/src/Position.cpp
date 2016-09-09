@@ -3,7 +3,7 @@
  *
  * a position, either Geodesic or Euclidean.
  *
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -17,6 +17,7 @@
 #include "Projection.h"
 #include "Constants.h"
 #include "VectFuns.h"
+#include "Util.h" // NaN def
 #include "format.h"
 #include "string_util.h"
 #include <memory>
@@ -29,7 +30,7 @@ using std::endl;
 // the follow is to avoid the static initialization fiasco
 
 const Position& Position::INVALID() {
-	static Position* pos = new Position(std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN());
+	static Position* pos = new Position(NaN, NaN, NaN);
 	return *pos;
 }
 const Position& Position::ZERO_LL() {
@@ -113,7 +114,7 @@ bool Position::almostEquals(const Position& pp, double epsilon_horiz, double eps
 
 
 bool Position::operator == (const Position& v) const {  // strict equality
-	return s3.x==v.s3.x && s3.y==v.s3.y && s3.z==v.s3.z && latlon == v.latlon;
+	return s3.x==v.s3.x && s3.y==v.s3.y && s3.z==v.s3.z && latlon == v.latlon && ll.lat()==v.ll.lat() && ll.lon()==v.ll.lon() && ll.alt()==v.ll.alt();
 }
 
 

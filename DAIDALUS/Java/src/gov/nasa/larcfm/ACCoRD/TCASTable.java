@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2015 United States Government as represented by
+ * Copyright (c) 2012-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -10,6 +10,7 @@ import java.util.Arrays;
 
 import gov.nasa.larcfm.Util.ParameterData;
 import gov.nasa.larcfm.Util.Units;
+import gov.nasa.larcfm.Util.f;
 
 public class TCASTable implements ParameterTable {
   private boolean HMDFilter;
@@ -363,6 +364,32 @@ public class TCASTable implements ParameterTable {
           "; HMD: "+array7_units("ft",HMD);
       return s;
   }
+  
+  public String toPVS(int prec) {
+    String s = "(# ";
+    s += "TAU := (: "+f.Fm1(TAU[0]);
+    for (int i=1; i < 7; i++) {
+      s += ", "+f.Fm1(TAU[i]);
+    }
+    s += " :), TCOA := (: "+f.Fm1(TCOA[0]);
+    for (int i=1; i < 7; i++) {
+      s += ", "+f.Fm1(TCOA[i]);
+    }
+    s += " :), DMOD := (: "+f.FmPrecision(DMOD[0],prec);
+    for (int i=1; i < 7; i++) {
+      s += ", "+f.FmPrecision(DMOD[i],prec);
+    }
+    s += " :), ZTHR := (: "+f.FmPrecision(ZTHR[0],prec);
+    for (int i=1; i < 7; i++) {
+      s += ", "+f.FmPrecision(ZTHR[i],prec);
+    }
+    s += " :), HMD := (: "+f.FmPrecision(HMD[0],prec);
+    for (int i=1; i < 7; i++) {
+      s += ", "+f.FmPrecision(HMD[i],prec);
+    }
+    s += " :), HMDFilter := " + (HMDFilter ? "TRUE" : "FALSE");
+    return s + " #)";
+  }
 
   public ParameterData getParameters() {
     ParameterData p = new ParameterData();
@@ -374,19 +401,19 @@ public class TCASTable implements ParameterTable {
   public void updateParameterData(ParameterData p) {
     p.set("TCAS_HMDFilter",HMDFilter);
     for (int i = 0; i < TAU.length; i++) {
-      p.setInternal("TCAS_TAU_"+(i+2),TAU[i],"s");
+      p.setInternal("TCAS_TAU_"+(i+2),TAU[i],"s",4);
     }
     for (int i = 0; i < TCOA.length; i++) {
-      p.setInternal("TCAS_TCOA_"+(i+2),TCOA[i],"s");
+      p.setInternal("TCAS_TCOA_"+(i+2),TCOA[i],"s",4);
     }
     for (int i = 0; i < DMOD.length; i++) {
-      p.setInternal("TCAS_TTHR_"+(i+2),DMOD[i],"ft");
+      p.setInternal("TCAS_DMOD_"+(i+2),DMOD[i],"nmi",4);
     }
     for (int i = 0; i < ZTHR.length; i++) {
-      p.setInternal("TCAS_ZTHR_"+(i+2),ZTHR[i],"ft");
+      p.setInternal("TCAS_ZTHR_"+(i+2),ZTHR[i],"ft",4);
     }
     for (int i = 0; i < HMD.length; i++) {
-      p.setInternal("TCAS_HMD_"+(i+2),HMD[i],"ft");
+      p.setInternal("TCAS_HMD_"+(i+2),HMD[i],"ft",4);
     }
   }
 

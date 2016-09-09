@@ -5,7 +5,7 @@
  *
  * General Constants
  *
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -21,7 +21,7 @@ namespace larcfm {
 
 
 // these will all eventually be moved into the object initialization
-static const std::string _FormalATM_version = "v2.4.9";
+static const std::string _FormalATM_version = "v2.5.4";
 static const double _FormalATM_GPS_LIMIT_HORIZONTAL = Units::from("ft", 25.0); // in order to keep both versions tied to a single entry, this needs to be defined here.
 static const double _FormalATM_GPS_LIMIT_VERTICAL = Units::from("ft", 25.0); // in order to keep both versions tied to a single entry, this needs to be defined here.
 static const double _FormalATM_TIME_LIMIT_EPSILON = 1.0;// in order to keep both versions tied to a single entry, this needs to be defined here.
@@ -37,6 +37,8 @@ static const double _FormalATM_NO_TIME = -1;
 	  static int OUTPUT_PRECISION;
 
  	  public:
+
+	  	static const std::string separatorPattern;
 
 	  	/**
 	  	 * Default pattern string representing whitespace in input files.  This does not include parentheses or braces.

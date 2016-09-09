@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 United States Government as represented by
+ * Copyright (c) 2014-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -16,40 +16,47 @@ public class LossData {
    * between the lookahead time interval [B,T], where 0 <= B < T. It is always the case that if time_in < time_out 
    * is true, then there is a conflict. 
    */ 
-  final protected double  time_in;                   // relative time to loss of separation
-  final protected double  time_out;                  // relative time to the exit from loss of separation	
+  final public double  time_in;                   // relative time to loss of separation
+  final public double  time_out;                  // relative time to the exit from loss of separation	
 
   public LossData(double tin, double tout) {
-    if (Util.almost_equals(tin,tout)) { // [CAM] Added this code to mitigate some numerical instability when tin is almost equal to tout
-      tin = tout;
-    }
     time_in = tin;
     time_out = tout;
   }
-  
+
   public LossData() {
     time_in = Double.POSITIVE_INFINITY;
     time_out = Double.NEGATIVE_INFINITY;
   }
 
-  // Conflict detected
+  /**
+   * Returns true if loss
+   */
   public boolean conflict() {
-    return time_in < time_out;  // [CAM] Removed tout <= 0, which used to represent infinite time
+    return time_in < time_out && !Util.almost_equals(time_in,time_out); //[CAM] Added to avoid numerical instability  
   }
 
-  // Conflict detected with a threshold
+  /**
+   * Returns true if loss last more than thr in seconds
+   */
   public boolean conflict(double thr) {
-    return conflict() && (time_out - time_in > thr);
+    return conflict() && (time_out - time_in >= thr);
   }
 
+  /**
+   * Returns time to first loss in seconds.
+   */
   public double getTimeIn() {
     return time_in;
   }
 
+  /**
+   * Returns time to last loss in seconds.
+   */
   public double getTimeOut() {
     return time_out;
   }
-  
+
   public String toString() {
     String str = "[time_in: " + f.Fm2(time_in) + ", time_out: " + f.Fm2(time_out)+"]";
     return str;

@@ -6,7 +6,7 @@
  * NASA LaRC
  * http://shemesh.larc.nasa.gov/people/cam/ACCoRD
  *
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -68,17 +68,28 @@ public class Vertical {
     return (eps*Util.sign(vz)*H-sz) / vz;
   }
 
-  static double time_coalt(double sz, double vz) {
+  public static double time_coalt(double sz, double vz) {
     if (vz == 0) return Double.NaN;
     return -sz / vz;
   }
   
+  /* Vertical miss distance within lookahead time */
+  public static double vmd(double sz, double vz, double T) {
+    if (sz*vz < 0) {
+      // aircraft are vertically converging
+      if (time_coalt(sz,vz) <= T) {
+        return 0;
+      } else {
+        return Math.abs(sz+T*vz);
+      }
+    }
+    return Math.abs(sz);
+  }
+  
   private static Vertical vs_at(double sz,double t, 
       int eps,double H) {
-//f.pln("Vertical.vs_at sz="+sz+" t="+t+" eps="+eps+" H="+H);    
     if (t == 0) 
       return NoVerticalSolution;
-//f.pln("Vertical.vs_at ret="+(eps*H-sz)/t);    
     return new Vertical((eps*H-sz) / t);
   }
 

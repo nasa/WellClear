@@ -3,7 +3,7 @@
  * Organization: NASA/Langley Research Center
  * Website:      http://shemesh.larc.nasa.gov/fm/
  * 
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -30,7 +30,7 @@ public final class ACCoRDConfig {
     static public double minGs_default = Units.from("kn",150.0);       // must be greater than 0
     static public double maxVs_default = Units.from("fpm",5000.0);
     
-	static public double gsSearchLosDiscard = Units.from("nm",1.5);
+	static public double gsSearchLosDiscard = Units.from("nmi",1.5);
 	static public double vsDiscretization_default = Units.from("fpm",10.0);
 	
 	final public static double NMAC_D = Units.from("ft",500); // Defined in RTCA SC-147

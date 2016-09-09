@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2015 United States Government as represented by
+ * Copyright (c) 2012-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -8,6 +8,7 @@ package gov.nasa.larcfm.ACCoRD;
 
 import gov.nasa.larcfm.Util.ParameterData;
 import gov.nasa.larcfm.Util.Units;
+import gov.nasa.larcfm.Util.f;
 
 public class WCVTable implements ParameterTable {
   protected double DTHR; // Distance threshold
@@ -19,22 +20,12 @@ public class WCVTable implements ParameterTable {
    * WCV table SARP concept
    */
   public WCVTable() {
-    DTHR = DefaultDaidalusParameters.getDTHR();
-    ZTHR = DefaultDaidalusParameters.getZTHR();
-    TTHR = DefaultDaidalusParameters.getTTHR();
-    TCOA = DefaultDaidalusParameters.getTCOA();
+    DTHR = Units.from("nmi",0.66);   
+    ZTHR = Units.from("ft",450);
+    TTHR = 35; // [s]
+    TCOA = 0;  // [s]
   }
 
-  // WCV table for NASA concept
-  static public WCVTable NASA() {
-    return new WCVTable(Units.from(Units.ft,6000),Units.from(Units.ft,475),30,20);
-  }
-  
-  // WCV table for MIT concept
-  static public WCVTable MITLL() {
-    return new WCVTable(Units.from(Units.ft,4000),Units.from(Units.ft,700),35,0);
-  }
- 
   /**
    * Copy constructor -- returns a fresh copy
    * @param tab
@@ -47,7 +38,7 @@ public class WCVTable implements ParameterTable {
    * Table containing specified values (internal units)
    */
   
-  private WCVTable(double dthr, double zthr, double tthr, double tcoa) {
+  public WCVTable(double dthr, double zthr, double tthr, double tcoa) {
     DTHR = dthr;
     ZTHR = zthr;
     TTHR = tthr;
@@ -187,10 +178,10 @@ public class WCVTable implements ParameterTable {
   }
   
   public void updateParameterData(ParameterData p) {
-    p.setInternal("WCV_DTHR",DTHR,"ft");
-    p.setInternal("WCV_ZTHR",ZTHR,"ft");
-    p.setInternal("WCV_TTHR",TTHR,"s");
-    p.setInternal("WCV_TCOA",TCOA,"s");
+    p.setInternal("WCV_DTHR",DTHR,"nmi",4);
+    p.setInternal("WCV_ZTHR",ZTHR,"ft",4);
+    p.setInternal("WCV_TTHR",TTHR,"s",4);
+    p.setInternal("WCV_TCOA",TCOA,"s",4);
   }
 
   public void setParameters(ParameterData p) {
@@ -211,6 +202,11 @@ public class WCVTable implements ParameterTable {
   public String toString() {
     return "DTHR: "+Units.str("NM",DTHR)+"; ZTHR: "+Units.str("ft",ZTHR)+"; TTHR: "+
         Units.str("s",TTHR)+"; TCOA: "+Units.str("s",TCOA);
+  }
+  
+  public String toPVS(int prec) {
+    return "(# DTHR := "+f.FmPrecision(DTHR,prec)+", ZTHR := "+f.FmPrecision(ZTHR,prec)+
+        ", TTHR := "+f.Fm1(TTHR)+", TCOA := "+f.Fm1(TCOA)+" #)";
   }
 
   @Override

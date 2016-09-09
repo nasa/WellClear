@@ -4,7 +4,7 @@
  * Contact: Jeff Maddalon
  * Organization: NASA/Langley Research Center
  *
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -13,7 +13,7 @@
 #include "Util.h"
 //#include "UnitSymbols.h"
 #include "GreatCircle.h"
-
+#include "Triple.h"
 
 #include <cmath>
 namespace larcfm {
@@ -133,6 +133,10 @@ namespace larcfm {
   }
 
 
+  double GreatCircle::final_course(LatLonAlt p1, LatLonAlt p2) {
+	  return initial_course(p2, p1)+M_PI;
+  }
+
   // parameter d is the angular distance between lat/long #1 and #2
   static LatLonAlt interpolate_impl(const LatLonAlt& p1, const LatLonAlt& p2, double d, double f, double alt) {
     if (Constants::almost_equals_radian(d) ) {
@@ -246,6 +250,130 @@ namespace larcfm {
     return linear_rhumb_impl(s, track, GreatCircle::angle_from_distance(dist), 0.0);
   }
 	
+
+	/**
+	 * Solve the spherical triangle when one has a side (in angular distance), another side, and an angle between sides.
+	 * The angle is <b>not</b> between the sides.  The sides are labeled a, b, and c.  The angles are labelled A, B, and
+	 * C.  Side a is opposite angle A, and so forth.<p>
+	 *
+	 * Given these constraints, in some cases two solutions are possible.  To
+	 * get one solution set the parameter firstSolution to true, to get the other set firstSolution to false.  A firstSolution == true
+	 * will return a smaller angle, B, than firstSolution == false.
+	 *
+	 * @param b one side (in angular distance)
+	 * @param a another side (in angular distance)
+	 * @param A the angle opposite the side a
+	 * @param firstSolution select which solution to use
+	 * @return a Triple of angles B and C, and the side c.
+	 */
+	Triple<double,double,double> GreatCircle::side_side_angle(double b, double a, double A, bool firstSolution) {
+		// This function follows the convention of "Spherical Trigonometry" by Todhunter, Macmillan, 1886
+		//   Note, angles are labelled counter-clockwise a, b, c
+
+		// Law of sines
+		double B = Util::asin_safe(std::sin(b)*std::sin(A)/std::sin(a));  // asin returns [-pi/2,pi/2]
+		if ( ! firstSolution) {
+			B = M_PI - B;
+		}
+
+		// one of Napier's analogies
+		double c = 2 * Util::atan2_safe(std::sin(0.5*(a+b))*std::cos(0.5*(A+B)),std::cos(0.5*(a+b))*std::cos(0.5*(A-B)));
+
+		// Law of cosines
+		double C = Util::acos_safe(-std::cos(A)*std::cos(B)+std::sin(A)*std::sin(B)*std::cos(c));
+
+		if ( gauss_check(a,b,c,A,B,C)) {
+			return Triple<double,double,double>(Util::to_pi(B),C,Util::to_2pi(c));
+		} else {
+			return Triple<double,double,double>(0.0,0.0,0.0);
+		}
+	}
+
+	/**
+	 * Solve the spherical triangle when one has a side (in angular distance), and two angles.
+	 * The side is <b>not</b> between the angles.  The sides are labeled a, b, and c.  The angles are labelled A, B, and
+	 * C.  Side a is opposite angle A, and so forth.<p>
+	 *
+	 * Given these constraints, in some cases two solutions are possible.  To
+	 * get one solution set the parameter firstSolution to true, to get the other set firstSolution to false.  A firstSolution == true
+	 * will return a smaller side, b, than firstSolution == false.
+	 *
+	 * @param a one side (in angular distance)
+	 * @param A the angle opposite the side a
+	 * @param B another angle
+	 * @param firstSolution select which solution to use
+	 * @return a Triple of side b, angle C, and the side c.
+	 */
+	Triple<double,double,double> GreatCircle::side_angle_angle(double a, double A, double B, bool firstSolution) {
+		// This function follows the convention of "Spherical Trigonometry" by Todhunter, Macmillan, 1886
+		//   Note, angles are labelled counter-clockwise a, b, c
+
+		// Law of sines
+		double b = Util::asin_safe(std::sin(a)*std::sin(B)/std::sin(A));  // asin returns [-pi/2,pi/2]
+		if ( ! firstSolution) {
+			b = M_PI - b;
+		}
+
+		// one of Napier's analogies
+		double c = 2 * Util::atan2_safe(std::sin(0.5*(a+b))*std::cos(0.5*(A+B)),std::cos(0.5*(a+b))*std::cos(0.5*(A-B)));
+
+		// Law of cosines
+		double C = Util::acos_safe(-std::cos(A)*std::cos(B)+std::sin(A)*std::sin(B)*std::cos(c));
+
+		if ( gauss_check(a,b,c,A,B,C)) {
+			return Triple<double,double,double>(Util::to_2pi(b),Util::to_2pi(C),Util::to_2pi(c));
+		} else {
+			return Triple<double,double,double>(0.0,0.0,0.0);
+		}
+	}
+
+	/**
+	 * This implements the spherical cosine rule to complete a triangle on the unit sphere
+	 * @param a side a (angular distance)
+	 * @param C angle between sides a and b
+	 * @param b side b (angular distance)
+	 * @return triple of A,B,c (angle opposite a, angle opposite b, side opposite C)
+	 */
+	Triple<double,double,double> GreatCircle::side_angle_side(double a, double C, double b) {
+		double c = Util::acos_safe(std::cos(a)*std::cos(b)+std::sin(a)*std::sin(b)*std::cos(C));
+		double cRatio = std::sin(C)/std::sin(c);
+		double A = Util::asin_safe(std::sin(a)*cRatio);
+		double B = Util::asin_safe(std::sin(b)*cRatio);
+		return Triple<double,double,double>(A,B,c);
+	}
+
+	/**
+	 * This implements the supplemental (polar triangle) spherical cosine rule to complete a triangle on the unit sphere
+	 * @param A angle A
+	 * @param c side between A and B (angular distance
+	 * @param B angle B
+	 * @return triple of a,b,C (side opposite A, side opposite B, angle opposite c)
+	 */
+	Triple<double,double,double> GreatCircle::angle_side_angle(double A, double c, double B) {
+		double C = Util::acos_safe(-std::cos(A)*std::cos(B)+std::sin(A)*std::sin(B)*std::cos(c));
+		double cRatio = std::sin(c)/std::sin(C);
+		double a = Util::asin_safe(std::sin(A)*cRatio);
+		double b = Util::asin_safe(std::sin(B)*cRatio);
+		return Triple<double,double,double>(a,b,C);
+	}
+
+	bool GreatCircle::gauss_check(double a, double b, double c, double A, double B, double C) {
+		// This function follows the convention of "Spherical Trigonometry" by Todhunter, Macmillan, 1886
+		//   Note, angles are labelled counter-clockwise a, b, c
+		A = Util::to_pi(A);
+		B = Util::to_pi(B);
+		C = Util::to_pi(C);
+		a = Util::to_2pi(a);
+		b = Util::to_2pi(b);
+		c = Util::to_2pi(c);
+		if (A==0.0 || A==M_PI || B==0.0 || B==M_PI || C==0.0 || C==M_PI) return false;
+		if (a==0.0 || b==0.0 || c==0.0) return false;
+//		f.pln("gauss "+std::cos(0.5*(A+B))*std::cos(0.5*c)+" "+std::cos(0.5*(a+b))*std::sin(0.5*C));
+		return Util::almost_equals(std::cos(0.5*(A+B))*std::cos(0.5*c),std::cos(0.5*(a+b))*std::sin(0.5*C),PRECISION13);
+	}
+
+
+
   LatLonAlt GreatCircle::linear_initial(const LatLonAlt& s, const Velocity& v, double t) {
     return linear_initial_impl(s, v.trk(), GreatCircle::angle_from_distance(v.gs() * t), v.z*t);
   }
@@ -267,53 +395,158 @@ namespace larcfm {
     	return Util::within_epsilon(cross_track_distance(p1,p2,p3),epsilon);
     }
 
+
   LatLonAlt GreatCircle::closest_point_circle(const LatLonAlt& p1, const LatLonAlt& p2, const LatLonAlt& x) {
-    	double p1p2_dist = angular_distance(p1,p2);
-    	if (Util::almost_equals(p1p2_dist,0.0)) {
-    		return x;   // if p1==p2, every great circle runs through them, thus x is on one of these great circles  
-    	}
-    	if (p1.almostEquals(x)) {
-    		return p1.mkAlt(x.alt());
-    	}
-    	if (p2.almostEquals(x)) {
-    		return p2.mkAlt(x.alt());
-    	}
+		double a = angular_distance(x,p2);
+		double b = angular_distance(p1,p2);
+		double c = angular_distance(p1,x);
+		double A = angle_between(p2,p1,x);
+		double B = angle_between(p1,x,p2);
+		double C = angle_between(x,p2,p1);
+		return closest_point_circle(p1,p2,x,a,b,c,A,B,C);
+  }
 
+  LatLonAlt GreatCircle::closest_point_circle(const LatLonAlt& p1, const LatLonAlt& p2, const LatLonAlt& x, double a, double b, double c, double A, double B, double C) {
+		//       x (B)
+		//      / \
+		// (A) p1--p2 (C)
+//		double a = angular_distance(x,p2);
+//		double b = angular_distance(p1,p2);
+//		double c = angular_distance(p1,x);
+//		double A = angle_between(p2,p1,x);
+//		double B = angle_between(p1,x,p2);
+//		double C = angle_between(x,p2,p1);
 
-    	// general case
-    	double c = angular_distance(p1,x); // angular distance from p1 to x, 0 is ruled out above
-        double p1p2_trk = initial_course_impl(p1,p2,p1p2_dist);
-	double p1x_trk = initial_course_impl(p1,x,c);
-	double A = std::abs(Util::to_pi(p1p2_trk - p1x_trk));
-	double a = Util::asin_safe(std::sin(c)*std::sin(A)); // "spherical law of sines"
-	if (Util::within_epsilon(a, 1E-7)) return x;  // collinear
-	double b = Util::atan2_safe(std::cos(A) * std::sin(c), std::cos(c)); // should be distance along gc p1-p2
-	return interpolate_impl(p1,p2,p1p2_dist,(b / p1p2_dist),x.alt());
+//		if (Util::almost_equals(A, 0.0) || Util::almost_equals(C, 0.0) || Util::almost_equals(A, M_PI) || Util::almost_equals(C, M_PI)) {			// collinear
+		if (Util::within_epsilon(A, 0.000001) || Util::within_epsilon(C, 0.000001) || Util::within_epsilon(M_PI-A, 0.000001) || Util::within_epsilon(M_PI-C, 0.000001)) {
+			return x;
+		}
+		if (Util::almost_equals(b,0.0)) {
+			return x;   // if p1==p2, every great circle runs through them, thus x is on one of these great circles
+		}
+		if (A+B+C < M_PI || A+B+C >= M_PI*3) {
+//			fpln("GreatCircle.closestPoint ERROR: not a triangle p1="+p1+"p2="+p2+"x="+x+" A+B+C="+(A+B+C)+" = "+Units.to("deg", A+B+C)+" deg");
+			// if the triangle is relatively small, it is probably collinear
+			if (a < M_PI/2 && b < M_PI/2 && c < M_PI/2) {
+				return x;
+			}
+			return LatLonAlt::INVALID;
+		}
+		if (p1.almostEquals(x) || Util::almost_equals(A, M_PI/2)) {
+			return p1.mkAlt(x.alt());
+		}
+		if (p2.almostEquals(x) || Util::almost_equals(C, M_PI/2)) {
+			return p2.mkAlt(x.alt());
+		}
 
+		// general case p1 @ A, x @ B, p2 @ C
+//		double d1 = 0;
+//f.pln("GreatCircle.closest_point_circle DEG A="+Units.to("deg", A)+" B="+Units.to("deg", B)+" C="+Units.to("deg", C)+" / a="+Units.to("deg", a)+" b="+Units.to("deg", b)+" c="+Units.to("deg", c));
+//f.pln("GreatCircle.closest_point_circle RAD A="+A+" B="+B+" C="+C+" / a="+a+" b="+b+" c="+c);
+//f.pln("GreatCircle.closest_point_circle A/a="+(std::sin(A)/std::sin(a))+" B/b="+(std::sin(B)/std::sin(b))+" C/c="+(std::sin(C)/std::sin(c)));
+		if (A <= M_PI/2 && C <= M_PI/2) {
+			//   B       C1
+			//  / \     / |
+			// A---C   B1-A1
+			if (A < C) {
+				double a1 = c;
+				double A1 = M_PI/2;
+				double B1 = A;
+				double c1 = side_angle_angle(a1,A1,B1, true).third;
+				double ff = (c1/b);
+//f.pln("GreatCircle.closest_point_circle a1) ff="+ff);
+				return interpolate(p1,p2,ff);
+			} else {
+				//   B     C1
+				//  / \    | \
+				// A---C   A1-B1
+				double a1 = a;
+				double A1 = M_PI/2;
+				double B1 = C;
+				double c1 = side_angle_angle(a1,A1,B1, true).third;
+				double ff = (c1/b);
+//f.pln("GreatCircle.closest_point_circle a2) ff="+ff);
+				return interpolate(p2,p1,ff);
+			}
+
+//			d1 = side_angle_angle(a,M_PI/2,C,true).third;
+//f.pln("GreatCircle.closest_point_circle #1 d1="+d1+" "+Units.to("deg", d1)+Units.degreeStr);
+//			double ff = 1-(d1/b);
+//f.pln("GreatCircle.closest_point_circle p1="+p1+" p2="+p2+" ff="+ff);
+//			return interpolate(p1, p2, ff);
+		} else if (A <= M_PI/2 && C > M_PI/2) {
+			//    -- B    C1
+			//  /   /    / |
+			// A---C    B1-A1
+			double a1 = a;
+			double A1 = M_PI/2;
+			double B1 = M_PI-C;
+			double c1 = side_angle_angle(a1,A1,B1, true).third;
+			double ff = 1+(c1/b);
+//f.pln("GreatCircle.closest_point_circle b) ff="+ff);
+			return interpolate(p1,p2,ff);
+
+//			d1 = side_angle_angle(a,M_PI/2,M_PI-C,true).third;
+//f.pln("GreatCircle.closest_point_circle #2 d="+d1+" "+Units.to("deg", d1)+Units.degreeStr);
+//			return linear_initial(p1,initial_course(p1,p2),distance_from_angle(b+d1,0)).mkAlt(x.alt());
+		} else if (A > M_PI/2 && C <= M_PI/2) {
+			// B--		  C1
+			//  \   \	  | \
+			//   A---C	  A1-B1
+			double a1 = c;
+			double A1 = M_PI/2;
+			double B1 = M_PI-A;
+			double c1 = side_angle_angle(a1,A1,B1, true).third;
+			double ff = 1+(c1/b);
+//f.pln("GreatCircle.closest_point_circle c) ff="+ff);
+			return interpolate(p2,p1,ff);
+//			d1 = side_angle_angle(a,M_PI/2,M_PI-A,true).third;
+//f.pln("GreatCircle.closest_point_circle #3 d="+d1+" "+Units.to("deg", d1)+Units.degreeStr);
+//			return linear_initial(p2,initial_course(p2,p1),distance_from_angle(b+d1,0)).mkAlt(x.alt());
+		}
+//f.pln("GreatCircle.closest_point_circle INVALID: weird triangle");
+		return LatLonAlt::INVALID; // weird triangle
     }
     
- LatLonAlt GreatCircle::closest_point_segment(const LatLonAlt& p1, const LatLonAlt& p2, const LatLonAlt& x) {
-    	LatLonAlt p3 = closest_point_circle(p1,p2,x);
-    	double p1p2t = initial_course(p1,p2);
-    	double p1p2d = angular_distance(p1,p2);
-    	double p1p3d = angular_distance(p1,p3);
-   	    	
-    	LatLonAlt p3p = linear_initial_impl(p1,p1p2t,p1p3d,p3.alt());
-    	if (p3.almostEquals(p3p)) {
-    		if (p1p2d > p1p3d) {
-    			return p3;
-    		} else {
-    			return p2;
-    		}
-    	} else {
-        	// At this point, it should be that:
-    		//    linear_initial_impl(p1,p1p2t+M_PI,p1p3d,p3.alt()) == p3
-    		//
-        	//if ( ! linear_initial_impl(p1,p1p2t+M_PI,p1p3d,p3.alt()).almostEquals(p3)) throw new RuntimeException("help!");
-    		return p1;
-    	}
-    }
-    
+
+
+LatLonAlt GreatCircle::closest_point_segment(const LatLonAlt& p1, const LatLonAlt& p2, const LatLonAlt& x) {
+	double a = angular_distance(x,p2);
+	double b = angular_distance(p1,p2);
+	double c = angular_distance(p1,x);
+	double A = angle_between(p2,p1,x);
+	double B = angle_between(p1,x,p2);
+	double C = angle_between(x,p2,p1);
+
+	// collinear
+	if (Util::within_epsilon(A, 0.000001) || Util::within_epsilon(C, 0.000001) || Util::within_epsilon(M_PI-A, 0.000001) || Util::within_epsilon(M_PI-C, 0.000001)) {
+//		if (Util.almost_equals(A, 0.0) || Util.almost_equals(C, 0.0) || Util.almost_equals(A, Math.PI) || Util.almost_equals(C, Math.PI)) {
+		if (b >= a && b >= c) {
+			return x;
+		} else if (a >= b && a >= c) {
+			return p1;
+		} else {
+			return p2;
+		}
+	}
+
+	if (A <= M_PI/2 && C <= M_PI/2) {
+		//   B
+		//  / \
+		// A---C
+		return closest_point_circle(p1,p2,x,a,b,c,A,B,C);
+	} else if (A <= M_PI/2 && C > M_PI/2) {
+		//    -- B
+		//  /   /
+		// A---C
+		return p2;
+	} else {
+		// B--
+		//  \   \
+		//   A---C
+		return p1;
+	}
+}
 
  /**
   * Given two great circles defined by a1,a2 and b1,b2, return the intersection poin that is closest a1.  Use LatLonAlt.antipode() to get the other value.
@@ -387,6 +620,18 @@ double GreatCircle::angleBetween(const LatLonAlt& a1, const LatLonAlt& a2, const
 	Vect3 vb = spherical2xyz(b1.lat(), b1.lon()).cross(spherical2xyz(b2.lat(), b2.lon())).Hat(); // normal 2
 	double cosx = va.dot(vb);
 	return std::acos(cosx);
+}
+
+
+double GreatCircle::angle_between(const LatLonAlt& a, const LatLonAlt& b, const LatLonAlt& c) {
+	double a1 = angular_distance(c,b);
+	double b1 = angular_distance(a,c);
+	double c1 = angular_distance(b,a);
+	double d = std::sin(c1)*std::sin(a1);
+	if (d == 0.0) {
+		return M_PI;
+	}
+	return Util::acos_safe( (std::cos(b1)-std::cos(c1)*std::cos(a1)) / d );
 }
 
 

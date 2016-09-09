@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 United States Government as represented by
+ * Copyright (c) 2015-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -8,228 +8,214 @@
 #include "Vect3.h"
 #include "Velocity.h"
 #include "Position.h"
-#include "Detection3D.h"
-#include "OwnshipState.h"
-#include "TrafficState.h"
 #include "Interval.h"
 #include "BandsRegion.h"
 #include "Integerval.h"
+#include "KinematicBandsParameters.h"
 #include "Triple.h"
 #include "ProjectedKinematics.h"
-#include <cmath>
-#include "DefaultDaidalusParameters.h"
-
 
 namespace larcfm {
 
-KinematicAltBands::KinematicAltBands() {
-  intervals = std::vector<Interval>();
-  regions = std::vector<BandsRegion::Region>();
-  recovery_time = 0;
-  min = DefaultDaidalusParameters::getMinAltitude();
-  max = DefaultDaidalusParameters::getMaxAltitude();
-  step = DefaultDaidalusParameters::getAltitudeStep();
-  do_recovery = false;
-  vertical_rate = DefaultDaidalusParameters::getVerticalRate();
-  vertical_accel = DefaultDaidalusParameters::getVerticalAcceleration();
+KinematicAltBands::KinematicAltBands(const KinematicBandsParameters& parameters) : KinematicRealBands(
+    parameters.getMinAltitude(),
+    parameters.getMaxAltitude(),
+    parameters.getAltitudeStep(),
+    parameters.isEnabledRecoveryAltitudeBands()) {
+  vertical_rate_ = parameters.getVerticalRate();
+  vertical_accel_ = parameters.getVerticalAcceleration();
+  j_step_ = 0;
 }
 
-KinematicAltBands::KinematicAltBands(const KinematicAltBands& b) {
-  intervals = std::vector<Interval>();
-  regions = std::vector<BandsRegion::Region>();
-  recovery_time = 0;
-  min = b.min;
-  max = b.max;
-  step = b.step;
-  do_recovery = b.do_recovery;
-  vertical_rate = b.vertical_rate;
-  vertical_accel = b.vertical_accel;
+KinematicAltBands::KinematicAltBands(const KinematicAltBands& b) : KinematicRealBands(
+    b.get_min(),b.get_max(),b.get_rel(),b.get_mod(),b.get_step(),b.get_recovery()) {
+  vertical_rate_ = b.vertical_rate_;
+  vertical_accel_ = b.vertical_accel_;
+  j_step_ = 0;
 }
 
-void KinematicAltBands::setVerticalRate(double val) {
-  if (val >= 0 && val != vertical_rate) {
-    vertical_rate = val;
+bool KinematicAltBands::instantaneous_bands() const {
+  return vertical_rate_ == 0 || vertical_accel_ == 0;
+}
+
+
+double KinematicAltBands::get_vertical_rate() const {
+  return vertical_rate_;
+}
+
+void KinematicAltBands::set_vertical_rate(double val) {
+  if (val != vertical_rate_) {
+    vertical_rate_ = val;
     reset();
   }
 }
 
-void KinematicAltBands::setVerticalAcceleration(double val) {
-  if (val >= 0 && val != vertical_accel) {
-    vertical_accel = val;
+double KinematicAltBands::get_vertical_accel() const {
+  return vertical_accel_;
+}
+
+void KinematicAltBands::set_vertical_accel(double val) {
+  if (val != vertical_accel_) {
+    vertical_accel_ = val;
     reset();
   }
 }
 
-double KinematicAltBands::getVerticalRate() const {
-  return vertical_rate;
+double KinematicAltBands::own_val(const TrafficState& ownship) const {
+  return ownship.altitude();
 }
 
-double KinematicAltBands::getVerticalAcceleration() const {
-  return vertical_accel;
+double KinematicAltBands::time_step(const TrafficState& ownship) const {
+  return 1;
 }
 
-std::pair<Vect3, Velocity> KinematicAltBands::trajectory(const OwnshipState& ownship, double time, bool dir) const {
-  return std::pair<Vect3,Velocity>(Vect3::INVALID(),Velocity::INVALIDV());
+std::pair<Vect3, Velocity> KinematicAltBands::trajectory(const TrafficState& ownship, double time, bool dir) const {
+  double target_alt = min_val(ownship)+j_step_*get_step();
+  std::pair<Position,Velocity> posvel;
+  if (instantaneous_bands()) {
+    posvel = std::pair<Position,Velocity>(ownship.getPosition().mkZ(target_alt),ownship.getVelocity().mkVs(0));
+  } else {
+    double tsqj = ProjectedKinematics::vsLevelOutTime(ownship.getPosition(),ownship.getVelocity(),vertical_rate_,
+        target_alt,vertical_accel_)+time_step(ownship);
+    if (time <= tsqj) {
+      posvel = ProjectedKinematics::vsLevelOut(ownship.getPosition(), ownship.getVelocity(), time, vertical_rate_, target_alt, vertical_accel_);
+    } else {
+      Position npo = ownship.getPosition().linear(ownship.getVelocity(),time);
+      posvel = std::pair<Position,Velocity>(npo.mkZ(target_alt),ownship.getVelocity().mkVs(0));
+    }
+  }
+  return std::pair<Vect3,Velocity>(ownship.pos_to_s(posvel.first),ownship.vel_to_v(posvel.first,posvel.second));
 }
 
 bool KinematicAltBands::any_red(Detection3D* conflict_det, Detection3D* recovery_det, const TrafficState& repac,
-    double B, double T, const OwnshipState& ownship, const std::vector<TrafficState>& traffic) const {
-  return true;
+    int epsh, int epsv, double B, double T, const TrafficState& ownship, const std::vector<TrafficState>& traffic) {
+  return first_band_alt_generic(conflict_det,recovery_det,B,T,0,B,ownship,traffic,true,false) >= 0 ||
+      first_band_alt_generic(conflict_det,recovery_det,B,T,0,B,ownship,traffic,false,false) >= 0;
 }
 
 bool KinematicAltBands::all_red(Detection3D* conflict_det, Detection3D* recovery_det, const TrafficState& repac,
-    double B, double T, const OwnshipState& ownship, const std::vector<TrafficState>& traffic) const {
-  return false;
+    int epsh, int epsv, double B, double T, const TrafficState& ownship, const std::vector<TrafficState>& traffic) {
+  return first_band_alt_generic(conflict_det,recovery_det,B,T,0,B,ownship,traffic,true,true) < 0 &&
+      first_band_alt_generic(conflict_det,recovery_det,B,T,0,B,ownship,traffic,false,true) < 0;
 }
 
-void KinematicAltBands::none_bands(IntervalSet& noneset, Detection3D* conflict_det, Detection3D* recovery_det, const TrafficState& repac, double B, double T,
-    const OwnshipState& ownship, const std::vector<TrafficState>& traffic) const { }
-
-
-/**
- * Returns true if aircraft are currently in Violation
- */
-bool KinematicAltBands::checkViolation(Detection3D* detector, const OwnshipState& ownship, const Position& po, const Position& pi, const Velocity& vo, const Velocity& vi) {
-  return detector->violation(ownship.pos_to_s(po),ownship.vel_to_v(po,vo),ownship.pos_to_s(pi),ownship.vel_to_v(pi,vi));
+void KinematicAltBands::none_bands(IntervalSet& noneset, Detection3D* conflict_det, Detection3D* recovery_det, const TrafficState& repac,
+    int epsh, int epsv, double B, double T, const TrafficState& ownship, const std::vector<TrafficState>& traffic) {
+  std::vector<Integerval> altint = std::vector<Integerval>();
+  alt_bands_generic(altint,conflict_det,recovery_det,B,T,0,B,ownship,traffic);
+  toIntervalSet(noneset,altint,get_step(),min_val(ownship),min_val(ownship),max_val(ownship));
 }
 
-/**
- * Returns true if the aircraft will be in Violation within time [B,T]
- */
-ConflictData KinematicAltBands::checkConflict(Detection3D* detector, const OwnshipState& ownship, const Position& po, const Velocity& vo, const Position& pi, const Velocity& vi, double B, double T) {
-  return detector->conflictDetection(ownship.pos_to_s(po),ownship.vel_to_v(po,vo),ownship.pos_to_s(pi),ownship.vel_to_v(pi,vi), B,T);
-}
-
-void KinematicAltBands::compute(KinematicBandsCore& core) {
-  std::vector<TrafficState> traffic;
-  for (int i = 0; i < core.trafficSize(); ++i) {
-    traffic.push_back(core.getTraffic(i));
-  }
-  IntervalSet redset;
-  if (!traffic.empty()) {
-    red_bands(redset,core.detector,0,core.alertingTime(),core.ownship,traffic);
-  }
-  color_bands(redset,false,core.implicit_bands,false);
-}
-
-
-void KinematicAltBands::red_bands(IntervalSet& redset, Detection3D* detector, double B, double T,
-    const OwnshipState& ownship, const std::vector<TrafficState>& traffic) {
-  double tstep = 1;
-  redset.clear();
-  for (double a = min; a < max; a += step) {
-    Interval in = Interval::EMPTY;
-    Triple<Position,Velocity,double> svt = ProjectedKinematics::vsLevelOutFinal(ownship.getPosition(), ownship.getVelocity(), vertical_rate, a, vertical_accel);
-    //f.pln("a="+a+" own , "+svt.first.toString4NP()+" , "+svt.second.toString4NP()+" , "+svt.third);
-    // special case -- can't make this level
-    if (svt.third < 0.0) {
-      in = Interval(a-step, a+step);
-      //general case
-      //f.pln("boundedAltitude: can't make time "+in);
-    } else if (svt.third < T){
-      for (int i=0; i < traffic.size(); ++i) {
-        TrafficState ac = traffic[i];
-        Position pi = ac.getPosition().linear(ac.getVelocity(), svt.third);
-        Velocity vi = ac.getVelocity();
-        if (checkConflict(detector, ownship,svt.first,svt.second,pi,vi,std::max(0.0,B-svt.third),std::max(1.0,T-svt.third)).conflict()) {
-          in = Interval(a-step, a+step);
-          //f.pln("conflict "+in+" with traffic "+ac+" at "+pi+" : "+vi+" tin="+detector.getTimeIn()+" "+Units.to("ft", a));
-          break;
-        }
+bool KinematicAltBands::conflict_free_traj_step(Detection3D* conflict_det, Detection3D* recovery_det,
+    double B, double T, double B2, double T2,
+    const TrafficState& ownship, const std::vector<TrafficState>& traffic) const {
+  bool trajdir = true;
+  if (instantaneous_bands()) {
+    return no_conflict(conflict_det,recovery_det,B,T,B2,T2,trajdir,0,ownship,traffic);
+  } else {
+    double tstep = time_step(ownship);
+    double target_alt = min_val(ownship)+j_step_*get_step();
+    Tuple5<double,double,double,double,double> tsqj = Kinematics::vsLevelOutTimes(ownship.altitude(),ownship.verticalSpeed(),
+        vertical_rate_,target_alt,vertical_accel_,-vertical_accel_,true);
+    double tsqj1 = tsqj.first+0;
+    double tsqj2 = tsqj.second+0;
+    double tsqj3 = tsqj.third+tstep;
+    for (int i=0; i<=std::floor(tsqj1/tstep);++i) {
+      double tsi = i*tstep;
+      if ((B<=tsi && tsi<=T && any_los_aircraft(conflict_det,trajdir,tsi,ownship,traffic)) ||
+          (recovery_det != NULL && B2 <= tsi && tsi <= T2 &&
+              any_los_aircraft(recovery_det,trajdir,tsi,ownship,traffic))) {
+        return false;
       }
     }
-    redset.unions(in);
-  }
-  if (vertical_rate != 0) {
-    redset.unions(losSetDuringFL(detector,tstep,ownship,traffic,B,T,redset));
+    if ((tsqj2>=B &&
+        any_conflict_aircraft(conflict_det,B,std::min(T,tsqj2),trajdir,std::max(tsqj1,0.0),ownship,traffic)) ||
+        (recovery_det != NULL && tsqj2>=B2 &&
+            any_conflict_aircraft(recovery_det,B2,std::min(T2,tsqj2),trajdir,std::max(tsqj1,0.0),ownship,traffic))) {
+      return false;
+    }
+    for (int i=(int)std::ceil(tsqj2/tstep); i<=std::floor(tsqj3/tstep);++i) {
+      double tsi = i*tstep;
+      if ((B<=tsi && tsi<=T && any_los_aircraft(conflict_det,trajdir,tsi,ownship,traffic)) ||
+          (recovery_det != NULL && B2 <= tsi && tsi <= T2 &&
+              any_los_aircraft(recovery_det,trajdir,tsi,ownship,traffic))) {
+        return false;
+      }
+    }
+    return no_conflict(conflict_det,recovery_det,B,T,B2,T2,trajdir,std::max(tsqj3,0.0),ownship,traffic);
   }
 }
 
-IntervalSet KinematicAltBands::losSetDuringFL(Detection3D* detector, double tstep, const OwnshipState& ownship, const std::vector<TrafficState>& traffic,
-    double B, double T, IntervalSet& conflictSet) {
-  //f.pln("losSetDuringFL "+conflictSet+" "+vs);
-  IntervalSet losSet;
+void KinematicAltBands::alt_bands_generic(std::vector<Integerval>& l,
+    Detection3D* conflict_det, Detection3D* recovery_det,
+    double B, double T, double B2, double T2,
+    const TrafficState& ownship, const std::vector<TrafficState>& traffic) {
+  int max_step = (int)std::floor((max_val(ownship)-min_val(ownship))/get_step())+1;
+  int d = -1; // Set to the first index with no conflict
+  for (int k = 0; k <= max_step; ++k) {
+    j_step_ = k;
+    if (d >=0 && conflict_free_traj_step(conflict_det,recovery_det,B,T,B2,T2,ownship,traffic))  {
+      continue;
+    } else if (d >=0) {
+      l.push_back(Integerval(d,k-1));
+      d = -1;
+    } else if (conflict_free_traj_step(conflict_det,recovery_det,B,T,B2,T2,ownship,traffic)) {
+      d = k;
+    }
+  }
+  if (d >= 0) {
+    l.push_back(Integerval(d,max_step));
+  }
+}
 
-  //    double soz = ((int)(so.z() / flStep))*flStep;
-  //    double maxDz = Math.max(soz-min, max-soz)+flStep;
-  //    Pair<ArrayList<Position>,ArrayList<Velocity>> relevantTraffic = buildRelevantTraffic(D, H, maxTime, vo0.gs(), red.getMaxVerticalSpeed());
-
-  // now start to go both up and down.  If we hit LoS on up in constant climb, goUp = false, and all
-  // further up in that direction will also be LoS.  Similarly for down.
-  bool goUp = true;
-  bool goDown = true;
-  // set these to the highest positive value we encounter in the "straight" section -- we don't need to re-do up to that.
-  double constUp = 0;
-  double constDown = 0;
-  // alternate version:
-  for (double fl1 = min; fl1 <= max; fl1 += step) {
-    if (fl1 >= ownship.getPosition().z()) {
-      double dt = std::min(ProjectedKinematics::vsLevelOutTime(ownship.getPosition(), ownship.getVelocity(), vertical_rate, fl1, vertical_accel), T);
-      //f.pln(Units.to("ft", fl1)+" dt="+dt);
-      for (int i=0; i < traffic.size(); ++i) {
-        TrafficState ac = traffic[i];
-        Velocity vi = ac.getVelocity();
-        if (!goUp || fl1 > max || conflictSet.in(fl1)) { // shortcut
-          losSet.unions(Interval(fl1-step, fl1+step));
-          //f.pln("LoS UP AT "+Units.to("ft", fl1)+" goUp="+goUp+" fl1>maxalt="+(fl1 > max)+" conflictSet.in(fl1)="+conflictSet.in(fl1)+" with "+ac);
-        } else {
-          for (double t = constUp; goUp && t <= dt; t += tstep) {
-            bool constVS = false;
-            Position pi = ac.getPosition().linear(vi,t);
-            std::pair<Position, Velocity> end = ProjectedKinematics::vsLevelOut(ownship.getPosition(), ownship.getVelocity(), t, vertical_rate, fl1, vertical_accel);
-            if (Util::almost_equals(end.second.z, vertical_rate)) {
-              constUp = t;
-              constVS = true;
-              //f.pln("in constUp at "+t+" with "+ac+" at "+Units.to("ft",end.first.alt())+"/"+Units.to("ft", fl1)+" "+end.second.z);
-            }
-            if (t >= B && checkViolation(detector,ownship,end.first,pi,end.second,vi)) {
-              losSet.unions(Interval(fl1-step, fl1+step));
-              if (constVS) {
-                goUp = false;
-                //f.pln("Hard LoS UP AT "+Units.to("ft", fl1)+" t="+t+" "+end.first+" "+end.second.z+" with "+ac);
-              }
-            }
-          }
-        }
+int KinematicAltBands::first_nat(int mini, int maxi, bool dir, Detection3D* conflict_det, Detection3D* recovery_det,
+    double B, double T, double B2, double T2, const TrafficState& ownship, const std::vector<TrafficState>& traffic,
+    bool green) {
+  while (mini <= maxi) {
+    j_step_ = mini;
+    if (dir && green == conflict_free_traj_step(conflict_det,recovery_det,B,T,B2,T2,ownship,traffic)) {
+      return j_step_;
+    } else if (dir) {
+      ++mini;
+    } else {
+      j_step_ = maxi;
+      if (green == conflict_free_traj_step(conflict_det,recovery_det,B,T,B2,T2,ownship,traffic)) {
+        return j_step_;
+      } else if (maxi == 0) {
+        return -1;
+      } else {
+        --maxi;
       }
     }
   }
-  for (double fl2 = max; fl2 >= min; fl2 -= step) {
-    if (fl2 < ownship.getPosition().z()) {
-      double dt = std::min(ProjectedKinematics::vsLevelOutTime(ownship.getPosition(), ownship.getVelocity(), vertical_rate, fl2, vertical_accel),T);
-      for (int i=0; i < traffic.size(); ++i) {
-        TrafficState ac = traffic[i];
-        Velocity vi = ac.getVelocity();
-        if (!goDown || fl2 < min || conflictSet.in(fl2)) { // shortcut
-          losSet.unions(Interval(fl2-step, fl2+step));
-          //f.pln("LoS DOWN AT "+Units.to("ft", fl2)+" godown="+goDown+" fl2<minalt="+(fl2 < min)+" conflictSet.in(fl2)="+conflictSet.in(fl2)+" with "+ac);
-        } else {
-          for (double t = constDown; goDown && t <= dt; t += tstep) {
-            bool constVS = false;
-            Position pi = ac.getPosition().linear(vi,t);
-            std::pair<Position, Velocity> end = ProjectedKinematics::vsLevelOut(ownship.getPosition(), ownship.getVelocity(), t, vertical_rate, fl2, vertical_accel);
-            if (Util::almost_equals(end.second.z, -vertical_rate)) {
-              constDown = t;
-              constVS = true;
-              //f.pln("in constDown at "+t+" with "+ac+" at "+Units.to("ft", fl2)+" "+end.second.z);
-            }
-            if (t >= B && checkViolation(detector, ownship,end.first,pi,end.second,vi)) {
-              losSet.unions(Interval(fl2-step, fl2+step));
-              if (constVS) {
-                goDown = false;
-                //f.pln("Hard LoS DOWN AT "+Units.to("ft", fl2)+" t="+t+" "+end.first+" "+end.second.z+" with "+ac);
-              }
-            }
-          }
-        }
-      }
-    }
+  return -1;
+}
+
+int KinematicAltBands::first_band_alt_generic(Detection3D* conflict_det, Detection3D* recovery_det,
+    double B, double T, double B2, double T2,
+    const TrafficState& ownship, const std::vector<TrafficState>& traffic, bool dir, bool green) {
+  int upper = (int)(dir ? std::floor((max_val(ownship)-min_val(ownship))/get_step())+1 :
+      std::floor((ownship.altitude()-min_val(ownship))/get_step()));
+  int lower = dir ? (int)(std::ceil(ownship.altitude()-min_val(ownship))/get_step()) : 0;
+  if (ownship.altitude() < min_val(ownship) || ownship.altitude() > max_val(ownship)) {
+    return -1;
+  } else {
+    return first_nat(lower,upper,dir,conflict_det,recovery_det,B,T,B2,T2,ownship,traffic,green);
   }
+}
 
-  //f.pln("LosSet="+losSet.toString());
-  return losSet;
+// dir=false is down, dir=true is up. Return NaN if there is not a resolution
+double KinematicAltBands::resolution(Detection3D* conflict_det, Detection3D* recovery_det, const TrafficState& repac,
+    int epsh, int epsv, double B, double T, const TrafficState& ownship, const std::vector<TrafficState>& traffic,
+    bool dir) {
+  int ires = first_band_alt_generic(conflict_det,recovery_det,B,T,0,B,ownship,traffic,dir,true);
+  if (ires < 0) {
+    return (dir ? 1 : -1)*PINFINITY;
+  } else {
+    return min_val(ownship)+ires*get_step();
+  }
+}
+
 }
 
 
-
-}

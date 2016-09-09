@@ -4,7 +4,7 @@
  * Contact: Jeff Maddalon (j.m.maddalon@nasa.gov)
  * Organization: NASA/Langley Research Center
  * 
- * Copyright (c) 2011-2015 United States Government as represented by 
+ * Copyright (c) 2011-2016 United States Government as represented by 
  * the National Aeronautics and Space Administration.  No copyright 
  * is claimed in the United States under Title 17, U.S.Code. All Other 
  * Rights Reserved.
@@ -44,7 +44,7 @@ public final class GreatCircle {
 	 * Convert an angle in degrees/minutes/seconds into internal units
 	 * (radians). The flag indicates if this angle is north (latitude) or east
 	 * (longitude).  If the angle does not represent a latitude/longitude (it
-	 * is only an angle), then set the north_east flag to true.<p>
+	 * is only an angle), then set the north_east flag tbo true.<p>
 	 * 
 	 * If the degrees is negative (representing 
 	 * south or west), then the flag is ignored.
@@ -88,7 +88,23 @@ public final class GreatCircle {
 		return decimal_angle(degrees, minutes, seconds, sgn > 0.0);
 	}
 
-
+	 /**
+	  * Parse strings like "40-51-35.490N" or "115-37-17.070W" into a double
+	  * 
+	  * @param degMinSec string representing the angle
+	  * @return a floating point representation of the angle.
+	  */
+	public static double parse_degrees2(String degMinSec) {
+		degMinSec = degMinSec.trim();
+		boolean nOrE = degMinSec.endsWith("N") || degMinSec.endsWith("E");
+		String[] components = degMinSec.substring(0,degMinSec.length()-1).split("-");
+		double decimal = 0.0;
+		if (components.length == 3) {
+			decimal = GreatCircle.decimal_angle(Util.parse_double(components[0]),Util.parse_double(components[1]),Util.parse_double(components[2]), nOrE);
+		}
+		return decimal;
+	 }
+	
 	/** Convert a "structured" double in the form "[-][d]ddmmss.ss" into a standard decimal angle, where [d]dd represent degrees, 
 	 * mm represents minutes, and ss.ss represents seconds.  Examples include
 	 * "0465500.00"  and "-115701.15".  
@@ -123,8 +139,8 @@ public final class GreatCircle {
 	 * The radius of a spherical "Earth" assuming 1 nautical mile is 1852 meters
 	 * (as defined by various international committees) and that one nautical
 	 * mile is equal to one minute of arc (traditional definition of a nautical
-	 * mile). This value lies between the major and minor axis as defined by
-	 * the "reference ellipsoid" in WGS84.
+	 * mile) on the Earth's surface. This value lies between the major and minor 
+	 * axis as defined by the "reference ellipsoid" in WGS84.
 	 */
 	public static final double spherical_earth_radius = Units.from(Units.m,
 			1.0 / angle_from_distance(1.0));
@@ -242,36 +258,6 @@ public final class GreatCircle {
 	}
 
 
-	//    
-	//	private static Vect3 calcEuclidean(LatLonAlt lla) {
-	//		final double DEG_TO_RAD = Math.PI / 180.0;
-	//
-	//		double lat_rad = lla.lat() * DEG_TO_RAD;
-	//		double lon_rad = lla.lon() * DEG_TO_RAD;
-	//		double sin_lat = Math.sin(lat_rad);
-	//		double cos_lat = Math.cos(lat_rad);
-	//		double sin_lon = Math.sin(lon_rad);
-	//		double cos_lon = Math.cos(lon_rad);	
-	//		return new Vect3(lla.alt() * cos_lon * cos_lat, lla.alt() * sin_lon * cos_lat, lla.alt() * sin_lat );
-	//	}
-	//
-	//
-	//	static double dot(LatLonAlt a, LatLonAlt b) {
-	//		return calcEuclidean(a).dot(calcEuclidean(b));
-	//	}
-	//
-	//    
-	//	public static double fastDist(LatLonAlt a, LatLonAlt b) {
-	//	    final double RAD_TO_DEG = 180.0 / Math.PI;
-	//		double dotprod = dot(a, b);
-	//		//double retval = Math.acos(dotprod / a.alt() / b.alt()) * RAD_TO_DEG;
-	//		//return retval;
-	//		double retval = Math.acos(dotprod / a.alt() / b.alt());
-	//		return distance_from_angle(retval, a.alt());
-	//	}
-	//
-
-
 
 	// parameter d is the angular distance between lat/lon #1 and lat/lon #2
 	private static double initial_course_impl(LatLonAlt p1, LatLonAlt p2, double d) {
@@ -279,9 +265,9 @@ public final class GreatCircle {
 		double lon1 = p1.lon();
 		double lat2 = p2.lat();
 		double lon2 = p2.lon();
-
-		if (Math.cos(lat1) < EPS) { // EPS a small number, about machine
-			// precision
+		
+		if (Math.cos(lat1) < EPS) { 
+			// EPS a small positive number, about machine precision
 			if (lat1 > 0) {
 				return pi; // starting from North pole, all directions are south
 			} else {
@@ -289,12 +275,16 @@ public final class GreatCircle {
 				// north. JMM: why not 0?
 			}
 		}
-
 		if (Constants.almost_equals_radian(d)) {
 			return 0.0;
 			// if the two points are almost the same, then any course is valid
 			// returning 0.0 here avoids a 0/0 division (NaN) in the
 			// calculations below.
+			//
+			// This check is used to guard if sin(d) is ever 0.0 in the 
+			// division below.  sin(d) for d=PI is never zero given a floating
+			// point representation of PI.  Therefore, we only need
+			// to check if d == 0.0.  Thank you PVS!
 		}
 
 		double tc1;
@@ -305,7 +295,7 @@ public final class GreatCircle {
 		} else {
 			if (Math.sin(lon2 - lon1) > 0) {
 				// slightly different than aviation
-				// formulary because of +East convention that I use
+				// formulary because of +East convention that we use
 				tc1 = Util.acos_safe(acos1);
 			} else {
 				tc1 = 2 * pi - Util.acos_safe(acos1);
@@ -372,26 +362,21 @@ public final class GreatCircle {
 
 	// parameter d is the angular distance between lat/long #1 and #2
 	// parameter f is a fraction between 0.0 and 1.0
-	private static LatLonAlt interpolate_impl(LatLonAlt p1, LatLonAlt p2,
-			double d, double f, double alt) {
+	private static LatLonAlt interpolate_impl(LatLonAlt p1, LatLonAlt p2, double d, double f, double alt) {
 		if (Constants.almost_equals_radian(d)) {
 			return p1.mkAlt(alt);
 			// if the two points are almost the same, then consider the two
 			// points the same and arbitrarily return one of them (in this case
 			// p1) with the altitude that was provided
 		}
-
 		double lat1 = p1.lat();
 		double lon1 = p1.lon();
 		double lat2 = p2.lat();
 		double lon2 = p2.lon();
-
 		double a = Math.sin((1 - f) * d) / Math.sin(d);
 		double b = Math.sin(f * d) / Math.sin(d);
-		double x = a * Math.cos(lat1) * Math.cos(lon1) + b * Math.cos(lat2)
-				* Math.cos(lon2);
-		double y = a * Math.cos(lat1) * Math.sin(lon1) + b * Math.cos(lat2)
-				* Math.sin(lon2);
+		double x = a * Math.cos(lat1) * Math.cos(lon1) + b * Math.cos(lat2)	* Math.cos(lon2);
+		double y = a * Math.cos(lat1) * Math.sin(lon1) + b * Math.cos(lat2)	* Math.sin(lon2);
 		double z = a * Math.sin(lat1) + b * Math.sin(lat2);
 		return LatLonAlt.mk(Util.atan2_safe(z, Math.sqrt(x * x + y * y)), // lat
 				Util.atan2_safe(y, x), // longitude
@@ -419,11 +404,17 @@ public final class GreatCircle {
 	 */
 	public static LatLonAlt interpolate(LatLonAlt p1, LatLonAlt p2, double f) {
 		double d = angular_distance(p1, p2);
-		return interpolate_impl(p1, p2, d, f,
-				(p2.alt() - p1.alt()) * f + p1.alt());
+		return interpolate_impl(p1, p2, d, f, (p2.alt() - p1.alt()) * f + p1.alt());
 	}
 
-	// This is a fast but crude way of interpolating between relatively close geodesic points
+	/**
+	 * This is a fast but crude way of interpolating between relatively close geodesic points
+	 * 
+	 * @param p1
+	 * @param p2
+	 * @param f
+	 * @return
+	 */
 	public static LatLonAlt interpolateEst(LatLonAlt p1, LatLonAlt p2, double f) {
 		return LatLonAlt.mk((p2.lat() - p1.lat()) * f + p1.lat(),
 				(p2.lon() - p1.lon()) * f + p1.lon(),
@@ -576,7 +567,7 @@ public final class GreatCircle {
 		double A = triple.second;
 		double a = triple.third;
 		boolean one_valid = (C != 0.0) || (A != 0.0) || (a != 0.0); //gauss_check(a,b,c,A,B,C);
-		f.pln("1: a="+Units.str("deg",a,10)+" A="+Units.str("deg",A,10)+" b="+Units.str("deg",b,10)+" B="+Units.str("deg",B,10)+" c="+Units.str("deg",c,10)+" C="+Units.str("deg",C,10)+" s.lon="+Units.str("deg",s.lon(),10));	
+		//f.pln("1: a="+Units.str("deg",a,10)+" A="+Units.str("deg",A,10)+" b="+Units.str("deg",b,10)+" B="+Units.str("deg",B,10)+" c="+Units.str("deg",c,10)+" C="+Units.str("deg",C,10)+" s.lon="+Units.str("deg",s.lon(),10));	
 		double lat2;
 		if (s.lat() > 0) {
 			lat2 = Util.to_pi2_cont(Math.PI/2 - a);
@@ -592,7 +583,7 @@ public final class GreatCircle {
 		A = triple.second;
 		a = triple.third;
 		boolean two_valid = (C != 0.0) || (A != 0.0) || (a != 0.0); //gauss_check(a,b,c,A,B,C);
-		f.pln("2: a="+Units.str("deg",a,10)+" A="+Units.str("deg",A,10)+" b="+Units.str("deg",b,10)+" B="+Units.str("deg",B,10)+" c="+Units.str("deg",c,10)+" C="+Units.str("deg",C,10)+" s.lon="+Units.str("deg",s.lon(),10));
+		//f.pln("2: a="+Units.str("deg",a,10)+" A="+Units.str("deg",A,10)+" b="+Units.str("deg",b,10)+" B="+Units.str("deg",B,10)+" c="+Units.str("deg",c,10)+" C="+Units.str("deg",C,10)+" s.lon="+Units.str("deg",s.lon(),10));
 		if (s.lat() > 0) {
 			lat2 = Util.to_pi2_cont(Math.PI/2 - a);
 		} else {
@@ -654,8 +645,8 @@ public final class GreatCircle {
 	}
 
 	/**
-	 * Solve the spherical triangle when one has a side (in angular distance), another side, and an angle between sides.
-	 * The angle is <b>not</b> between the sides.  The sides are labeled a, b, and c.  The angles are labelled A, B, and
+	 * Solve the spherical triangle when one has a side (in angular distance), and two angles.
+	 * The side is <b>not</b> between the angles.  The sides are labeled a, b, and c.  The angles are labelled A, B, and
 	 * C.  Side a is opposite angle A, and so forth.<p>
 	 * 
 	 * Given these constraints, in some cases two solutions are possible.  To
@@ -709,7 +700,7 @@ public final class GreatCircle {
 	/**
 	 * This implements the supplemental (polar triangle) spherical cosine rule to complete a triangle on the unit sphere
 	 * @param A angle A
-	 * @param c side between A and B (angular distance
+	 * @param c side between A and B (angular distance)
 	 * @param B angle B
 	 * @return triple of a,b,C (side opposite A, side opposite B, angle opposite c)
 	 */
@@ -723,7 +714,7 @@ public final class GreatCircle {
 	
 	private static boolean gauss_check(double a, double b, double c, double A, double B, double C) {
 		// This function follows the convention of "Spherical Trigonometry" by Todhunter, Macmillan, 1886
-		//   Note, angles are labelled counter-clockwise a, b, c
+		//   Note, angles are labeled counter-clockwise a, b, c
 		A = Util.to_pi(A);
 		B = Util.to_pi(B);
 		C = Util.to_pi(C);
@@ -845,8 +836,10 @@ public final class GreatCircle {
 		return Util.within_epsilon(cross_track_distance(p1,p2,p3),epsilon);
 	}
 
-
+	//TODO Fix for obtuse angle cases
 	/**
+	 * WARNING!!!! THIS FUNCTION MAY HAVE ERRORS IN THE GENERAL CASE!  It may not work if the triangle created contains obtuse angles.
+	 * 
 	 * This returns the point on the great circle that running through p1 and p2 that is closest to point x.
 	 * This uses Napier's rules for right spherical triangles for the non-collinear case. 
 	 * The altitude of the output is the same as x.<p>
@@ -858,26 +851,126 @@ public final class GreatCircle {
 	 * @return the LatLonAlt point on the segment that is closest (horizontally) to x
 	 */
 	public static LatLonAlt closest_point_circle(LatLonAlt p1, LatLonAlt p2, LatLonAlt x) {
-		double p1p2_dist = angular_distance(p1,p2);
-		if (Util.almost_equals(p1p2_dist,0.0)) {
+//		f.pln("GreatCircle.closest_point_circle p1="+p1+" p2="+p2+" x="+x);
+//		f.pln("GreatCircle.closest_point_circle dist a="+distance(x,p2)+" b="+distance(p1,p2)+" c="+distance(p1,x));
+//		f.pln("GreatCircle.closest_point_circle trk A="+Util.turnDelta(initial_course(p1,p2), initial_course(p1,x))+" trk B="+Util.turnDelta(initial_course(x,p1), initial_course(x,p2))+" trk C="+Util.turnDelta(initial_course(p2,x), initial_course(p2,p1)));
+		double a = angular_distance(x,p2);
+		double b = angular_distance(p1,p2);
+		double c = angular_distance(p1,x);
+		double A = angle_between(p2,p1,x);
+		double B = angle_between(p1,x,p2);
+		double C = angle_between(x,p2,p1);
+		return closest_point_circle(p1,p2,x,a,b,c,A,B,C);
+	}
+	
+
+	// angular distances a,b,c, angles A,B,C
+	private static LatLonAlt closest_point_circle(LatLonAlt p1, LatLonAlt p2, LatLonAlt x, double a, double b, double c, double A, double B, double C) {
+		//       x (B)
+		//      / \
+		// (A) p1--p2 (C)
+//		double a = angular_distance(x,p2);
+//		double b = angular_distance(p1,p2);
+//		double c = angular_distance(p1,x);
+//		double A = angle_between(p2,p1,x);
+//		double B = angle_between(p1,x,p2);
+//		double C = angle_between(x,p2,p1);
+		
+//		if (Util.almost_equals(A, 0.0) || Util.almost_equals(C, 0.0) || Util.almost_equals(A, Math.PI) || Util.almost_equals(C, Math.PI)) {			// collinear
+		// collinear check
+		if (Util.within_epsilon(A, 0.000001) || Util.within_epsilon(C, 0.000001) || Util.within_epsilon(Math.PI-A, 0.000001) || Util.within_epsilon(Math.PI-C, 0.000001) || collinear(p1,p2,x)) {
+			return x;
+		} 
+		if (Util.almost_equals(b,0.0)) {
 			return x;   // if p1==p2, every great circle runs through them, thus x is on one of these great circles  
 		}
-		if (p1.almostEquals(x)) {
+		// invalid triangles
+		if (A+B+C < Math.PI || A+B+C >= Math.PI*3) {
+			// if the triangle is relatively small, it is probably collinear
+			if (a < Math.PI/2 && b < Math.PI/2 && c < Math.PI/2) { 
+				return x;
+			}
+			//f.pln(" $$ GreatCircle.closestPoint ERROR: not a triangle p1="+p1+"p2="+p2+"x="+x+" A+B+C="+(A+B+C)+" = "+Units.to("deg", A+B+C)+" deg");
+			return LatLonAlt.INVALID;
+		}
+		if (p1.almostEquals(x) || Util.almost_equals(A, Math.PI/2)) {
 			return p1.mkAlt(x.alt());
 		}
-		if (p2.almostEquals(x)) {
+		if (p2.almostEquals(x) || Util.almost_equals(C, Math.PI/2)) {
 			return p2.mkAlt(x.alt());
 		}
 
-		// general case
-		double c = angular_distance(p1,x); // angular distance from p1 to x, 0 is ruled out above
-		double p1p2_trk = initial_course_impl(p1,p2,p1p2_dist);
-		double p1x_trk = initial_course_impl(p1,x,c);
-		double A = Math.abs(Util.to_pi(p1p2_trk - p1x_trk));
-		double a = Util.asin_safe(Math.sin(c)*Math.sin(A)); // "spherical law of sines"
-		if (Util.within_epsilon(a, 1E-7)) return x;  // collinear
-		double b = Util.atan2_safe(Math.cos(A) * Math.sin(c), Math.cos(c)); // should be distance along gc p1-p2
-		return interpolate_impl(p1,p2,p1p2_dist,(b / p1p2_dist),x.alt());
+		// general case p1 @ A, x @ B, p2 @ C
+//		double d1 = 0;
+//f.pln("GreatCircle.closest_point_circle DEG A="+Units.to("deg", A)+" B="+Units.to("deg", B)+" C="+Units.to("deg", C)+" / a="+Units.to("deg", a)+" b="+Units.to("deg", b)+" c="+Units.to("deg", c));		
+//f.pln("GreatCircle.closest_point_circle RAD A="+A+" B="+B+" C="+C+" / a="+a+" b="+b+" c="+c);		
+//f.pln("GreatCircle.closest_point_circle A/a="+(Math.sin(A)/Math.sin(a))+" B/b="+(Math.sin(B)/Math.sin(b))+" C/c="+(Math.sin(C)/Math.sin(c)));
+		if (A <= Math.PI/2 && C <= Math.PI/2) {
+			//   B       C1
+			//  / \     / |
+			// A---C   B1-A1
+			if (A < C) {
+				double a1 = c;
+				double A1 = Math.PI/2;
+				double B1 = A;
+				Triple<Double, Double, Double> b1C1c1 = side_angle_angle(a1,A1,B1, true);
+				double c1 = b1C1c1.third;
+				double ff = (c1/b);
+//f.pln("GreatCircle.closest_point_circle a1) ff="+ff);				
+				return interpolate(p1,p2,ff);
+			} else {
+				//   B     C1
+				//  / \    | \
+				// A---C   A1-B1
+				double a1 = a;
+				double A1 = Math.PI/2;
+				double B1 = C;
+				Triple<Double, Double, Double> b1C1c1 = side_angle_angle(a1,A1,B1, true);
+				double c1 = b1C1c1.third;
+				double ff = (c1/b);
+//f.pln("GreatCircle.closest_point_circle a2) ff="+ff);				
+				return interpolate(p2,p1,ff);
+			}
+			
+//			d1 = side_angle_angle(a,Math.PI/2,C,true).third;
+//f.pln("GreatCircle.closest_point_circle #1 d1="+d1+" "+Units.to("deg", d1)+Units.degreeStr);			
+//			double ff = 1-(d1/b);
+//f.pln("GreatCircle.closest_point_circle p1="+p1+" p2="+p2+" ff="+ff);			
+//			return interpolate(p1, p2, ff);
+		} else if (A <= Math.PI/2 && C > Math.PI/2) {
+			//    -- B    C1
+			//  /   /    / |
+			// A---C    B1-A1
+			double a1 = a;
+			double A1 = Math.PI/2;
+			double B1 = Math.PI-C;
+			Triple<Double, Double, Double> b1C1c1 = side_angle_angle(a1,A1,B1, true);
+			double c1 = b1C1c1.third;
+			double ff = 1+(c1/b);
+//f.pln("GreatCircle.closest_point_circle b) ff="+ff);				
+			return interpolate(p1,p2,ff);
+			
+//			d1 = side_angle_angle(a,Math.PI/2,Math.PI-C,true).third;
+//f.pln("GreatCircle.closest_point_circle #2 d="+d1+" "+Units.to("deg", d1)+Units.degreeStr);			
+//			return linear_initial(p1,initial_course(p1,p2),distance_from_angle(b+d1,0)).mkAlt(x.alt());
+		} else if (A > Math.PI/2 && C <= Math.PI/2) {
+			// B--		  C1
+			//  \   \	  | \
+			//   A---C	  A1-B1
+			double a1 = c;
+			double A1 = Math.PI/2;
+			double B1 = Math.PI-A;
+			Triple<Double, Double, Double> b1C1c1 = side_angle_angle(a1,A1,B1, true);
+			double c1 = b1C1c1.third;
+			double ff = 1+(c1/b);
+//f.pln("GreatCircle.closest_point_circle c) ff="+ff);				
+			return interpolate(p2,p1,ff);
+//			d1 = side_angle_angle(a,Math.PI/2,Math.PI-A,true).third;
+//f.pln("GreatCircle.closest_point_circle #3 d="+d1+" "+Units.to("deg", d1)+Units.degreeStr);			
+//			return linear_initial(p2,initial_course(p2,p1),distance_from_angle(b+d1,0)).mkAlt(x.alt());
+		}
+f.pln("GreatCircle.closest_point_circle INVALID: weird triangle");			
+		return LatLonAlt.INVALID; // weird triangle
 	}
 
 	/**
@@ -891,30 +984,47 @@ public final class GreatCircle {
 	 * @return the LatLonAlt point on the segment that is closest (horizontally) to x
 	 */
 	public static LatLonAlt closest_point_segment(LatLonAlt p1, LatLonAlt p2, LatLonAlt x) {
-		LatLonAlt p3 = closest_point_circle(p1,p2,x);
-		double p1p2t = initial_course(p1,p2);
-		double p1p2d = angular_distance(p1,p2);
-		double p1p3d = angular_distance(p1,p3);
+		double a = angular_distance(x,p2);
+		double b = angular_distance(p1,p2);
+		double c = angular_distance(p1,x);
+		double A = angle_between(p2,p1,x);
+		double B = angle_between(p1,x,p2);
+		double C = angle_between(x,p2,p1);
 
-		LatLonAlt p3p = linear_initial_impl(p1,p1p2t,p1p3d,p3.alt());
-		if (p3.almostEquals(p3p)) {
-			if (p1p2d > p1p3d) {
-				return p3;
+		// collinear
+		if (Util.within_epsilon(A, 0.000001) || Util.within_epsilon(C, 0.000001) || Util.within_epsilon(Math.PI-A, 0.000001) || Util.within_epsilon(Math.PI-C, 0.000001)) {
+//		if (Util.almost_equals(A, 0.0) || Util.almost_equals(C, 0.0) || Util.almost_equals(A, Math.PI) || Util.almost_equals(C, Math.PI)) {
+			if (b >= a && b >= c) {
+				return x;
+			} else if (a >= b && a >= c) {
+				return p1;
 			} else {
 				return p2;
 			}
+		}
+		
+		if (A <= Math.PI/2 && C <= Math.PI/2) {
+			//   B 
+			//  / \
+			// A---C
+			return closest_point_circle(p1,p2,x,a,b,c,A,B,C);
+		} else if (A <= Math.PI/2 && C > Math.PI/2) {
+			//    -- B 
+			//  /   / 
+			// A---C
+			return p2;
 		} else {
-			// At this point, it should be that:
-				//    linear_initial_impl(p1,p1p2t+Math.PI,p1p3d,p3.alt()) == p3
-			//
-			//if ( ! linear_initial_impl(p1,p1p2t+Math.PI,p1p3d,p3.alt()).almostEquals(p3)) throw new RuntimeException("help!");
+			// B-- 
+			//  \   \
+			//   A---C
 			return p1;
 		}
+		
 	}
 
 	/**
 	 * Given two great circles defined by a1,a2 and b1,b2, return the intersection point that is closest a1.  Use LatLonAlt.antipode() to get the other value.
-	 * This assumes that the arc distance between a1,a2 < 90 and b1,b2 < 90
+	 * This assumes that the arc distance between a1,a2 &lt; 90 and b1,b2 &lt; 90
 	 * The altitude of the return value is equal to a1.alt()
 	 * This returns an INVALID value if both segments are collinear
 	 * EXPERIMENTAL
@@ -947,41 +1057,6 @@ public final class GreatCircle {
 			return x2;
 		}
 	}
-
-	//    /**
-	//     * Given two great circles defined by so, so2 and si, si2 return the intersection point that is closest to so.
-	//     * (Note. because on a sphere there are two intersection points)
-	//     * Calculate altitude of intersection using time dt = delta time from "so" to "so2".  This method will
-	//     * constrain the intersection altitude to be within the altitudes of the leg points.
-	//     * 
-	//     * @return a pair: intersection point and the delta time from point "so" to the intersection, can be negative if intersect pt. in the past
-	//     *              if intersection point is invalid then the returned delta time is -1
-	//     */
-	//    public static Pair<LatLonAlt,Double> intersection(LatLonAlt so, LatLonAlt so2, double dto, LatLonAlt si, LatLonAlt si2) {
-	//    	LatLonAlt lgc = GreatCircle.intersection(so, so2, si, si2);
-	//       	//f.pln(" %%% GreatCircle.intersection: lgc = "+lgc.toString(15));       
-	//    	if (lgc.isInvalid()) return new Pair<LatLonAlt,Double>(lgc,-1.0);
-	//    	double gso = distance(so,so2)/dto;
-	//    	double intTm = distance(so,lgc)/gso;  // relative to so 
-	//    	//f.pln(" ## gso = "+Units.str("kn", gso)+" distance(so,lgc) = "+Units.str("NM",distance(so,lgc)));
-	//    	boolean behind = GreatCircle.behind(lgc, so, GreatCircle.velocity_average(so, so2, 1.0));
-	//    	if (behind) intTm = -intTm;			
-	//    	// compute a better altitude
-	//    	double vs = (so2.alt() - so.alt())/dto;
-	//    	double nAlt = so.alt() + vs*(intTm);	
-	//    	double maxAlt = Math.max(Math.max(so.alt(),so2.alt()), Math.max(si.alt(),si2.alt()));
-	//       	double minAlt = Math.min(Math.min(so.alt(),so2.alt()), Math.min(si.alt(),si2.alt()));
-	//        if (nAlt > maxAlt) nAlt = maxAlt;
-	//        if (nAlt < minAlt) nAlt = minAlt;
-	////    	f.pln(" $$ LatLonAlt.intersection: so.alt() = "+Units.str("ft",so.alt())+" so2.alt() = "+Units.str("ft",so2.alt())+
-	////    			" si.alt() = "+Units.str("ft",si.alt())+" si2.alt() = "+Units.str("ft",si2.alt())+
-	////    			" nAlt() = "+Units.str("ft",nAlt));
-	//    	//f.pln(" $$ LatLonAlt.intersection: intTm = "+intTm+" vs = "+Units.str("fpm",vs)+" nAlt = "+Units.str("ft",nAlt)+" "+behind);			 
-	//    	LatLonAlt pgc = LatLonAlt.mk(lgc.lat(),lgc.lon(),nAlt);
-	//    	return new Pair<LatLonAlt,Double>(pgc,intTm);
-	//    }
-	//    
-	//    
 
 
 	/**
@@ -1028,6 +1103,15 @@ public final class GreatCircle {
 
 
 
+	/**
+	 * 
+	 * @param so
+	 * @param vo
+	 * @param si
+	 * @param vi
+	 * @param checkBehind if true, returns a negative time if no intersection
+	 * @return Position and time of intersection.
+	 */
 	public static Pair<LatLonAlt,Double> intersection(LatLonAlt so, Velocity vo, LatLonAlt si, Velocity vi, boolean checkBehind) {
 		LatLonAlt so2 = linear_initial(so, vo, 1000);
 		LatLonAlt si2 = linear_initial(si, vi, 1000);
@@ -1062,35 +1146,20 @@ public final class GreatCircle {
 	 * @param a point on gc1
 	 * @param b intersection of gc1 and gc2
 	 * @param c point on gc2
-	 * @return
+	 * @return angle between two great circles
 	 */
 	public static double angle_between(LatLonAlt a, LatLonAlt b, LatLonAlt c) {
-		double a1 = angular_distance(a,c);
-		double b1 = angular_distance(b,a);
-		double c1 = angular_distance(c,b);
-		return Util.acos_safe((Math.cos(a1)-Math.cos(b1)*Math.cos(c1))/(Math.sin(b1)*Math.sin(c1)));
-		
-//		return (angle_between(a,b,b,c));
+		double a1 = angular_distance(c,b);
+		double b1 = angular_distance(a,c);
+		double c1 = angular_distance(b,a);
+		//f.pln("$$$ "+a1+" "+b1+" "+c1+" "+a+" "+b+" "+c);
+		double d = Math.sin(c1)*Math.sin(a1);
+		if (d == 0.0) {
+			return Math.PI;
+		}
+		return Util.acos_safe( (Math.cos(b1)-Math.cos(c1)*Math.cos(a1)) / d );
 	}
 
-	//    /**
-	//     * Compute the proper (great circle) angle change between two tracks at the given intersection point.
-	//     * It is assumed that track1 is leading into the point and track2 is leading out of it.
-	//     * This will fail very close to either of the poles, and return NaN.
-	//     */
-	//    public static double angleBetween(LatLonAlt lla, double track1, double track2) {
-	//    	if (almost_equals(lla.lat(), lla.lon(), Math.PI, 0.0) || almost_equals(lla.lat(), lla.lon(), -Math.PI, 0.0)) {
-	//    		return Double.NaN;
-	//    	}
-	//    	LatLonAlt a = linear_initial(lla, track1, 1000.0);
-	//    	LatLonAlt b = linear_initial(lla, track2, 1000.0);
-	//    	double ang1 = angleBetween(a,lla,lla,b);
-	//    	double ang2 = Math.PI-ang1;
-	//    	double d1 = Util.turnDelta(Util.to_2pi(track1+ang1), track2);
-	//    	double d2 = Util.turnDelta(Util.to_2pi(track1+ang2), track2);
-	//    	if (d1 < d2) return ang1;
-	//    	else return ang2;
-	//    }
 
 	/**
 	 * Return true if x is "behind" ll, considering its current direction of travel, v.
@@ -1122,19 +1191,6 @@ public final class GreatCircle {
 		return 1;
 	}
 
-	//    public static int dirForBehind(LatLonAlt so, Velocity vo, LatLonAlt si, Velocity vi) {
-	//    	LatLonAlt so2 = linear_initial(so, vo, 1000);
-	//    	LatLonAlt si2 = linear_initial(si, vi, 1000);
-	//    	LatLonAlt i = intersection(so, so2, si, si2);
-	//    	if (i.isInvalid() || behind(so,vo,i) || behind(si,vi,i)) return 0; // collinear or (nearly) same position or cross in the past
-	//    	double tso = distance(so,i)/vo.gs();
-	//    	if (behind(so,vo,i)) tso = -tso;
-	//    	LatLonAlt siXP = linear_initial(si,vi,tso);
-	//    	int ahead = (behind(siXP,vi,i) ? -1 : 1);
-	//    	int onRight = Util.sign(cross_track_distance(so,i,siXP));
-	//f.pln("ahead="+ahead+"  onRight="+onRight+" siXP="+siXP.toStringNP(8)+" i="+i.toStringNP(8)); 
-	//    	return ahead*onRight; 
-	//    }
 
 
 	public static int dirForBehind(LatLonAlt so, Velocity vo, LatLonAlt si, Velocity vi) {
@@ -1307,62 +1363,16 @@ public final class GreatCircle {
 		return LatLonAlt.mk(lat, lon, 0);
 	}
 
-	//    /**
-	//     * Returns the points on the intersecting great circles p1-p2 and p3-p4 that are tangent to a circle with along-surface radius R (BOT and EOT).  
-	//     * Returns null if the great circles are collinear or R is (nearly) zero.
-	//     * EXPERIMENTAL 
-	//     */
-	//    public static Pair<LatLonAlt,LatLonAlt> greatCircleTurn(LatLonAlt p1, LatLonAlt p2, LatLonAlt p3, LatLonAlt p4, double R) {
-	//    	// find an isosceles trangle on the sphere where the equal sides are defined by the gsc and the odd side has length equal to the radius
-	//    	LatLonAlt c = intersection(p1,p2,p3,p4);
-	//    	if (c.isInvalid()) return null; // error
-	//    	LatLonAlt a = p1.almostEquals(c) ? p2 : p1;
-	//    	LatLonAlt b = p3.almostEquals(c) ? p4 : p3;
-	//    	double C = angleBetween(a,c,c,b);
-	//    	if (Util.almost_equals(C, Math.PI)) return null; // error
-	//    	// use Napier's rules to determine the length of the sides: sin(0.5*r)=sin(0.5*C)*sin(len)
-	//    	// (lengths in radians)
-	//    	double r = angle_from_distance(R, 0.0);
-	//    	if (r <= 0.0) return null; // error
-	//    	double lenrads = Util.asin_safe(Math.sin(0.5*r)/Math.sin(0.5*C));
-	//    	double len = distance_from_angle(lenrads,0.0);
-	//    	double f1 = len/distance(c,a);
-	//    	double f2 = len/distance(c,b);
-	//    	LatLonAlt t1 = interpolate(c,a,f1);
-	//    	LatLonAlt t2 = interpolate(c,b,f2);
-	//    	return new Pair<LatLonAlt,LatLonAlt>(t1,t2);
-	//    }
-	//
-	//    /**
-	//     * Returns the points on the intersecting great circles at C with the given track in and out that are tangent to a circle with along-surface radius R (BOT and EOT).  
-	//     * Returns null if the great circles are collinear or R is (nearly) zero.
-	//     * EXPERIMENTAL 
-	//     */
-	//    public static Pair<LatLonAlt,LatLonAlt> greatCircleTurn(LatLonAlt c, double trackIn, double trackOut, double R) {
-	//    	// find an isosceles trangle on the sphere where the equal sides are defined by the gsc and the odd side has length equal to the radius
-	//    	Velocity v1 = Velocity.mkTrkGsVs(trackIn, 100, 0.0);
-	//    	Velocity v2 = Velocity.mkTrkGsVs(trackOut, 100, 0.0);
-	//    	LatLonAlt a = GreatCircle.linear_initial(c, v2, 100);
-	//    	LatLonAlt b = GreatCircle.linear_initial(c, v1, -100);
-	//    	double C = angleBetween(a,c,c,b);
-	//    	if (Util.almost_equals(C, Math.PI)) return null; // error
-	//    	// use Napier's rules to determine the length of the sides: sin(0.5*r)=sin(0.5*C)*sin(len)
-	//    	// (lengths in radians)
-	//    	double r = angle_from_distance(R, 0.0);
-	//    	if (r <= 0.0) return null; // error
-	//    	double lenrads = Util.asin_safe(Math.sin(0.5*r)/Math.sin(0.5*C));
-	//    	double len = distance_from_angle(lenrads,0.0);
-	//    	double f1 = len/distance(c,a);
-	//    	double f2 = len/distance(c,b);
-	//    	LatLonAlt t1 = interpolate(c,a,f1);
-	//    	LatLonAlt t2 = interpolate(c,b,f2);
-	//    	return new Pair<LatLonAlt,LatLonAlt>(t1,t2);
-	//    }
 
 	/**
-	 * EXPERIMENTAL
-	 * Return the straight-line chord distance (through a spherical earth) from l1 to l2 
-	 * @return
+	 * Return the straight-line chord distance (through a spherical earth) from 
+	 * two points on the surface of the earth. 
+	 * 
+	 * @param lat1 latitude of first point
+	 * @param lon1 longitude of first point
+	 * @param lat2 latitude of second point
+	 * @param lon2 longitude of second point
+	 * @return the chord distance
 	 */
 	public static double chord_distance(double lat1, double lon1, double lat2, double lon2) {
 		Vect3 v1 = spherical2xyz(lat1,lon1);
@@ -1390,39 +1400,7 @@ public final class GreatCircle {
 		return distance_from_angle(theta,0.0);
 	}
 	
-//	/**
-//	 * Return the longitude of the tangent point to a circle
-//	 * @param center center point of circle
-//	 * @param R radius of circle (great-circle distance)
-//	 * @param trk track at point of tengency
-//	 * @return
-//	 * EXPERIMENTAL
-//	 */
-//	private static double longOfTangent(LatLonAlt center, double R, double track, boolean right) {
-//		double trk = Util.to_2pi(track);
-//		if (Util.almost_equals(trk, 0.0) || Util.almost_equals(trk, Math.PI)) {
-//			return center.lon();
-//		}
-//		double PI = Math.PI;
-//		double alpha;
-//		if (!right) { // if counterclockwise, work with the opposite track.
-//			trk = Util.to_2pi(trk+PI);
-//		}
-//		if (trk > 0 && trk < PI/2) {
-//			alpha = trk+PI/2;
-//		} else if (trk >= PI/2 && trk < 3*PI/2) {
-//			alpha = 3*PI/2-trk;
-//		} else {
-//			alpha = -(3*PI/2-trk);
-//		}
-//		double D = Math.PI/2 - center.lat();
-//		double theta = Math.asin(Math.sin(Math.PI-alpha)*Math.sin(R/spherical_earth_radius)/Math.sin(D/spherical_earth_radius));
-//		if (trk < Math.PI) {
-//			return Util.to_pi(center.lon()+theta);
-//		} else {
-//			return Util.to_pi(center.lon()-theta);
-//		}
-//	}
+
 
 	/**
 	 * Return the tangent point to a circle based on a given track heading.
@@ -1430,7 +1408,7 @@ public final class GreatCircle {
 	 * This uses the spherical sine rules and Napier's analogies for the half-angle/half-side formulas.
 	 * @param center center point of circle
 	 * @param R radius of circle (great-circle distance)
-	 * @param trk track at point of tengency
+	 * @param track track at point of tangency
 	 * @param right ture if clockwise, false if counterclockwise
 	 * @return tangent point on circle, or INVALID if a well-defined tangent does not exist (may happen if a pole is within the circle)
 	 */
@@ -1473,103 +1451,6 @@ public final class GreatCircle {
 		return linear_gc(LatLonAlt.mk(PI/2.0, lon, 0),LatLonAlt.mk(0, lon, 0), dist);
 	}
 
-//	public static LatLonAlt tangent2(LatLonAlt center, double R, double track, boolean right) {
-//		double PI = Math.PI;
-//		double D = GreatCircle.distance_from_angle(PI/2 - center.lat(), 0.0);
-//		//  shortcut failure cases
-//		if (Util.almost_equals(D, 0.0)) {
-//			return LatLonAlt.INVALID;
-//		}
-//		double trk = Util.to_2pi(track);
-//		double alpha;
-//		if (!right) { // if counterclockwise, work with the opposite track.
-//			trk = Util.to_2pi(trk+PI);
-//		}
-//		
-//		if (Util.almost_equals(PI/2, trk)) {
-//			return GreatCircle.linear_initial(center,0,R);
-//		} else if (Util.almost_equals(3*PI/2, trk)) {
-//			return GreatCircle.linear_initial(center,PI,R);
-//		}
-//		
-//		if (trk >= 0 && trk < PI/2) {
-//			alpha = PI-trk;
-//		} else if (trk >= PI/2 && trk < PI) {
-//			alpha = PI-trk;
-//		} else if (trk >= PI && trk < 3*PI/2) {
-//			alpha = trk-PI;
-//		} else {
-//			alpha = 2*PI - trk;
-//		}
-//
-//		// b is north/south, c is east/west, C is angle from N/S
-//		Triple<Double,Double,Double> bCc = side_angle_angle(R, PI/2, alpha, true);
-//		
-//		double C = bCc.second;
-//		if (Util.almost_equals(C,0) || C >= PI/2) {
-//			C = side_angle_angle(R, PI/2, alpha, false).second;
-//		}
-//		
-//		double crs; //from center
-//		if (trk >= 0 && trk < PI/2) {
-//			crs = 2*PI - C;
-//		} else if (trk >= PI/2 && trk < PI) {
-//			crs = C;
-//		} else if (trk >= PI && trk < 3*PI/2) {
-//			crs = PI - C;
-//		} else {
-//			crs = PI + C;
-//		}
-//
-////		f.pln("alpha = "+Units.to("deg", alpha)+" crs="+Units.to("deg", crs));		
-//		
-//
-//		return linear_initial(center, crs, R);
-//	}
-
-	
-//	// same as above, just calls the established subfunctions instead of doing it piecemeal
-//	public static LatLonAlt tangent2(LatLonAlt center, double r, double track, boolean right) {
-//		double PI = Math.PI;
-//		double D = PI/2 - center.lat();
-//		double R = angle_from_distance(r);
-//		//  shortcut failure cases
-//		if (Util.almost_equals(D, 0.0)) {
-//			return LatLonAlt.INVALID;
-//		}
-//		double trk = Util.to_2pi(track);
-//		double alpha;
-//		if (!right) { // if counterclockwise, work with the opposite track.
-//			trk = Util.to_2pi(trk+PI);
-//		}
-//		if (trk >= 0 && trk < PI/2) {
-//			alpha = trk+PI/2;
-//		} else if (trk >= PI/2 && trk < 3*PI/2) {
-//			alpha = 3*PI/2-trk;
-//		} else {
-//			alpha = -(3*PI/2-trk);
-//		}
-//
-//		// define A to be at the (north) pole, B to be the circle center, and C (unknown) to be the tangent point
-//		// we know a = radius and c = the latitude distance from the pole
-//		// C is the alpha value above (trk+90 degrees, from the tangent and track if trk is between 0 and 90 degrees)
-//		Triple<Double,Double,Double> tr = side_side_angle(R, D, alpha, true);
-//		double theta = tr.first;
-//		double dist = tr.third;
-//		// special case when we are directly north or south
-//		if (Util.almost_equals(trk, PI/2)) {
-//			dist = D-R;
-//		} else if (Util.almost_equals(trk,3*PI/2)) {
-//			dist = D+R;
-//		}
-//		double lon;
-//		if (right == (track >= PI/2 && track <= 3*PI/2)) {
-//			lon = Util.to_pi(center.lon()+theta);
-//		} else {
-//			lon = Util.to_pi(center.lon()-theta);
-//		}
-//		return linear_gc(LatLonAlt.mk(PI/2.0, lon, 0),LatLonAlt.mk(0, lon, 0), dist*spherical_earth_radius);
-//	}
 
 	
 	/**
@@ -1577,8 +1458,9 @@ public final class GreatCircle {
 	 * Determine the point on the great circle a,b that has the given track.
 	 * Direction of travel is assumed to be from a to b.
 	 * This will return the point closest to b if two such points exist.
-	 * @param a
-	 * @param b
+	 * 
+	 * @param lla1
+	 * @param lla2
 	 * @param track
 	 * @return tangent point on great circle, or INVALID if no such unique point exists (e.g. on a longitude line)
 	 */
@@ -1652,6 +1534,5 @@ public final class GreatCircle {
 //f.pln("angle="+(Util.to_pi(angle))+"  delta="+Math.abs(distance(so,center)-distance(ret,center)));		
 		return ret;
 	}
-
 
 }

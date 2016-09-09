@@ -3,7 +3,7 @@
  *
  * Contact: Jeff Maddalon (j.m.maddalon@nasa.gov), Cesar Munoz, George Hagen
  *
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -27,6 +27,9 @@ namespace larcfm {
   /** return a vector of strings, split from str based on the pattern */
   std::vector<std::string> split(const std::string& str,const std::string& delimiters);
   
+  /** return a vector of strings, split from str based on the pattern. Allows empty strings */
+  std::vector<std::string> split_empty(const std::string& str,const std::string& delimiters);
+
   /** a C++ substring method that behaves more like Java's String.subString method.
    * the beginning index is inclusive, and the ending index is exclusive. */
   std::string substring(const std::string& s, int begin, int end);

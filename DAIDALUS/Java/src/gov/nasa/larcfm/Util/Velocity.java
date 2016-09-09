@@ -7,7 +7,7 @@
  * NOTES: 
  * Track is True North/clockwise
  * 
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -364,12 +364,12 @@ public final class Velocity extends Vect3 implements OutputList {
    * Compass angle in explicit units in corresponding range [<code>0</code>, <code>2*Math.PI</code>).
    * Convention is clockwise with respect to north.
    *  
-   *  @param ucomp the explicit units of compass angle
+   *  @param u the explicit units of compass angle
    *  
-   *  @return the compass angle [ucomp]
+   *  @return the compass angle [u]
    */
-  public double compassAngle(String ucomp) {
-    return Units.to(ucomp,compassAngle());
+  public double compassAngle(String u) {
+    return Units.to(u,compassAngle());
   }
 
   /**
@@ -471,7 +471,7 @@ public final class Velocity extends Vect3 implements OutputList {
    * @param prec precision (0-15)
    */
   public String toString(int prec) {
-    return"("+Units.str("deg",compassAngle(),prec)+", "+Units.str("knot",gs(),prec)+", "+Units.str("fpm",vs(),prec)+")";
+    return "("+Units.str("deg",compassAngle(),prec)+", "+Units.str("knot",gs(),prec)+", "+Units.str("fpm",vs(),prec)+")";
   }
 
   /** String representation of the velocity in polar coordinates (compass angle and groundspeed) */
@@ -482,6 +482,25 @@ public final class Velocity extends Vect3 implements OutputList {
   /** String representation (trk,gs,vs) with the given units */
   public String toStringUnits(String trkUnits, String gsUnits, String vsUnits) {
     return "("+Units.str(trkUnits,compassAngle())+", "+ Units.str(gsUnits,gs())+", "+ Units.str(vsUnits,vs())+")";
+  }
+
+  /** String representation (trk,gs,vs) with the given units */
+  public String toStringUnitsNP(String trkUnits, String gsUnits, String vsUnits, int prec) {
+    return Units.str(trkUnits,compassAngle(), prec)+", "+ Units.str(gsUnits,gs(), prec)+", "+ Units.str(vsUnits,vs(),prec);
+  }
+
+  /** String representation, default number of decimal places, without parentheses */
+  public String toStringNP() {
+    return toStringNP(Constants.get_output_precision());
+  }
+
+  /**
+   * String representation, with user-specified precision
+   * @param precision number of decimal places (0-15)
+   * @return
+   */
+  public String toStringNP(int precision) {
+    return f.FmPrecision(Units.to("deg", compassAngle()), precision)+", "+f.FmPrecision(Units.to("knot", gs()), precision)+", "+f.FmPrecision(Units.to("fpm", vs()), precision);	
   }
 
   /**
@@ -584,20 +603,6 @@ public final class Velocity extends Vect3 implements OutputList {
       ret.add(f.FmPrecision(Units.to("fpm", z()),precision));
     }
     return ret;
-  }
-
-  /** String representation, default number of decimal places, without parentheses */
-  public String toStringNP() {
-    return toStringNP(Constants.get_output_precision());
-  }
-
-  /**
-   * String representation, with user-specified precision
-   * @param precision number of decimal places (0-15)
-   * @return
-   */
-  public String toStringNP(int precision) {
-    return f.FmPrecision(Units.to("deg", compassAngle()), precision)+", "+f.FmPrecision(Units.to("knot", gs()), precision)+", "+f.FmPrecision(Units.to("fpm", vs()), precision);	
   }
 
   /** This parses a space or comma-separated string as a XYZ Velocity (an inverse to the toStringXYZ method).  If three bare values are present, then it is interpreted as internal units.

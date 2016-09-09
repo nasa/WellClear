@@ -6,7 +6,7 @@
  * NASA LaRC
  * http://shemesh.larc.nasa.gov/people/cam/ACCoRD
  *
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -65,6 +65,9 @@ public:
    */
   static double dcpa(const Vect2& s, const Vect2& v);
 
+  /* Horizontal miss distance within lookahead time */
+  static double hmd(const Vect2& s, const Vect2& v, double T);
+
   /**
    * Intersection time between line and circle.
    * 
@@ -77,7 +80,7 @@ public:
    * the entry time; if <code>eps == 1</code> the  returned time is the exit time.
    */
   static double Theta_D(const Vect2& s, const Vect2& v,
-             const int eps, const double D);
+      const int eps, const double D);
   /**
    * Discriminant of intersection between line and circle.
    * 
@@ -99,7 +102,7 @@ public:
   static bool horizontal_dir(const Vect2& s, const Vect2& v, const int dir);
   /** */
   static bool horizontal_dir_at(const Vect2& s, const Vect2& v, const double t,
-               const int dir);
+      const int dir);
 
   static bool horizontal_entry(const Vect2& s, const Vect2& v);
 
@@ -118,20 +121,20 @@ public:
 
   /** */
   static Horizontal gs_only_dot(const Vect2& u,const Vect2& vo,const Vect2& vi,
-                 const double j);
+      const double j);
 
   /** */
   static Horizontal gs_only_vertical(const Vect2& s, const Vect2& vo, const Vect2& vi,
-                  const double th, const int dir, const double D);
+      const double th, const int dir, const double D);
 
   /** */
   static Horizontal gs_vertical(const Vect3& s, const Vect3& vo, const Vect3& vi,
-                 const TangentLine& l, const int epsv,
-                 const double D, const double H);
+      const TangentLine& l, const int epsv,
+      const double D, const double H);
 
   /** */
   static Horizontal gs_only(const TangentLine& nv,const Vect3& s,const Vect3& vo,const Vect3& vi,const int epsv,
-             const double D, const double H);
+      const double D, const double H);
 
   /** */
   static Horizontal gs_only_circle(const Vect2& s, const Vect2& vo, const Vect2& vi,
@@ -145,29 +148,29 @@ public:
    * || k*nv + vi || = || vo ||.
    */
   static Horizontal trk_only_line_irt(const Vect2& nv,const Vect2& vo,const Vect2& vi,
-                   const int irt);
+      const int irt);
 
   /** */
   static Horizontal trk_only_line(const Vect2& nv,const Vect2& vo,const Vect2& vi);
 
   /** */
   static Horizontal trk_line_irt(const Vect2& nv,const Vect2& vo,const Vect2& vi,
-              const int irt);
+      const int irt);
 
   /** */
   static Horizontal trk_line(const Vect2& nv,const Vect2& vo,const Vect2& vi);
 
   /** */
   static Horizontal trk_only_dot(const Vect2& u,const Vect2& vo,const Vect2& vi,
-              const double j,const int irt);
+      const double j,const int irt);
 
   /** */
   static Horizontal trk_only_vertical(const Vect2& s,const Vect2& vo,const Vect2& vi,
-                   const double th,const int dir,const int irt,const double D);
+      const double th,const int dir,const int irt,const double D);
 
   /** */
   static Horizontal trk_vertical_irt(const Vect3& s,const Vect3& vo,const Vect3& vi,const TangentLine& l,
-                  const int epsv,const int irt,const double D,const double H);
+      const int epsv,const int irt,const double D,const double H);
 
 
 
@@ -177,11 +180,11 @@ public:
 
   /** */
   static Horizontal trk_vertical(const Vect3& s,const Vect3& vo,const Vect3& vi,const TangentLine& l,
-              const int epsv,const double D,const double H);
+      const int epsv,const double D,const double H);
 
   /** */
   static Horizontal trk_only(const TangentLine& nv,const Vect3& s,const Vect3& vo,const Vect3& vi,
-              const int epsv,const double D, const double H);
+      const int epsv,const double D, const double H);
 
   /** */
   static Horizontal trk_only_circle(const Vect2& s, const Vect2& vo, const Vect2& vi,
@@ -202,19 +205,19 @@ public:
 
   /** */
   static Horizontal opt_trk_gs(const TangentLine& nv,const Vect3& s,const Vect3& vo,const Vect3& vi,
-                const int epsv,const double D,const double H);
+      const int epsv,const double D,const double H);
 
   /** */
   static Horizontal opt_trk_gs_dot(const Vect2& u,const Vect2& vo,const Vect2& vi,
-                const double j);
+      const double j);
 
   /** */
   static Horizontal opt_trk_gs_vertical(const Vect2& s,const Vect2& vo,const Vect2& vi,
-                     const double th,const int dir,const double D);
+      const double th,const int dir,const double D);
 
   /** */
   static Horizontal opt_vertical(const Vect3& s,const Vect3& vo,const Vect3& vi,const TangentLine& l,
-              const int epsv,const double D,const double H);
+      const int epsv,const double D,const double H);
 
 };
 

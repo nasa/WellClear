@@ -4,7 +4,7 @@
  * Contact: Jeff Maddalon
  * Organization: NASA/Langley Research Center
  *
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -145,6 +145,19 @@ public final class Interval {
     return low < x && x < up;
   }
 
+  /** Is the element in this interval, where close/open conditions are given as parameters */
+  public boolean in(double x, boolean lb_close, boolean ub_close) {
+    if (lb_close && ub_close) {
+      return low <= x && x <= up;
+    } else if (ub_close) {
+      return low < x && x <= up;
+    } else if (lb_close) {
+      return low <= x && x < up;
+    } else {
+      return low < x && x < up;
+    }
+  }
+  
   /** Returns a new interval which is the intersection of the current
    * Interval and the given Interval.  If the two regions do not
    * overlap, then an empty region is returned. 
@@ -178,5 +191,18 @@ public final class Interval {
     return false;
   }
 
+//  /**
+//   * Compare two intervals.  If this interval comes entirely before r, return -1. if this interval comes entirely after r, return 1, otherwise return 0 (including if either interval is empty)
+//   * @param r
+//   * @return
+//   */
+//  public int compare(Interval r) {
+//	    if (isEmpty()) return 0;
+//	    if (r.isEmpty()) return 0;
+//	    if (low < r.up && up <= r.low) return -1;
+//	    if (r.low < up && r.up <= low) return +1;
+//	    return 0;
+//  }
+  
 }
 

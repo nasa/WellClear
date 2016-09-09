@@ -1,4 +1,10 @@
 /*
+ * Copyright (c) 2015-2016 United States Government as represented by
+ * the National Aeronautics and Space Administration.  No copyright
+ * is claimed in the United States under Title 17, U.S.Code. All Other
+ * Rights Reserved.
+ */
+/*
  * DCPAUrgencyStrategy.cpp
  *
  * Most urgent strategy based on distance at closest point of approach. When this distance is less than the minimum
@@ -12,7 +18,7 @@
 
 namespace larcfm {
 
-TrafficState DCPAUrgencyStrategy::mostUrgentAircraft(Detection3D* detector, const OwnshipState& ownship, const std::vector<TrafficState>& traffic, double T) {
+TrafficState DCPAUrgencyStrategy::mostUrgentAircraft(Detection3D* detector, const TrafficState& ownship, const std::vector<TrafficState>& traffic, double T) {
   TrafficState repac = TrafficState::INVALID;
   if (!ownship.isValid() || traffic.empty()) {
     return repac;
@@ -23,9 +29,9 @@ TrafficState DCPAUrgencyStrategy::mostUrgentAircraft(Detection3D* detector, cons
   double H = ACCoRDConfig::NMAC_H;
   Vect3 so = ownship.get_s();
   Velocity vo = ownship.get_v();
-  for (int i = 0; i < traffic.size(); ++i) {
-    Vect3 si = ownship.pos_to_s(traffic[i].getPosition());
-    Velocity vi = ownship.vel_to_v(traffic[i].getPosition(),traffic[i].getVelocity());
+  for (TrafficState::nat ac = 0; ac < traffic.size(); ++ac) {
+    Vect3 si = traffic[ac].get_s();
+    Velocity vi = traffic[ac].get_v();
     Vect3 s = so.Sub(si);
     Velocity v = vo.Sub(vi);
     ConflictData det = detector->conflictDetection(so,vo,si,vi,0,T);
@@ -38,10 +44,10 @@ TrafficState DCPAUrgencyStrategy::mostUrgentAircraft(Detection3D* detector, cons
       // If aircraft have almost same dcpa, select the one with smallest tcpa
       // Otherwise,  select aircraft with smallest dcpa
       bool dcpa_strategy = Util::almost_equals(dcpa,mindcpa,PRECISION5) ? tcpa < mintcpa : dcpa < mindcpa;
-     // If aircraft are both in a min recovery trajectory, follows tcpa strategy. Otherwise follows dcpa strategy
+      // If aircraft are both in a min recovery trajectory, follows tcpa strategy. Otherwise follows dcpa strategy
       if (!repac.isValid() || // There are no candidates
           (dcpa <= 1 ? mindcpa > 1 || tcpa_strategy : dcpa_strategy)) {
-        repac = traffic[i];
+        repac = traffic[ac];
         mindcpa = dcpa;
         mintcpa = tcpa;
       }

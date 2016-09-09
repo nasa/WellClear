@@ -1,4 +1,10 @@
 /*
+ * Copyright (c) 2015-2016 United States Government as represented by
+ * the National Aeronautics and Space Administration.  No copyright
+ * is claimed in the United States under Title 17, U.S.Code. All Other
+ * Rights Reserved.
+ */
+/*
  * DaidalusFileWalker.cpp
  *
  */
@@ -8,55 +14,55 @@
 namespace larcfm {
 
 DaidalusFileWalker::DaidalusFileWalker(const std::string& filename) {
-  sr = SequenceReader(filename);
+  sr_ = SequenceReader(filename);
   init();
 }
 
 void DaidalusFileWalker::init() {
-  sr.setWindowSize(1);
-  index = 0;
-  times = sr.sequenceKeys();
-  if (times.size() > 0)
-    sr.setActive(times[0]);
+  sr_.setWindowSize(1);
+  index_ = 0;
+  times_ = sr_.sequenceKeys();
+  if (times_.size() > 0)
+    sr_.setActive(times_[0]);
 }
 
 void DaidalusFileWalker::resetInputFile(const std::string& filename) {
-  sr = SequenceReader(filename);
+  sr_ = SequenceReader(filename);
   init();
 }
 
 double DaidalusFileWalker::firstTime() const {
-  if (!times.empty()) {
-    return times[0];
+  if (!times_.empty()) {
+    return times_[0];
   }
   return PINFINITY;
 }
 
 double DaidalusFileWalker::lastTime() const {
-  if (!times.empty()) {
-    return times[times.size()-1];
+  if (!times_.empty()) {
+    return times_[times_.size()-1];
   }
   return NINFINITY;
 }
 
 int DaidalusFileWalker::getIndex() const {
-  return index;
+  return index_;
 }
 
 double DaidalusFileWalker::getTime() const {
-  if (0 <= index && index < times.size()) {
-    return times[index];
+  if (0 <= index_ && (unsigned int)index_ < times_.size()) {
+    return times_[index_];
   } else {
     return NAN;
   }
 }
 
 bool DaidalusFileWalker::atBeginning() const {
-  return index == 0;
+  return index_ == 0;
 }
 
 bool DaidalusFileWalker::atEnd() const {
-  return index == times.size();
+  return index_ >=0 && (unsigned int)index_ == times_.size();
 }
 
 bool DaidalusFileWalker::goToTime(double t) {
@@ -64,9 +70,9 @@ bool DaidalusFileWalker::goToTime(double t) {
 }
 
 bool DaidalusFileWalker::goToTimeStep(int i) {
-  if (0 <= i && i < times.size()) {
-    index = i;
-    sr.setActive(times[index]);
+  if (0 <= i && (unsigned int)i < times_.size()) {
+    index_ = i;
+    sr_.setActive(times_[index_]);
     return true;
   }
   return false;
@@ -77,19 +83,19 @@ void DaidalusFileWalker::goToBeginning() {
 }
 
 void DaidalusFileWalker::goToEnd() {
-  goToTimeStep(times.size());
+  goToTimeStep(times_.size());
 }
 
 void DaidalusFileWalker::goNext() {
-  bool ok = goToTimeStep(index+1);
+  bool ok = goToTimeStep(index_+1);
   if (!ok) {
-    index = times.size();
+    index_ = times_.size();
   }
 }
 
 void DaidalusFileWalker::goPrev() {
   if (!atBeginning()) {
-    goToTimeStep(index-1);
+    goToTimeStep(index_-1);
   }
 }
 
@@ -97,8 +103,8 @@ int DaidalusFileWalker::indexOfTime(double t) const {
   int i = -1;
   if (t >= firstTime() && t <= lastTime()) {
     i = 0;
-    for (; i < times.size()-1; ++i) {
-      if (t >= times[i] && t < times[i+1]) {
+    for (; (unsigned int)i < times_.size()-1; ++i) {
+      if (t >= times_[i] && t < times_[i+1]) {
         break;
       }
     }
@@ -108,10 +114,10 @@ int DaidalusFileWalker::indexOfTime(double t) const {
 
 void DaidalusFileWalker::readState(Daidalus& daa) {
   daa.reset();
-  for (int ac = 0; ac < sr.size();++ac) {
-    std::string ida = sr.getName(ac);
-    Position sa = sr.getPosition(ac);
-    Velocity va = sr. getVelocity(ac);
+  for (int ac = 0; ac < sr_.size();++ac) {
+    std::string ida = sr_.getName(ac);
+    Position sa = sr_.getPosition(ac);
+    Velocity va = sr_. getVelocity(ac);
     if (ac==0) {
       daa.setOwnshipState(ida,sa,va,getTime());
     } else {

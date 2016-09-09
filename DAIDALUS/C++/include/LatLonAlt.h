@@ -3,7 +3,7 @@
  * 
  * Contact: Jeff Maddalon (j.m.maddalon@nasa.gov)
  *
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -43,6 +43,8 @@ namespace larcfm {
     /** Are these two LatLonAlt objects unequal? */
     bool operator != (const LatLonAlt& v) const;
 
+    LatLonAlt& operator= (const LatLonAlt& lla);
+    
     /** Are these two LatLonAlt objects equal? */
     bool equals(const LatLonAlt& v) const;
     bool almostEquals(const LatLonAlt& v) const;
@@ -182,6 +184,37 @@ namespace larcfm {
   static const LatLonAlt parse(const std::string& str);
 
 
+  	  /**
+	   * Normalizes the given latitude and longitude values to conventional spherical angles.  Thus
+	   * values over the pole (95 degrees of latitude) convert to 85 degrees and the longitude 180 degrees different.
+	   * 
+	   * @param lat latitude
+	   * @param lon longitude
+	   * @param alt altitude
+	   * @return normalized LatLonAlt value
+	   */
+  static LatLonAlt normalize(double lat, double lon, double alt);
+
+	  /**
+	   * Normalizes the given latitude and longitude values to conventional spherical angles.  Thus
+	   * values over the pole (95 degrees of latitude) convert to 85 degrees and the longitude 180 degrees different.
+	   * The altitude is assumed to be zero.
+	   * 
+	   * @param lat latitude
+	   * @param lon longitude
+	   * @return normalized LatLonAlt value
+	   */
+  static LatLonAlt normalize(double lat, double lon);
+
+	  /**
+	   * Creates a new LatLonAlt object from the current LatLonAlt object so that latitude and longitude values are 
+	   * conventional spherical angles.  Thus
+	   * values over the pole (95 degrees of latitude) convert to 85 degrees and the longitude 180 degrees different.
+	   * 
+	   * @return normalized LatLonAlt value
+	   */
+  LatLonAlt normalize() const;
+  
   };
 
 

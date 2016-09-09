@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -38,7 +38,7 @@ public class CriteriaCore {
    *   +1 corresponds to turning left in the relative system
    */
   public static int horizontalCoordination(Vect2 s, Vect2 v) { 
-    return Util.sign(v.det(s)); 
+    return Util.sign(v.det(s));
   }
 
   /**
@@ -89,7 +89,7 @@ public class CriteriaCore {
     double d = Util.sq(b)-a*c;
     if (Util.almost_equals(v.z,0) || v2.isZero() ||
         d < 0 || eq(v.z,Util.sq(b)-a*c,s.z*a-v.z*b)) {
-      return CriteriaCore.breakSymmetry(s, ownship, traffic);
+      return breakSymmetry(s, ownship, traffic);
     }
     if (gt(v.z,Util.sq(b)-a*c,s.z*a-v.z*b)) {
       return -1;
@@ -214,7 +214,7 @@ public class CriteriaCore {
 
   // Compute an absolute repulsive vertical direction
   private static int losr_vs_dir(Vect3 s, Vect3 vo, Vect3 vi, double caD, double caH, String ownship, String traffic){
-    int rtn = CriteriaCore.breakSymmetry(CriteriaCore.vertical_decision_vect(s,vo,vi,caD,caH),ownship,traffic);;
+    int rtn = breakSymmetry(vertical_decision_vect(s,vo,vi,caD,caH),ownship,traffic);;
     return rtn;
   }
 
@@ -345,7 +345,7 @@ public class CriteriaCore {
       rtn = eps*nv.z > eps*v.z && -eps*v.z*nv.vect2().dot(v2) + eps*nv.z*v2.sqv() >= 0;
       else
         rtn = eps*nv.z >= 0;
-        //f.pln(">>>>>>>>>>>>> vs_bound_crit: eps = "+f.Fm0(eps)+" rtn = "+f.bool2str(rtn));
+        //f.pln(">>>>>>>>>>>>> vs_bound_crit: eps = "+f.Fmi(eps)+" rtn = "+f.bool2str(rtn));
         return rtn;
   }    
 
@@ -510,9 +510,9 @@ public class CriteriaCore {
   }
 
   public static int losr_gs_iter_dir(Vect2 s, Vect2 vo, Vect2 vi, double mings, double maxgs, double step, int epsh) {
-    if (vo.norm() + step <= maxgs && CriteriaCore.horizontal_repulsive_criterion(s,vo,vi,incr_gs_vect(vo,step,1),epsh))
+    if (vo.norm() + step <= maxgs && horizontal_repulsive_criterion(s,vo,vi,incr_gs_vect(vo,step,1),epsh))
       return 1;
-    if (vo.norm() - step >= mings && CriteriaCore.horizontal_repulsive_criterion(s,vo,vi,incr_gs_vect(vo,step,-1),epsh))
+    if (vo.norm() - step >= mings && horizontal_repulsive_criterion(s,vo,vi,incr_gs_vect(vo,step,-1),epsh))
       return -1;
     return 0;
   }  
@@ -546,7 +546,7 @@ public class CriteriaCore {
    * @return
    */
   public static int dataVsRateEpsilon(Vect3 s, Velocity vo, Velocity vi, int epsv, double vsRate){
-    int trafSrchDir = CriteriaCore.vsSearchDirection(epsv);
+    int trafSrchDir = vsSearchDirection(epsv);
     int absDir = -1;
     if (vsRate >= 0) absDir = 1;
     if (absDir == trafSrchDir) return epsv;
@@ -563,7 +563,7 @@ public class CriteriaCore {
    * @return
    */
   public static int dataTurnEpsilon(Vect3 s, Velocity vo, Velocity vi, int epsh, double trackRate){
-    int trafSrchDir = CriteriaCore.trkSearchDirection(s.Neg(), vi, vo, epsh);
+    int trafSrchDir = trkSearchDirection(s.Neg(), vi, vo, epsh);
     int absDir = -1;
     if (trackRate >= 0) absDir = 1;
     if (absDir == trafSrchDir) return epsh;

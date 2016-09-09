@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2015 United States Government as represented by
+ * Copyright (c) 2012-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -13,19 +13,10 @@
 namespace larcfm {
 
 WCVTable::WCVTable() {
-  DTHR = Units::from(Units::ft,4000);
-  ZTHR = Units::from(Units::ft,450);
-  TTHR = 35;
-  TCOA = 0;
-}
-
-WCVTable WCVTable::NASA() {
-  return WCVTable(Units::from(Units::ft,6000),Units::from(Units::ft,475),30,20);
-}
-
-// WCV table for MIT concept
-WCVTable WCVTable::MITLL() {
-  return WCVTable(Units::from(Units::ft,4000),Units::from(Units::ft,700),35,0);
+  DTHR = Units::from("nmi",0.66);
+  ZTHR = Units::from("ft",450);
+  TTHR = 35; // [s]
+  TCOA = 0;  // [s]
 }
 
 /** Copy constructor */
@@ -118,10 +109,10 @@ ParameterData WCVTable::getParameters() const {
 }
 
 void WCVTable::updateParameterData(ParameterData& p) const {
-  p.setInternal("WCV_DTHR",DTHR,"ft");
-  p.setInternal("WCV_ZTHR",ZTHR,"ft");
-  p.setInternal("WCV_TTHR",TTHR,"s");
-  p.setInternal("WCV_TCOA",TCOA,"s");
+  p.setInternal("WCV_DTHR",DTHR,"nmi",4);
+  p.setInternal("WCV_ZTHR",ZTHR,"ft",4);
+  p.setInternal("WCV_TTHR",TTHR,"s",4);
+  p.setInternal("WCV_TCOA",TCOA,"s",4);
 }
 
 
@@ -151,6 +142,11 @@ bool WCVTable::equals(const WCVTable& t) const {
 std::string WCVTable::toString() const {
   return "DTHR: "+Units::str("NM",DTHR)+"; ZTHR: "+Units::str("ft",ZTHR)+"; TTHR: "+
       Units::str("s",TTHR)+"; TCOA: "+Units::str("s",TCOA);
+}
+
+std::string WCVTable::toPVS(int prec) const {
+  return "(# DTHR := "+FmPrecision(DTHR,prec)+", ZTHR := "+FmPrecision(ZTHR,prec)+
+      ", TTHR := "+Fm1(TTHR)+", TCOA := "+Fm1(TCOA)+" #)";
 }
 
 bool WCVTable::contains(const WCVTable& tab) const {

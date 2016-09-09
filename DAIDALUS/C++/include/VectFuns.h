@@ -1,7 +1,7 @@
 /*
  * VectFuns.h
  * 
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -11,7 +11,6 @@
 #define VECTFUNS_H
 
 #include "Vect3.h"
-//#include "Vect4.h"
 #include "Velocity.h"
 #include "Triple.h"
 
@@ -55,6 +54,10 @@ public:
 
 	// f should be between 0 and 1 to interpolate
 	static Velocity interpolateVelocity(const Velocity& v1, const Velocity& v2, double f);
+
+	static double angleBetween(const Vect2& v1, const Vect2& v2);
+
+	static double angleBetween(const Vect2& v1, const Vect2& v2, const Vect2& v3);
 
 	/**
 	 * determines if divergent and relative speed is greater than a specified minimum relative speed
@@ -111,7 +114,25 @@ public:
 	 */
 	static std::pair<Vect3,double> intersection(const Vect3& so3, const Velocity& vo3, const Vect3& si3, const Velocity& vi3);
 
+	static std::pair<Vect2,double> intersection(const Vect2& so, const Vect2& vo, const Vect2& si, const Vect2& vi);
+
+	static double distanceH(const Vect3& soA, const Vect3& soB);
+
 	static std::pair<Vect3,double> intersection(const Vect3& so1, const Vect3& so2, double dto, const Vect3& si1, const Vect3& si2);
+
+	static std::pair<Vect2,double> intersection(const Vect2& so1, const Vect2& so2, double dto, const Vect2& si1, const Vect2& si2);
+
+
+
+	static Vect3 closestPoint(const Vect3& a, const Vect3& b, const Vect3& so);
+
+	static Vect2 closestPoint(const Vect2& a, const Vect2& b, const Vect2& so);
+
+	static Vect3 closestPointOnSegment(const Vect3& a, const Vect3& b, const Vect3& so);
+
+	static Vect2 closestPointOnSegment(const Vect2& a, const Vect2& b, const Vect2& so);
+
+	static double distanceToSegment(const Vect2& a, const Vect2& b, const Vect2& so);
 
     /**
      * Computes 2D intersection point of two lines, but also finds z component (projected by time from line 1)

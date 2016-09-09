@@ -4,7 +4,7 @@
  * Contact: Jeff Maddalon
  * Organization: NASA/Langley Research Center
  *
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -98,6 +98,18 @@ bool Interval::inOO(double x) const {
 	return low < x && x < up;
 }
 
+/** Is the element in this interval, where close/open conditions are given as parameters */
+bool Interval::in(double x, bool lb_close, bool ub_close) {
+	if (lb_close && ub_close) {
+		return low <= x && x <= up;
+	} else if (ub_close) {
+		return low < x && x <= up;
+	} else if (lb_close) {
+		return low <= x && x < up;
+	} else {
+		return low < x && x < up;
+	}
+}
 
 bool Interval::overlap(const Interval& r) const {
 	if (isEmpty()) return false;

@@ -1,7 +1,7 @@
 /*
  * VectFuns.java 
  * 
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -39,8 +39,8 @@ public final class VectFuns {
 	}
 
 	public static boolean collinear(Vect2 p0, Vect2 p1, Vect2 p2) {
-		// area of triangle is zero -- from Wolfram Mathworld
-		return p0.x*(p1.y-p2.y) + p1.x*(p2.y-p0.y) + p2.x*(p0.y-p1.y) == 0;
+		// area of triangle = 0? (same as det of sides = 0?)
+		return  p1.Sub(p0).det(p2.Sub(p0)) == 0;
 	}
 	
 	public static boolean collinear(Vect3 p0, Vect3 p1, Vect3 p2) {
@@ -72,13 +72,20 @@ public final class VectFuns {
 	}
 
 	
-	public static double angleBetween(Vect2 v1, Vect2 v2) {
+	// This appears to use the right-hand rule to determine it returns the inside or outside angle
+	public static double angle_between(Vect2 v1, Vect2 v2) {
 		Vect2 VV1 = v1.Scal(1.0/v1.norm());
 		Vect2 VV2 = v2.Scal(1.0/v2.norm());
-		return Math.atan2(VV2.y,VV2.x)-Math.atan2(VV1.y,VV1.x);
+		return Util.atan2_safe(VV2.y,VV2.x)-Util.atan2_safe(VV1.y,VV1.x);
 	}
 
-
+	public static double angle_between(Vect2 a, Vect2 b, Vect2 c) {
+		Vect2 A = b.Sub(a);
+		Vect2 B = b.Sub(c);
+		return Util.acos_safe(A.dot(B)/(A.norm()*B.norm()));
+	}
+	
+	
 	/**
 	 * determines if divergent and relative speed is greater than a specified minimum relative speed
 	 * 
@@ -178,9 +185,9 @@ public final class VectFuns {
      * @param v0 direction vector for line 1
      * @param s1 starting point of line 2
      * @param v1 direction vector of line 2
-     * @return Pair (2-dimensional point of intersection with 3D projection, relative time of intersection, relative to the so3)
-     * Note the intersection may be in the past.
-     * If the lines are parallel, this returns the pair (0,NaN).
+     * @return Pair (2-dimensional point of intersection, relative time of intersection, relative to the so3)
+     * Note the intersection may be in the past (i.e. negative time)
+     * If the lines are 2-D parallel, this returns the pair (0,NaN).
      */
 	public static Pair<Vect3,Double> intersection(Vect3 so3, Velocity vo3, Vect3 si3, Velocity vi3) {
 		Vect2 so = so3.vect2();
@@ -200,9 +207,27 @@ public final class VectFuns {
 		double minZ = Math.min(so3.z,si3.z);			
 		if (nZ > maxZ) nZ = maxZ;
 		if (nZ < minZ) nZ = minZ;	
-		return new Pair<Vect3,Double>(intersec,tt);
+		return new Pair<Vect3,Double>(intersec.mkZ(nZ),tt);
 	}
-	
+
+	/**
+	 * Intersection of 2 (2D) lines
+	 * @param so current position on line 1 
+	 * @param vo velocity of so along line 1
+	 * @param si current position on line 2
+	 * @param vi velocity of si on line 2
+	 * @return position and time along line 1, or (0,NaN) if there is no intersection.
+	 */
+	public static Pair<Vect2,Double> intersection(Vect2 so, Vect2 vo, Vect2 si, Vect2 vi) {
+		Vect2 ds = si.Sub(so);
+		if (vo.det(vi) == 0) {
+			return new Pair<Vect2,Double>(Vect2.ZERO, Double.NaN);
+		}
+		double tt = ds.det(vi)/vo.det(vi);
+		Vect2 intersec = so.Add(vo.Scal(tt));
+		return new Pair<Vect2,Double>(intersec,tt);
+	}
+
 	// returns intersection point and time of intersection relative to position so1
 	// for time return value, it assumes that aircraft travels from so1 to so2 in dto seconds and from si1 to si2 in dti seconds
 	// a negative time indicates that the intersection occurred in the past (relative to directions of travel of so1)
@@ -225,6 +250,18 @@ public final class VectFuns {
 		return soA.Sub(soB).vect2().norm();
 	}
 	
+	
+    /**
+     * Computes 2D intersection point of two lines, but also finds z component (projected by time from line 1)
+     * This z-component is constrained to be within the z components of the defining points.
+     * @param so1 starting point of line 1
+     * @param so2 ending point of line 1
+     * @param si1 starting point of line 2
+     * @param vi2 ending point of line 2
+     * @return Pair (2-dimensional point of intersection, relative time of intersection, relative to the so1)
+     * Note the intersection may be in the past (i.e. negative time)
+     * If the lines are parallel, this returns the pair (0,NaN).
+     */
 	public static Pair<Vect3,Double> intersection(Vect3 so1, Vect3 so2, double dto, Vect3 si1, Vect3 si2) {
 		Velocity vo3 = Velocity.genVel(so1, so2, dto);
 		Velocity vi3 = Velocity.genVel(si1, si2, dto);      // its ok to use any time here,  all times are relative to so
@@ -241,23 +278,61 @@ public final class VectFuns {
 		double nZ = (alt_o + alt_i)/2.0;       
         return new Pair<Vect3,Double>(interSec.mkZ(nZ),iP.second); 
 	}
+
+	public static Pair<Vect2,Double> intersection(Vect2 so1, Vect2 so2, double dto, Vect2 si1, Vect2 si2) {
+		Vect2 vo = so2.Sub(so1).Scal(1/dto);
+		Vect2 vi = si2.Sub(si1).Scal(1/dto);
+		return intersection(so1,vo,si1,vi);
+	}
+
+	/**
+	 * returns the perpendicular time and distance between line defined by s,v and point q.
+	 * @param  s point on line
+	 * @param  v velocity vector of line
+	 * @param  q a point not on the line
+	 * 
+	 * @return time to perpendicular location on line (relative to s) and perpendicular distance
+	 */
+	public static Pair<Double,Double> distPerp(Vect2 s, Vect2 v, Vect2 q) {
+		double tp = q.Sub(s).dot(v)/v.sqv();
+		double dist = s.Add(v.Scal(tp)).Sub(q).norm();
+		return new Pair<Double,Double>(tp,dist);
+	}
+
+	// horizontal only
+	public static Pair<Double,Double> distPerp(Vect3 s, Vect3 v, Vect3 q) {
+		return distPerp(s.vect2(),v.vect2(),q.vect2());
+	}
 	
+	/**
+	 * Return the closest (preference to horizontal) point along line a-b to point so
+	 * EXPERIMENTAL
+	 */
+	public static Vect3 closestPoint(Vect3 a, Vect3 b, Vect3 so) {
+		Vect3 v = a.Sub(b).PerpL().Hat(); // perpendicular vector to line
+		Vect3 s2 = so.AddScal(100, v);
+		Vect3 cp = intersection(so,s2,100,a,b).first;
+		return cp;
+	}
+
 	/**
 	 * Return the closest (horizontal) point along line a-b to point so
 	 * EXPERIMENTAL
 	 */
-	public static Vect3 closestPoint(Vect3 a, Vect3 b, Vect3 so) {
-		Vect3 v = a.Sub(b).PerpL(); // perpendicular vector to line
-		Vect3 s2 = so.AddScal(100, v);
-		return intersection(so,s2,100,a,b).first;
+	public static Vect2 closestPoint(Vect2 a, Vect2 b, Vect2 so) {
+		if (collinear(a,b,so)) return so;
+		Vect2 v = a.Sub(b).PerpL().Hat(); // perpendicular vector to line
+		Vect2 s2 = so.AddScal(100, v);
+		Vect2 cp = intersection(so,s2,100,a,b).first;
+		return cp;
 	}
-	
+
 	/**
 	 * Return the closest (horizontal) point on segment a-b to point so
 	 * EXPERIMENTAL
 	 */
 	public static Vect3 closestPointOnSegment(Vect3 a, Vect3 b, Vect3 so) {
-		Vect3 i = closestPoint(so,a,b);
+		Vect3 i = closestPoint(a,b,so);
 		double d1 = a.distanceH(b);
 		double d2 = a.distanceH(i);
 		double d3 = b.distanceH(i);
@@ -268,6 +343,25 @@ public final class VectFuns {
 		} else {
 			return b;
 		}
+	}
+	
+	public static Vect2 closestPointOnSegment(Vect2 a, Vect2 b, Vect2 so) {
+		Vect2 i = closestPoint(a,b,so);
+		// a, b, i are all on line
+		double d1 = a.distance(b);
+		double d2 = a.distance(i);
+		double d3 = b.distance(i);
+		if (d2 <= d1 && d3 <= d1) { // i is between a and b
+			return i;
+		} else if (d2 < d3) {
+			return a;
+		} else {
+			return b;
+		}
+	}
+
+	public static double distanceToSegment(Vect2 a, Vect2 b, Vect2 so) {
+		return so.distance(closestPointOnSegment(a,b,so));
 	}
 	
     /**
@@ -292,6 +386,57 @@ public final class VectFuns {
 		double tt = ds.det(vi)/vo.det(vi);
 		//f.pln(" $$$ intersection: tt = "+tt);
 		return tt;
+	}
+
+
+	/**
+	 * Rotate p around origin.
+	 * @param p point to move
+	 * @param angle angle of rotation (positive is clockwise)
+	 * @return new position for p
+	 */
+	public static Vect2 rotate(Vect2 p, double angle) {
+		double x1 = Math.cos(angle)*p.x + Math.sin(angle)*p.y;
+		double y1 = -Math.sin(angle)*p.x + Math.cos(angle)*p.y;
+		return new Vect2(x1,y1);
+		//double[][] r2 = {{Math.cos(angle),Math.sin(angle)},{-Math.sin(angle),Math.cos(angle)}};
+		//Matrix2d r = new Matrix2d(r2);
+		//Matrix2d p2 = new Matrix2d(p.Sub(origin));
+		//Vect2 p3 = r.mult(p2).vect2();
+		//return p3.Add(origin);
+	}
+	
+	/**
+	 * Return the distance at which si, traveling in direction vi, will intersect with segment AB (inclusive)
+	 * @param si
+	 * @param vi
+	 * @param a
+	 * @param b
+	 * @return distance of intersection, or negative if none (
+	 */
+	public static double intersectSegment(Vect2 si, Vect2 vi, Vect2 a, Vect2 b) {
+		double theta = vi.trk();
+		// rotate segment so vi is "straight up" and si is at the origin
+		Vect2 A = rotate(a.Sub(si), -theta);
+		Vect2 B = rotate(b.Sub(si), -theta);
+		if ((A.x >= 0 && B.x <= 0) || (A.x <= 0 && B.x >= 0)) {
+			if (A.x == B.x) {
+				if (A.y >= 0 || B.y >= 0) {
+					return Math.max(0.0, Math.min(A.y, B.y)); // first point of intersection
+				}
+			} else if (A.y == B.y) {
+				if (A.y >= 0) {
+					return A.y;
+				}
+			} else if (A.y >= si.y || B.y >= si.y) {
+				double m = (B.x-A.x)/(B.y-A.y);
+				double y0 = A.y-m*A.x;
+				if (y0 >= 0) {
+					return y0;
+				}
+			}
+		}
+		return -1.0;
 	}
 	
 	

@@ -1,19 +1,12 @@
 /*
- * Copyright (c) 2015 United States Government as represented by
+ * Copyright (c) 2015-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
  */
+
 #include "KinematicIntegerBands.h"
-#include "Velocity.h"
-#include "Vect3.h"
-#include "Position.h"
-#include "Detection3D.h"
 #include "CriteriaCore.h"
-#include "TrafficState.h"
-#include "OwnshipState.h"
-#include "Integerval.h"
-#include "IntervalSet.h"
 #include "TCASTable.h"
 #include "Util.h"
 #include <vector>
@@ -22,7 +15,7 @@
 namespace larcfm {
 
 int KinematicIntegerBands::first_los_step(Detection3D* det, double tstep,bool trajdir,
-    int min, int max, const OwnshipState& ownship, const std::vector<TrafficState>& traffic) const {
+    int min, int max, const TrafficState& ownship, const std::vector<TrafficState>& traffic) const {
   for (int k=min; k<=max; ++k) {
     if (any_los_aircraft(det,trajdir,k*tstep,ownship,traffic)) {
       return k;
@@ -33,7 +26,7 @@ int KinematicIntegerBands::first_los_step(Detection3D* det, double tstep,bool tr
 
 int KinematicIntegerBands::first_los_search_index(Detection3D* conflict_det, Detection3D* recovery_det, double tstep,
     double B, double T, double B2, double T2, bool trajdir, int max,
-    const OwnshipState& ownship, const std::vector<TrafficState>& traffic) const {
+    const TrafficState& ownship, const std::vector<TrafficState>& traffic) const {
   int FirstLosK = (int)std::ceil(B/tstep); // first k such that k*ts>=B
   int FirstLosN = std::min((int)std::floor(T/tstep),max); // last k<=MaxN such that k*ts<=T
   int FirstLosK2 = (int)std::ceil(B2/tstep);
@@ -47,7 +40,7 @@ int KinematicIntegerBands::first_los_search_index(Detection3D* conflict_det, Det
 
 int KinematicIntegerBands::bands_search_index(Detection3D* conflict_det, Detection3D* recovery_det, double tstep,
     double B, double T, double B2, double T2,
-    bool trajdir, int max, const OwnshipState& ownship, const std::vector<TrafficState>& traffic, const TrafficState& repac,
+    bool trajdir, int max, const TrafficState& ownship, const std::vector<TrafficState>& traffic, const TrafficState& repac,
     int epsh, int epsv) const {
   bool usehcrit = repac.isValid() && epsh != 0;
   bool usevcrit = repac.isValid() && epsv != 0;
@@ -62,39 +55,36 @@ int KinematicIntegerBands::bands_search_index(Detection3D* conflict_det, Detecti
   return std::min(FirstProbHL,FirstProbVcrit);
 }
 
-bool KinematicIntegerBands::any_conflict(Detection3D* conflict_det, Detection3D* recovery_det, double B, double T, double B2, double T2,
-    bool trajdir, double tsk, const OwnshipState& ownship, const std::vector<TrafficState>& traffic) const {
+bool KinematicIntegerBands::no_conflict(Detection3D* conflict_det, Detection3D* recovery_det, double B, double T, double B2, double T2,
+    bool trajdir, double tsk, const TrafficState& ownship, const std::vector<TrafficState>& traffic) const {
   return
-      any_conflict_aircraft(conflict_det,B,T,trajdir,tsk,ownship,traffic) ||
-      (recovery_det != NULL &&
-          any_conflict_aircraft(recovery_det,B2,T2,trajdir,tsk,ownship,traffic));
+      !any_conflict_aircraft(conflict_det,B,T,trajdir,tsk,ownship,traffic) &&
+      !(recovery_det != NULL && any_conflict_aircraft(recovery_det,B2,T2,trajdir,tsk,ownship,traffic));
 }
 
 void KinematicIntegerBands::traj_conflict_only_bands(std::vector<Integerval>& l,
     Detection3D* conflict_det, Detection3D* recovery_det, double tstep, double B, double T, double B2, double T2,
-    bool trajdir, int max, const OwnshipState& ownship, const std::vector<TrafficState>& traffic) const {
-  int first = -1;
+    bool trajdir, int max, const TrafficState& ownship, const std::vector<TrafficState>& traffic) const {
+  int d = -1; // Set to the first index with no conflict
   for (int k = 0; k <= max; ++k) {
     double tsk = tstep*k;
-    if (first >=0 && !any_conflict(conflict_det,recovery_det,B,T,B2,T2,trajdir,tsk,ownship,traffic)) {
+    if (d >=0 && no_conflict(conflict_det,recovery_det,B,T,B2,T2,trajdir,tsk,ownship,traffic)) {
       continue;
-    } else if (first >=0) {
-      std::vector<Integerval> nl = std::vector<Integerval>();
-      nl.push_back(Integerval(first,k-1));
-      first = -1;
-      l.insert(l.end(),nl.begin(),nl.end());
-    } else if (!any_conflict(conflict_det,recovery_det,B,T,B2,T2,trajdir,tsk,ownship,traffic)) {
-      first = k;
+    } else if (d >=0) {
+      l.push_back(Integerval(d,k-1));
+      d = -1;
+    } else if (no_conflict(conflict_det,recovery_det,B,T,B2,T2,trajdir,tsk,ownship,traffic)) {
+      d = k;
     }
   }
-  if (first >= 0) {
-    l.push_back(Integerval(first,max));
+  if (d >= 0) {
+    l.push_back(Integerval(d,max));
   }
 }
 
 void KinematicIntegerBands::kinematic_bands(std::vector<Integerval>& l, Detection3D* conflict_det, Detection3D* recovery_det, double tstep,
     double B, double T, double B2, double T2,
-    bool trajdir, int max, const OwnshipState& ownship, const std::vector<TrafficState>& traffic, const TrafficState& repac,
+    bool trajdir, int max, const TrafficState& ownship, const std::vector<TrafficState>& traffic, const TrafficState& repac,
     int epsh, int epsv) const {
   l.clear();
   int bsi = bands_search_index(conflict_det,recovery_det,tstep,B,T,B2,T2,trajdir,max,ownship,traffic,repac,epsh,epsv);
@@ -135,56 +125,11 @@ void KinematicIntegerBands::neg(std::vector<Integerval>& l) {
   }
 }
 
-/**
- *  This function scales the interval, add a constant, and constraint the intervals to min and max.
- **/
-void KinematicIntegerBands::toIntervalSet(IntervalSet& noneset, const std::vector<Integerval>& l,
-    double scal, double add, double min, double max) {
-  noneset.clear();
-  for (int i = 0; i < (int) l.size(); i++) {
-    Integerval ii = l[i];
-    double lb = scal*ii.lb+add;
-    double ub = scal*ii.ub+add;
-    if (min <= ub && lb <= max)  {
-      noneset.almost_add(std::max(min,lb),std::min(max,ub));
-    }
-  }
-}
-
-/**
- *  This function scales the interval, add a constant, and constraint the intervals to 0 and 2*pi.
- **/
-void KinematicIntegerBands::toIntervalSet_0_2PI(IntervalSet& noneset, const std::vector<Integerval>& l,
-    double scal, double add) {
-  noneset.clear();
-  double twopi = 2*Pi;
-  for (int i = 0; i < (int) l.size(); i++) {
-    Integerval ii = l[i];
-    double lb = scal*ii.lb+add;
-    double ub = scal*ii.ub+add;
-    if (0 <= lb && ub <= twopi) {
-      noneset.almost_add(lb,ub);
-    } else if (ub < 0 || lb > twopi) {
-      noneset.almost_add(Util::to_2pi(lb),Util::to_2pi(ub));
-    } else {
-      if (lb < 0) {
-        noneset.almost_add(Util::to_2pi(lb),twopi);
-        lb = 0;
-      }
-      if (ub > twopi) {
-        noneset.almost_add(0,Util::to_2pi(ub));
-        ub = twopi;
-      }
-      noneset.almost_add(lb,ub);
-    }
-  }
-}
-
 // INTERFACE FUNCTION
 void KinematicIntegerBands::kinematic_bands_combine(std::vector<Integerval>& l,
     Detection3D* conflict_det, Detection3D* recovery_det, double tstep,
     double B, double T, double B2, double T2,
-    int maxl, int maxr, const OwnshipState& ownship, const std::vector<TrafficState>& traffic, const TrafficState& repac,
+    int maxl, int maxr, const TrafficState& ownship, const std::vector<TrafficState>& traffic, const TrafficState& repac,
     int epsh, int epsv) const {
   kinematic_bands(l,conflict_det,recovery_det,tstep,B,T,B2,T2,false,maxl,ownship,traffic,repac,epsh,epsv);
   std::vector<Integerval> r = std::vector<Integerval>();
@@ -194,14 +139,14 @@ void KinematicIntegerBands::kinematic_bands_combine(std::vector<Integerval>& l,
 }
 
 bool KinematicIntegerBands::any_los_aircraft(Detection3D* det, bool trajdir, double tsk,
-    const OwnshipState& ownship, const std::vector<TrafficState>& traffic) const {
-  for (int i=0; i < traffic.size(); ++i) {
+    const TrafficState& ownship, const std::vector<TrafficState>& traffic) const {
+  for (TrafficState::nat i=0; i < traffic.size(); ++i) {
     TrafficState ac = traffic[i];
     std::pair<Vect3,Velocity> sovot = trajectory(ownship,tsk,trajdir);
     Vect3 sot = sovot.first;
     Velocity vot = sovot.second;
-    Vect3 si = ownship.traffic_s(ac);
-    Velocity vi = ownship.traffic_v(ac);
+    Vect3 si = ac.get_s();
+    Velocity vi = ac.get_v();
     Vect3 sit = vi.ScalAdd(tsk,si);
     if (det->violation(sot, vot, sit, vi))
       return true;
@@ -209,10 +154,12 @@ bool KinematicIntegerBands::any_los_aircraft(Detection3D* det, bool trajdir, dou
   return false;
 }
 
+// INTERFACE FUNCTION
+
 // trajdir: false is left
 int KinematicIntegerBands::first_green(Detection3D* conflict_det, Detection3D* recovery_det, double tstep,
     double B, double T, double B2, double T2,
-    bool trajdir, int max, const OwnshipState& ownship, const std::vector<TrafficState>& traffic, const TrafficState& repac,
+    bool trajdir, int max, const TrafficState& ownship, const std::vector<TrafficState>& traffic, const TrafficState& repac,
     int epsh, int epsv) const {
   bool usehcrit = repac.isValid() && epsh != 0;
   bool usevcrit = repac.isValid() && epsv != 0;
@@ -232,23 +179,46 @@ int KinematicIntegerBands::first_green(Detection3D* conflict_det, Detection3D* r
   return -1;
 }
 
-// INTERFACE FUNCTION
 bool KinematicIntegerBands::all_int_red(Detection3D* conflict_det, Detection3D* recovery_det, double tstep,
     double B, double T, double B2, double T2,
-    int maxl, int maxr, const OwnshipState& ownship, const std::vector<TrafficState>& traffic, const TrafficState& repac,
+    int maxl, int maxr, const TrafficState& ownship, const std::vector<TrafficState>& traffic, const TrafficState& repac,
     int epsh, int epsv, int dir) const {
   bool leftans = dir > 0 || first_green(conflict_det,recovery_det,tstep,B,T,B2,T2,false,maxl,ownship,traffic,repac,epsh,epsv) < 0;
   bool rightans = dir < 0 || first_green(conflict_det,recovery_det,tstep,B,T,B2,T2,true,maxr,ownship,traffic,repac,epsh,epsv) < 0;
   return leftans && rightans;
 }
 
-Vect3 KinematicIntegerBands::linvel(const OwnshipState& ownship, double tstep, bool trajdir, int k) const {
+int KinematicIntegerBands::first_instantaneous_green(Detection3D* conflict_det, Detection3D* recovery_det,
+    double B, double T, double B2, double T2,
+    bool trajdir, int max, const TrafficState& ownship, const std::vector<TrafficState>& traffic,
+    const TrafficState& repac,
+    int epsh, int epsv) {
+  for (int k = 0; k <= max; ++k) {
+    j_step_ = k;
+    if (no_instantaneous_conflict(conflict_det,recovery_det,B,T,B2,T2,trajdir,ownship,traffic,repac,epsh,epsv)) {
+      return k;
+    }
+  }
+  return -1;
+}
+
+bool KinematicIntegerBands::all_instantaneous_red(Detection3D* conflict_det, Detection3D* recovery_det,
+    double B, double T, double B2, double T2,
+    int maxl, int maxr, const TrafficState& ownship, const std::vector<TrafficState>& traffic,
+    const TrafficState& repac,
+    int epsh, int epsv, int dir) {
+  bool leftans = dir > 0 || first_instantaneous_green(conflict_det,recovery_det,B,T,B2,T2,false,maxl,ownship,traffic,repac,epsh,epsv) < 0;
+  bool rightans = dir < 0 || first_instantaneous_green(conflict_det,recovery_det,B,T,B2,T2,true,maxr,ownship,traffic,repac,epsh,epsv) < 0;
+  return leftans && rightans;
+}
+
+Vect3 KinematicIntegerBands::linvel(const TrafficState& ownship, double tstep, bool trajdir, int k) const {
   Vect3 s1 = trajectory(ownship,(k+1)*tstep,trajdir).first;
   Vect3 s0 = trajectory(ownship,k*tstep,trajdir).first;
   return s1.Sub(s0).Scal(1/tstep);
 }
 
-bool KinematicIntegerBands::repulsive_at(double tstep, bool trajdir, int k, const OwnshipState& ownship, const TrafficState& repac, int epsh) const {
+bool KinematicIntegerBands::repulsive_at(double tstep, bool trajdir, int k, const TrafficState& ownship, const TrafficState& repac, int epsh) const {
   // repac is not NULL at this point and k >= 0
   if (k==0) {
     return true;
@@ -256,8 +226,8 @@ bool KinematicIntegerBands::repulsive_at(double tstep, bool trajdir, int k, cons
   std::pair<Vect3,Velocity> sovo = trajectory(ownship,0,trajdir);
   Vect3 so = sovo.first;
   Vect3 vo = sovo.second;
-  Vect3 si = ownship.traffic_s(repac);
-  Vect3 vi = ownship.traffic_v(repac);
+  Vect3 si = repac.get_s();
+  Vect3 vi = repac.get_v();
   bool rep = true;
   if (k==1) {
     rep = CriteriaCore::horizontal_new_repulsive_criterion(so.Sub(si),vo,vi,linvel(ownship,tstep,trajdir,0),epsh);
@@ -278,7 +248,7 @@ bool KinematicIntegerBands::repulsive_at(double tstep, bool trajdir, int k, cons
 }
 
 int KinematicIntegerBands::first_nonrepulsive_step(double tstep, bool trajdir, int max,
-    const OwnshipState& ownship, const TrafficState& repac, int epsh) const {
+    const TrafficState& ownship, const TrafficState& repac, int epsh) const {
   for (int k=0; k <= max; ++k) {
     if (!repulsive_at(tstep,trajdir,k,ownship,repac,epsh)) {
       return k;
@@ -287,7 +257,7 @@ int KinematicIntegerBands::first_nonrepulsive_step(double tstep, bool trajdir, i
   return -1;
 }
 
-bool KinematicIntegerBands::vert_repul_at(double tstep, bool trajdir, int k, const OwnshipState& ownship,
+bool KinematicIntegerBands::vert_repul_at(double tstep, bool trajdir, int k, const TrafficState& ownship,
     const TrafficState& repac, int epsv) const {
   // repac is not NULL at this point and k >= 0
   if (k==0) {
@@ -296,8 +266,8 @@ bool KinematicIntegerBands::vert_repul_at(double tstep, bool trajdir, int k, con
   std::pair<Vect3,Velocity> sovo = trajectory(ownship,0,trajdir);
   Vect3 so = sovo.first;
   Vect3 vo = sovo.second;
-  Vect3 si = ownship.traffic_s(repac);
-  Vect3 vi = ownship.traffic_v(repac);
+  Vect3 si = repac.get_s();
+  Vect3 vi = repac.get_v();
   bool rep = true;
   if (k==1) {
     rep = CriteriaCore::vertical_new_repulsive_criterion(so.Sub(si),vo,vi,linvel(ownship,tstep,trajdir,0),epsv);
@@ -318,7 +288,7 @@ bool KinematicIntegerBands::vert_repul_at(double tstep, bool trajdir, int k, con
 }
 
 int KinematicIntegerBands::first_nonvert_repul_step(double tstep, bool trajdir, int max,
-    const OwnshipState& ownship, const TrafficState& repac, int epsv) const {
+    const TrafficState& ownship, const TrafficState& repac, int epsv) const {
   for (int k=0; k <= max; ++k) {
     if (!vert_repul_at(tstep,trajdir,k,ownship,repac,epsv)) {
       return k;
@@ -328,13 +298,13 @@ int KinematicIntegerBands::first_nonvert_repul_step(double tstep, bool trajdir, 
 }
 
 bool KinematicIntegerBands::cd_future_traj(Detection3D* det, double B, double T, bool trajdir, double t,
-    const OwnshipState& ownship, const TrafficState& ac) const {
-  if (t > T || B > T) return false;
+    const TrafficState& ownship, const TrafficState& ac) const {
+  if (t > T || B >= T) return false;
   std::pair<Vect3,Velocity> sovot = trajectory(ownship,t,trajdir);
   Vect3 sot = sovot.first;
   Velocity vot = sovot.second;
-  Vect3 si = ownship.traffic_s(ac);
-  Velocity vi = ownship.traffic_v(ac);
+  Vect3 si = ac.get_s();
+  Velocity vi = ac.get_v();
   Vect3 sit = vi.ScalAdd(t,si);
   if (B > t) {
     return det->conflict(sot, vot, sit, vi, B-t, T-t);
@@ -346,8 +316,8 @@ bool KinematicIntegerBands::cd_future_traj(Detection3D* det, double B, double T,
 }
 
 bool KinematicIntegerBands::any_conflict_aircraft(Detection3D* det, double B, double T, bool trajdir, double tsk,
-    const OwnshipState& ownship, const std::vector<TrafficState>& traffic) const {
-  for (int i=0; i < traffic.size(); ++i) {
+    const TrafficState& ownship, const std::vector<TrafficState>& traffic) const {
+  for (TrafficState::nat i=0; i < traffic.size(); ++i) {
     TrafficState ac = traffic[i];
     if (cd_future_traj(det, B, T, trajdir, tsk, ownship, ac))
       return true;
@@ -356,7 +326,7 @@ bool KinematicIntegerBands::any_conflict_aircraft(Detection3D* det, double B, do
 }
 
 bool KinematicIntegerBands::any_conflict_step(Detection3D* det, double tstep, double B, double T, bool trajdir, int max,
-    const OwnshipState& ownship, const std::vector<TrafficState>& traffic) const {
+    const TrafficState& ownship, const std::vector<TrafficState>& traffic) const {
   for (int k=0; k <= max; ++k) {
     if (any_conflict_aircraft(det,B,T,trajdir,tstep*k,ownship,traffic)) {
       return true;
@@ -368,7 +338,7 @@ bool KinematicIntegerBands::any_conflict_step(Detection3D* det, double tstep, do
 // trajdir: false is left
 bool KinematicIntegerBands::red_band_exist(Detection3D* conflict_det, Detection3D* recovery_det, double tstep,
     double B, double T, double B2, double T2,
-    bool trajdir, int max, const OwnshipState& ownship, const std::vector<TrafficState>& traffic, const TrafficState& repac,
+    bool trajdir, int max, const TrafficState& ownship, const std::vector<TrafficState>& traffic, const TrafficState& repac,
     int epsh, int epsv) const {
   bool usehcrit = repac.isValid() && epsh != 0;
   bool usevcrit = repac.isValid() && epsv != 0;
@@ -378,14 +348,92 @@ bool KinematicIntegerBands::red_band_exist(Detection3D* conflict_det, Detection3
       (recovery_det != NULL && any_conflict_step(recovery_det,tstep,B2,T2,trajdir,max,ownship,traffic));
 }
 
+bool KinematicIntegerBands::instantaneous_red_band_exist(Detection3D* conflict_det, Detection3D* recovery_det,
+    double B, double T, double B2, double T2,
+    bool trajdir, int max, const TrafficState& ownship, const std::vector<TrafficState>& traffic,
+    const TrafficState& repac,
+    int epsh, int epsv) {
+  for (int k = 0; k <= max; ++k) {
+    j_step_ = k;
+    if (!no_instantaneous_conflict(conflict_det,recovery_det,B,T,B2,T2,trajdir,ownship,traffic,repac,epsh,epsv)) {
+      return true;
+    }
+  }
+  return false;
+}
+
 // INTERFACE FUNCTION
 bool KinematicIntegerBands::any_int_red(Detection3D* conflict_det, Detection3D* recovery_det, double tstep,
     double B, double T, double B2, double T2,
-    int maxl, int maxr, const OwnshipState& ownship, const std::vector<TrafficState>& traffic, const TrafficState& repac,
+    int maxl, int maxr, const TrafficState& ownship, const std::vector<TrafficState>& traffic, const TrafficState& repac,
     int epsh, int epsv, int dir) const {
   bool leftred = dir <= 0 && red_band_exist(conflict_det,recovery_det,tstep,B,T,B2,T2,false,maxl,ownship,traffic,repac,epsh,epsv);
   bool rightred = dir >= 0 && red_band_exist(conflict_det,recovery_det,tstep,B,T,B2,T2,true,maxr,ownship,traffic,repac,epsh,epsv);
   return leftred || rightred;
+}
+
+bool KinematicIntegerBands::any_instantaneous_red(Detection3D* conflict_det, Detection3D* recovery_det,
+    double B, double T, double B2, double T2,
+    int maxl, int maxr, const TrafficState& ownship, const std::vector<TrafficState>& traffic,
+    const TrafficState& repac,
+    int epsh, int epsv, int dir) {
+  bool leftred = dir <= 0 && instantaneous_red_band_exist(conflict_det,recovery_det,B,T,B2,T2,false,maxl,ownship,traffic,repac,epsh,epsv);
+  bool rightred = dir >= 0 && instantaneous_red_band_exist(conflict_det,recovery_det,B,T,B2,T2,true,maxr,ownship,traffic,repac,epsh,epsv);
+  return leftred || rightred;
+}
+
+void KinematicIntegerBands::instantaneous_bands_combine(std::vector<Integerval>& l, Detection3D* conflict_det, Detection3D* recovery_det,
+    double B, double T, double B2, double T2,
+    int maxl, int maxr, const TrafficState& ownship, const std::vector<TrafficState>& traffic,
+    const TrafficState& repac,
+    int epsh, int epsv) {
+  instantaneous_bands(l,conflict_det,recovery_det,B,T,B2,T2,false,maxl,ownship,traffic,repac,epsh,epsv);
+  std::vector<Integerval> r = std::vector<Integerval>();
+  instantaneous_bands(r,conflict_det,recovery_det,B,T,B2,T2,true,maxr,ownship,traffic,repac,epsh,epsv);
+  neg(l);
+  append_intband(l,r);
+}
+
+bool KinematicIntegerBands::no_instantaneous_conflict(Detection3D* conflict_det, Detection3D* recovery_det,
+    double B, double T, double B2, double T2,
+    bool trajdir, const TrafficState& ownship, const std::vector<TrafficState>& traffic,
+    const TrafficState& repac,
+    int epsh, int epsv) {
+  bool usehcrit = repac.isValid() && epsh != 0;
+  bool usevcrit = repac.isValid() && epsv != 0;
+  std::pair<Vect3,Velocity> nsovo = trajectory(ownship,0,trajdir);
+  Vect3 so = ownship.get_s();
+  Vect3 vo = ownship.get_v();
+  Vect3 si = repac.get_s();
+  Vect3 vi = repac.get_v();
+  Vect3 nvo = nsovo.second;
+  Vect3 s = so.Sub(si);
+  return
+      (!usehcrit || CriteriaCore::horizontal_new_repulsive_criterion(s,vo,vi,nvo,epsh)) &&
+      (!usevcrit || CriteriaCore::vertical_new_repulsive_criterion(s,vo,vi,nvo,epsv)) &&
+      no_conflict(conflict_det,recovery_det,B,T,B2,T2,trajdir,0,ownship,traffic);
+}
+
+void KinematicIntegerBands::instantaneous_bands(std::vector<Integerval>& l, Detection3D* conflict_det, Detection3D* recovery_det,
+    double B, double T, double B2, double T2,
+    bool trajdir, int max, const TrafficState& ownship, const std::vector<TrafficState>& traffic,
+    const TrafficState& repac,
+    int epsh, int epsv) {
+  int d = -1; // Set to the first index with no conflict
+  for (int k = 0; k <= max; ++k) {
+    j_step_ = k;
+    if (d >=0 && no_instantaneous_conflict(conflict_det,recovery_det,B,T,B2,T2,trajdir,ownship,traffic,repac,epsh,epsv)) {
+      continue;
+    } else if (d >=0) {
+      l.push_back(Integerval(d,k-1));
+      d = -1;
+    } else if (no_instantaneous_conflict(conflict_det,recovery_det,B,T,B2,T2,trajdir,ownship,traffic,repac,epsh,epsv)) {
+      d = k;
+    }
+  }
+  if (d >= 0) {
+    l.push_back(Integerval(d,max));
+  }
 }
 
 }

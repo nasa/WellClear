@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 United States Government as represented by
+ * Copyright (c) 2014-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -22,27 +22,41 @@
 namespace larcfm {
 
 class LossData {
+
+private:
+
+	double time_in;   // relative time to loss of separation
+	double time_out;  // relative time to the exit from loss of separation
+
 public:
-//  LossData();
 
-  double  time_in;                       // relative time to loss of separation
-  double  time_out;                      // relative time to the exit from loss of separation
+	virtual std::string toString() const ;
 
-  virtual std::string toString() const ;
+	LossData(double time_in, double time_out);
 
-  LossData(double time_in, double time_out);
+	LossData();
 
-  LossData();
+	/**
+	 * Returns true if loss
+	 */
+	bool conflict() const;
 
-  bool conflict() const;
+	/**
+	 * Returns true if loss last more than thr in seconds
+	 */
+	bool conflict(double thr) const;
 
-  bool conflict(double thr) const;
+	/**
+	 * Returns time to first loss in seconds.
+	 */
+	double getTimeIn() const;
 
-  double getTimeIn() const;
+	/**
+	 * Returns time to last loss in seconds.
+	 */
+	double getTimeOut() const;
 
-  double getTimeOut() const;
-
-  virtual ~LossData() {};
+	virtual ~LossData() {};
 
 };
 

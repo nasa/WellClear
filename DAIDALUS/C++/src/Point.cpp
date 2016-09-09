@@ -4,7 +4,7 @@
  * Contact: Jeff Maddalon (j.m.maddalon@nasa.gov)
  * NASA LaRC
  * 
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -18,6 +18,7 @@
 #include "Vect2.h"
 #include "Vect3.h"
 #include "string_util.h"
+#include "Util.h" // NaN def
 #include <string>
 
 
@@ -30,7 +31,7 @@ Point::Point(double x, double y, double z) : Vect3(x,y,z) {
 const Point Point::ZEROP(0.0,0.0,0.0);
 
 const Point& Point::INVALIDP() {
-	static Point* p = new Point(std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN());
+	static Point* p = new Point(NaN, NaN, NaN);
 	return *p;
 }
 

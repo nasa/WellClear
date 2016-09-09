@@ -1,4 +1,10 @@
 /*
+ * Copyright (c) 2015-2016 United States Government as represented by
+ * the National Aeronautics and Space Administration.  No copyright
+ * is claimed in the United States under Title 17, U.S.Code. All Other
+ * Rights Reserved.
+ */
+/*
  * DaidalusFileWalker.h
  *
  */
@@ -14,9 +20,9 @@ namespace larcfm {
 class DaidalusFileWalker {
 
 private:
-  SequenceReader sr;
-  std::vector<double> times;
-  int index;
+  SequenceReader sr_;
+  std::vector<double> times_;
+  int index_;
   void init();
 
 public:

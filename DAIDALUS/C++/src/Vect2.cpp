@@ -6,7 +6,7 @@
  *
  * 2-D vectors.
  *
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -18,11 +18,11 @@
 #include "string_util.h"
 #include "format.h"
 #include "Constants.h"
+#include "Util.h" // NaN def
 
 namespace larcfm {
 
-Vect2::Vect2(const double xx, const double yy) : x(xx), y(yy) {
-}
+Vect2::Vect2(const double xx, const double yy) : x(xx), y(yy) {}
 
 bool Vect2::isZero() const {
 	return x == 0.0 && y == 0.0;
@@ -314,11 +314,20 @@ Vect2 Vect2::intersect_pt(const Vect2& s0, const Vect2& v0, const Vect2& s1, con
 	}
 }
 
+bool Vect2::within_epsilon(const Vect2& v2, double epsilon) const {
+	if (std::abs(x - v2.x) > epsilon) return false;
+	if (std::abs(y - v2.y) > epsilon) return false;
+	return true;
+}
+
+
 const Vect2 Vect2::ZERO(0.0,0.0);
 
 const Vect2& Vect2::INVALID() {
-	static Vect2 *v = new Vect2(std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN());
+	static Vect2 *v = new Vect2(NaN, NaN);
 	return *v;
 }
+
+
 
 }

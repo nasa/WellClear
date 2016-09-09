@@ -6,7 +6,7 @@
  * NASA LaRC
  * http://shemesh.larc.nasa.gov/people/cam/ACCoRD
  * 
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -87,6 +87,16 @@ public class Horizontal extends Vect2  {
    */
   public static double dcpa(Vect2 s, Vect2 v) {
       return v.ScalAdd(tcpa(s,v),s).norm();
+  }
+  
+  /* Horizontal miss distance within lookahead time */
+  public static double hmd(Vect2 s, Vect2 v, double T) {
+    double t = 0;
+    if (s.dot(v) < 0) {
+      // aircraft are horizontally converging
+      t = Math.min(tcpa(s,v),T);
+    }
+    return v.ScalAdd(t,s).norm();
   }
   
   /**

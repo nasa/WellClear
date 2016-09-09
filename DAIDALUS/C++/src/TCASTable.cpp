@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2015 United States Government as represented by
+ * Copyright (c) 2012-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -35,28 +35,28 @@ TCASTable::TCASTable(const TCASTable& t) {
 }
 
 
-  int TCASTable::getSensitivityLevel(double alt) {
-    if (alt < Units::from(Units::ft,1000))
-      return 2;
-    if (alt <= Units::from(Units::ft,2350))
-      return 3;
-    if (alt <= Units::from(Units::ft,5000))
-      return 4;
-    if (alt <= Units::from(Units::ft,10000))
-      return 5;
-    if (alt <= Units::from(Units::ft,20000))
-      return 6;
-    if (alt <= Units::from(Units::ft,42000))
-      return 7;
-    // if (alt > Units::from("ft",42000))
-    return 8;
-  }
+int TCASTable::getSensitivityLevel(double alt) {
+  if (alt < Units::from(Units::ft,1000))
+    return 2;
+  if (alt <= Units::from(Units::ft,2350))
+    return 3;
+  if (alt <= Units::from(Units::ft,5000))
+    return 4;
+  if (alt <= Units::from(Units::ft,10000))
+    return 5;
+  if (alt <= Units::from(Units::ft,20000))
+    return 6;
+  if (alt <= Units::from(Units::ft,42000))
+    return 7;
+  // if (alt > Units::from("ft",42000))
+  return 8;
+}
 
-  /* RA Tau in seconds (-1 if N/A) */
-  double TCASTable::RA_TAU[7] = {-1,15,20,25,30,35,35};
-  double TCASTable::TA_TAU[7] = {20,25,30,40,45,48,48};
+/* RA Tau in seconds (-1 if N/A) */
+double TCASTable::RA_TAU[7] = {-1,15,20,25,30,35,35};
+double TCASTable::TA_TAU[7] = {20,25,30,40,45,48,48};
 
-  // C++ is crap.  These do not reliably initialize:
+// C++ is crap.  These do not reliably initialize:
 //  /* RA DMOD in internal units (-1 if N/A) */
 //  double TCASTable::RA_DMOD[7] = {-1,
 //    Units::from(Units::nmi,0.2),
@@ -103,22 +103,22 @@ TCASTable::TCASTable(const TCASTable& t) {
 //    Units::from(Units::nmi,0.98),
 //    Units::from(Units::nmi,0.98)};
 
-  double TCASTable::RA_DMOD[7] = {-1,370.4,648.2,1018.6,1481.6,2037.2,2037.2};
-  double TCASTable::TA_DMOD[7] = {555.6,611.16,888.96,1389,1852,2407.6,2407.6};
-  double TCASTable::RA_ZTHR[7] = {-1,182.88,182.88,182.88,182.88,213.36,243.84};
-  double TCASTable::TA_ZTHR[7] = {259.08,259.08,259.08,259.08,259.08,259.08,365.76};
-  double TCASTable::RA_HMD[7] = {-1,370.332,648.0048,1018.6416,1481.6328,2036.9784,2036.9784};
+double TCASTable::RA_DMOD[7] = {-1,370.4,648.2,1018.6,1481.6,2037.2,2037.2};
+double TCASTable::TA_DMOD[7] = {555.6,611.16,888.96,1389,1852,2407.6,2407.6};
+double TCASTable::RA_ZTHR[7] = {-1,182.88,182.88,182.88,182.88,213.36,243.84};
+double TCASTable::TA_ZTHR[7] = {259.08,259.08,259.08,259.08,259.08,259.08,365.76};
+double TCASTable::RA_HMD[7] = {-1,370.332,648.0048,1018.6416,1481.6328,2036.9784,2036.9784};
 
-  void TCASTable::copyValues(const TCASTable& t) {
-    for (int i=0; i < 7; i++) {
-      TAU[i] = t.TAU[i];
-      TCOA[i] = t.TCOA[i];
-      DMOD[i] = t.DMOD[i];
-      ZTHR[i] = t.ZTHR[i];
-      HMD[i] = t.HMD[i];
-    }
-    HMDFilter = t.HMDFilter;
+void TCASTable::copyValues(const TCASTable& t) {
+  for (int i=0; i < 7; i++) {
+    TAU[i] = t.TAU[i];
+    TCOA[i] = t.TCOA[i];
+    DMOD[i] = t.DMOD[i];
+    ZTHR[i] = t.ZTHR[i];
+    HMD[i] = t.HMD[i];
   }
+  HMDFilter = t.HMDFilter;
+}
 
 void TCASTable::setDefaultRAThresholds(bool ra) {
   for (int i=0; i < 7; i++) {
@@ -307,19 +307,19 @@ ParameterData TCASTable::getParameters() const {
 void TCASTable::updateParameterData(ParameterData& p) const {
   p.setBool("TCAS_HMDilter", HMDFilter);
   for (int i = 0; i < 7; i++) {
-    p.setInternal("TCAS_TAU_"+Fm0(i+2),TAU[i],"s");
+    p.setInternal("TCAS_TAU_"+Fmi(i+2),TAU[i],"s",4);
   }
   for (int i = 0; i < 7; i++) {
-    p.setInternal("TCAS_TCOA_"+Fm0(i+2),TCOA[i],"s");
+    p.setInternal("TCAS_TCOA_"+Fmi(i+2),TCOA[i],"s",4);
   }
   for (int i = 0; i < 7; i++) {
-    p.setInternal("TCAS_TTHR_"+Fm0(i+2),DMOD[i],"ft");
+    p.setInternal("TCAS_DMOD_"+Fmi(i+2),DMOD[i],"nmi",4);
   }
   for (int i = 0; i < 7; i++) {
-    p.setInternal("TCAS_ZTHR_"+Fm0(i+2),ZTHR[i],"ft");
+    p.setInternal("TCAS_ZTHR_"+Fmi(i+2),ZTHR[i],"ft",4);
   }
   for (int i = 0; i < 7; i++) {
-    p.setInternal("TCAS_HMD_"+Fm0(i+2),HMD[i],"ft");
+    p.setInternal("TCAS_HMD_"+Fmi(i+2),HMD[i],"ft",4);
   }
 }
 
@@ -329,28 +329,28 @@ void TCASTable::setParameters(const ParameterData& p) {
     HMDFilter = p.getBool("TCAS_HMDilter");
   }
   for (int i = 0; i < 7; i++) {
-    if (p.contains("TCAS_TAU_"+Fm0(i+2))) {
-      TAU[i] = p.getValue("TCAS_TAU_"+Fm0(i+2));
+    if (p.contains("TCAS_TAU_"+Fmi(i+2))) {
+      TAU[i] = p.getValue("TCAS_TAU_"+Fmi(i+2));
     }
   }
   for (int i = 0; i < 7; i++) {
-    if (p.contains("TCAS_TCOA_"+Fm0(i+2))) {
-      TCOA[i] = p.getValue("TCAS_TCOA_"+Fm0(i+2));
+    if (p.contains("TCAS_TCOA_"+Fmi(i+2))) {
+      TCOA[i] = p.getValue("TCAS_TCOA_"+Fmi(i+2));
     }
   }
   for (int i = 0; i < 7; i++) {
-    if (p.contains("TCAS_DMOD_"+Fm0(i+2))) {
-      DMOD[i] = p.getValue("TCAS_DMOD_"+Fm0(i+2));
+    if (p.contains("TCAS_DMOD_"+Fmi(i+2))) {
+      DMOD[i] = p.getValue("TCAS_DMOD_"+Fmi(i+2));
     }
   }
   for (int i = 0; i < 7; i++) {
-    if (p.contains("TCAS_ZTHR_"+Fm0(i+2))) {
-      ZTHR[i] = p.getValue("TCAS_ZTHR_"+Fm0(i+2));
+    if (p.contains("TCAS_ZTHR_"+Fmi(i+2))) {
+      ZTHR[i] = p.getValue("TCAS_ZTHR_"+Fmi(i+2));
     }
   }
   for (int i = 0; i < 7; i++) {
-    if (p.contains("TCAS_HMD_"+Fm0(i+2))) {
-      HMD[i] = p.getValue("TCAS_HMD_"+Fm0(i+2));
+    if (p.contains("TCAS_HMD_"+Fmi(i+2))) {
+      HMD[i] = p.getValue("TCAS_HMD_"+Fmi(i+2));
     }
   }
 }
@@ -381,14 +381,42 @@ std::string array7_units(const std::string& units, double const v[]) {
 }
 
 std::string TCASTable::toString() const {
-    std::string s = "HMDFilter: "+Fmb(HMDFilter);
-    if (isRAStandard()) s = s+"; (RA vals) ";
-    else if (isTAStandard()) s= s+"; (TA vals) ";
-    s= s+"; TAU: "+array7_units("s",TAU)+"; TCOA: "+array7_units("s",TCOA)+
-        "; DMOD: "+array7_units("NM",DMOD)+"; ZTHR: "+array7_units("ft",ZTHR)+
-        "; HMD: "+array7_units("ft",HMD);
-    return s;
+  std::string s = "HMDFilter: "+Fmb(HMDFilter);
+  if (isRAStandard()) s = s+"; (RA vals) ";
+  else if (isTAStandard()) s= s+"; (TA vals) ";
+  s= s+"; TAU: "+array7_units("s",TAU)+"; TCOA: "+array7_units("s",TCOA)+
+      "; DMOD: "+array7_units("NM",DMOD)+"; ZTHR: "+array7_units("ft",ZTHR)+
+      "; HMD: "+array7_units("ft",HMD);
+  return s;
 }
+
+std::string TCASTable::toPVS(int prec) const {
+  std::string s = "(# ";
+  s += "TAU := (: "+Fm1(TAU[0]);
+  for (int i=1; i < 7; i++) {
+    s += ", "+Fm1(TAU[i]);
+  }
+  s += " :), TCOA := (: "+Fm1(TCOA[0]);
+  for (int i=1; i < 7; i++) {
+    s += ", "+Fm1(TCOA[i]);
+  }
+  s += " :), DMOD := (: "+FmPrecision(DMOD[0],prec);
+  for (int i=1; i < 7; i++) {
+    s += ", "+FmPrecision(DMOD[i],prec);
+  }
+  s += " :), ZTHR := (: "+FmPrecision(ZTHR[0],prec);
+  for (int i=1; i < 7; i++) {
+    s += ", "+FmPrecision(ZTHR[i],prec);
+  }
+  s += " :), HMD := (: "+FmPrecision(HMD[0],prec);
+  for (int i=1; i < 7; i++) {
+    s += ", "+FmPrecision(HMD[i],prec);
+  }
+  s += " :), HMDFilter := ";
+  s += (HMDFilter ? "TRUE" : "FALSE");
+  return s + " #)";
+}
+
 
 bool TCASTable::contains(const TCASTable& tab) const {
   for (int i=0; i < 7; i++) {

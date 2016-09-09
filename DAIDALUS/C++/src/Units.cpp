@@ -6,7 +6,7 @@
  *
  * Conversion to internal units: meters, kilogrames, seconds, radians, ...
  *
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -111,6 +111,14 @@ static double _FormalATM_hour() {
 	static double ans = 3600.0 * _FormalATM_s();
 	return ans;
 }
+static double _FormalATM_day() {
+	static double ans = 8640000.0 * _FormalATM_s();
+	return ans;
+}
+static double _FormalATM_ms() {
+	static double ans = 0.001 * _FormalATM_s();
+	return ans;
+}
 
 static double _FormalATM_rad() {
 	static double ans = 1.0;
@@ -210,6 +218,8 @@ const double Units::mm = Units::getFactor("mm");
 const double Units::s = Units::getFactor("s");
 const double Units::min = Units::getFactor("min");
 const double Units::hour = Units::getFactor("hour");
+const double Units::day = Units::getFactor("day");
+const double Units::ms = Units::getFactor("ms");
 
 const double Units::rad = Units::getFactor("rad");
 const double Units::deg = Units::getFactor("deg");
@@ -267,6 +277,10 @@ double Units::getFactor(const std::string& symbolp) {
 		return _FormalATM_min();
 	} else if (symbol == "hour") {
 		return _FormalATM_hour();
+	} else if (symbol == "day") {
+		return _FormalATM_day();
+	} else if (symbol == "ms") {
+		return _FormalATM_ms();
 
 	} else if (symbol == "rad") {
 		return _FormalATM_rad();
@@ -341,7 +355,7 @@ const std::string Units::canonical(const std::string& unit) {
 		return "ft";
 	if (unit == "km" || unit == "kilometer")
 		return "km";
-	if (unit == "NM" || unit == "nm" || unit == "nmi"
+	if (unit == "NM" || unit == "nmi" || unit == "nm"  // Do not add nm, nm means nanometers, not nautical miles
 			|| unit == "nautical_mile")
 		return "NM";
 	if (unit == "mile" || unit == "mi")
@@ -358,12 +372,16 @@ const std::string Units::canonical(const std::string& unit) {
 	if (unit == "ft^2")
 		return unit;
 
-	if (unit == "s" || unit == "sec")
+	if (unit == "s")
 		return "s";
 	if (unit == "min" || unit == "minute" || unit == "minutes")
 		return "min";
-	if (unit == "hour")
-		return unit;
+	if (unit == "hour" || unit == "h" || unit == "hr")
+		return "hour";
+	if (unit == "day")
+		return "day";
+	if (unit == "ms")
+		return "ms";
 
 	if (unit == "rad" || unit == "radian")
 		return "rad";
@@ -430,8 +448,8 @@ bool Units::isCompatible(const std::string& unit1p, const std::string& unit2p) {
 				|| unit2 == "mi" || unit2 == "in" || unit2 == "yard" || unit2 == "mm";
 	} else if (unit1 == "ft^2" || unit1 == "m^2") {
 		return unit2 == "ft^2" || unit2 == "m^2";
-	} else if (unit1 == "s" || unit1 == "min" || unit1 == "hour") {
-		return unit2 == "s" || unit2 == "min" || unit2 == "hour";
+	} else if (unit1 == "s" || unit1 == "min" || unit1 == "hour" || unit1 == "ms" || unit1 == "day") {
+		return unit2 == "s" || unit2 == "min" || unit2 == "hour" || unit2 == "ms" || unit2 == "day";
 	} else if (unit1 == "rad" || unit1 == "deg") {
 		return unit2 == "rad" || unit2 == "deg";
 	} else if (unit1 == "rad/s" || unit1 == "deg/s") {
@@ -526,6 +544,11 @@ std::string Units::clean(const std::string& unit) {
 	}
 }
 
+double Units::parse(const std::string& s) {
+	return parse(s,0.0);
+}
+
+
 #if defined(_MSC_VER)
 
 double getd(string str, double def) {
@@ -542,7 +565,7 @@ double getd(string str, double def) {
 
 double Units::parse(const std::string& s, double default_value) {
 	std::smatch m;
-	std::regex numre("\\s*([-+0-9\\.]+)\\s*\\[?\\s*([/^_a-zA-Z0-9]*)\\s*\\]?(.*)");
+	std::regex numre("\\s*([-+0-9\\.]+)\\s*\\[?\\s*([/^_a-zA-Z0-9]*)\\s*\\]?\\s*$"); //(.*)");   We want to add this unicode character \u00B0 (the degree symbol) to the units part
 
 	std::regex_match(s, m, numre);
 	std::smatch group(m);
@@ -559,7 +582,7 @@ double Units::parse(const std::string& s, double default_value) {
 std::string Units::parseUnits(const std::string& s) {
 	std::string unit = "unspecified";
 	std::smatch m;
-	std::regex numre("\\s*([-+0-9\\.]+)\\s*\\[?\\s*([/^_a-zA-Z0-9]*)\\s*\\]?(.*)");
+	std::regex numre("\\s*([-+0-9\\.]+)\\s*\\[?\\s*([/^_a-zA-Z0-9]*)\\s*\\]?\\s*$"); //(.*)");   We want to add this unicode character \u00B0 (the degree symbol) to the units part
 	std::regex_match(s, m, numre);
 	std::smatch group(m);
 	if (group.size() > 0) {
@@ -585,12 +608,12 @@ double Units::parse(const std::string& s, double default_value) {
 
 	/* Execute regular expression */
 	regmatch_t matchptr[4];
-	char match[100];
-	int numchars;
 
 	//fpln("input X"+s+"X");
 	reti = regexec(&regex, s.c_str(), 4, matchptr, 0);
 	if (!reti) {
+		char match[100];
+		int numchars;
 
 		// Match #1
 		numchars = (int)matchptr[1].rm_eo - (int)matchptr[1].rm_so;
@@ -644,11 +667,11 @@ std::string Units::parseUnits(const std::string& s) {
 	/* Execute regular expression */
 	regmatch_t matchptr[4];
 	char match[100];
-	int numchars;
 
 	//fpln("input X"+s+"X");
 	reti = regexec(&regex, s.c_str(), 4, matchptr, 0);
 	if (!reti) {
+		int numchars;
 
 		// Match #2
 		numchars = (int)matchptr[2].rm_eo - (int)matchptr[2].rm_so;
@@ -661,7 +684,7 @@ std::string Units::parseUnits(const std::string& s) {
 		// no match, return default value
 	} else {
 		regerror(reti, &regex, msgbuf, sizeof(msgbuf));
-		fprintf(stderr, "$$$ERROR$$$ Regex match failed: %s\n", msgbuf);
+		fprintf(stderr, "$$$ERROR$$$ Regex match failed line 673: %s\n", msgbuf);
 //		DebugSupport::halt();
 	}
 

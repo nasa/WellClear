@@ -3,7 +3,7 @@
  *
  * Contact: Rick Butler
  * 
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -52,7 +52,7 @@ public final class StateVector implements OutputList {
 	}
 	
 	public static StateVector makeXYZ(double x, double y, double z, double trk, double gs, double vs, double t){
-		Vect3 s = Vect3.makeXYZ(x,"nm",y,"nm",z,"ft");
+		Vect3 s = Vect3.makeXYZ(x,"nmi",y,"nmi",z,"ft");
 		Velocity v = Velocity.makeTrkGsVs(trk,gs,vs);
 		return new StateVector(s,v,t);
 	}

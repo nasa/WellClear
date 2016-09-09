@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2015-2016 United States Government as represented by
+ * the National Aeronautics and Space Administration.  No copyright
+ * is claimed in the United States under Title 17, U.S.Code. All Other
+ * Rights Reserved.
+ */
 package gov.nasa.larcfm.ACCoRD;
 
 import java.util.List;
@@ -7,30 +13,30 @@ import java.util.List;
  */
 public class FixedAircraftUrgencyStrategy implements UrgencyStrategy {
 
-  private String ac;
+  private String ac_;
   
   public FixedAircraftUrgencyStrategy() {
-    ac = TrafficState.INVALID.getId();
+    ac_ = TrafficState.INVALID.getId();
   }
 
   public FixedAircraftUrgencyStrategy(String id) {
-    ac = id;
+    ac_ = id;
   }
   
   public String getFixedAircraftId() {
-    return ac;
+    return ac_;
   }
   
   public void setFixedAircraftId(String id) {
-    ac = id;
+    ac_ = id;
   }
   
-  public TrafficState mostUrgentAircraft(Detection3D detector, OwnshipState ownship, List<TrafficState> traffic, double T) {
-    return TrafficState.getTraffic(traffic,ac);
+  public TrafficState mostUrgentAircraft(Detection3D detector, TrafficState ownship, List<TrafficState> traffic, double T) {
+    return TrafficState.findAircraft(traffic,ac_);
   }
   
   public UrgencyStrategy copy() {
-    return new FixedAircraftUrgencyStrategy(ac);
+    return new FixedAircraftUrgencyStrategy(ac_);
   }
 
 

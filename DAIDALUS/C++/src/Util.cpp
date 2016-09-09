@@ -5,7 +5,7 @@
  *
  * Utility functions.
  *
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -33,11 +33,25 @@ using std::vector;
 static const double twopi = 2*Pi;
 
 
+bool Util::almost_less(double a, double b) {
+	if (almost_equals(a, b)) {
+		return false;
+	}
+	return a < b;
+}
+
 bool Util::almost_less(double a, double b, INT64FM maxUlps) {
 	if (almost_equals(a, b, maxUlps)) {
 		return false;
 	}
 	return a < b;
+}
+
+bool Util::almost_greater(double a, double b) {
+	if (almost_equals(a, b)) {
+		return false;
+	}
+	return a > b;
 }
 
 bool Util::almost_greater(double a, double b, INT64FM maxUlps) {
@@ -215,20 +229,23 @@ int Util::sign(const double x) {
 	return -1;
 }
 
+/**
+ * Computes the modulo of val and mod. The returned value is in the range [0,mod)
+ */
+double Util::modulo(double val, double mod) {
+	double n = floor(val / mod);
+	double r = val - n * mod;
+	return Util::almost_equals(r,mod) ? 0.0 : r;
+}
 
 // To range [0,2*pi)
 double Util::to_2pi(double rad) {
-	double n = floor(rad / twopi);
-	double r = rad - n * twopi;
-	return Util::almost_equals(r,twopi) ? 0.0 : r;
+	return modulo(rad,twopi);
 }
-
 
 // To range [0,360)
 double Util::to_360(double deg) {
-	double n = floor(deg / 360.0);
-	double d = deg - n * 360.0;
-	return Util::almost_equals(d,360.0) ? 0.0 : d;
+	return modulo(deg,360);
 }
 
 // To range (-pi,pi]
@@ -372,7 +389,6 @@ double Util::parse_time(const string& s) {
 
 
 /**
- *
  * @param t time in seconds
  * @return String of hours:mins:secs
  */
@@ -384,6 +400,17 @@ string Util::hoursMinutesSeconds(double t) {
 	int secs = rem;
 	return ""+Fm0(hours)+":"+Fm0(mins)+":"+Fm0(secs);
 }
+
+///**
+// * The behavior of the x%y operator is different between Java and C++ if either x or y is negative.  Use this to always return a value between 0 and y.
+// * @param x value
+// * @param y range
+// * @return x mod y, having the same sign as y (Java behavior)
+// */
+//int Util::mod(int x, int y) {
+//	int r = std::abs(x) % std::abs(y);
+//	return r*sign(y);
+//}
 
 
 

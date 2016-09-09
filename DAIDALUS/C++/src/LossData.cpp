@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 United States Government as represented by
+ * Copyright (c) 2014-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -20,33 +20,36 @@
 
 namespace larcfm {
 
-LossData::LossData(double tin, double tout) {
-	if (Util::almost_equals(tin,tout)) { // [CAM] Added this code to mitigate some numerical instability when tin is almost equal to tout
-		tin = tout;
-	}
-	time_in = tin;
-	time_out = tout;
+LossData::LossData(double tin, double tout) : time_in(tin), time_out(tout) {
 }
 
-LossData::LossData() {
-	time_in = PINFINITY;
-	time_out = NINFINITY;
+LossData::LossData() : time_in(PINFINITY), time_out(NINFINITY) {
 }
 
-// Conflict detected
+/**
+ * Returns true if loss
+ */
 bool LossData::conflict() const {
-	return time_in < time_out; // [CAM] Removed tout <= 0, which used to represent infinite time
+	return time_in < time_out && !Util::almost_equals(time_in,time_out); //[CAM] Added to avoid numerical instability
 }
 
-// Conflict detected with a threshold
+/**
+ * Returns true if loss last more than thr in seconds
+ */
 bool LossData::conflict(double thr) const {
-	return conflict() && (time_out - time_in > thr);
+	return conflict() && (time_out - time_in >= thr);
 }
 
+/**
+ * Returns time to first loss in seconds.
+ */
 double LossData::getTimeIn() const {
 	return time_in;
 }
 
+/**
+ * Returns time to last loss in seconds.
+ */
 double LossData::getTimeOut() const {
 	return time_out;
 }

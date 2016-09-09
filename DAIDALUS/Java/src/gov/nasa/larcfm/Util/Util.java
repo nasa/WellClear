@@ -5,7 +5,7 @@
  *
  * Utility functions.
  *
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -77,11 +77,35 @@ public final class Util {
    * definition of the almostEquals() method..
    * 
    */
+  public static boolean almost_less(double a, double b) {
+    if (almost_equals(a, b)) {
+      return false;
+    }
+    return a < b;
+  }
+
+  /**
+   * Determines if a &lt; b, without being almost equal, according to the
+   * definition of the almostEquals() method..
+   * 
+   */
   public static boolean almost_less(double a, double b, long maxUlps) {
     if (almost_equals(a, b, maxUlps)) {
       return false;
     }
     return a < b;
+  }
+
+  /**
+   * Determines if a &gt; b, without being almost equal, according to the
+   * definition of the almostEquals() method.
+   * 
+   */
+  public static boolean almost_greater(double a, double b) {
+    if (almost_equals(a,b)) {
+      return false;
+    }
+    return a > b;
   }
 
   /**
@@ -332,6 +356,13 @@ public final class Util {
     return -1;
   }
 
+  /** Returns +1 if the argument is positive or 0, -1 otherwise */
+  public static boolean bsign(double x) {
+    if (x >= 0)
+      return true;
+    return false;
+  }
+
   private static final double twopi = 2 * Math.PI;
 
   /**
@@ -354,6 +385,15 @@ public final class Util {
   }
 
   /**
+   * Computes the modulo of val and mod. The returned value is in the range [0,mod)
+   */
+  public static double modulo(double val, double mod) {
+      double n = Math.floor(val / mod);
+      double r = val - n * mod;
+      return Util.almost_equals(r,mod) ? 0.0 : r;
+  }
+
+  /**
    * Converts <code>deg</code> degrees to the range 
    * [<code>0</code>, <code>360</code>).
    * 
@@ -362,11 +402,8 @@ public final class Util {
    * @return <code>deg</code> in the range [<code>0</code>, <code>360</code>).
    */
   public static double to_360(double deg) {
-    double n = Math.floor(deg / 360.0);
-    double d = deg - n * 360.0;
-    return Util.almost_equals(d,360) ? 0.0 : d;
+    return modulo(deg,360);
   }
-
 
   /**
    * Converts <code>rad</code> radians to the range
@@ -379,12 +416,8 @@ public final class Util {
    * [<code>0</code>, <code>2*pi</code>).
    */
   public static double to_2pi(double rad) {
-
-    double n = Math.floor(rad / twopi);
-    double r = rad - n * twopi;
-    return Util.almost_equals(r,twopi) ? 0.0 : r;
+    return modulo(rad,twopi);
   }
-
 
   /**
    * Converts <code>rad</code> radians to the range 
@@ -423,7 +456,6 @@ public final class Util {
       return d;
     }
   }
-
 
 
   /**
@@ -522,7 +554,7 @@ public final class Util {
 
   /**
    * Returns a double value which is a representation of the given string.  If the string does 
-   * not represent a number, a zero is returned.  If one wants to know
+   * not represent a number, false is returned.  If one wants to know
    * the fact that the string is not a number, then use java.lang.Double.parseDouble method.
    */ 
   public static boolean is_double(String s) {
@@ -548,13 +580,49 @@ public final class Util {
   }
 
 
-  public static double decimalDegrees(String degMinSec) {
-    String [] dms = degMinSec.split(":");
-    double degrees = parse_double(dms[0]);
-    int sgn = Util.sign(degrees);
-    double minutes = parse_double(dms[1]);
-    double seconds = parse_double(dms[2]);
-    return sgn*(Math.abs(degrees) + minutes/60+ seconds/3600);
+  /**
+   * Returns a double value which is a representation of the given string.  If the string does 
+   * not represent a number, a zero is returned.  If one wants to know
+   * the fact that the string is not a number, then use java.lang.Double.parseDouble method.
+   */ 
+  public static boolean is_int(String s) {
+    try {
+      Integer.parseInt(s);
+      return true;
+    } catch (NumberFormatException e) {
+      return false;
+    }
+  }
+
+  /**
+   * Returns a double value which is a representation of the given string.  If the string does 
+   * not represent a number, a zero is returned.  If one wants to know
+   * the fact that the string is not a number, then use Util.isDouble() method.
+   */ 
+  public static int parse_int(String s) {
+    try {
+      return Integer.parseInt(s);
+    } catch (NumberFormatException e) {
+      return 0;
+    }
+  }
+
+  /**
+   * Returns true if the stored value for key is likely a boolean
+   * @param s name
+   * @return true if string value is true/false/t/f, false otherwise
+   */
+  public static boolean is_boolean(String s) {
+	  return (s.equalsIgnoreCase("true") || s.equalsIgnoreCase("T") || s.equalsIgnoreCase("false") || s.equalsIgnoreCase("F"));
+  }
+
+  /** Converts a string into a Boolean value.  This is more permissive than 
+   * Boolean.parseBoolean, it accepts "true" and "T" (ignoring case).
+   * @param value
+   * @return
+   */
+  public static boolean parse_boolean(String value) {
+	  return value.equalsIgnoreCase("true") || value.equalsIgnoreCase("T");
   }
 
   public static double[] arrayList2Array(ArrayList<Double> array) {
@@ -569,31 +637,39 @@ public final class Util {
   }
 
 
-
-
   /** Reads in a clock string and converts it to seconds.  
    * Accepts hh:mm:ss, mm:ss, and ss.
    */
   public static double parse_time(String s) {
     double tm = -1;
-    try {
-      String patternStr = "[:]";
-      String [] fields2 = s.split(patternStr);
-      if (fields2.length >= 3) {
-        tm = Double.parseDouble(fields2[2]) + 60 * Double.parseDouble(fields2[1]) + 3600 * Double.parseDouble(fields2[0]); // hrs:min:sec
-      } else if (fields2.length == 2) {
-        tm = Double.parseDouble(fields2[1]) + 60 * Double.parseDouble(fields2[0]); // min:sec
-      } else if (fields2.length == 1){
-        tm = Double.parseDouble(fields2[0]); //getColumn(_sec, head[TM_CLK]);
-      }
-      return tm;
-    } catch (NumberFormatException e) {
-      return -1;
+    String patternStr = "[:]";
+    String [] fields2 = s.split(patternStr);
+    if (fields2.length >= 3) {
+      tm = parse_double(fields2[2]) + 60 * parse_double(fields2[1]) + 3600 * parse_double(fields2[0]); // hrs:min:sec
+    } else if (fields2.length == 2) {
+      tm = parse_double(fields2[1]) + 60 * parse_double(fields2[0]); // min:sec
+    } else if (fields2.length == 1){
+      tm = parse_double(fields2[0]); //getColumn(_sec, head[TM_CLK]);
     }
+    return tm;
   }
 
   /**
-   * Convert the decimal time (in seconds) into a hours:minutes:seconds string.
+   * Convert the decimal time (in seconds) into a 00:00:00 string.
+   * @param t time in seconds
+   * @return String of hours:mins:secs
+   */
+  public static String time_str(double t) {
+    int hours = (int) t/3600;
+    int rem = (int) t - hours*3600;
+    int mins = rem / 60;
+    int secs = rem - mins*60;
+    return String.format("%02d:%02d:%02d", hours, mins, secs);
+    //return hoursMinutesSeconds(t);
+  }
+
+  /**
+   * Convert the decimal time (in seconds) into a 0:00:00 string.
    * @param t time in seconds
    * @return String of hours:mins:secs
    */
@@ -602,8 +678,8 @@ public final class Util {
     int rem = (int) t - hours*3600;
     int mins = rem / 60;
     int secs = rem - mins*60;
-    //return ""+hours+":"+mins+":"+secs;
-    return String.format("%2d:%02d:%02d", hours, mins, secs);
+    //return String.format("%2d:%02d:%02d", hours, mins, secs);
+    return String.format("%d:%02d:%02d", hours, mins, secs);
   }
 
   /** Return a string representing this list */
@@ -636,5 +712,24 @@ public final class Util {
     return cnt++;
   }
 
+  /**
+   * The behavior of the x%y operator is different between Java and C++ if either x or y is negative.  Use this to always return a value between 0 and y. 
+   * @param x value
+   * @param y range
+   * @return x mod y, having the same sign as y (Java behavior)
+   */
+  public static int mod(int x, int y) {
+    return x % y;
+  }
+
+  /**
+   * Return the closest flight level value for a given altitude
+   * @param alt
+   * @return Flight level in feet
+   */
+  public static int flightLevel(double alt) {
+    //Note: foot conversion is hard-coded to avoid reference to Units class.
+    return (int)Math.round(alt/0.3048/500.0)*5; 
+  }
 
 } // Util.java

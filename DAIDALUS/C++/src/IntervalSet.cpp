@@ -4,7 +4,7 @@
  * Contact: Jeff Maddalon
  * Organization: NASA/Langley Research Center
  *
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -119,27 +119,29 @@ void IntervalSet::unions(const IntervalSet& n) {
  * This method uses "almost" inequalities to compute the addition.
  */
 void IntervalSet::almost_add(double l, double u) {
-	IntervalSet m = IntervalSet(*this);
-	clear();
-	bool go = false;
-	for (int i=0; i < m.size(); ++i) {
-		Interval ii = m.getInterval(i);
-		if (go) {
-			unions(ii);
-		} else if ((Util::almost_leq(ii.low,l,PRECISION_DEFAULT) && Util::almost_leq(l,ii.up,PRECISION_DEFAULT)) ||
-				(Util::almost_leq(l,ii.low,PRECISION_DEFAULT) && Util::almost_leq(ii.low,u,PRECISION_DEFAULT))) {
-			l = std::min(ii.low,l);
-			u = std::max(ii.up,u);
-		} else if (Util::almost_less(u,ii.low,PRECISION_DEFAULT)) {
-			unions(Interval(l,u));
-			unions(ii);
-			go = true;
-		} else {
-			unions(ii);
+	if (Util::almost_less(l,u)) {
+		IntervalSet m = IntervalSet(*this);
+		clear();
+		bool go = false;
+		for (int i=0; i < m.size(); ++i) {
+			Interval ii = m.getInterval(i);
+			if (go) {
+				unions(ii);
+			} else if ((Util::almost_leq(ii.low,l) && Util::almost_leq(l,ii.up)) ||
+					(Util::almost_leq(l,ii.low) && Util::almost_leq(ii.low,u))) {
+				l = std::min(ii.low,l);
+				u = std::max(ii.up,u);
+			} else if (Util::almost_less(u,ii.low)) {
+				unions(Interval(l,u));
+				unions(ii);
+				go = true;
+			} else {
+				unions(ii);
+			}
 		}
-	}
-	if (!go) {
-		unions(Interval(l,u));
+		if (!go) {
+			unions(Interval(l,u));
+		}
 	}
 }
 
@@ -156,27 +158,27 @@ void IntervalSet::almost_intersect(const IntervalSet& n) {
 		while (i < m.size() && j < n.size()) {
 			Interval ii = m.getInterval(i);
 			Interval jj = n.getInterval(j);
-			if (Util::almost_leq(jj.low,ii.low,PRECISION_DEFAULT) &&
-					Util::almost_less(ii.low,jj.up,PRECISION_DEFAULT)) {
-				if (Util::almost_leq(ii.up,jj.up,PRECISION_DEFAULT)) {
+			if (Util::almost_leq(jj.low,ii.low) &&
+					Util::almost_less(ii.low,jj.up)) {
+				if (Util::almost_leq(ii.up,jj.up)) {
 					unions(ii);
 					++i;
 				} else {
 					unions(Interval(ii.low,jj.up));
 					++j;
 				}
-			} else if (Util::almost_leq(ii.low,jj.low,PRECISION_DEFAULT) &&
-					Util::almost_less(jj.low,ii.up,PRECISION_DEFAULT)) {
-				if (Util::almost_leq(jj.up,ii.up,PRECISION_DEFAULT)) {
+			} else if (Util::almost_leq(ii.low,jj.low) &&
+					Util::almost_less(jj.low,ii.up)) {
+				if (Util::almost_leq(jj.up,ii.up)) {
 					unions(jj);
 					++j;
 				} else {
 					unions(Interval(jj.low,ii.up));
 					++i;
 				}
-			} else if (Util::almost_leq(ii.up,jj.low,PRECISION_DEFAULT)){
+			} else if (Util::almost_leq(ii.up,jj.low)){
 				++i;
-			} else if (Util::almost_leq(jj.up,ii.low,PRECISION_DEFAULT)){
+			} else if (Util::almost_leq(jj.up,ii.low)){
 				++j;
 			}
 		}
@@ -314,7 +316,7 @@ void IntervalSet::remove(int i) {
 		//return Interval();
 	}
 
-	Interval t = r[i];
+	//	Interval t = r[i];
 
 	while (i + 1 < length) {
 		r[i] = r[i+1];
@@ -360,9 +362,9 @@ int IntervalSet::order(double x) const {
 std::string  IntervalSet::toString() const {
 	std::string s = "";
 	for (int i = 0; i < length; i++) {
-	  s += "Interval ["+Fm0(i)+"]: ";
-	  s += r[i].toString();
-	  s += "\n";
+		s += "Interval ["+Fm0(i)+"]: ";
+		s += r[i].toString();
+		s += "\n";
 	}
 	return s;
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2015 United States Government as represented by
+ * Copyright (c) 2012-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -25,11 +25,7 @@ public:
 
   WCVTable(double dthr, double zthr, double tthr, double tcoa);
 
-public:
   WCVTable();
-
-  static WCVTable NASA();
-  static WCVTable MITLL();
 
   /** Copy constructor */
   WCVTable(const WCVTable& t);
@@ -70,6 +66,8 @@ public:
   bool equals(const WCVTable& t2) const;
 
   std::string toString() const;
+
+  std::string toPVS(int prec) const;
 
   bool contains(const WCVTable& tab) const;
 

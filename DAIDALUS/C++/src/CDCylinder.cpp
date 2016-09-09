@@ -6,7 +6,7 @@
  * NASA LaRC
  * http://shemesh.larc.nasa.gov/people/cam/ACCoRD
  *
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -120,12 +120,12 @@ bool CDCylinder::conflict(const Vect3& so, const Velocity& vo, const Vect3& si, 
 }
 
 ConflictData CDCylinder::conflictDetection(const Vect3& so, const Velocity& vo, const Vect3& si, const Velocity& vi, double D, double H, double B, double T) const {
-  //std::cout <<"CDCylinder::conflictDetection so=" <<so.toStringNP("m","m","m",6) <<" si="<<si.toStringNP("m","m","m",6)<<" vo="<<vo.toString()<<" vi="<<vi.toString()<<" D="<<D<<" H="<<H<<" B="<<B<<" T="<<T << std::endl;
-  double t_tca = CD3D::tccpa(so.Sub(si), vo, vi, D, H, B, T);
-  double dist_tca = so.linear(vo, t_tca).Sub(si.linear(vi, t_tca)).cyl_norm(D, H);
-  LossData ld = detection(so.Sub(si), vo, vi, D, H, B, T);
-  //std::cout <<"CDCylinder::conflictDetection return =" <<ld.toString() << std::endl;
-  return ConflictData(ld,t_tca,dist_tca);
+  Vect3 s = so.Sub(si);
+  Velocity v = vo.Sub(vi);
+  double t_tca = CD3D::tccpa(s, vo, vi, D, H, B, T);
+  double dist_tca = s.linear(v,t_tca).cyl_norm(D, H);
+  LossData ld = CD3D::detection(s,vo,vi,D,H,B,T);
+  return ConflictData(ld,t_tca,dist_tca,s,v);
 }
 
 double CDCylinder::timeOfClosestApproach(const Vect3& so, const Velocity& vo, const Vect3& si, const Velocity& vi, double D, double H, double B, double T) {
@@ -172,6 +172,7 @@ void CDCylinder::setParameters(const ParameterData& p) {
   if (p.contains("id")) {
     id = p.getString("id");
   }
+
 }
 
 std::string CDCylinder::getSimpleClassName() const {
@@ -180,6 +181,10 @@ std::string CDCylinder::getSimpleClassName() const {
 
 std::string CDCylinder::toString() const {
   return (id == "" ? "" : id+" = ")+getSimpleClassName()+": {"+table.toString()+"}";
+}
+
+std::string CDCylinder::toPVS(int prec) const {
+  return table.toPVS(prec);
 }
 
 std::string CDCylinder::getIdentifier() const {

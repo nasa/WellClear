@@ -4,13 +4,14 @@
  *
  * Contact: Jeff Maddalon (j.m.maddalon@nasa.gov), Cesar Munoz, George Hagen
  *
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
  */
 
 #include "string_util.h"
+#include "format.h"
 #include <string>
 #include <vector>
 #include <stdexcept>
@@ -28,13 +29,36 @@ namespace larcfm {
       string::size_type lastPos = str.find_first_not_of(delimiters, 0);
       string::size_type pos     = str.find_first_of(delimiters, lastPos);
       while (string::npos != pos || string::npos != lastPos) {
-        tokens.push_back(str.substr(lastPos, pos - lastPos));
+    	tokens.push_back(str.substr(lastPos, pos - lastPos));
         lastPos = str.find_first_not_of(delimiters, pos);
         pos = str.find_first_of(delimiters, lastPos);
       }
       return tokens;
     }
   
+    vector<string> split_empty(const string& str,const string& delimiters) {
+      vector<string> tokens;
+      string::size_type lastPos = 0; //str.find_first_not_of(delimiters, 0);
+      string::size_type pos     = str.find_first_of(delimiters, lastPos);
+      while (string::npos != pos) {
+    	  //fpln(" www "+str.substr(lastPos, pos - lastPos));
+    	  if (pos == lastPos) {
+    		  tokens.push_back("");
+    	  } else {
+    	      tokens.push_back(str.substr(lastPos, pos - lastPos));
+    	  }
+        lastPos = pos+1;
+        pos = str.find_first_of(delimiters, lastPos);
+      }
+      if (lastPos != str.size()) {
+    	  tokens.push_back(str.substr(lastPos, str.size() - lastPos));
+      }
+      if (lastPos == str.size()) {
+    	  tokens.push_back("");
+      }
+      return tokens;
+    }
+
     string substring(const string& s, int begin, int end){
     	end = (end < (int) s.length()) ? end : s.length();
     	if (begin < end || begin < 0) {

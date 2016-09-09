@@ -3,7 +3,7 @@
  *
  * Contact: Jeff Maddalon (j.m.maddalon@nasa.gov), Cesar Munoz, George Hagen
  *
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -111,6 +111,10 @@ SeparatedInput& SeparatedInput::operator=(const SeparatedInput& x) {
 }
 
 ParameterData& SeparatedInput::getParametersRef() {
+	return parameters;
+}
+
+ParameterData SeparatedInput::getParameters() const {
 	return parameters;
 }
 
@@ -295,13 +299,19 @@ bool SeparatedInput::readLine() {
 			getline(*reader, str);
 			++linenum;
 
-			trim(str);
-
-			// Skip empty lines or lines starts with #
-			if (str.size() == 0 || str.c_str()[0] == '#') {
+	    	// Remove comments from line
+	    	int comment_num = str.find('#');
+	    	if (comment_num >= 0) {
+	    		str = str.substr(0,comment_num);
+	    	}
+	    	trim(str);
+	    	// Skip empty lines
+	    	if (str.size() == 0) {
 				str.clear();
-				continue;
-			}
+	    		continue;
+	    	}
+
+
 			if (!header) {
 				header = process_preamble(str);
 			} else if (!units) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 United States Government as represented by
+ * Copyright (c) 2014-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -418,6 +418,13 @@ bool ParameterData::setInternal(const std::string& key, double value,
 	return putParam(key, std::pair<bool, Quad<std::string, double, std::string, bool> >(false,newEntry));
 }
 
+bool ParameterData::setInternal(const std::string& key, double value,
+		const std::string& units, int prec) {
+	//set(key, Units::strX(units, value));
+  Quad<std::string, double, std::string, bool> newEntry(Units::str(units,value,prec),value,units,false);
+	return putParam(key, std::pair<bool, Quad<std::string, double, std::string, bool> >(false,newEntry));
+}
+
 bool ParameterData::setTrue(const std::string& key) {
 	set(key, "true");
 	Quad<std::string, double, std::string, bool> newEntry("true",0.0,"unitless",true);
@@ -503,6 +510,12 @@ void ParameterData::remove(const std::string& key) {
 	}
 }
 
+void ParameterData::removeAll(const std::vector<std::string>& keys) {
+	for (int i = 0; i < (int)keys.size(); i++) {
+		remove(keys[i]);
+	}
+}
+
 
 std::string ParameterData::toParameterList(const std::string& separator) const {
 	std::string sep = separator;
@@ -538,6 +551,93 @@ bool ParameterData::parseParameterList(const std::string& separator,  std::strin
 	return status;
 }
 
+std::vector<std::string> ParameterData::getListString(const std::string& key) const {
+	std::map<std::string, Quad<std::string, double, std::string, bool>, stringCaseInsensitive >::const_iterator q =
+			parameters.find(key);
+
+	if (q == parameters.end()) {
+		return std::vector<std::string>();
+	} else {
+		return stringList(q->second.getFirst());
+	}
+}
+
+std::vector<int> ParameterData::getListInteger(const std::string& key) const {
+	std::map<std::string, Quad<std::string, double, std::string, bool>, stringCaseInsensitive >::const_iterator q =
+			parameters.find(key);
+
+	if (q == parameters.end()) {
+		return std::vector<int>();
+	} else {
+		return intList(q->second.getFirst());
+	}
+}
+
+std::vector<double> ParameterData::getListDouble(const std::string& key) const {
+	std::map<std::string, Quad<std::string, double, std::string, bool>, stringCaseInsensitive >::const_iterator q =
+			parameters.find(key);
+
+	if (q == parameters.end()) {
+		return std::vector<double>();
+	} else {
+		return doubleList(q->second.getFirst());
+	}
+}
+
+std::vector<bool> ParameterData::getListBool(const std::string& key) const {
+	std::map<std::string, Quad<std::string, double, std::string, bool>, stringCaseInsensitive >::const_iterator q =
+			parameters.find(key);
+
+	if (q == parameters.end()) {
+		return std::vector<bool>();
+	} else {
+		return boolList(q->second.getFirst());
+	}
+}
+
+bool ParameterData::set(const std::string& key, const std::vector<int>& list) {
+	std:: string s = "";
+	if (list.size() > 0) {
+		s = ""+Fm0(list[0]);
+		for (int i = 0; i < (int) list.size(); i++) {
+			s = s + ","+Fm0(list[i]);
+		}
+	}
+	return set(key,s);
+}
+
+bool ParameterData::set(const std::string& key, const std::vector<double>& list) {
+	std:: string s = "";
+	if (list.size() > 0) {
+		s = ""+Fm8(list[0]);
+		for (int i = 0; i < (int) list.size(); i++) {
+			s = s + ","+Fm8(list[i]);
+		}
+	}
+	return set(key,s);
+}
+
+bool ParameterData::set(const std::string& key, const std::vector<std::string>& list) {
+	std:: string s = "";
+	if (list.size() > 0) {
+		s = ""+list[0];
+		for (int i = 0; i < (int) list.size(); i++) {
+			s = s + ","+list[i];
+		}
+	}
+	return set(key,s);
+}
+
+bool ParameterData::setListBool(const std::string& key, const std::vector<bool>& list) {
+	std:: string s = "";
+	if (list.size() > 0) {
+		s = (list[0] ? "true" : "false");
+		for (int i = 0; i < (int) list.size(); i++) {
+			s = s + ","+(list[i] ? "true" : "false");;
+		}
+	}
+	return set(key,s);
+}
 
 
 std::string ParameterData::toString() const {
@@ -571,7 +671,47 @@ bool ParameterData::equals(const ParameterData& pd) const {
 std::vector<std::string> ParameterData::stringList(const std::string& instring) {
 	std::string s = instring;
 	larcfm::trim(s);
-	return larcfm::split(s, Constants::wsPatternBase);
+	//fpln("q1 "+s);
+	std::vector<std::string> ss = larcfm::split_empty(s, Constants::separatorPattern);
+	//fpln("q2 "+list2str(ss,", "));
+	std::vector<std::string> list;
+	for (int i = 0; i < (int) ss.size(); i++) {
+		larcfm::trim(ss[i]);
+		list.push_back(ss[i]);
+	}
+	return list;
+}
+
+std::vector<int> ParameterData::intList(const std::string& instring) {
+	std::string s = instring;
+	larcfm::trim(s);
+	std::vector<std::string> ss = ParameterData::stringList(s);
+	std::vector<int> list;
+	for (int i = 0; i < (int) ss.size(); i++) {
+		list.push_back((int)Util::parse_double(ss[i]));
+	}
+	return list;
+}
+
+std::vector<double> ParameterData::doubleList(const std::string& instring) {
+	std::string s = instring;
+	std::vector<std::string> ss = ParameterData::stringList(s);
+	std::vector<double> list;
+	for (int i = 0; i < (int) ss.size(); i++) {
+		list.push_back(Units::parse(ss[i]));
+	}
+	return list;
+}
+
+std::vector<bool> ParameterData::boolList(const std::string& instring) {
+	std::string s = instring;
+	larcfm::trim(s);
+	std::vector<std::string> ss = ParameterData::stringList(s);
+	std::vector<bool> list;
+	for (int i = 0; i < (int) ss.size(); i++) {
+		list.push_back(equalsIgnoreCase(ss[i], "true") || equalsIgnoreCase(ss[i], "T"));
+	}
+	return list;
 }
 
 }

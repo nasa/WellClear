@@ -3,7 +3,7 @@
  *
  * Contact: George Hagen
  *
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -19,6 +19,7 @@
 #include "Position.h"
 #include "Velocity.h"
 #include "ParameterReader.h"
+#include "ParameterProvider.h"
 #include <string>
 #include <vector>
 #include <iostream>
@@ -58,7 +59,7 @@ namespace larcfm {
  * file without error.
  *
  */
-class StateReader: public ErrorReporter, public ParameterReader {
+class StateReader: public ErrorReporter, public ParameterReader, public ParameterProvider {
 private:
 	void loadfile();
 
@@ -100,6 +101,8 @@ public:
 	virtual void open(std::istream* ins);
 
 	ParameterData& getParametersRef();
+	ParameterData getParameters() const;
+	void updateParameterData(ParameterData& p) const;
 
 	/** Return the number of AircraftStates in the file */
 	int size() const;

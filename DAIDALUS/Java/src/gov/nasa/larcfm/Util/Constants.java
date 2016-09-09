@@ -4,7 +4,7 @@
  * 
  * General Constants
  * 
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -20,7 +20,7 @@ public class Constants {
 	/**
 	 * String indicating the FormalATM version
 	 */
-	public static final String version = "v2.4.9";
+	public static final String version = "v2.5.4";
 	
 	public static final boolean allowDebugHalt = true; //TODO: set to false for distribution
 	
@@ -75,6 +75,10 @@ public class Constants {
 		}
 	}
 
+	/**
+	 * Default pattern string representing the separators (commas and semicolons) in input files. 
+	 */
+	public static final String separatorPattern = "[,;]";
 	/**
 	 * Default pattern string representing whitespace in input files.  This does not include parentheses or braces.
 	 */

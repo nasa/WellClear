@@ -4,14 +4,14 @@
  * Contact: Jeff Maddalon
  * Organization: NASA/Langley Research Center
  *
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
  */
 
-#ifndef GENERICBANDS_INIT
-#define GENERICBANDS_INIT
+#ifndef GENERICBANDS_H_
+#define GENERICBANDS_H_
 
 #include "Vect2.h"
 #include "Vect3.h"
@@ -74,7 +74,7 @@ class GenericBands {
    * band information is cleared. */
   virtual void setMaxGroundSpeed(double gs, const std::string& unit) = 0;
   /** Returns the maximum ground speed that is output by Bands in knots. */
-  virtual double getMaxGroundSpeed(const std::string& unit) const = 0;
+  virtual double getMaxGroundSpeed(const std::string& unit) = 0;
 
   /** Sets the range of vertical speeds output by Bands, -max_vs to
    * max_vs [fpm]. When this parameter is set any existing band
@@ -84,40 +84,14 @@ class GenericBands {
    * Returns the range of vertical speeds output by Bands [fpm]. Any existing
    * bands information is cleared.
    */
-  virtual double getMaxVerticalSpeed(const std::string& unit) const = 0;
-
-//  /** Sets a minimum size for green/no conflict bands to be allowed, to avoid
-//   * "eye of the needle" situations. Any green bands smaller than this will not be reported.
-//   * @param trk minimum acceptable track angle, in degrees
-//   */
-//  virtual void setTrackTolerance(double trk, const std::string& unit) = 0;
-//  /** Returns minimum acceptable track angle, in degrees */
-//  virtual double getTrackTolerance(const std::string& unit) const = 0;
-//
-//  /** Sets a minimum size for green/no conflict bands to be allowed, to avoid
-//   * "eye of the needle" situations. Any green bands smaller than this will not be reported.
-//   * @param gs minimum acceptable ground speed, in knots
-//   */
-//  virtual void setGroundSpeedTolerance(double gs, const std::string& unit) = 0;
-//  /** Returns minimum acceptable ground speed, in knots */
-//  virtual double getGroundSpeedTolerance(const std::string& unit) const = 0;
-//
-//  /** Sets a minimum size for green/no conflict bands to be allowed, to avoid
-//   * "eye of the needle" situations. Any green bands smaller than this will not be reported.
-//   * @param vs minimum acceptable vertical speed, in ft/min
-//   */
-//  virtual void setVerticalSpeedTolerance(double vs, const std::string& unit) = 0;
-//  /** Returns minimum acceptable ground speed, in ft/min */
-//  virtual double getVerticalSpeedTolerance(const std::string& unit) const = 0;
-  
+  virtual double getMaxVerticalSpeed(const std::string& unit) = 0;
 
   /** Clear all bands information. */
   virtual void clear() = 0;
   
   /** Return the number of bands of track angles */
   virtual int trackLength() = 0;
-//  /** Return the i-th interval of the track bands [degrees, clockwise from true north] */
-//  virtual Interval track(int i) = 0;
+
   /** Return the i-th interval of the track bands in the given unit.  */
   virtual Interval track(int i, const std::string& unit) = 0;
   /** Return the region type of the i-th track band. If a single time
@@ -130,12 +104,11 @@ class GenericBands {
    * range returns NEAR.  If a single time version of bands is used,
    * then [NEAR|NONE] is returned.  If a version of bands with two
    * times is used, then [NEAR|MID|NONE] is returned. */ 
-  virtual BandsRegion::Region trackRegionOf(double trk, const std::string& unit) = 0;
+  virtual BandsRegion::Region regionOfTrack(double trk, const std::string& unit) = 0;
 
   /** Return the number of bands of ground speeds */
   virtual int groundSpeedLength() = 0;
-//  /** Return the i-th interval of the ground speed bands [knot] */
-//  virtual Interval groundSpeed(int i) = 0;
+
   /** Return i-th interval of the ground speed bands in the given unit.  */
   virtual Interval groundSpeed(int i, const std::string& unit) = 0;
   /** Return the region type of the i-th ground speed band. If a
@@ -148,12 +121,11 @@ class GenericBands {
    * bands is used, then [NEAR|NONE] is returned.  If a version of
    * bands with two times is used, then [NEAR|MID|NONE] is
    * returned. */ 
-  virtual BandsRegion::Region groundSpeedRegionOf(double gs, const std::string& unit) = 0;
+  virtual BandsRegion::Region regionOfGroundSpeed(double gs, const std::string& unit) = 0;
 
   /** Return the number of bands of vertical speeds */
   virtual int verticalSpeedLength() = 0;
-//  /** Return the i-th interval of the vertical speed bands [fpm] */
-//  virtual Interval verticalSpeed(int i) = 0;
+
   /** Return the i-th interval of the vertical speed band in the given unit.  */
   virtual Interval verticalSpeed(int i, const std::string& unit) = 0;
   /** Return the region type of the i-th vertical speed band. If a
@@ -166,7 +138,7 @@ class GenericBands {
    * version of bands is used, then [NEAR|NONE] is returned.  If a
    * version of bands with two times is used, then [NEAR|MID|NONE]
    * is returned. */
-  virtual BandsRegion::Region verticalSpeedRegionOf(double vs, const std::string& unit) = 0;
+  virtual BandsRegion::Region regionOfVerticalSpeed(double vs, const std::string& unit) = 0;
 
   /** Return a string representing this object. */
   virtual std::string toString() const = 0;

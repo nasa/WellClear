@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2015 United States Government as represented by
+ * Copyright (c) 2012-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -17,8 +17,6 @@
 #include <cfloat>
 
 namespace larcfm {
-
-bool TCAS3D::pvsCheck = false;
 
 TCAS3D::TCAS3D() {
   table = TCASTable(true);
@@ -113,12 +111,12 @@ ConflictData TCAS3D::RA3D_interval(const Vect3& so, const Velocity& vo, const Ve
   double time_mintau = -1;
   double dist_mintau = -1;
 
-  Vect2 so2 = so.vect2();
-  Vect2 si2 = si.vect2();
-  Vect2 s2 = so2.Sub(si2);
+  Vect3 s = so.Sub(si);
+  Velocity v = vo.Sub(vi);
+  Vect2 s2 = s.vect2();
   Vect2 vo2 = vo.vect2();
   Vect2 vi2 = vi.vect2();
-  Vect2 v2 = vo2.Sub(vi2);
+  Vect2 v2 = v.vect2();
   int sl = TCASTable::getSensitivityLevel(so.z);
   bool usehmdf = table.getHMDFilter();
   double TAU  = table.getTAU(sl);
@@ -126,20 +124,16 @@ ConflictData TCAS3D::RA3D_interval(const Vect3& so, const Velocity& vo, const Ve
   double HMD  = table.getHMD(sl);
   double ZTHR = table.getZTHR(sl);
 
-  print_PVS_input(so,vo,si,vi,B,T);
-
   if (usehmdf && !cd2d_TCAS_after(HMD,s2,vo2,vi2,B)) {
     time_mintau = TCAS2D::time_of_min_tau(DMOD,B,T,s2,v2);
     dist_mintau = so.linear(vo, time_mintau).Sub(si.linear(vi, time_mintau)).cyl_norm(table.getDMOD(8), table.getZTHR(8));
-    print_PVS_output(time_in, time_out,"(case 1)");
-    return ConflictData(time_in,time_out,time_mintau,dist_mintau);
+    return ConflictData(time_in,time_out,time_mintau,dist_mintau,s,vi);
   }
   double sz = so.z-si.z;
   if (Util::almost_equals(vo.z, vi.z) && std::abs(sz) > ZTHR) {
     time_mintau = TCAS2D::time_of_min_tau(DMOD,B,T,s2,v2);
     dist_mintau = so.linear(vo, time_mintau).Sub(si.linear(vi, time_mintau)).cyl_norm(table.getDMOD(8), table.getZTHR(8));
-    print_PVS_output(time_in, time_out,"(case 2)");
-    return ConflictData(time_in,time_out,time_mintau,dist_mintau);
+    return ConflictData(time_in,time_out,time_mintau,dist_mintau,s,v);
   }
   double nzvz = vo.z-vi.z;
   double centry = B;
@@ -155,8 +149,7 @@ ConflictData TCAS3D::RA3D_interval(const Vect3& so, const Velocity& vo, const Ve
   if (cexit < B || T < centry) {
     time_mintau = TCAS2D::time_of_min_tau(DMOD,B,T,s2,v2);
     dist_mintau = so.linear(vo, time_mintau).Sub(si.linear(vi, time_mintau)).cyl_norm(table.getDMOD(8), table.getZTHR(8));
-    print_PVS_output(time_in, time_out,"(case 3)");
-    return ConflictData(time_in,time_out,time_mintau,dist_mintau);
+    return ConflictData(time_in,time_out,time_mintau,dist_mintau,s,v);
   }
   double tin = std::max(B,centry);
   double tout = std::min(T,cexit);
@@ -170,8 +163,7 @@ ConflictData TCAS3D::RA3D_interval(const Vect3& so, const Velocity& vo, const Ve
       (usehmdf && HMD < DMOD && exit_at_centry && !los_at_centry)) {
     time_mintau = TCAS2D::time_of_min_tau(DMOD,B,T,s2,v2);
     dist_mintau = so.linear(vo, time_mintau).Sub(si.linear(vi, time_mintau)).cyl_norm(table.getDMOD(8), table.getZTHR(8));
-    print_PVS_output(time_in, time_out,"(case 4)");
-    return ConflictData(time_in,time_out,time_mintau,dist_mintau);
+    return ConflictData(time_in,time_out,time_mintau,dist_mintau,s,v);
   }
   if (usehmdf && HMD < DMOD) {
     double exitTheta = T;
@@ -183,20 +175,17 @@ ConflictData TCAS3D::RA3D_interval(const Vect3& so, const Velocity& vo, const Ve
     if (RAin2D_lookahead <= minRAoutTheta) {
       time_mintau = TCAS2D::time_of_min_tau(DMOD,RAin2D_lookahead,minRAoutTheta,s2,v2);
       dist_mintau = so.linear(vo, time_mintau).Sub(si.linear(vi, time_mintau)).cyl_norm(table.getDMOD(8), table.getZTHR(8));
-      print_PVS_output(time_in, time_out,"(case 5)");
-      return ConflictData(time_in,time_out,time_mintau,dist_mintau);
+      return ConflictData(time_in,time_out,time_mintau,dist_mintau,s,v);
     }
     time_mintau = TCAS2D::time_of_min_tau(DMOD,B,T,s2,v2);
     dist_mintau = so.linear(vo, time_mintau).Sub(si.linear(vi, time_mintau)).cyl_norm(table.getDMOD(8), table.getZTHR(8));
-    print_PVS_output(time_in, time_out,"(case 6)");
-    return ConflictData(time_in,time_out,time_mintau,dist_mintau);
+    return ConflictData(time_in,time_out,time_mintau,dist_mintau,s,v);
   }
   time_in = RAin2D_lookahead;
   time_out = RAout2D_lookahead;
   time_mintau = TCAS2D::time_of_min_tau(DMOD,RAin2D_lookahead,RAout2D_lookahead,s2,v2);
   dist_mintau = so.linear(vo, time_mintau).Sub(si.linear(vi, time_mintau)).cyl_norm(table.getDMOD(8), table.getZTHR(8));
-  print_PVS_output(time_in, time_out,"(case 7)");
-  return ConflictData(time_in,time_out,time_mintau,dist_mintau);
+  return ConflictData(time_in,time_out,time_mintau,dist_mintau,s,v);
 }
 
 // pointer to new instance of this object
@@ -220,15 +209,11 @@ ParameterData TCAS3D::getParameters() const {
 
 void TCAS3D::updateParameterData(ParameterData& p) const {
   table.updateParameterData(p);
-  //   p.setBool("pvsCheck",pvsCheck);
   p.set("id",id);
 }
 
 void TCAS3D::setParameters(const ParameterData& p) {
   table.setParameters(p);
-  //   if (p.contains("pvsCheck")) {
-  //     pvsCheck = p.getBool("pvsCheck");
-  //   }
   if (p.contains("id")) {
     id = p.getString("id");
   }
@@ -253,34 +238,12 @@ std::string TCAS3D::getSimpleClassName() const {
   return "TCAS3D";
 }
 
-
-void TCAS3D::print_PVS_input(const Vect3& so, const Velocity& vo, const Vect3& si, const Velocity& vi, double B, double T) const {
-  if (pvsCheck) {
-    int sl = TCASTable::getSensitivityLevel(so.z);
-    bool usehmdf = table.getHMDFilter();
-    double TAU  = table.getTAU(sl);
-    double DMOD = table.getDMOD(sl);
-    double HMD  = table.getHMD(sl);
-    double ZTHR = table.getZTHR(sl);
-    fpln("(# DMOD := "+Fm8(DMOD)+", HMD := "+Fm8(HMD)
-        +", ZTHR := "+Fm8(ZTHR)+", TAU := "+Fm8(TAU)
-        +", B := "+Fm8(B)+", T := "+Fm8(T)+", hmdf? := "+(usehmdf ? "TRUE" : "FALSE")+" #) %SL="+Fm0(sl));
-    fpln("(# x := "+Fm8(so.x)+", y := "+Fm8(so.y)+", z := "+Fm8(so.z)+" #) % so");
-    fpln("(# x := "+Fm8(vo.x)+", y := "+Fm8(vo.y)+", z := "+Fm8(vo.z)+" #) % vo");
-    fpln("(# x := "+Fm8(si.x)+", y := "+Fm8(si.y)+", z := "+Fm8(si.z)+" #) % si");
-    fpln("(# x := "+Fm8(vi.x)+", y := "+Fm8(vi.y)+", z := "+Fm8(vi.z)+" #) % vi");
-  }
-}
-
-void TCAS3D::print_PVS_output(double time_in, double time_out, const std::string& comment) const {
-  if (pvsCheck) {
-    fpln("("+Fm8(time_in)+","+Fm8(time_out)+") % TCAS3D time in/out "+comment);
-
-  }
-}
-
 std::string TCAS3D::toString() const {
   return (id == "" ? "" : id+" = ")+getSimpleClassName()+": {"+table.toString()+"}";
+}
+
+std::string TCAS3D::toPVS(int prec) const {
+  return table.toPVS(prec);
 }
 
 bool TCAS3D::contains(const Detection3D* cd) const {

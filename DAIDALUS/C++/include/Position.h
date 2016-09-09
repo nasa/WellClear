@@ -4,7 +4,7 @@
  * Contact: Jeff Maddalon (j.m.maddalon@nasa.gov)
  * NASA LaRC
  * 
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -36,24 +36,24 @@ namespace larcfm {
  * </ul>
  *  
  */
-  class Position {
-  private:
-    LatLonAlt ll;
-    Point s3;
-    bool latlon;
+class Position {
+private:
+	LatLonAlt ll;
+	Point s3;
+	bool latlon;
 
-    Position(const double x, const double y, const double z);
+	Position(const double x, const double y, const double z);
 
-  public:
-    /** Create an empty Position object */
-    Position();
+public:
+	/** Create an empty Position object */
+	Position();
 
-    /** Construct a new Position object from a LatLonAlt object. The position will be a Lat/Lon position. */
-    Position(const LatLonAlt& lla);
-    /** Construct a new Position object from a Vect3 object.  The position will be a Euclidean position. */
-    Position(const Vect3& v);
+	/** Construct a new Position object from a LatLonAlt object. The position will be a Lat/Lon position. */
+	Position(const LatLonAlt& lla);
+	/** Construct a new Position object from a Vect3 object.  The position will be a Euclidean position. */
+	Position(const Vect3& v);
 
-    Position(const Position& p);
+	Position(const Position& p);
 
 	/**
 	 * Creates a new lat/lon position with coordinates (<code>lat</code>,<code>lon</code>,<code>alt</code>).
@@ -119,125 +119,125 @@ namespace larcfm {
 	static Position makeXYZ(double x, std::string x_unit, double y, std::string y_unit, double z, std::string z_unit);
 
 
-//  private:
-//    static Position& makeZeroLL();
-//    static Position& makeZeroXYZ();
-//    static Position& makeInvalid();
-  public:
+	//  private:
+	//    static Position& makeZeroLL();
+	//    static Position& makeZeroXYZ();
+	//    static Position& makeInvalid();
+public:
 
 
-    /** Zero latitude, longitude and altitude */
-    static const Position& ZERO_LL();
-    /** Zero x, y, and z */
-    static const Position& ZERO_XYZ();
+	/** Zero latitude, longitude and altitude */
+	static const Position& ZERO_LL();
+	/** Zero x, y, and z */
+	static const Position& ZERO_XYZ();
 
-    static const Position& INVALID();
+	static const Position& INVALID();
 
-    /**
-     * Checks if two Positions are almost the same.
-     * 
-     * @param v Position for comparison
-     * 
-     * @return <code>true</code>, if <code>this</code> Position is almost equal 
-     * to <code>v</code>.
-     */
-    bool almostEquals(const Position& v) const;
+	/**
+	 * Checks if two Positions are almost the same.
+	 *
+	 * @param v Position for comparison
+	 *
+	 * @return <code>true</code>, if <code>this</code> Position is almost equal
+	 * to <code>v</code>.
+	 */
+	bool almostEquals(const Position& v) const;
 
-    /**
-     * Checks if two Positions are almost the same.
-     * 
-     * @param pp Position for comparison
-     * @param epsilon_horiz allowable horizontal deviation [m] 
-     * @param epsilon_vert allowable vertical deviation [m] 
-     * 
-     * @return <code>true</code>, if <code>this</code> Position is almost equal 
-     * to <code>v</code>.
-     */
-    bool almostEquals(const Position& pp, double epsilon_horiz, double epsilon_vert) const;
+	/**
+	 * Checks if two Positions are almost the same.
+	 *
+	 * @param pp Position for comparison
+	 * @param epsilon_horiz allowable horizontal deviation [m]
+	 * @param epsilon_vert allowable vertical deviation [m]
+	 *
+	 * @return <code>true</code>, if <code>this</code> Position is almost equal
+	 * to <code>v</code>.
+	 */
+	bool almostEquals(const Position& pp, double epsilon_horiz, double epsilon_vert) const;
 
-    /** Are these two positions equal? */
-    bool operator == (const Position& v) const;
-    /** Are these two positions unequal? */
-    bool operator != (const Position& v) const;
+	/** Are these two positions equal? */
+	bool operator == (const Position& v) const;
+	/** Are these two positions unequal? */
+	bool operator != (const Position& v) const;
 
 	/** Return the horizontal position as a standard vect2().  This returns either (x,y), or, equivalently, (lon, lat). */
-    Vect2  vect2() const;
-    /** Return the three dimensional position vector */
-    const Point&  point() const;
-    /** Return the associated LatLonAlt object */
-    const LatLonAlt& lla() const;
+	Vect2  vect2() const;
+	/** Return the three dimensional position vector */
+	const Point&  point() const;
+	/** Return the associated LatLonAlt object */
+	const LatLonAlt& lla() const;
 
-    /** Returns true if this Position is invalid */
-    bool isInvalid() const;
+	/** Returns true if this Position is invalid */
+	bool isInvalid() const;
 
-    /** Return the x coordinate */
-    double x() const;
-    /** Return the y coordinate */
-    double y() const;
-    /** Return the z coordinate */
-    double z() const;
-    /** Return the latitude */
-    double lat() const;
-    /** Return the longitude */
-    double lon() const;
+	/** Return the x coordinate */
+	double x() const;
+	/** Return the y coordinate */
+	double y() const;
+	/** Return the z coordinate */
+	double z() const;
+	/** Return the latitude */
+	double lat() const;
+	/** Return the longitude */
+	double lon() const;
 	/** Return the altitude (internal units) */
-    double alt() const;
+	double alt() const;
 
-    /** Return the latitude in degrees north */
-    double latitude() const;
-    /** Return the longitude in degrees east */
-    double longitude() const;
-    /** Return the altitude in feet */
-    double altitude() const;
-    /** Return the x coordinate in [nmi] */ 
-    double xCoordinate() const;
-    /** Return the y coordinate in [nmi] */
-    double yCoordinate() const;
-    /** Return the z coordinate in [ft] */
-    double zCoordinate() const;
+	/** Return the latitude in degrees north */
+	double latitude() const;
+	/** Return the longitude in degrees east */
+	double longitude() const;
+	/** Return the altitude in feet */
+	double altitude() const;
+	/** Return the x coordinate in [nmi] */
+	double xCoordinate() const;
+	/** Return the y coordinate in [nmi] */
+	double yCoordinate() const;
+	/** Return the z coordinate in [ft] */
+	double zCoordinate() const;
 
-    /** Return if this Position is a latitude or longitude */
-    bool isLatLon() const;
+	/** Return if this Position is a latitude or longitude */
+	bool isLatLon() const;
 
-    /** Make a new Position from the current one with the X coordinate changed */
-    const Position mkX(const double xx) const;  
-    /** Make a new Position from the current one with the longitude changed */
-    const Position mkLon(const double lon) const; 
-    /** Make a new Position from the current one with the Y coordinate changed */ 
-    const Position mkY(const double yy) const;  
-    /** Make a new Position from the current one with the latitude changed */
-    const Position mkLat(const double lat) const;
-    /** Make a new Position from the current one with the Z coordinate changed */
-    const Position mkZ(const double zz) const;  
+	/** Make a new Position from the current one with the X coordinate changed */
+	const Position mkX(const double xx) const;
+	/** Make a new Position from the current one with the longitude changed */
+	const Position mkLon(const double lon) const;
+	/** Make a new Position from the current one with the Y coordinate changed */
+	const Position mkY(const double yy) const;
+	/** Make a new Position from the current one with the latitude changed */
+	const Position mkLat(const double lat) const;
+	/** Make a new Position from the current one with the Z coordinate changed */
+	const Position mkZ(const double zz) const;
 	/** Make a new Position from the current one with the altitude changed (internal units) */
-    const Position mkAlt(const double alt) const;
+	const Position mkAlt(const double alt) const;
 
-    const Position zeroAlt() const;
+	const Position zeroAlt() const;
 
-    /** Return the horizontal distance between the current Position and the given Position */
-    double distanceH(const Position& p) const;
+	/** Return the horizontal distance between the current Position and the given Position */
+	double distanceH(const Position& p) const;
 
 	/** Return the vertical distance between the current Position and the given Position.*/
-    double distanceV(const Position& p) const;
+	double distanceV(const Position& p) const;
 
 	/** Return the vertical distance between the current Position and the given Position. Positive values mean 
 	 * the current Position is above the given Position */
-    double signedDistanceV(const Position& p) const;
+	double signedDistanceV(const Position& p) const;
 
-    /** 
-     * Perform a linear projection of the current Position with given velocity and time.  
-     * If isLatLon() is true, then a great circle route is followed and the velocity 
-     * represents the initial velocity along the great circle.
-     * 
-     * Reminder: If this is used in a stepwise fashion over lat/lon, be careful when passing 
-     * over or near the poles and keep the velocity track in mind.
-     * 
-     *  @param v the velocity
-     *  @param time the time from the current point
-     *  Note: using a negative time value is the same a velocity moving in the opposite direction (along the great circle, if appropriate)
+	/**
+	 * Perform a linear projection of the current Position with given velocity and time.
+	 * If isLatLon() is true, then a great circle route is followed and the velocity
+	 * represents the initial velocity along the great circle.
+	 *
+	 * Reminder: If this is used in a stepwise fashion over lat/lon, be careful when passing
+	 * over or near the poles and keep the velocity track in mind.
+	 *
+	 *  @param v the velocity
+	 *  @param time the time from the current point
+	 *  Note: using a negative time value is the same a velocity moving in the opposite direction (along the great circle, if appropriate)
 	 * @return linear projection of the position
-     */
-    const Position linear(const Velocity& v, double time) const;
+	 */
+	const Position linear(const Velocity& v, double time) const;
 
 	/**
 	 * Perform a estimation of a linear projection of the current Position with the
@@ -256,45 +256,45 @@ namespace larcfm {
 	 * @param time the time from the current point
 	 * @return linear projection of the position
 	 */
-    const Position linearEst(const Velocity& vo, double time) const;
+	const Position linearEst(const Velocity& vo, double time) const;
 
 	/**
 	 * Return the mid point between the current position and the given position
 	 * @param p2 the other position
 	 * @return the midpoint
 	 */
-    const Position midPoint(const Position& p2) const;
+	const Position midPoint(const Position& p2) const;
 
-//	/** Return a new Position, relative to a given position (which becomes the new origin).
-//	 * This is equivalent to so.Sub(si), or the GreatCircle projection.
-//	 * Altitude will not be preserved.
-//	 */
-//    const Position relativeProjection(const Position& si) const;
+	//	/** Return a new Position, relative to a given position (which becomes the new origin).
+	//	 * This is equivalent to so.Sub(si), or the GreatCircle projection.
+	//	 * Altitude will not be preserved.
+	//	 */
+	//    const Position relativeProjection(const Position& si) const;
 
 	/** Return the track angle of the vector from the current Position to the given Position, based on initial course */
-    double track(const Position& p) const;
+	double track(const Position& p) const;
 
-    Velocity initialVelocity(const Position& p2, double time) const;
+	Velocity initialVelocity(const Position& p2, double time) const;
 
-    /** return the velocity going from this to p over dt seconds.
-     * Returns a ZERO velocity if dt <= 0 */
-    Velocity finalVelocity(const Position& p2, double time) const;
+	/** return the velocity going from this to p over dt seconds.
+	 * Returns a ZERO velocity if dt <= 0 */
+	Velocity finalVelocity(const Position& p2, double time) const;
 
 
 	/** Return the track angle of the vector from the current Position to the given Position, based on representative course */
-    double representativeTrack(const Position& p) const;
+	double representativeTrack(const Position& p) const;
 
 
 	// returns intersection point and time of intersection relative to position so
 	// a negative time indicates that the intersection occurred in the past (relative to directions of travel of so1)
-  static std::pair<Position,double> intersection(const Position& so, const Velocity& vo, const Position& si, const Velocity& vi);
+	static std::pair<Position,double> intersection(const Position& so, const Velocity& vo, const Position& si, const Velocity& vi);
 
 
 	/** Returns intersection point and time of intersection relative to the time of position so
 	 *  for time return value, it assumes that an aircraft travels from so1 to so2 in dto seconds and the other aircraft from si to si2
 	 *  a negative time indicates that the intersection occurred in the past (relative to directions of travel of so1)
 	 */
-  static std::pair<Position,double> intersection(const Position& so, const Position& so2, double dto, const Position& si, const Position& si2);
+	static std::pair<Position,double> intersection(const Position& so, const Position& so2, double dto, const Position& si, const Position& si2);
 
 	/** Determine if a loss of separation has occured (using either geodesic or Euclidean calculations)
 	 *
@@ -307,34 +307,34 @@ namespace larcfm {
 
 	bool collinear(Position p1, Position p2) const;
 
-//	/** Return the average velocity between the current position and the given position, with the given speed [internal units]. */
-//    Velocity averageVelocity(const Position& p2, double speed);
+	//	/** Return the average velocity between the current position and the given position, with the given speed [internal units]. */
+	//    Velocity averageVelocity(const Position& p2, double speed);
 
-    /** Return a string representation */
-    std::string toString() const;
+	/** Return a string representation */
+	std::string toString() const;
 
-    /** Return a string representation */
-    std::string toString(int prec) const;
-
-	/**
-	 * Return a string representation using the given unit conversions (latitude and longitude, if appropriate, are always in degrees, so only the z unit is used in that case)
-	 */
-    std::string toStringUnits() const;
+	/** Return a string representation */
+	std::string toString(int prec) const;
 
 	/**
 	 * Return a string representation using the given unit conversions (latitude and longitude, if appropriate, are always in degrees, so only the z unit is used in that case)
 	 */
-    std::string toStringUnits(const std::string& xunit, const std::string& yunit, const std::string& zunit) const;
+	std::string toStringUnits() const;
 
-    std::vector<std::string> toStringList() const;
+	/**
+	 * Return a string representation using the given unit conversions (latitude and longitude, if appropriate, are always in degrees, so only the z unit is used in that case)
+	 */
+	std::string toStringUnits(const std::string& xunit, const std::string& yunit, const std::string& zunit) const;
 
-    std::vector<std::string> toStringList(int) const;
+	std::vector<std::string> toStringList() const;
+
+	std::vector<std::string> toStringList(int) const;
 
 	/** Return a string representation with a default precision but without parentheses. */
-    std::string toStringNP() const;
+	std::string toStringNP() const;
 
 	/** Return a string representation, with a user-specified digits of precision (0-15) without parentheses. */
-    std::string toStringNP(int precision) const;
+	std::string toStringNP(int precision) const;
 
 	/** This interprets a string as a LatLonAlt position with units in deg/deg/ft or the specified units (inverse of toString()) */
 	static const Position parseLL(const std::string& s);
@@ -348,7 +348,7 @@ namespace larcfm {
 	 */
 	static const Position parse(const std::string& s);
 
-  };
+};
 
 }
 

@@ -1,224 +1,220 @@
 /*
- * Copyright (c) 2015 United States Government as represented by
+ * Copyright (c) 2015-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
  */
+
 package gov.nasa.larcfm.ACCoRD;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import gov.nasa.larcfm.Util.Interval;
 import gov.nasa.larcfm.Util.IntervalSet;
+import gov.nasa.larcfm.Util.Kinematics;
 import gov.nasa.larcfm.Util.Pair;
 import gov.nasa.larcfm.Util.Position;
 import gov.nasa.larcfm.Util.ProjectedKinematics;
-import gov.nasa.larcfm.Util.Triple;
-import gov.nasa.larcfm.Util.Util;
+import gov.nasa.larcfm.Util.Tuple5;
 import gov.nasa.larcfm.Util.Vect3;
 import gov.nasa.larcfm.Util.Velocity;
 
 public class KinematicAltBands extends KinematicRealBands {
 
-  private double vertical_rate;  // Climb/descend rate for altitude band
-  /* When vertical_rate = 0, instantaneous climb/descend is assumed */
-  private double vertical_accel; // Climb/descend acceleration
+	private double vertical_rate_;  // Climb/descend rate for altitude band
+	private double vertical_accel_; // Climb/descend acceleration
+	
+	public KinematicAltBands(KinematicBandsParameters parameters) {
+		super(parameters.getMinAltitude(),
+				parameters.getMaxAltitude(),
+				parameters.getAltitudeStep(),
+				parameters.isEnabledRecoveryAltitudeBands());
+		vertical_rate_ = parameters.getVerticalRate();
+		vertical_accel_ = parameters.getVerticalAcceleration();
+	}
 
-  public KinematicAltBands() {
-    super(DefaultDaidalusParameters.getMinAltitude(),DefaultDaidalusParameters.getMaxAltitude(),
-        DefaultDaidalusParameters.getAltitudeStep(),false);
-    vertical_rate = DefaultDaidalusParameters.getVerticalRate();
-    vertical_accel = DefaultDaidalusParameters.getVerticalAcceleration();
-  }
+	public KinematicAltBands(KinematicAltBands b) {
+		super(b);
+		vertical_rate_ = b.vertical_rate_;
+		vertical_accel_ = b.vertical_accel_;
+	}
 
-  public KinematicAltBands(KinematicAltBands b) {
-    super(b);
-    vertical_rate = b.vertical_rate;
-    vertical_accel = b.vertical_accel;
-  }
- 
-  public void setVerticalRate(double val) {
-    if (val >= 0 && val != vertical_rate) {
-      vertical_rate = val;
-      reset();
+	public boolean instantaneous_bands() {
+		return vertical_rate_ == 0 || vertical_accel_ == 0;
+	}
+
+	public double get_vertical_rate() {
+		return vertical_rate_;
+	}
+
+	public void set_vertical_rate(double val) {
+		if (val != vertical_rate_) {
+			vertical_rate_ = val;
+			reset();
+		}
+	}
+
+	public double get_vertical_accel() {
+		return vertical_accel_;
+	}
+
+	public void set_vertical_accel(double val) {
+		if (val != vertical_accel_) {
+			vertical_accel_ = val;
+			reset();
+		}
+	}
+
+	public double own_val(TrafficState ownship) {
+		return ownship.altitude();
+	}
+
+	public double time_step(TrafficState ownship) {
+		return 1;
+	}
+
+	public Pair<Vect3, Velocity> trajectory(TrafficState ownship, double time, boolean dir) {
+		double target_alt = min_val(ownship)+j_step_*get_step();
+		Pair<Position,Velocity> posvel;
+		if (instantaneous_bands()) {
+			posvel = Pair.make(ownship.getPosition().mkZ(target_alt),ownship.getVelocity().mkVs(0));
+		} else {
+			double tsqj = ProjectedKinematics.vsLevelOutTime(ownship.getPosition(),ownship.getVelocity(),vertical_rate_,
+					target_alt,vertical_accel_)+time_step(ownship);
+			if (time <= tsqj) {
+				posvel = ProjectedKinematics.vsLevelOut(ownship.getPosition(), ownship.getVelocity(), time, vertical_rate_, target_alt, vertical_accel_);
+			} else {
+				Position npo = ownship.getPosition().linear(ownship.getVelocity(),time);
+				posvel = Pair.make(npo.mkZ(target_alt),ownship.getVelocity().mkVs(0));
+			}
+		}
+		return Pair.make(ownship.pos_to_s(posvel.first),ownship.vel_to_v(posvel.first,posvel.second));
+	}
+
+	private boolean conflict_free_traj_step(Detection3D conflict_det, Optional<Detection3D> recovery_det, double B, double T, double B2, double T2,
+			TrafficState ownship, List<TrafficState> traffic) {
+		boolean trajdir = true;
+		if (instantaneous_bands()) {
+			return no_conflict(conflict_det,recovery_det,B,T,B2,T2,trajdir,0,ownship,traffic);
+		} else {
+			double tstep = time_step(ownship);
+			double target_alt = min_val(ownship)+j_step_*get_step();
+			Tuple5<Double,Double,Double,Double,Double> tsqj = Kinematics.vsLevelOutTimes(ownship.altitude(),ownship.verticalSpeed(),
+					vertical_rate_,target_alt,vertical_accel_,-vertical_accel_,true);
+			double tsqj1 = tsqj.first+0;
+			double tsqj2 = tsqj.second+0;
+			double tsqj3 = tsqj.third+tstep;
+			for (int i=0; i<=Math.floor(tsqj1/tstep);++i) {
+				double tsi = i*tstep;
+				if ((B<=tsi && tsi<=T && any_los_aircraft(conflict_det,trajdir,tsi,ownship,traffic)) ||
+						(recovery_det.isPresent() && B2 <= tsi && tsi <= T2 && 
+						any_los_aircraft(recovery_det.get(),trajdir,tsi,ownship,traffic))) { 
+					return false;
+				}
+			}
+			if ((tsqj2>=B && 
+					any_conflict_aircraft(conflict_det,B,Math.min(T,tsqj2),trajdir,Math.max(tsqj1,0),ownship,traffic)) || 
+					(recovery_det.isPresent() && tsqj2>=B2 && 
+					any_conflict_aircraft(recovery_det.get(),B2,Math.min(T2,tsqj2),trajdir,Math.max(tsqj1,0),ownship,traffic))) {
+				return false;
+			}
+			for (int i=(int)Math.ceil(tsqj2/tstep); i<=Math.floor(tsqj3/tstep);++i) {
+				double tsi = i*tstep;
+				if ((B<=tsi && tsi<=T && any_los_aircraft(conflict_det,trajdir,tsi,ownship,traffic)) ||
+						(recovery_det.isPresent() && B2 <= tsi && tsi <= T2 && 
+						any_los_aircraft(recovery_det.get(),trajdir,tsi,ownship,traffic))) { 
+					return false;
+				}
+			}
+			return no_conflict(conflict_det,recovery_det,B,T,B2,T2,trajdir,Math.max(tsqj3,0),ownship,traffic);
+		}
+	}
+
+	private void alt_bands_generic(List<Integerval> l,
+			Detection3D conflict_det, Optional<Detection3D> recovery_det, double B, double T, double B2, double T2,
+			TrafficState ownship, List<TrafficState> traffic) {
+		int max_step = (int)Math.floor((max_val(ownship)-min_val(ownship))/get_step())+1;
+		int d = -1; // Set to the first index with no conflict
+		for (int k = 0; k <= max_step; ++k) {
+			j_step_ = k;
+			if (d >=0 && conflict_free_traj_step(conflict_det,recovery_det,B,T,B2,T2,ownship,traffic)) {
+				continue;
+			} else if (d >=0) {
+				l.add(new Integerval(d,k-1));
+				d = -1;
+			} else if (conflict_free_traj_step(conflict_det,recovery_det,B,T,B2,T2,ownship,traffic)) {
+				d = k;
+			}
+		}
+		if (d >= 0) {
+			l.add(new Integerval(d,max_step));
+		}
+	}
+
+	public void none_bands(IntervalSet noneset, Detection3D conflict_det, Optional<Detection3D> recovery_det, TrafficState repac, int epsh, int epsv,
+			double B, double T, TrafficState ownship, List<TrafficState> traffic) {
+		List<Integerval> altint = new ArrayList<Integerval>();
+		alt_bands_generic(altint,conflict_det,recovery_det,B,T,0,B,ownship,traffic);
+		toIntervalSet(noneset,altint,get_step(),min_val(ownship),min_val(ownship),max_val(ownship));
+	}
+
+	public boolean any_red(Detection3D conflict_det, Optional<Detection3D> recovery_det, TrafficState repac, int epsh, int epsv,
+			double B, double T, TrafficState ownship, List<TrafficState> traffic) {
+		return first_band_alt_generic(conflict_det,recovery_det,B,T,0,B,ownship,traffic,true,false) >= 0 ||
+				first_band_alt_generic(conflict_det,recovery_det,B,T,0,B,ownship,traffic,false,false) >= 0;
+	}
+
+	public boolean all_red(Detection3D conflict_det, Optional<Detection3D> recovery_det, TrafficState repac, int epsh, int epsv,
+			double B, double T, TrafficState ownship, List<TrafficState> traffic) {
+		return first_band_alt_generic(conflict_det,recovery_det,B,T,0,B,ownship,traffic,true,true) < 0 &&
+				first_band_alt_generic(conflict_det,recovery_det,B,T,0,B,ownship,traffic,false,true) < 0;
+	}
+
+	int first_nat(int mini, int maxi, boolean dir, Detection3D conflict_det, Optional<Detection3D> recovery_det,
+			double B, double T, double B2, double T2, TrafficState ownship, List<TrafficState> traffic, boolean green) {
+		while (mini <= maxi) {
+			j_step_ = mini;
+			if (dir && green == conflict_free_traj_step(conflict_det,recovery_det,B,T,B2,T2,ownship,traffic)) {
+				return j_step_; 
+			} else if (dir) {
+				++mini;
+			} else {
+				j_step_ = maxi;
+				if (green == conflict_free_traj_step(conflict_det,recovery_det,B,T,B2,T2,ownship,traffic)) {
+					return j_step_;
+				} else if (maxi == 0) {
+					return -1;
+				} else {
+					--maxi;
+				}
+			}
+		}
+		return -1;
+	}
+
+	public int first_band_alt_generic(Detection3D conflict_det, Optional<Detection3D> recovery_det,
+			double B, double T, double B2, double T2,
+			TrafficState ownship, List<TrafficState> traffic, boolean dir, boolean green) {
+		int upper = (int)(dir ? Math.floor((max_val(ownship)-min_val(ownship))/get_step())+1 : 
+			Math.floor((ownship.altitude()-min_val(ownship))/get_step()));
+		int lower = dir ? (int)(Math.ceil(ownship.altitude()-min_val(ownship))/get_step()) : 0;
+		if (ownship.altitude() < min_val(ownship) || ownship.altitude() > max_val(ownship)) {
+			return -1;
+		} else {
+			return first_nat(lower,upper,dir,conflict_det,recovery_det,B,T,B2,T2,ownship,traffic,green);
+		}
+	}
+	
+  // dir=false is down, dir=true is up
+  public double resolution(Detection3D conflict_det, Optional<Detection3D> recovery_det, TrafficState repac, int epsh, int epsv,
+      double B, double T, TrafficState ownship, List<TrafficState> traffic, boolean dir) {
+    int ires = first_band_alt_generic(conflict_det,recovery_det,B,T,0,B,ownship,traffic,dir,true);
+    if (ires < 0) {
+      return (dir ? 1 : -1)*Double.POSITIVE_INFINITY;
+    } else {
+      return min_val(ownship)+ires*get_step();
     }
   }
 
-  public void setVerticalAcceleration(double val) {
-    if (val >= 0 && val != vertical_accel) {
-      vertical_accel = val;
-      reset();
-    }
-  }
-
-  public double getVerticalRate() {
-	  return vertical_rate;
-  }
-  
-  public double getVerticalAcceleration() {
-	  return vertical_accel;
-  }
-  
-  public Pair<Vect3, Velocity> trajectory(OwnshipState ownship, double time, boolean dir) {
-    return Pair.make(Vect3.INVALID,Velocity.INVALID);
-  }
-  
-  public boolean any_red(Detection3D conflict_det, Optional<Detection3D> recovery_det, TrafficState repac,
-      double B, double T, OwnshipState ownship, List<TrafficState> traffic) {
-    return true;
-  }
-  
-  
-  public boolean all_red(Detection3D conflict_det, Optional<Detection3D> recovery_det, TrafficState repac,
-      double B, double T, OwnshipState ownship, List<TrafficState> traffic) {
-    return false;
-  }
-  
-  public void none_bands(IntervalSet noneset, Detection3D conflict_det, Optional<Detection3D> recovery_det, TrafficState repac, double B, double T, 
-      OwnshipState ownship, List<TrafficState> traffic) {
-  }
-
-  /**
-   * Returns true if aircraft are currently in Violation 
-   */
-  static private boolean checkViolation(Detection3D detector, OwnshipState ownship, Position po, Position pi, Velocity vo, Velocity vi) {
-    return detector.violation(ownship.pos_to_s(po),ownship.vel_to_v(po,vo),ownship.pos_to_s(pi),ownship.vel_to_v(pi,vi)); 
-  }
-  
-  /**
-   * Returns true if the aircraft will be in Violation within time [B,T]
-   */
-  static private ConflictData checkConflict(Detection3D detector, OwnshipState ownship, Position po, Velocity vo, Position pi, Velocity vi, double B, double T) {
-    return detector.conflictDetection(ownship.pos_to_s(po),ownship.vel_to_v(po,vo),ownship.pos_to_s(pi),ownship.vel_to_v(pi,vi),
-        B,T);
-  }
-
-  protected void compute(KinematicBandsCore core) {
-    List<TrafficState> traffic = new ArrayList<TrafficState>();
-    for (int i = 0; i < core.trafficSize(); ++i) {
-      traffic.add(core.getTraffic(i));
-    }
-    IntervalSet redset = new IntervalSet();
-    if (!traffic.isEmpty()) {
-      red_bands(redset,core.detector,0,core.alertingTime(),core.ownship,traffic);
-    }
-    color_bands(redset,false,core.implicit_bands,false);
-  }
-
-  public void red_bands(IntervalSet redset, Detection3D detector, double B, double T, 
-      OwnshipState ownship, List<TrafficState> traffic) {
-    double tstep = 1;
-    redset.clear();
-    for (double a = min; a < max; a += step) {
-      Interval in = Interval.EMPTY;
-      Triple<Position,Velocity,Double> svt = ProjectedKinematics.vsLevelOutFinal(ownship.getPosition(), ownship.getVelocity(), vertical_rate, a, vertical_accel);
-      //f.pln("a="+a+" own , "+svt.first.toString4NP()+" , "+svt.second.toString4NP()+" , "+svt.third);      
-      // special case -- can't make this level
-      if (svt.third < 0.0) {
-        in = new Interval(a-step, a+step);
-        //general case
-        //f.pln("boundedAltitude: can't make time "+in);        
-      } else if (svt.third < T){
-        for (TrafficState ac : traffic) {
-          Position pi = ac.getPosition().linear(ac.getVelocity(), svt.third);
-          Velocity vi = ac.getVelocity();
-          if (checkConflict(detector, ownship,svt.first,svt.second,pi,vi,Math.max(0,B-svt.third),Math.max(1.0,T-svt.third)).conflict()) {
-            in = new Interval(a-step, a+step);        
-            //f.pln("conflict "+in+" with traffic "+ac+" at "+pi+" : "+vi+" tin="+detector.getTimeIn()+" "+Units.to("ft", a));        
-            break;
-          }
-        }
-      }
-      redset.union(in);
-    }
-    if (vertical_rate != 0) {
-      redset.union(losSetDuringFL(detector,tstep,ownship,traffic,B,T,redset));
-    }
-  }
-
-  private IntervalSet losSetDuringFL(Detection3D detector, double tstep, OwnshipState ownship, List<TrafficState> traffic,
-      double B, double T, IntervalSet conflictSet) {
-    //f.pln("losSetDuringFL "+conflictSet+" "+vs);    
-    IntervalSet losSet = new IntervalSet();
-
-    //    double soz = ((int)(so.z() / flStep))*flStep;
-    //    double maxDz = Math.max(soz-min, max-soz)+flStep;
-    //    Pair<ArrayList<Position>,ArrayList<Velocity>> relevantTraffic = buildRelevantTraffic(D, H, maxTime, vo0.gs(), red.getMaxVerticalSpeed());
-
-    // now start to go both up and down.  If we hit LoS on up in constant climb, goUp = false, and all 
-    // further up in that direction will also be LoS.  Similarly for down. 
-    boolean goUp = true;
-    boolean goDown = true;
-    // set these to the highest positive value we encounter in the "straight" section -- we don't need to re-do up to that.
-    double constUp = 0;
-    double constDown = 0;
-    // alternate version:
-    for (double fl1 = min; fl1 <= max; fl1 += step) {
-      if (fl1 >= ownship.getPosition().z()) {
-        double dt = Math.min(ProjectedKinematics.vsLevelOutTime(ownship.getPosition(), ownship.getVelocity(), vertical_rate, fl1, vertical_accel), T);
-        //f.pln(Units.to("ft", fl1)+" dt="+dt);
-        for (TrafficState ac : traffic) {
-          Velocity vi = ac.getVelocity();
-          if (!goUp || fl1 > max || conflictSet.in(fl1)) { // shortcut
-            losSet.union(new Interval(fl1-step, fl1+step));
-            //f.pln("LoS UP AT "+Units.to("ft", fl1)+" goUp="+goUp+" fl1>maxalt="+(fl1 > max)+" conflictSet.in(fl1)="+conflictSet.in(fl1)+" with "+ac);              
-          } else {
-            for (double t = constUp; goUp && t <= dt; t += tstep) {
-              boolean constVS = false;
-              Position pi = ac.getPosition().linear(vi,t);
-              Pair<Position, Velocity> end = ProjectedKinematics.vsLevelOut(ownship.getPosition(), ownship.getVelocity(), t, vertical_rate, fl1, vertical_accel);
-              if (Util.almost_equals(end.second.z, vertical_rate)) {
-                constUp = t;
-                constVS = true;
-                //f.pln("in constUp at "+t+" with "+ac+" at "+Units.to("ft",end.first.alt())+"/"+Units.to("ft", fl1)+" "+end.second.z);              
-              }
-              if (t >= B && checkViolation(detector,ownship,end.first,pi,end.second,vi)) {
-                losSet.union(new Interval(fl1-step, fl1+step));
-                if (constVS) {
-                  goUp = false;                       
-                  //f.pln("Hard LoS UP AT "+Units.to("ft", fl1)+" t="+t+" "+end.first+" "+end.second.z+" with "+ac);              
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-    for (double fl2 = max; fl2 >= min; fl2 -= step) {
-      if (fl2 < ownship.getPosition().z()) {
-        double dt = Math.min(ProjectedKinematics.vsLevelOutTime(ownship.getPosition(), ownship.getVelocity(), vertical_rate, fl2, vertical_accel),T);
-        for (TrafficState ac : traffic) {
-          Velocity vi = ac.getVelocity();
-          if (!goDown || fl2 < min || conflictSet.in(fl2)) { // shortcut
-            losSet.union(new Interval(fl2-step, fl2+step));                   
-            //f.pln("LoS DOWN AT "+Units.to("ft", fl2)+" godown="+goDown+" fl2<minalt="+(fl2 < min)+" conflictSet.in(fl2)="+conflictSet.in(fl2)+" with "+ac);              
-          } else {
-            for (double t = constDown; goDown && t <= dt; t += tstep) {
-              boolean constVS = false;
-              Position pi = ac.getPosition().linear(vi,t);
-              Pair<Position, Velocity> end = ProjectedKinematics.vsLevelOut(ownship.getPosition(), ownship.getVelocity(), t, vertical_rate, fl2, vertical_accel);
-              if (Util.almost_equals(end.second.z, -vertical_rate)) {
-                constDown = t;
-                constVS = true;
-                //f.pln("in constDown at "+t+" with "+ac+" at "+Units.to("ft", fl2)+" "+end.second.z);              
-              }
-              if (t >= B && checkViolation(detector, ownship,end.first,pi,end.second,vi)) {
-                losSet.union(new Interval(fl2-step, fl2+step));
-                if (constVS) {
-                  goDown = false;
-                  //f.pln("Hard LoS DOWN AT "+Units.to("ft", fl2)+" t="+t+" "+end.first+" "+end.second.z+" with "+ac);              
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-
-    //f.pln("LosSet="+losSet.toString());
-    return losSet;
-  }
-  
 }

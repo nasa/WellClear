@@ -4,7 +4,7 @@
  * Contact: Jeff Maddalon (j.m.maddalon@nasa.gov)
  * NASA LaRC
  * 
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -40,7 +40,7 @@ public:
 	enum Gs_TCPType {NONEg, BGS, EGS, EGSBGS, UNKNOWN_GS};
 	enum Vs_TCPType {NONEv, BVS, EVS, EVSBVS, UNKNOWN_VS};
 
-	static const int TCP_OUTPUT_COLUMNS = 19;
+	static const int TCP_OUTPUT_COLUMNS = 20;
 	static const int MIN_OUTPUT_COLUMNS = 5;
 
 private:
@@ -48,25 +48,26 @@ private:
 	double t;
 	WayType ty;
 	std::string label_s;
-	mutable std::string tmp_label;
+	//mutable std::string tmp_label;
 	//TCPType tcp;
 	Trk_TCPType      tcp_trk;		        //
 	Gs_TCPType       tcp_gs;		        //
 	Vs_TCPType       tcp_vs;		        //
 	Position sourcePosition_p;
 	double sourceTime_d;
-	//double accel_d;                         // gsAccel if GS TCP
-	double   accel_trk;		    // omega (signed turn rate)
+	//double   accel_trk;		    // omega (signed turn rate)
+	double   sgnRadius;
 	double   accel_gs;            // signed gs-acceleration value
 	double   accel_vs;            // signed vs-acceleration value
 	Velocity velocityIn_v;
+
 
 public:
 
 
     NavPoint(const Position& pp, double tt, WayType tty,
    		     const std::string& llabel, 	Trk_TCPType tcp_t, Gs_TCPType tcp_g, Vs_TCPType tcp_v,
-  			 double a_trk, double a_gs, double a_vs,
+  			 double sRadius, double a_gs, double a_vs,
   			 const Velocity& v_velocityIn, const Position& sourcePos, double sourceTime
    		     ) ;
 
@@ -88,7 +89,7 @@ public:
 
     static NavPoint makeFull(const Position& p, double t, WayType ty, const std::string& label,
     	      Trk_TCPType tcp_trk, Gs_TCPType tcp_gs, Vs_TCPType tcp_vs,
-    	      double accel_trk, double accel_gs, double accel_vs,
+    	      double sgnRadius, double accel_gs, double accel_vs,
     	      const Velocity& velocityIn, const Position& sourcePosition, double sourceTime);
 
 
@@ -229,14 +230,18 @@ public:
 	 * It returns either the same point (if no significant data is in the label) or a fully reconstructed TCP type.
 	 * The reconstructed TCP will have a label field that does not contain any TCP metadata -- you will need to call name()
 	 * or tcpLabel() to retrieve the full string.
+	 * If this detects an old metadata format, it will return an invalid Navpoint.
 	 */
 	const NavPoint parseMetaDataLabel(const std::string& tlabel) const;
 	/**
 	 * Re-parse this point as a TCP, if its label describes it as such.
 	 * If this point is already a TCP or has no appropriate label, return unchanged.
+	 * If this detects an old metadata format, it will return an invalid Navpoint.
 	 * @return
 	 */
 	const NavPoint parseMetaDataLabel() const;
+
+	const std::string tcpTypeString() const;
 
 	/** Returns true if the "name" label of this NavPoint has been set. */
     bool isNameSet() const;
@@ -252,9 +257,6 @@ public:
     /** Returns true if the point at index i is an unmodified original point, 
      false otherwise.  0 <= i < size() */
     bool isOriginal() const;
-    /** Returns true if the point at index i is a modified point, 
-     false otherwise.  0 <= i < size() */
-    //bool isModified() const;
 
 	/** Returns true if the point at index i is a modified point, 
 	   false otherwise.  0 <= i < size() */
@@ -268,50 +270,22 @@ public:
 
     /** String representation of the type */
     const std::string& strType() const;
-    /** String representation of the TCP type */
-    //const std::string& strTCP() const;
-    /** Returns true if time is fixed */
-//    bool isFixedTime() const;
-//    /** Returns true if horizontal position is fixed */
-//    bool isFixedPosition() const;
-//    /** Returns true if altitude is fixed */
-//    bool isFixedAlt() const;
-//    /** Is this point fixed in any dimension (horizontal position, altitude, time)? */
-//    bool isFixed() const;
-//
-//    bool isFixedGs() const;
-    /** String representation of the time mutability */
-//    const std::string& strTime() const;
-//    /** String representation of the horizontal position mutability */
-//    const std::string& strPosition() const;
-//    /** String representation of the altitude mutability */
-//    const std::string& strAltitude() const;
 
-
-//	/**
-//	 * Return true if this NavPoint is marked indicating a known minor velocity shift
-//	 */
-//	bool isMinorVelChange() const;
-//
-//	bool isMinorTrkChange() const;
-//
-//	bool isMinorGsChange() const;
-//
-//	bool isMinorVsChange() const;
-//
-//	const NavPoint makeMinorTrkChange() const;
-//	const NavPoint makeMinorGsChange() const;
-//	const NavPoint makeMinorVsChange() const;
-//	const NavPoint makeClearMinorVelChange() const;
-
-//	const NavPoint makeMarked(unsigned int v) const;
-//	unsigned int getMark() const;
+    //double getRadius() const;
 
     /**
      * This returns the radius of the current turn.  If this is not a turn point or if the associated acceleration is 0.0, this returns
      * a radius of zero.
      */
     double turnRadius() const;
+
+
+    /**
+     * This returns the signed radius of the current turn.  If this is not a turn point or if the associated acceleration is 0.0, this returns
+     * a radius of zero.  The sign indicates the direction of the turn.
+     */
+    double signedRadius() const;
+
 
     /**
      * This returns a center of turn position with the same altitude as the current point.  If the current point is not a turn point,
@@ -388,10 +362,11 @@ public:
 //	/** Make a new NavPoint with current point's information as the "source" */
 //	const NavPoint makeSourceClear() const;
 
+    const NavPoint makeRadius(double r) const;
 
-	const NavPoint makeTrkAccel(double x) const;
-	const NavPoint makeGsAccel(double x) const;
-	const NavPoint makeVsAccel(double x) const;
+	const NavPoint makeTrkAccel(double omega) const;
+	const NavPoint makeGsAccel(double ga) const;
+	const NavPoint makeVsAccel(double va) const;
 
     const NavPoint makeVelocityIn(const Velocity& x) const;
 //	/** Make a new NavPoint from the current one with the ground speed in metadata changed.  Set to -1 to remove the constraint. */
@@ -421,13 +396,13 @@ public:
     const NavPoint makeLabel(const std::string& label) const;
     const NavPoint appendLabel(const std::string& label) const;
 	/** Make a new "beginning of turn" NavPoint at the given position and time where the current NavPoint is the "center of turn" */
-	const NavPoint makeBOT(const Position& p, double t, double d_turnRate, const Velocity& v_velocityIn) const;
+	const NavPoint makeBOT(const Position& p, double t,  const Velocity& v_velocityIn, double sRadius) const;
 //	/** Make a new "middle of turn" NavPoint at the given position and time where the current NavPoint is the "center of turn" */
 //	const NavPoint makeTurnMid(const Position& p, double t, double d_turnRate, const Velocity& v_velocityIn) const;
 	/** Make a new "end of turn" NavPoint at the given position and time where the current NavPoint is the "center of turn" */
 	const NavPoint makeEOT(const Position& p, double t, const Velocity& v_velocityIn) const;
 
-	const NavPoint makeEOTBOT(const Position& p , double t, double omega, const Velocity& v_velocityIn) const;
+	const NavPoint makeEOTBOT(const Position& p , double t, const Velocity& v_velocityIn, double sRadius) const;
 	/** Make a new "beginning of ground speed change" NavPoint at the given position and time where the current NavPoint is the "center of gsc" */
 	const NavPoint makeBGS(const Position& p, double t, double gsAccel, const Velocity& velocityIn) const;
 	/** Make a new "end of ground speed change" NavPoint at the given position and time where the current NavPoint is the "center of gsc" */
@@ -474,6 +449,15 @@ public:
     
 
 	/** 
+	 * Calculate and return the final velocity between the current point and the given point
+	 * This function is commutative: direction between points is always determined by the time ordering of the two points.
+	 *
+	 * @param s the given NavPoint
+	 */
+    Velocity finalVelocity(const NavPoint& s) const;
+
+
+	/**
 	 * Calculate and return the vertical speed between the current point and the given point 
 	 * This function is commutative: direction between points is always determined by the time ordering of the two points.
 	 * 
@@ -565,6 +549,11 @@ public:
 
     static NavPoint parseXYZ(const std::string& s);
 
+
+	/** String representation, using the default output precision (see Contants.get_output_precision()) */
+    std::string toStringShort() const;
+	/** String representation, using the give precision */
+    std::string toStringShort(int precision) const;
 
 	/** String representation, using the default output precision (see Contants.get_output_precision()) */
     std::string toString() const;

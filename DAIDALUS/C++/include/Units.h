@@ -6,7 +6,7 @@
  *
  * Conversion to internal units: meters, seconds, radians.
  *
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -375,6 +375,10 @@ public:
 	static const double min;
 	/** hours */
 	static const double hour;
+	/** days */
+	static const double day;
+	/** milliseconds */
+	static const double ms;
 
 	/** radians */
 	static const double rad;
@@ -492,6 +496,8 @@ public:
 	 * @return value
 	 */
 	static double parse(const std::string& s, double default_val);
+
+	static double parse(const std::string& s);
 
 	/**
 	 * Parse a string, representing a value and a unit.

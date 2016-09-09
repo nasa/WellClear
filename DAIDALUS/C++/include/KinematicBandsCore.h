@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 United States Government as represented by
+ * Copyright (c) 2015-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -7,61 +7,63 @@
 #ifndef KINEMATICBANDSCORE_H_
 #define KINEMATICBANDSCORE_H_
 
+#include "AlertLevels.h"
 #include "Velocity.h"
 #include "Position.h"
 #include "TrafficState.h"
 #include "Detection3D.h"
 #include "Detection3DAcceptor.h"
-#include "TrafficState.h"
-#include "OwnshipState.h"
 #include "TCASTable.h"
+#include "KinematicBandsParameters.h"
+#include "Interval.h"
 #include <vector>
 #include <string>
 
 namespace larcfm {
 
-class KinematicBandsCore : public Detection3DAcceptor {
+class KinematicBandsCore {
 
 public:
 
   static TCASTable RA;
 
   /* Absolute ownship state */
-  OwnshipState ownship;
+  TrafficState ownship;
   /* Absolute list of traffic states */
   std::vector<TrafficState> traffic;
-  /* State detector */
-  Detection3D* detector;
-  /* Implicit bands are bands where only conflict bands are indicated. Other types of bands are implicit */
-  bool implicit_bands;
-  /* Lookahead time. This is the time horizon used in the computation of bands (T > 0) */
-  double lookahead;
-  /* Alerting time. This is the first time prior to a violation when bands are
-   * computed (when this value is 0, lookahead time is used instead) */
-  double alerting_time;
-  /* Maximum time for recovery bands. After this time, bands algorithm gives up 
-   * (when this value is 0, lookahead time is used instead) */
-  double max_recovery_time;
-  /* Stability time for the computation of recovery bands. Recovery bands are computed at time 
-   * of first green plus this time. */
-  double recovery_stability_time;
-  std::string criteria_ac; /* Most urgent aircraft */
-  bool conflict_crit; /* Use criteria for conflict bands */
-  bool recovery_crit; /* Use criteria for recovery bands */
-  /* Minimum horizontal separation for recovery (when this value is 0, TCAS RA HMD value
-   * is used instead) */
-  double min_horizontal_recovery;
-  /* Minimum vertical separation for recovery (when this value is 0, TCAS RA ZTHR value
-   * is used instead) */
-  double min_vertical_recovery;
-  /* Compute collision avoidance bands */
-  bool ca_bands;
+  /* Kinematic bands parameters */
+  KinematicBandsParameters parameters;
+  /* Most urgent aircraft */
+  TrafficState most_urgent_ac;
+
+private:
+
+  /* Boolean to control re-computation of cached values */
+  bool outdated_;
+  /* Cached horizontal epsilon for implicit coordination */
+  int epsh_;
+  /* Cached vertical epsilon for implicit coordination */
+  int epsv_;
+  /* The length of conflict_acs_ is greater than or equal to the length of the alert levels. */
+  /* Cached list of conflict aircraft per alert level */
+  std::vector< std::vector<TrafficState> > conflict_acs_;
+  /* Cached list of time intervals of violation per alert level */
+  std::vector<Interval> tiov_; //
+
+  /**
+   *  Update cached values
+   */
+  void update();
+
+  /**
+   * Put in conflict_acs_ the list of aircraft predicted to be in conflict for the given alert level.
+   * Requires: 1 <= alert_level <= alertor.mostSevereAlertLevel()
+   */
+  void conflict_aircraft(int alert_level);
 
 public:
 
-  KinematicBandsCore();
-
-  KinematicBandsCore(const Detection3D* det);
+  KinematicBandsCore(const KinematicBandsParameters& params);
 
   KinematicBandsCore(const KinematicBandsCore& core);
 
@@ -70,21 +72,35 @@ public:
   // needed because of pointer
   KinematicBandsCore& operator=(const KinematicBandsCore& core);
 
+  /**
+   * Set kinematic bands core
+   */
+  void setKinematicBandsCore(const KinematicBandsCore core);
 
   /**
-   *  Clear ownship and traffic data from this object.   
+   *  Clear ownship and traffic data from this object.
    */
   void clear();
 
   /**
-   * Return actual alerting time in seconds. 
+   *  Reset cached values
    */
-  double alertingTime() const;
+  void reset();
 
   /**
-   *  Returns actual maximum recovery time in seconds. 
-   */ 
-  double maxRecoveryTime() const;
+   *  Returns horizontal epsilon for implicit coordination with respect to criteria ac
+   */
+  int epsilonH();
+
+  /**
+   *  Returns vertical epsilon for implicit coordination with respect to criteria ac
+   */
+  int epsilonV();
+
+  /**
+   *  Return list of corrective aircraft
+   */
+  std::vector<TrafficState> const & correctiveAircraft();
 
   /**
    * Returns actual minimum horizontal separation for recovery bands in internal units. 
@@ -98,58 +114,43 @@ public:
 
   bool hasOwnship() const;
 
-  OwnshipState getOwnship() const;
-
-  TrafficState getTraffic(int i) const;
-
-  int trafficSize() const;
-
-  TrafficState getTraffic(const std::string& id) const;
+  TrafficState intruder(const std::string& id) const;
 
   bool hasTraffic() const;
 
-  double getRecoveryStabilityTime() const;
+  Position const & trafficPosition(int i) const;
 
-  double getLookahead() const;
+  Velocity const & trafficVelocity(int i) const;
 
-  Position trafficPosition(int i) const;
+  Vect3 const & own_s() const;
 
-  Velocity trafficVelocity(int i) const;
+  Velocity const & own_v() const;
 
-  Vect3 own_s() const;
+  Vect3 const & traffic_s(int i) const;
 
-  Velocity own_v() const;
-
-  Vect3 pos_to_s(const Position& p) const;
-
-  Vect3 traffic_s(int i) const;
-
-  Vect3 traffic_s(const TrafficState& ac) const;
-
-  Velocity vel_to_v(const Position& p, const Velocity& v) const;
-
-  Velocity traffic_v(int i) const;
-
-  Velocity traffic_v(const TrafficState& ac) const;
+  Velocity const & traffic_v(int i) const;
 
   /**
-   * Returns true if the aircraft are in violation at current time
+   * Return list of conflict aircraft for a given alert level.
+   * Requires: 1 <= alert_level <= alertor.mostSevereAlertLevel()
    */
-  bool checkViolation(const TrafficState& ac) const;
+  std::vector<TrafficState> const & conflictAircraft(int alert_level);
 
   /**
-   * Returns true if the aircraft will be in Violation within time [B,T]
+   * Return time interval of violation for given alert level
+   * Requires: 1 <= alert_level <= alertor.mostSevereAlertLevel()
    */
-  ConflictData checkConflict(const TrafficState& ac, double B, double T) const;
+  Interval const & timeIntervalOfViolation(int alert_level);
 
-  static int epsilonH(const OwnshipState& ownship, const TrafficState& ac);
+  static int epsilonH(const TrafficState& ownship, const TrafficState& ac);
 
-  static int epsilonV(const OwnshipState& ownship, const TrafficState& ac);
+  static int epsilonV(const TrafficState& ownship, const TrafficState& ac);
 
-  Detection3D* getCoreDetectionPtr() const;
-  Detection3D& getCoreDetectionRef() const;
-  void setCoreDetectionPtr(const Detection3D* cd);
-  void setCoreDetectionRef(const Detection3D& cd);
+  TrafficState const & criteria_ac() const;
+
+  TrafficState const & recovery_ac() const;
+
+  std::string toString() const;
 
 };
 

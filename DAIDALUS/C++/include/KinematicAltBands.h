@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 United States Government as represented by
+ * Copyright (c) 2015-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -10,8 +10,8 @@
 #include "KinematicRealBands.h"
 #include "Detection3D.h"
 #include "TrafficState.h"
-#include "OwnshipState.h"
 #include "IntervalSet.h"
+
 #include <vector>
 
 namespace larcfm {
@@ -20,58 +20,61 @@ namespace larcfm {
 class KinematicAltBands : public KinematicRealBands {
 
 private:
-  double vertical_rate;  // Climb/descend rate for altitude band
-    /* When vertical_rate = 0, instantaneous climb/descend is assumed */
-
-double vertical_accel; // Climb/descend acceleration
-
+  double vertical_rate_;  // Climb/descend rate for altitude band
+  /* When vertical_rate = 0, instantaneous climb/descend is assumed */
+  double vertical_accel_; // Climb/descend acceleration
 
 public:
-KinematicAltBands();
+  KinematicAltBands(const KinematicBandsParameters& parameters);
 
-KinematicAltBands(const KinematicAltBands& b);
+  KinematicAltBands(const KinematicAltBands& b);
 
-void setVerticalRate(double val);
+  bool instantaneous_bands() const;
 
-void setVerticalAcceleration(double val);
+  double get_vertical_rate() const;
 
-double getVerticalRate() const;
+  void set_vertical_rate(double val);
 
-double getVerticalAcceleration() const;
+  double get_vertical_accel() const;
 
-std::pair<Vect3, Velocity> trajectory(const OwnshipState& ownship, double time, bool dir) const;
+  void set_vertical_accel(double val);
 
-bool any_red(Detection3D* conflict_det, Detection3D* recovery_det, const TrafficState& repac,
-    double B, double T, const OwnshipState& ownship, const std::vector<TrafficState>& traffic) const;
+  double own_val(const TrafficState& ownship) const;
 
-bool all_red(Detection3D* conflict_det, Detection3D* recovery_det, const TrafficState& repac,
-    double B, double T, const OwnshipState& ownship, const std::vector<TrafficState>& traffic) const;
+  double time_step(const TrafficState& ownship) const;
 
-void none_bands(IntervalSet& noneset, Detection3D* conflict_det, Detection3D* recovery_det, const TrafficState& repac, double B, double T,
-    const OwnshipState& ownship, const std::vector<TrafficState>& traffic) const;
+  std::pair<Vect3, Velocity> trajectory(const TrafficState& ownship, double time, bool dir) const;
 
-private:
-/**
- * Returns true if aircraft are currently in Violation
- */
-static bool checkViolation(Detection3D* detector, const OwnshipState& ownship, const Position& po, const Position& pi, const Velocity& vo, const Velocity& vi);
+  void none_bands(IntervalSet& noneset, Detection3D* conflict_det, Detection3D* recovery_det, const TrafficState& repac,
+      int epsh, int epsv, double B, double T, const TrafficState& ownship, const std::vector<TrafficState>& traffic);
 
-/**
- * Returns true if the aircraft will be in Violation within time [B,T]
- */
-static ConflictData checkConflict(Detection3D* detector, const OwnshipState& ownship, const Position& po, const Velocity& vo, const Position& pi, const Velocity& vi, double B, double T);
+  bool any_red(Detection3D* conflict_det, Detection3D* recovery_det, const TrafficState& repac,
+      int epsh, int epsv, double B, double T, const TrafficState& ownship, const std::vector<TrafficState>& traffic);
 
-protected:
-void compute(KinematicBandsCore& core);
+  bool all_red(Detection3D* conflict_det, Detection3D* recovery_det, const TrafficState& repac,
+      int epsh, int epsv, double B, double T, const TrafficState& ownship, const std::vector<TrafficState>& traffic);
 
-public:
-void red_bands(IntervalSet& redset, Detection3D* detector, double B, double T,
-    const OwnshipState& ownship, const std::vector<TrafficState>& traffic);
+  // dir=false is down, dir=true is up. Return NaN if there is not a resolution
+  double resolution(Detection3D* conflict_det, Detection3D* recovery_det, const TrafficState& repac,
+      int epsh, int epsv, double B, double T, const TrafficState& ownship, const std::vector<TrafficState>& traffic, bool dir);
 
 private:
-IntervalSet losSetDuringFL(Detection3D* detector, double tstep, const OwnshipState& ownship, const std::vector<TrafficState>& traffic,
-    double B, double T, IntervalSet& conflictSet);
+  bool conflict_free_traj_step(Detection3D* conflict_det, Detection3D* recovery_det,
+      double B, double T, double B2, double T2,
+      const TrafficState& ownship, const std::vector<TrafficState>& traffic) const;
 
+  void alt_bands_generic(std::vector<Integerval>& l,
+      Detection3D* conflict_det, Detection3D* recovery_det,
+      double B, double T, double B2, double T2,
+      const TrafficState& ownship, const std::vector<TrafficState>& traffic);
+
+  int first_nat(int mini, int maxi, bool dir, Detection3D* conflict_det, Detection3D* recovery_det,
+      double B, double T, double B2, double T2, const TrafficState& ownship, const std::vector<TrafficState>& traffic,
+      bool green);
+
+  int first_band_alt_generic(Detection3D* conflict_det, Detection3D* recovery_det,
+      double B, double T, double B2, double T2,
+      const TrafficState& ownship, const std::vector<TrafficState>& traffic, bool dir, bool green);
 };
 
 }

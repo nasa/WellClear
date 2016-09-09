@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2015 United States Government as represented by
+ * Copyright (c) 2012-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -15,9 +15,6 @@ import gov.nasa.larcfm.Util.*;
 public abstract class WCV_tvar implements Detection3D {
 
   WCVTable table;
-
-  /** set to true to add pvsio-friendly output to stderr for verification purposes. */
-  public static boolean pvsCheck = false; 
 
   protected String id = "";
 
@@ -40,7 +37,7 @@ public abstract class WCV_tvar implements Detection3D {
    * Return a copy of the internal table for this object
    */
   public WCVTable getWCVTable() {
-	  return table.copy();
+    return table.copy();
   }
 
   /**
@@ -50,7 +47,7 @@ public abstract class WCV_tvar implements Detection3D {
     table = tab.copy();
   }
 
-  
+
   public double getDTHR()  {
     return table.getDTHR();
   }
@@ -70,19 +67,19 @@ public abstract class WCV_tvar implements Detection3D {
   public double getTTHR()  {
     return table.getTTHR();
   }
-  
+
   public double getTTHR(String u)  {
     return table.getTTHR(u);
   }
-  
+
   public double getTCOA()  {
     return table.getTCOA();
   }
-  
+
   public double getTCOA(String u)  {
     return table.getTCOA(u);
   }
-  
+
   public void setDTHR(double val) {
     table.setDTHR(val);
   }
@@ -106,15 +103,15 @@ public abstract class WCV_tvar implements Detection3D {
   public void setTTHR(double val, String u) {
     table.setTTHR(val,u);
   }
-  
+
   public void setTCOA(double val) {
     table.setTCOA(val);
   }
-  
+
   public void setTCOA(double val, String u) {
     table.setTCOA(val,u);
   }
-  
+
   abstract public double horizontal_tvar(Vect2 s, Vect2 v);
 
   abstract public LossData horizontal_WCV_interval(double T, Vect2 s, Vect2 v);
@@ -143,12 +140,11 @@ public abstract class WCV_tvar implements Detection3D {
     return WCV3D(so,vo,si,vi,B,T).conflict(); 
   }
 
-  
   public ConflictData conflictDetection(Vect3 so, Velocity vo, Vect3 si, Velocity vi, double B, double T) {    
     LossData ld = WCV3D(so,vo,si,vi,B,T);
     double t_tca = (ld.getTimeIn() + ld.getTimeOut())/2;
     double dist_tca = so.linear(vo, t_tca).Sub(si.linear(vi, t_tca)).cyl_norm(table.DTHR,table.ZTHR);
-    return new ConflictData(ld,t_tca,dist_tca);
+    return new ConflictData(ld,t_tca,dist_tca,so.Sub(si),vo.Sub(vi));
   }
 
   public LossData WCV3D(Vect3 so, Velocity vo, Vect3 si, Velocity vi, double B, double T) {
@@ -159,8 +155,6 @@ public abstract class WCV_tvar implements Detection3D {
   public LossData WCV_interval(Vect3 so, Velocity vo, Vect3 si, Velocity vi, double B, double T) {
     double time_in = T;
     double time_out = B;
-
-    print_PVS_input(so,vo,si,vi,B,T);
 
     Vect2 so2 = so.vect2();
     Vect2 si2 = si.vect2();
@@ -175,7 +169,6 @@ public abstract class WCV_tvar implements Detection3D {
     wcvz.vertical_WCV_interval(table.ZTHR,table.TCOA,B,T,sz,vz);
 
     if (wcvz.time_in > wcvz.time_out) {
-      print_PVS_output(time_in, time_out,"case 1");
       return new LossData(time_in, time_out);
     }
     Vect2 step = v2.ScalAdd(wcvz.time_in,s2);
@@ -184,38 +177,20 @@ public abstract class WCV_tvar implements Detection3D {
         time_in = wcvz.time_in;
         time_out = wcvz.time_out;
       }
-      print_PVS_output(time_in, time_out,"case 2");
       return new LossData(time_in, time_out);
     }
     LossData ld = horizontal_WCV_interval(wcvz.time_out-wcvz.time_in,step,v2);
     time_in = ld.getTimeIn() + wcvz.time_in;
     time_out = ld.getTimeOut() + wcvz.time_in;
-    print_PVS_output(time_in, time_out,"case 3");
     return new LossData(time_in, time_out);
-  }
-
-  private void print_PVS_input(Vect3 so, Velocity vo, Vect3 si, Velocity vi, double B, double T) {
-    //  Thread.dumpStack();
-    if (pvsCheck) {
-      System.err.println("(# DTHR := "+f.Fm8(table.DTHR)+", ZTHR := "+f.Fm8(table.ZTHR)+", TTHR := "+f.Fm8(table.TTHR)+", TCOA := "+f.Fm8(table.TCOA)
-          +", B := "+f.Fm8(B)+", T := "+f.Fm8(T)+" #)");     
-      System.err.println("(# x := "+f.Fm8(so.x())+", y := "+f.Fm8(so.y())+", z := "+f.Fm8(so.z())+" #) % so");
-      System.err.println("(# x := "+f.Fm8(vo.x())+", y := "+f.Fm8(vo.y())+", z := "+f.Fm8(vo.z())+" #) % vo");
-      System.err.println("(# x := "+f.Fm8(si.x())+", y := "+f.Fm8(si.y())+", z := "+f.Fm8(si.z())+" #) % si");
-      System.err.println("(# x := "+f.Fm8(vi.x())+", y := "+f.Fm8(vi.y())+", z := "+f.Fm8(vi.z())+" #) % vi"); 
-      System.err.flush();
-    } 
-  }
-
-  private void print_PVS_output(double time_in, double time_out, String comment) {
-    if (pvsCheck) {
-      System.err.println("("+f.Fm8(time_in)+","+f.Fm8(time_out)+") % "+getSimpleClassName()+" "+id+" time in/out "+comment);
-      System.err.flush();
-    }
   }
 
   public String toString() {
     return (id.equals("") ? "" : id+" = ")+getSimpleClassName()+": {"+table.toString()+"}";
+  }
+
+  public String toPVS(int prec) {
+    return table.toPVS(prec);
   }
 
   public ParameterData getParameters() {
@@ -226,7 +201,6 @@ public abstract class WCV_tvar implements Detection3D {
 
   public  void updateParameterData(ParameterData p) {
     table.updateParameterData(p);
-    //    p.set("pvsCheck",pvsCheck);
     //    p.set("WCV_name",name);
     //    p.set("WCV_username",username);
     p.set("id",id);
@@ -240,9 +214,6 @@ public abstract class WCV_tvar implements Detection3D {
     //    if (p.contains("WCV_username")) {
     //      username = p.getString("WCV_username");
     //    }
-    //    if (p.contains("pvsCheck")) {
-    //      pvsCheck = p.getBool("pvsCheck");
-    //    }
     if (p.contains("id")) {
       id = p.getString("id");
     }
@@ -251,7 +222,7 @@ public abstract class WCV_tvar implements Detection3D {
   public String getSimpleClassName() {
     return getClass().getSimpleName();
   }
-  
+
   public String getCanonicalClassName() {
     return getClass().getCanonicalName(); 
   }

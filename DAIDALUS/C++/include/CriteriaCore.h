@@ -4,7 +4,7 @@
  *
  * State-based Implicit Criteria
  *
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -204,7 +204,6 @@ public:
 
     static int verticalCoordinationLoS(const Vect3& s, const Vect3& vo, const Vect3& vi, std::string ownship, std::string traffic);
 
-
 private:
 
 	static bool horizontal_criterion_0(const Vect2& sp, int eps, const Vect2& v, double D);
@@ -227,10 +226,8 @@ private:
 
     static bool vertical_los_criterion(const Vect3& s, const Vect3& v, const Vect3& nv, int eps, double H, double minrelvs);
 
-
     /** Perform a symmetry calculation */
     static int breakSymmetry(const Vect3& s, std::string ownship, std::string traffic);
-
 
 };
 

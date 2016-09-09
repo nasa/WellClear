@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 United States Government as represented by
+ * Copyright (c) 2015-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -23,8 +23,6 @@ protected:
   std::string id;
 
 public:
-  static bool pvsCheck;
-
   /** This returns a copy of the object's internal table */
   WCVTable getWCVTable();
 
@@ -71,13 +69,8 @@ public:
 
   LossData WCV_interval(const Vect3& so, const Velocity& vo, const Vect3& si, const Velocity& vi, double B, double T) const;
 
-private:
-  void print_PVS_input(const Vect3& so, const Velocity& vo, const Vect3& si, const Velocity& vi, double B, double T) const;
-
-  void print_PVS_output(double time_in, double time_out, const std::string& comment) const;
-
-public:
-   std::string toString() const;
+  virtual std::string toString() const;
+  virtual std::string toPVS(int prec) const;
 
   ParameterData getParameters() const;
 
@@ -92,11 +85,10 @@ public:
     return "WCV_tvar";
   }
 
-  std::string getIdentifier() const;
+  virtual std::string getIdentifier() const;
+  virtual void setIdentifier(const std::string& s);
 
-  void setIdentifier(const std::string& s);
-
-  bool equals(Detection3D* o) const;
+  virtual bool equals(Detection3D* o) const;
 
 
 };

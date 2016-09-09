@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 United States Government as represented by
+ * Copyright (c) 2014-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -177,7 +177,7 @@ public:
 
 	// WARNING: DO NOT add this method to C++, bool's in C++ are integers and will
 	// capture some calls to .set with integer (and some pointer) parameters. For
-	// the case with integer parameters, the desired behavior is to go to the set(string,double,string) verison.
+	// the case with integer parameters, the desired behavior is to go to the set(string,double,string) version.
     //void set(const std::string& key, bool value);
 
 	/** Associates a value (in the given units) with a parameter key. */
@@ -186,6 +186,7 @@ public:
 	 * this value are provided by the units string.
 	 */
 	bool setInternal(const std::string& key, double value, const std::string& units);
+	bool setInternal(const std::string& key, double value, const std::string& units, int prec);
 
 	/** Associates a value (in the given units) with a parameter key.
 	 * If the parameter was already defined with a specified unit than
@@ -228,7 +229,15 @@ public:
 	std::vector<std::string> validateParameters(std::vector<std::string> c);
 	void copy(ParameterData p, bool overwrite);
 
+	/**
+	 * Remove this key from the database, if it exsts.
+	 */
 	void remove(const std::string& key);
+
+	/**
+	 * Remove all keys in the list from this database, if they exist.
+	 */
+	void removeAll(const std::vector<std::string>& key);
 
 
 	std::string toParameterList(const std::string& separator) const;
@@ -238,7 +247,16 @@ public:
 
 	bool equals(const ParameterData& pd) const;
 
-	static std::vector<std::string> stringList(const std::string& instring);
+
+	std::vector<int> getListInteger(const std::string& key) const;
+	std::vector<double> getListDouble(const std::string& key) const;
+	std::vector<std::string> getListString(const std::string& key) const;
+	std::vector<bool> getListBool(const std::string& key) const;
+
+	bool set(const std::string& key, const std::vector<int>& list);
+	bool set(const std::string& key, const std::vector<double>& list);
+	bool set(const std::string& key, const std::vector<std::string>& list);
+	bool setListBool(const std::string& key, const std::vector<bool>& list);
 
 private:
 	bool parse_parameter_string(const std::string& str);
@@ -246,6 +264,11 @@ private:
 	bool putParam(const std::string& key, const std::pair<bool, Quad<std::string, double, std::string, bool> >& entry);
 
 	std::pair<bool, Quad<std::string, double, std::string, bool> > parse_parameter_value(const std::string& value);
+
+	static std::vector<std::string> stringList(const std::string& instring);
+	static std::vector<int> intList(const std::string& instring);
+	static std::vector<double> doubleList(const std::string& instring);
+	static std::vector<bool> boolList(const std::string& instring);
 
 
 	bool caseSensitive;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 United States Government as represented by
+ * Copyright (c) 2015-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -18,8 +18,6 @@
 #include <cfloat>
 
 namespace larcfm {
-
-bool WCV_tvar::pvsCheck = false;
 
 WCVTable WCV_tvar::getWCVTable() {
   return table;
@@ -112,9 +110,9 @@ bool WCV_tvar::conflict(const Vect3& so, const Velocity& vo, const Vect3& si, co
 
 ConflictData WCV_tvar::conflictDetection(const Vect3& so, const Velocity& vo, const Vect3& si, const Velocity& vi, double B, double T) const {
   LossData ret = WCV3D(so,vo,si,vi,B,T);
-  double t_tca = (ret.time_in + ret.time_out)/2;
+  double t_tca = (ret.getTimeIn() + ret.getTimeOut())/2;
   double dist_tca = so.linear(vo, t_tca).Sub(si.linear(vi, t_tca)).cyl_norm(table.getDTHR(),table.getZTHR());
-  return ConflictData(ret, t_tca,dist_tca);
+  return ConflictData(ret, t_tca,dist_tca,so.Sub(si),vo.Sub(vi));
 }
 
 LossData WCV_tvar::WCV3D(const Vect3& so, const Velocity& vo, const Vect3& si, const Velocity& vi, double B, double T) const {
@@ -125,8 +123,6 @@ LossData WCV_tvar::WCV3D(const Vect3& so, const Velocity& vo, const Vect3& si, c
 LossData WCV_tvar::WCV_interval(const Vect3& so, const Velocity& vo, const Vect3& si, const Velocity& vi, double B, double T) const {
   double time_in = T;
   double time_out = B;
-
-  print_PVS_input(so,vo,si,vi,B,T);
 
   Vect2 so2 = so.vect2();
   Vect2 si2 = si.vect2();
@@ -141,12 +137,10 @@ LossData WCV_tvar::WCV_interval(const Vect3& so, const Velocity& vo, const Vect3
   wcvz.vertical_WCV_interval(table.getZTHR(),table.getTCOA(),B,T,sz,vz);
 
   if (wcvz.time_in > wcvz.time_out) {
-    print_PVS_output(time_in, time_out, "case 1");
     return LossData(time_in,time_out);
   }
   Vect2 step = v2.ScalAdd(wcvz.time_in,s2);
   if (Util::almost_equals(wcvz.time_in,wcvz.time_out)) { // [CAM] Changed from == to almost_equals to mitigate numerical problems
-    print_PVS_output(time_in, time_out, "case 2");
     if (horizontal_WCV(step,v2)) {
       time_in = wcvz.time_in;
       time_out = wcvz.time_out;
@@ -154,32 +148,17 @@ LossData WCV_tvar::WCV_interval(const Vect3& so, const Velocity& vo, const Vect3
     return LossData(time_in,time_out);
   }
   LossData ld = horizontal_WCV_interval(wcvz.time_out-wcvz.time_in,step,v2);
-  time_in = ld.time_in + wcvz.time_in;
-  time_out = ld.time_out + wcvz.time_in;
-  print_PVS_output(time_in, time_out, "case 3");
+  time_in = ld.getTimeIn() + wcvz.time_in;
+  time_out = ld.getTimeOut() + wcvz.time_in;
   return LossData(time_in,time_out);
-}
-
-void WCV_tvar::print_PVS_input(const Vect3& so, const Velocity& vo, const Vect3& si, const Velocity& vi, double B, double T) const {
-  //  Thread.dumpStack();
-  if (pvsCheck) {
-    fpln ("(# DTHR := "+Fm8(table.getDTHR())+", ZTHR := "+Fm8(table.getZTHR())+", TTHR := "+Fm8(table.getTTHR())+", TCOA := "+Fm8(table.getTCOA())
-        +", B := "+Fm8(B)+", T := "+Fm8(T)+" #)");
-    fpln("(# x := "+Fm8(so.x)+", y := "+Fm8(so.y)+", z := "+Fm8(so.z)+" #) % so");
-    fpln("(# x := "+Fm8(vo.x)+", y := "+Fm8(vo.y)+", z := "+Fm8(vo.z)+" #) % vo");
-    fpln("(# x := "+Fm8(si.x)+", y := "+Fm8(si.y)+", z := "+Fm8(si.z)+" #) % si");
-    fpln("(# x := "+Fm8(vi.x)+", y := "+Fm8(vi.y)+", z := "+Fm8(vi.z)+" #) % vi");
-  }
-}
-
-void WCV_tvar::print_PVS_output(double time_in, double time_out, const std::string& comment) const {
-  if (pvsCheck) {
-    fpln("("+Fm8(time_in)+","+Fm8(time_out)+") % "+getSimpleClassName()+" "+id+" time in/out "+comment);
-  }
 }
 
 std::string WCV_tvar::toString() const {
   return (id == "" ? "" : id+" = ")+getSimpleClassName()+": {"+table.toString()+"}";
+}
+
+std::string WCV_tvar::toPVS(int prec) const {
+  return table.toPVS(prec);
 }
 
 ParameterData WCV_tvar::getParameters() const {

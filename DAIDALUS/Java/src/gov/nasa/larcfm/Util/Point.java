@@ -4,7 +4,7 @@
  * Contact: Jeff Maddalon (j.m.maddalon@nasa.gov)
  * NASA LaRC
  * 
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -185,7 +185,7 @@ public final class Point extends Vect3 implements OutputList {
 	public Point linear(Velocity v, double t) {
 		return mk(x + v.x*t,y + v.y*t,z +v.z*t);
 	}
-
+	
 	// 
 	// output methods
 	//

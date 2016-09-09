@@ -4,7 +4,7 @@
  * Contact: Jeff Maddalon (j.m.maddalon@nasa.gov)
  * NASA LaRC
  * 
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -30,6 +30,9 @@
 #undef AZIEQUI_PROJECTION_
 
 #elif defined AZIEQUI_PROJECTION_
+#undef ORTHO_PROJECTION_
+
+#elif defined ORTHO_PROJECTION_
 #undef SIMPLE_PROJECTION_
 
 #elif defined SIMPLE_PROJECTION_
@@ -44,7 +47,7 @@
 
  /* Not used in C++ in a functional way. */
  namespace larcfm {
-  enum ProjectionType {UNKNOWN_PROJECTION, SIMPLE, SIMPLE_NO_POLAR, ENU, AZIEQUI};
+  enum ProjectionType {UNKNOWN_PROJECTION, SIMPLE, SIMPLE_NO_POLAR, ENU, AZIEQUI, ORTHO};
  }
 
 
@@ -70,6 +73,12 @@
 #define EuclideanProjection AziEquiProjection
 #define projection_type_value__ AZIEQUI
 #include "AziEquiProjection.h"
+#endif
+
+#ifdef ORTHO_PROJECTION_
+#define EuclideanProjection OrthographicProjection
+#define projection_type_value__ ORTHO
+#include "OrthographicProjection.h"
 #endif
 
 

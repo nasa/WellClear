@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 United States Government as represented by
+ * Copyright (c) 2014-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -8,6 +8,7 @@ package gov.nasa.larcfm.ACCoRD;
 
 import gov.nasa.larcfm.Util.ParameterData;
 import gov.nasa.larcfm.Util.Units;
+import gov.nasa.larcfm.Util.f;
 
 
 public class CD3DTable implements ParameterTable {
@@ -15,8 +16,8 @@ public class CD3DTable implements ParameterTable {
   double H;
   
   public CD3DTable() {
-    D = DefaultDaidalusParameters.getD();
-    H = DefaultDaidalusParameters.getH();
+    D = Units.from("nmi",5);
+    H = Units.from("ft",1000);
   }
 
   public CD3DTable(double d, double h) {
@@ -87,8 +88,8 @@ public class CD3DTable implements ParameterTable {
 
 
   public void updateParameterData(ParameterData p) {
-    p.setInternal("D",D,"nmi");
-    p.setInternal("H",H,"ft");
+    p.setInternal("D",D,"nmi",4);
+    p.setInternal("H",H,"ft",4);
   }
 
   
@@ -103,6 +104,10 @@ public class CD3DTable implements ParameterTable {
   
   public String toString() {
     return "D: "+Units.str("NM",D)+"; H: "+Units.str("ft",H);
+  }
+  
+  public String toPVS(int prec) {
+    return "(# D:= "+f.FmPrecision(D,prec)+", H:= "+f.FmPrecision(H,prec)+" #)";
   }
 
   @Override

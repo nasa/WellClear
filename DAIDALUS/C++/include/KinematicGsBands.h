@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 United States Government as represented by
+ * Copyright (c) 2015-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -10,39 +10,34 @@
 #include "KinematicRealBands.h"
 #include "Detection3D.h"
 #include "TrafficState.h"
-#include "OwnshipState.h"
 #include "IntervalSet.h"
-#include <vector>
 
 namespace larcfm {
 
 
 class KinematicGsBands : public KinematicRealBands {
 
-  private:
-  double horizontal_accel; // Climb/descend acceleration
+private:
+  double horizontal_accel_; // Climb/descend acceleration
 
-
-  public:
-  KinematicGsBands();
+public:
+  KinematicGsBands(const KinematicBandsParameters& parameters);
 
   KinematicGsBands(const KinematicGsBands& b);
 
-  void setHorizontalAcceleration(double val);
+  bool instantaneous_bands() const;
 
-  double getHorizontalAcceleration() const;
+  double get_horizontal_accel() const;
 
-  std::pair<Vect3, Velocity> trajectory(const OwnshipState& ownship, double time, bool dir) const;
+  void set_horizontal_accel(double val);
 
-  bool any_red(Detection3D* conflict_det, Detection3D* recovery_det, const TrafficState& repac,
-      double B, double T, const OwnshipState& ownship, const std::vector<TrafficState>& traffic) const;
+  double own_val(const TrafficState& ownship) const;
 
-  bool all_red(Detection3D* conflict_det, Detection3D* recovery_det, const TrafficState& repac,
-      double B, double T, const OwnshipState& ownship, const std::vector<TrafficState>& traffic) const;
+  double time_step(const TrafficState& ownship) const;
 
-  void none_bands(IntervalSet& noneset, Detection3D* conflict_det, Detection3D* recovery_det, const TrafficState& repac, double B, double T,
-      const OwnshipState& ownship, const std::vector<TrafficState>& traffic) const;
-  };
+  std::pair<Vect3, Velocity> trajectory(const TrafficState& ownship, double time, bool dir) const;
+
+};
 
 }
 

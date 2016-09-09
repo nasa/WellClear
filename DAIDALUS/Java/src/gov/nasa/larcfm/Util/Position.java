@@ -4,7 +4,7 @@
  * Contact: Jeff Maddalon (j.m.maddalon@nasa.gov)
  * NASA LaRC
  * 
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -387,6 +387,18 @@ public final class Position implements OutputList {
       return s3.vect2().Sub(p.vect2()).norm(); 
     }
   }
+  
+  /** Return the curved horizontal distance between the current Position and the given Position
+   * 
+   * @param p position 2
+   * @param center the center of rotation
+   * @param radius the radius of curvature
+   * @return the curved horizontal distance
+   */
+  public double distanceH(Position p, Position center, double radius) {
+	  double theta = PositionUtil.angle_between(this,center,p);
+	  return Math.abs(theta*radius);	    	
+  }
 
   /** Return the vertical distance between the current Position and the given Position. 
    */
@@ -439,7 +451,18 @@ public final class Position implements OutputList {
     }
     return newNP;
   }
-
+  
+  public Position linearDist(double track, double d) {
+	  if (latlon) {
+		  return new Position(GreatCircle.linear_initial(ll,track,d));
+	  } else {
+		  double fakeGs = 100;
+		  Velocity v = Velocity.makeTrkGsVs(track,fakeGs,0.0);
+		  double dt = d/fakeGs;
+		  return new Position(s3.linear(v, dt)); 
+	  }
+  }
+  
   /**
    * Perform a estimation of a linear projection of the current Position with the 
    * given velocity and time.
@@ -588,6 +611,29 @@ public final class Position implements OutputList {
     }
   }
 
+	/**
+	 * This function considers the line from p1 to p2 and computes 
+	 * the shortest distance (i.e. perpendicular) of another point (offCircle) to that line.  This is the 
+	 * cross track distance.
+	 *  
+	 * @param p1 the starting point of the line
+	 * @param p2 another point on the line
+	 * @param offCircle the point through which the perpendicular distance is desired
+	 * @return the cross track distance [m]
+	 */
+  public static double perp_distance(Position p1, Position p2, Position offCircle) {
+	  if (p1.latlon != p2.latlon) {
+		  f.dln("Position.perp_distance call was given inconsistent arguments.");	
+		  return -1;
+	  }
+	  if (p1.isLatLon()) {
+		  return Math.abs(GreatCircle.cross_track_distance(p1.lla(), p2.lla(), offCircle.lla()));
+	  } else {
+		  Vect2 v = p2.vect2().Sub(p1.vect2());
+		  return Vect2.distPerp(p1.vect2(), v, offCircle.vect2());
+	  }
+  }
+		
   //	// returns intersection point and time of intersection relative to position so
   //	// for time return value, it assumes that an aircraft travels from so1 to so2 in dto seconds and the other aircraft from si to si2
   //	// a negative time indicates that the intersection occurred in the past (relative to directions of travel of so1)
@@ -671,6 +717,14 @@ public final class Position implements OutputList {
 
   }
 
+  public boolean isWest(Position a) {
+	  if (isLatLon()) {
+		  return lla().isWest(a.lla());
+	  } else {
+		  return x() < a.x();
+	  }
+  }
+  
   /** Determine if a loss of separation has occured (using either geodesic or Euclidean calculations)
    * 
    * @param p2 the position of the other aircraft
@@ -689,13 +743,6 @@ public final class Position implements OutputList {
     return (distH < D && distV < H);
   }
 
-  public boolean collinear(Position p1, Position p2) {
-    if (latlon) 
-      return GreatCircle.collinear(lla(),p1.lla(),p2.lla());
-    else
-      return VectFuns.collinear(point(),p1.point(),p2.point());
-  }
-
   /** Return a string representation */
   public String toString() {
     return toString(Constants.get_output_precision());
@@ -707,6 +754,15 @@ public final class Position implements OutputList {
       return "("+Units.str("deg",ll.lat(),prec)+", "+Units.str("deg",ll.lon(),prec)+", "+Units.str("ft",ll.alt(),prec)+")";
     else
       return "("+Units.str("NM",s3.x,prec)+", "+Units.str("NM",s3.y,prec)+", "+Units.str("ft",s3.z,prec)+")";
+  }
+
+  /** Return a string representation */
+  public String toStringUnicode(int prec) {
+    if (latlon) {
+      return ll.toStringUnicode(prec);
+    } else {
+      return "("+Units.str("NM",s3.x,prec)+", "+Units.str("NM",s3.y,prec)+", "+Units.str("ft",s3.z,prec)+")";
+    }
   }
 
   public String toStringUnits() {
@@ -724,18 +780,18 @@ public final class Position implements OutputList {
       return "("+Units.str(xUnits,s3.x)+", "+Units.str(yUnits,s3.y)+", "+Units.str(zUnits,s3.z)+")";
   }
 
-  /** Return a string representation, with a user-specified digits of precision (0-15) and units without parentheses. 
-   * @param xlat x unit (if Euclidean) or latitude unit (if geodetic) 
-   * @param ylon y unit (if Euclidean) or longitude unit (if geodetic) 
-   * @param z altitude unit  
-   * @param precision degree of precision (fractional decimal places)
-   */
-  public String toStringNP(String xlat, String ylon, String z, int precision) {
-    if (latlon)
-      return ll.toStringNP(xlat, ylon, z, precision);
-    else
-      return s3.toStringNP(xlat, ylon, z, precision);
-  }
+//  /** Return a string representation, with a user-specified digits of precision (0-15) and units without parentheses. 
+//   * @param xlat x unit (if Euclidean) or latitude unit (if geodetic) 
+//   * @param ylon y unit (if Euclidean) or longitude unit (if geodetic) 
+//   * @param z altitude unit  
+//   * @param precision degree of precision (fractional decimal places)
+//   */
+//  public String toStringNP(String xlat, String ylon, String z, int precision) {
+//    if (latlon)
+//      return ll.toStringNP(xlat, ylon, z, precision);
+//    else
+//      return s3.toStringNP(xlat, ylon, z, precision);
+//  }
 
   /** Return a string representation, with a user-specified digits of precision (0-15) without parentheses. */
   public String toStringNP(int precision) {

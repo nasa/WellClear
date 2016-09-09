@@ -3,7 +3,7 @@
  * 
  * 3-D vectors.
  * 
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -11,14 +11,13 @@
 
 package gov.nasa.larcfm.Util;
 
-import java.text.DecimalFormat;
 import java.util.Arrays;
 
 /**
  * 3-Dimensional mathematical vectors.
  */
 public class Vect3 {
-
+  
   /** A zero vector */
   public static final Vect3 ZERO = new Vect3();
 
@@ -38,22 +37,22 @@ public class Vect3 {
    * Creates a zero vector.
    */
   private Vect3() {
-    x=y=z=0.0;
+    this(0.0,0.0,0.0);
   }
 
   /**
    * Creates a vector that is an extension of v
    */
   public Vect3(Vect2 v, double z) {
-    this(v.x, v.y, z);
+    this(v.x,v.y,z);
   }
 
   /**
    * Creates a new vector with coordinates (<code>x</code>,<code>y</code>,<code>z</code>).
    * 
-   * @param x Real value
-   * @param y Real value
-   * @param z Real value
+   * @param x Real value [internal units]
+   * @param y Real value [internal units]
+   * @param z Real value [internal units]
    */
   public Vect3(double x, double y, double z) {
     this.x = x;

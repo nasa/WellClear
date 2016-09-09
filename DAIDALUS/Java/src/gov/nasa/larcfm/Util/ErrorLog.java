@@ -3,7 +3,7 @@
  *
  * Contact: Jeff Maddalon (j.m.maddalon@nasa.gov)
  *
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -201,12 +201,22 @@ public final class ErrorLog implements ErrorReporter {
   }
 
   /** 
-   * Checks if a value is positive and, in that case, returns true. Otherwise, 
+   * Checks if a value is non negative and, in that case, returns true. Otherwise, 
    * adds an error message and returns false.
    */
   public boolean isNonNegative(String method, double val) {
     if (val >= 0) return true;
     addError("["+method+"] Value "+val+" is negative");
+    return false;
+  }
+
+  /** 
+   * Checks if a value is non positive and, in that case, returns true. Otherwise, 
+   * adds an error message and returns false.
+   */
+  public boolean isNonPositive(String method, double val) {
+    if (val <= 0) return true;
+    addError("["+method+"] Value "+val+" is positive");
     return false;
   }
 
@@ -217,6 +227,16 @@ public final class ErrorLog implements ErrorReporter {
   public boolean isLessThan(String method, double val, double thr) {
     if (val < thr) return true;
     addError("["+method+"] Value "+val+" is greater or equal than "+thr);
+    return false;
+  }
+
+  /** 
+   * Checks if a value is between lb and ub. Otherwise, adds an error message 
+   * and returns false.
+   */
+  public boolean isBetween(String method, double val, double lb, double ub) {
+    if (lb <= val && val <= ub) return true;
+    addError("["+method+"] Value "+val+" is not between "+lb+" and "+ub);
     return false;
   }
 

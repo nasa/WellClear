@@ -1,135 +1,202 @@
-#include "DefaultDaidalusParameters.h"
 #include "Daidalus.h"
 
 using namespace larcfm;
 
-void printTimeToViolation(Daidalus& daa) {
+void printDetection(Daidalus& daa) {
 	// Aircraft at index 0 is ownship
-	for (int ac=1; ac < daa.numberOfAircraft(); ac++) {
-		double tlos = daa.timeToViolation(ac);
-		if (tlos >= 0) {
-			std::cout << "Predicted violation with traffic aircraft " << daa.aircraftName(ac) << " in "
-					<< FmPrecision(tlos,1) << " [s]" << std::endl;
+	for (int ac_idx=1; ac_idx <= daa.lastTrafficIndex(); ++ac_idx) {
+		double t2los = daa.timeToViolation(ac_idx);
+		if (t2los >= 0) {
+			std::cout << "Predicted Time to Loss of Well Clear with " << daa.getAircraftState(ac_idx).getId() << ": " <<
+					Fm2(t2los) << " [s]" << std::endl;
 		}
 	}
 }
 
 void printAlerts(Daidalus& daa) {
-	std::cout << "Alerting Logic: " << (daa.isEnabledBandsAlerting() ?
-			"Bands-based" : "Thresholds-based") << std::endl;
 	// Aircraft at index 0 is ownship
-	for (int ac=1; ac < daa.numberOfAircraft(); ++ac) {
-		int alert = daa.alerting(ac);
+	for (int ac_idx=1; ac_idx <= daa.lastTrafficIndex(); ++ac_idx) {
+		int alert = daa.alerting(ac_idx);
 		if (alert > 0) {
-			std::cout << "  Alert type " << alert << " with traffic aircraft " << 
-					daa.aircraftName(ac) << std::endl;
+			std::cout << "Alert Level " << alert << " with " <<
+					daa.getAircraftState(ac_idx).getId() << std::endl;
 		}
 	}
 }
 
-void printBands(KinematicBands& bands) {
+// Converts numbers, possible NaN or infinities, to string
+static std::string num2str(double res, const std::string& u) {
+	if (ISNAN(res)) {
+		return "N/A";
+	} else if (!ISFINITE(res)) {
+		return "None";
+	} else {
+		return Fm2(res)+" ["+u+"]";
+	}
+}
+
+void printBands(Daidalus& daa, KinematicMultiBands& bands) {
+	bool nowind = daa.getWindField().isZero();
+	TrafficState own = daa.getOwnshipState();
+	std::string trkstr = nowind ? "Track" : "Heading";
+	std::string gsstr = nowind ? "Ground Speed" : "Airspeed";
 	std::cout << std::endl;
-	std::cout << "Track Bands [deg,deg]" << std::endl;
+
+	for (int alert_level = 1; alert_level <= daa.parameters.alertor.mostSevereAlertLevel(); ++alert_level) {
+		std::cout << "Conflict Aircraft for Alert Level " << Fmi(alert_level) << ": " <<
+				TrafficState::listToString(bands.conflictAircraft(alert_level)) << std::endl;
+	}
+
+	std::cout << std::endl;
+
+	// Track/Heading
+	double trk_deg = own.track("deg");
+	std::cout << "Ownship " << trkstr << ": "+Fm2(trk_deg) << " [deg]" << std::endl;
+	std::cout << "Region of Current " << trkstr+": " <<
+			BandsRegion::to_string(bands.regionOfTrack(trk_deg,"deg")) << std::endl;
+	std::cout << trkstr << " Bands [deg,deg]" << std::endl;
 	for (int i=0; i < bands.trackLength(); ++i) {
 		Interval ii = bands.track(i,"deg");
-		std::cout << "  " << BandsRegion::to_string(bands.trackRegion(i)) << ":\t" << ii.toString(0) << std::endl;
+		std::cout << "  " << BandsRegion::to_string(bands.trackRegion(i)) << ":\t" << ii.toString(2) << std::endl;
 	}
-	if (bands.trackRecoveryTime() > 0) {
-		std::cout << "Track Recovery Time: " << bands.trackRecoveryTime() << " [s]" << std::endl;
+	for (int alert_level = 1; alert_level <= daa.parameters.alertor.mostSevereAlertLevel(); ++alert_level) {
+		std::cout << "Peripheral " << trkstr << " Aircraft for Alert Level " << Fmi(alert_level) << ": " <<
+				TrafficState::listToString(bands.peripheralTrackAircraft(alert_level)) << std::endl;
 	}
-	std::pair< std::vector<std::string>,std::vector<std::string> > alerting_aircraft = bands.trackBandsAircraft();
-	if (!alerting_aircraft.first.empty()) {
-		std::cout << "Set of aircraft contributing to preventive track bands: " << 
-				KinematicBands::FmSet(alerting_aircraft.first) << std::endl;
+	std::cout << trkstr << " Resolution (right): " << num2str(bands.trackResolution(true,"deg"),"deg") << std::endl;
+	std::cout << trkstr << " Resolution (left): " << num2str(bands.trackResolution(false,"deg"),"deg") << std::endl;
+	std::cout << "Preferred "+trkstr+" Direction: ";
+	if (bands.preferredTrackDirection()) {
+		std::cout << "right" << std::endl;
+	} else {
+		std::cout << "left" << std::endl;
 	}
-	if (!alerting_aircraft.second.empty()) {
-		std::cout << "Set of aircraft contributing to corrective track bands: " << 
-				KinematicBands::FmSet(alerting_aircraft.second) << std::endl;
-	}
-	std::cout << "Ground Speed Bands [knot,knot]:" << std::endl;
+	std::cout << "Time to " << trkstr << " Recovery: " << num2str(bands.timeToTrackRecovery(),"s") << std::endl;
+
+	// Ground Speed/Air Speed
+	double gs_knot = own.groundSpeed("knot");
+	std::cout << "Ownship " << gsstr << ": "+Fm2(gs_knot) << " [knot]" << std::endl;
+	std::cout << "Region of Current " << gsstr+": " <<
+			BandsRegion::to_string(bands.regionOfGroundSpeed(gs_knot,"knot")) << std::endl;
+	std::cout << gsstr << " Bands [knot,knot]:" << std::endl;
 	for (int i=0; i < bands.groundSpeedLength(); ++i) {
 		Interval ii = bands.groundSpeed(i,"knot");
-		std::cout << "  " << BandsRegion::to_string(bands.groundSpeedRegion(i)) << ":\t" << ii.toString(0) << std::endl;
+		std::cout << "  " << BandsRegion::to_string(bands.groundSpeedRegion(i)) << ":\t" << ii.toString(2) << std::endl;
 	}
-	if (bands.groundSpeedRecoveryTime() > 0) {
-		std::cout << "Ground Speed Recovery time: " << 
-				bands.groundSpeedRecoveryTime() << " [s]" << std::endl;
+	for (int alert_level = 1; alert_level <= daa.parameters.alertor.mostSevereAlertLevel(); ++alert_level) {
+		std::cout << "Peripheral " << gsstr << " Aircraft for Alert Level " << Fmi(alert_level) << ": " <<
+				TrafficState::listToString(bands.peripheralGroundSpeedAircraft(alert_level)) << std::endl;
 	}
-	alerting_aircraft = bands.groundSpeedBandsAircraft();
-	if (!alerting_aircraft.first.empty()) {
-		std::cout << "Set of aircraft contributing to preventive ground speed bands: " << 
-				KinematicBands::FmSet(alerting_aircraft.first) << std::endl;
+	std::cout << gsstr << " Resolution (up): " << num2str(bands.groundSpeedResolution(true,"knot"),"knot") << std::endl;
+	std::cout << gsstr << " Resolution (down): " << num2str(bands.groundSpeedResolution(false,"knot"),"knot") << std::endl;
+	std::cout << "Preferred "+gsstr+" Direction: ";
+	if (bands.preferredGroundSpeedDirection()) {
+		std::cout << "up" << std::endl;
+	} else {
+		std::cout << "down" << std::endl;
 	}
-	if (!alerting_aircraft.second.empty()) {
-		std::cout << "Set of aircraft contributing to corrective ground speed bands: " << 
-				KinematicBands::FmSet(alerting_aircraft.second) << std::endl;
-	}
+	std::cout << "Time to " << gsstr << " Recovery: " << num2str(bands.timeToGroundSpeedRecovery(),"s") << std::endl;
+
+	// Vertical Speed
+	double vs_fpm = own.verticalSpeed("fpm");
+	std::cout << "Ownship Vertical Speed: "+Fm2(vs_fpm) << " [fpm]" << std::endl;
+	std::cout << "Region of Current Vertical Speed: " <<
+			BandsRegion::to_string(bands.regionOfVerticalSpeed(vs_fpm,"fpm")) << std::endl;
 	std::cout << "Vertical Speed Bands [fpm,fpm]:" << std::endl;
 	for (int i=0; i < bands.verticalSpeedLength();  ++i) {
 		Interval ii = bands.verticalSpeed(i,"fpm");
-		std::cout << "  " << BandsRegion::to_string(bands.verticalSpeedRegion(i)) << ":\t" << ii.toString(0) << std::endl;
+		std::cout << "  " << BandsRegion::to_string(bands.verticalSpeedRegion(i)) << ":\t" << ii.toString(2) << std::endl;
 	}
-	if (bands.verticalSpeedRecoveryTime() > 0) {
-		std::cout << "Vertical Speed Recovery time: " << 
-				bands.verticalSpeedRecoveryTime() << " [s]" << std::endl;
+	for (int alert_level = 1; alert_level <= daa.parameters.alertor.mostSevereAlertLevel(); ++alert_level) {
+		std::cout << "Peripheral Vertical Speed Aircraft for Alert Level " << Fmi(alert_level) << ": " <<
+				TrafficState::listToString(bands.peripheralVerticalSpeedAircraft(alert_level)) << std::endl;
 	}
-	alerting_aircraft = bands.verticalSpeedBandsAircraft();
-	if (!alerting_aircraft.first.empty()) {
-		std::cout << "Set of aircraft contributing to preventive vertical speed bands: " << 
-				KinematicBands::FmSet(alerting_aircraft.first) << std::endl;
+	std::cout << "Vertical Speed Resolution (up): " << num2str(bands.verticalSpeedResolution(true,"fpm"),"fpm") << std::endl;
+	std::cout << "Vertical Speed Resolution (down): " << num2str(bands.verticalSpeedResolution(false,"fpm"),"fpm") << std::endl;
+	std::cout << "Preferred Vertical Speed Direction: ";
+	if (bands.preferredVerticalSpeedDirection()) {
+		std::cout << "up" << std::endl;
+	} else {
+		std::cout << "down" << std::endl;
 	}
-	if (!alerting_aircraft.second.empty()) {
-		std::cout << "Set of aircraft contributing to corrective vertical speed bands: " <<
-				KinematicBands::FmSet(alerting_aircraft.second) << std::endl;
-	}
+	std::cout << "Time to Vertical Speed Recovery: " << num2str(bands.timeToVerticalSpeedRecovery(),"s") << std::endl;
+
+	// Altitude
+	double alt_ft = own.altitude("ft");
+	std::cout << "Ownship Altitude: "+Fm2(alt_ft) << " [ft]" << std::endl;
+	std::cout << "Region of Current Altitude: " <<
+			BandsRegion::to_string(bands.regionOfAltitude(alt_ft,"ft")) << std::endl;
 	std::cout << "Altitude Bands [ft,ft]:" << std::endl;
 	for (int i=0; i < bands.altitudeLength(); ++i) {
 		Interval ii = bands.altitude(i,"ft");
-		std::cout << "  " << BandsRegion::to_string(bands.altitudeRegion(i)) << ":\t" << ii.toString(0) << std::endl;
+		std::cout << "  " << BandsRegion::to_string(bands.altitudeRegion(i)) << ":\t" << ii.toString(2) << std::endl;
+	}
+	for (int alert_level = 1; alert_level <= daa.parameters.alertor.mostSevereAlertLevel(); ++alert_level) {
+		std::cout << "Peripheral Altitude Aircraft for Alert Level " << Fmi(alert_level) << ": " <<
+				TrafficState::listToString(bands.peripheralAltitudeAircraft(alert_level)) << std::endl;
+	}
+	std::cout << "Altitude Resolution (up): " << num2str(bands.altitudeResolution(true,"ft"),"ft") << std::endl;
+	std::cout << "Altitude Resolution (down): " << num2str(bands.altitudeResolution(false,"ft"),"ft") << std::endl;
+	std::cout << "Preferred Altitude Direction: ";
+	if (bands.preferredAltitudeDirection()) {
+		std::cout << "up" << std::endl;
+	} else {
+		std::cout << "down" << std::endl;
+	}
+	std::cout << "Time to Altitude Recovery: " << num2str(bands.timeToAltitudeRecovery(),"s") << std::endl;
+	std::cout << std::endl;
+
+	// Last times to maneuver
+	for (int ac_idx=1; ac_idx <= daa.lastTrafficIndex(); ++ac_idx) {
+		TrafficState ac = daa.getAircraftState(ac_idx);
+		std::cout << "Last Times to Maneuver with Respect to " << ac.getId() << ":" << std::endl;
+		std::cout << "  "+trkstr+" Maneuver: "+num2str(bands.lastTimeToTrackManeuver(ac),"s") << std::endl;
+		std::cout << "  "+gsstr+" Maneuver: "+num2str(bands.lastTimeToGroundSpeedManeuver(ac),"s") << std::endl;
+		std::cout <<"  Vertical Speed Maneuver: "+num2str(bands.lastTimeToVerticalSpeedManeuver(ac),"s") << std::endl;
+		std::cout <<"  Altitude Maneuver: "+num2str(bands.lastTimeToAltitudeManeuver(ac),"s") << std::endl;
 	}
 	std::cout << std::endl;
+
 }
 
-void printBlobs(Daidalus& daa) {
+void printContours(Daidalus& daa) {
+	std::vector< std::vector<Position> > blobs = std::vector< std::vector<Position> >();
 	// Aircraft at index 0 is ownship
-	for (int ac=1; ac < daa.numberOfAircraft(); ac++) {
-		OwnshipState own = daa.getOwnshipState();
-		Position po = own.getPosition();
-		Velocity vo = own.getVelocity();
-		TrafficState intruder = daa.getTrafficState(ac);
-		Position pi = intruder.getPosition();
-		Velocity vi = intruder.getVelocity();
-		for (double trk = 0; trk < 360; ++trk) {
-			Velocity vop = vo.mkTrk(trk,"deg");
-			LossData los = daa.getDetector()->conflictDetection(own.get_s(),own.vel_to_v(po,vop),
-					own.pos_to_s(pi), own.vel_to_v(pi,vi), 0, daa.getLookaheadTime());
-			if (los.conflict()) {
-				std::cout << "Draw a line from " << po.linear(vop,los.getTimeIn()).toString() << 
-						" to " << po.linear(vop,los.getTimeOut()).toString() << std::endl;
+	for (int ac_idx=1; ac_idx <= daa.lastTrafficIndex(); ++ac_idx) {
+		// Compute all contours
+		daa.horizontalContours(blobs,ac_idx);
+		for (unsigned int i=0; i < blobs.size(); ++i) {
+			std::cout << "Counter-clockwise Conflict Contour " << i << " with Aircraft " << daa.getAircraftState(ac_idx).getId() << ": " << std::endl;
+			for (unsigned int i=0; i < blobs[0].size(); ++i) {
+				std::cout << blobs[0][i].toString() << " ";
 			}
+			std::cout << std::endl;
 		}
 	}
 }
 
 int main(int argc, char* argv[]) {
-	std::cout << "**" << std::endl;
-	std::cout << "* DAIDALUS (Release V-" << Daidalus::VERSION << ")" << std::endl;
-	std::cout << "**\n" << std::endl;
-
-	// Load default parameters if configuration file exists. Otherwise, save default parameters.
-	std::string file = "default_parameters.txt";
-	if (DefaultDaidalusParameters::loadFromFile(file)) {
-		std::cout << "Default parameters read from file " << file << "\n" << std::endl;
-	} else {
-		DefaultDaidalusParameters::saveToFile(file);
-		std::cout << "Default parameters written to file " << file << "\n" << std::endl;
-	}
+	std::cout << "##" << std::endl;
+	std::cout << "## " << Daidalus::release() << std::endl;
+	std::cout << "##\n" << std::endl;
 
 	// Create an object of type Daidalus for a well-clear volume based on TAUMOD
 	Daidalus daa;
-	daa.setLookaheadTime(90); // [s]
-	daa.setAlertingTime(60);  // [s]
-	daa.setCollisionAvoidanceBands(true); // Compute bands for collision avoidance
+
+	// Save default parameters
+	std::string default_parameters = "default_parameters.txt";
+	daa.parameters.saveToFile(default_parameters);
+	std::cout << "Default parameters written to file " << default_parameters << "\n" << std::endl;
+
+	// DAIDALUS is configured by default to unbuffered WC, instantaneous bands.
+	// Uncomment the following line to get buffered WC, kinematic bands.
+	//daa.set_Buffered_WC_SC_228_MOPS(true);
+
+	// Load parameters if configuration file exists.
+	std::string my_parameters = "my_parameters.txt";
+	if (daa.parameters.loadFromFile(my_parameters)) {
+		std::cout << "Read parameters from file " << my_parameters << "\n" << std::endl;
+	}
 
 	// Get aircraft state information for ownship and intruder
 	Position so = Position::makeLatLonAlt(33.95,"deg", -96.7,"deg", 8700.0,"ft");
@@ -141,26 +208,31 @@ int main(int argc, char* argv[]) {
 	daa.setOwnshipState("ownship",so,vo,0.0);
 	daa.addTrafficState("intruder",si,vi);
 
-    // Set wind information
+	// Set wind information
 	Velocity wind = Velocity::makeTrkGsVs(45,"deg", 10,"knot", 0,"fpm");
 	daa.setWindField(wind);
 
-	// Check current conflict information with respect to traffic aircraft
-	printTimeToViolation(daa);
+	// Print information about the Daidalus Object
+	std::cout << daa.toString() << std::endl;
+	std::cout << "Number of Aircraft: " << daa.numberOfAircraft() << std::endl;
+	std::cout << "Last Aircraft Index: " << daa.lastTrafficIndex() << std::endl;
+	std::cout <<  std::endl;
+
+	// Detect conflicts with every traffic aircraft
+	printDetection(daa);
 
 	// Call alerting logic for each traffic aircraft.
-	daa.setBandsAlerting(true); // Bands-based logic
 	printAlerts(daa);
 
-	daa.setBandsAlerting(false); // Thresholds-based logic
-	printAlerts(daa);
+	// Define multi bands object
+	KinematicMultiBands bands;
 
-	// Create bands object and compute bands
-	KinematicBands bands = daa.getKinematicBands();
-	printBands(bands);
+	// Compute kinematic bands
+	daa.kinematicMultiBands(bands);
+	printBands(daa,bands);
 
 	// Print points of well-clear violation contours, i.e., blobs
-	printBlobs(daa);
+	printContours(daa);
 
 }
 

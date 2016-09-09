@@ -6,7 +6,7 @@
  *
  * 2-D vectors.
  *
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -24,6 +24,7 @@ namespace larcfm {
  * 2-Dimensional mathematical vectors.
  */
 class Vect2 {
+
 public:
 
 	// This class should be immutable and therefore
@@ -379,6 +380,9 @@ public:
 	static const Vect2& INVALID();
 
 	//    static Vect2& makeInvalid();
+
+	bool within_epsilon(const Vect2& v2, double epsilon) const;
+
 
 private:
 	double sqRel(const Vect2& v) const;

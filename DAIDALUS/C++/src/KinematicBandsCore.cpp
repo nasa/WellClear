@@ -1,132 +1,119 @@
 /*
- * Copyright (c) 2015 United States Government as represented by
+ * Copyright (c) 2015-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
  */
+
 #include "KinematicBandsCore.h"
-#include "OwnshipState.h"
-#include "TrafficState.h"
-#include "Detection3D.h"
-#include "TCASTable.h"
+#include "KinematicBandsParameters.h"
+#include "Constants.h"
 #include "string_util.h"
 #include "format.h"
 #include "CriteriaCore.h"
-#include "CDCylinder.h"
 #include <string>
 #include <vector>
-#include "DefaultDaidalusParameters.h"
 
 namespace larcfm {
 
 TCASTable KinematicBandsCore::RA = TCASTable();
 
-KinematicBandsCore::KinematicBandsCore() {
-  ownship = OwnshipState::INVALID;
+KinematicBandsCore::KinematicBandsCore(const KinematicBandsParameters& params) {
+  ownship = TrafficState::INVALID;
   traffic = std::vector<TrafficState>();
-  implicit_bands = DefaultDaidalusParameters::isEnabledImplicitBands();
-  lookahead = DefaultDaidalusParameters::getLookaheadTime();
-  alerting_time = DefaultDaidalusParameters::getAlertingTime();
-  max_recovery_time = DefaultDaidalusParameters::getMaxRecoveryTime();
-  recovery_stability_time = DefaultDaidalusParameters::getRecoveryStabilityTime();
-  criteria_ac = TrafficState::INVALID.getId();
-  conflict_crit = DefaultDaidalusParameters::isEnabledConflictCriteria();
-  recovery_crit = DefaultDaidalusParameters::isEnabledRecoveryCriteria();
-  min_horizontal_recovery = DefaultDaidalusParameters::getMinHorizontalRecovery();
-  min_vertical_recovery = DefaultDaidalusParameters::getMinVerticalRecovery();
-  ca_bands = DefaultDaidalusParameters::isEnabledCollisionAvoidanceBands();
-  detector = new CDCylinder();
-}
-
-KinematicBandsCore::KinematicBandsCore(const Detection3D* det) {
-  ownship = OwnshipState::INVALID;
-  traffic = std::vector<TrafficState>();
-  implicit_bands = DefaultDaidalusParameters::isEnabledImplicitBands();
-  lookahead = DefaultDaidalusParameters::getLookaheadTime();
-  alerting_time = DefaultDaidalusParameters::getAlertingTime();
-  max_recovery_time = DefaultDaidalusParameters::getMaxRecoveryTime();
-  recovery_stability_time = DefaultDaidalusParameters::getRecoveryStabilityTime();
-  criteria_ac = TrafficState::INVALID.getId();
-  conflict_crit = DefaultDaidalusParameters::isEnabledConflictCriteria();
-  recovery_crit = DefaultDaidalusParameters::isEnabledRecoveryCriteria();
-  min_horizontal_recovery = DefaultDaidalusParameters::getMinHorizontalRecovery();
-  min_vertical_recovery = DefaultDaidalusParameters::getMinVerticalRecovery();
-  ca_bands = DefaultDaidalusParameters::isEnabledCollisionAvoidanceBands();
-  detector = det->copy();
+  parameters = KinematicBandsParameters(params);
+  most_urgent_ac = TrafficState::INVALID;
+  conflict_acs_ = std::vector< std::vector<TrafficState> >();
+  tiov_ = std::vector<Interval>();
+  reset();
 }
 
 KinematicBandsCore::KinematicBandsCore(const KinematicBandsCore& core) {
-  ownship = OwnshipState(core.ownship);
-  for (int i = 0; i < (int) core.traffic.size(); ++i) {
-    TrafficState ac = core.traffic[i];
-    traffic.push_back(TrafficState(ac));
-  }
-  implicit_bands = core.implicit_bands;
-  lookahead = core.lookahead;
-  alerting_time = core.alerting_time;
-  max_recovery_time = core.max_recovery_time;
-  recovery_stability_time = core.recovery_stability_time;
-  criteria_ac = core.criteria_ac;
-  conflict_crit = core.conflict_crit;
-  recovery_crit = core.recovery_crit;
-  min_horizontal_recovery = core.min_horizontal_recovery;
-  min_vertical_recovery = core.min_vertical_recovery;
-  ca_bands = core.ca_bands;
-  detector = core.detector->copy();
-}
-
-KinematicBandsCore::~KinematicBandsCore() {
-  delete detector;
+  setKinematicBandsCore(core);
 }
 
 KinematicBandsCore& KinematicBandsCore::operator=(const KinematicBandsCore& core) {
-  ownship = OwnshipState(core.ownship);
-  for (int i = 0; i < (int) core.traffic.size(); ++i) {
-    TrafficState ac = core.traffic[i];
-    traffic.push_back(TrafficState(ac));
-  }
-  implicit_bands = core.implicit_bands;
-  lookahead = core.lookahead;
-  alerting_time = core.alerting_time;
-  max_recovery_time = core.max_recovery_time;
-  recovery_stability_time = core.recovery_stability_time;
-  criteria_ac = core.criteria_ac;
-  conflict_crit = core.conflict_crit;
-  recovery_crit = core.recovery_crit;
-  min_horizontal_recovery = core.min_horizontal_recovery;
-  min_vertical_recovery = core.min_vertical_recovery;
-  ca_bands = core.ca_bands;
-  detector = core.detector->copy();
+  setKinematicBandsCore(core);
   return *this;
 }
 
+KinematicBandsCore::~KinematicBandsCore() {
+  clear();
+}
+
+/**
+ * Set kinematic bands core
+ */
+void KinematicBandsCore::setKinematicBandsCore(const KinematicBandsCore core) {
+  ownship = core.ownship;
+  traffic = std::vector<TrafficState>();
+  traffic.insert(traffic.end(),core.traffic.begin(),core.traffic.end());
+  parameters = KinematicBandsParameters(core.parameters);
+  most_urgent_ac = core.most_urgent_ac;
+  conflict_acs_ = std::vector< std::vector<TrafficState> >();
+  tiov_ = std::vector<Interval>();
+  reset();
+}
 
 /**
  *  Clear ownship and traffic data from this object.
  */
 void KinematicBandsCore::clear() {
-  ownship = OwnshipState::INVALID;
+  ownship = TrafficState::INVALID;
   traffic.clear();
+  reset();
 }
 
 /**
- * Return actual alerting time in seconds.
+ *  Reset cached values
  */
-double KinematicBandsCore::alertingTime() const {
-  return alerting_time > 0 ? alerting_time : lookahead;
+void KinematicBandsCore::reset() {
+  outdated_ = true;
+  epsh_ = 0;
+  epsv_ = 0;
+  tiov_.clear();
 }
 
 /**
- *  Returns actual maximum recovery time in seconds.
+ *  Update cached values
  */
-double KinematicBandsCore::maxRecoveryTime() const {
-  return max_recovery_time > 0 ? max_recovery_time : lookahead;
+void KinematicBandsCore::update() {
+  if (outdated_) {
+    for (int alert_level=1; alert_level <= parameters.alertor.mostSevereAlertLevel(); ++alert_level) {
+      if (alert_level-1 >= (int) conflict_acs_.size()) {
+        conflict_acs_.push_back(std::vector<TrafficState>());
+      } else {
+        conflict_acs_[alert_level-1].clear();
+      }
+      conflict_aircraft(alert_level);
+    }
+    epsh_ = epsilonH(ownship,most_urgent_ac);
+    epsv_ = epsilonV(ownship,most_urgent_ac);
+    outdated_ = false;
+  }
+}
+
+/**
+ *  Returns horizontal epsilon for implicit coordination with respect to criteria ac
+ */
+int KinematicBandsCore::epsilonH() {
+  update();
+  return epsh_;
+}
+
+/**
+ *  Returns vertical epsilon for implicit coordination with respect to criteria ac
+ */
+int KinematicBandsCore::epsilonV() {
+  update();
+  return epsv_;
 }
 
 /**
  * Returns actual minimum horizontal separation for recovery bands in internal units.
  */
 double KinematicBandsCore::minHorizontalRecovery() const {
+  double min_horizontal_recovery = parameters.getMinHorizontalRecovery();
   if (min_horizontal_recovery > 0)
     return min_horizontal_recovery;
   int sl = !hasOwnship() ? 3 : std::max(3,TCASTable::getSensitivityLevel(ownship.getPosition().alt()));
@@ -137,6 +124,7 @@ double KinematicBandsCore::minHorizontalRecovery() const {
  * Returns actual minimum vertical separation for recovery bands in internal units.
  */
 double KinematicBandsCore::minVerticalRecovery() const {
+  double min_vertical_recovery = parameters.getMinVerticalRecovery();
   if (min_vertical_recovery > 0)
     return min_vertical_recovery;
   int sl = !hasOwnship() ? 3 : std::max(3,TCASTable::getSensitivityLevel(ownship.getPosition().alt()));
@@ -147,120 +135,142 @@ bool KinematicBandsCore::hasOwnship() const {
   return ownship.isValid();
 }
 
-OwnshipState KinematicBandsCore::getOwnship() const {
-  return ownship;
-}
-
-TrafficState KinematicBandsCore::getTraffic(int i) const {
-  return traffic[i];
-}
-
-int KinematicBandsCore::trafficSize() const {
-  return traffic.size();
-}
-
-TrafficState KinematicBandsCore::getTraffic(const std::string& id) const {
-  return TrafficState::getTraffic(traffic,id);
+TrafficState KinematicBandsCore::intruder(const std::string& id) const {
+  return TrafficState::findAircraft(traffic,id);
 }
 
 bool KinematicBandsCore::hasTraffic() const {
   return traffic.size() > 0;
 }
 
-double KinematicBandsCore::getRecoveryStabilityTime() const {
-  return recovery_stability_time;
+Position const & KinematicBandsCore::trafficPosition(int i) const {
+  return traffic[i].getPosition();
 }
 
-double KinematicBandsCore::getLookahead() const {
-  return lookahead;
+Velocity const & KinematicBandsCore::trafficVelocity(int i) const {
+  return traffic[i].getVelocity();
 }
 
-Position KinematicBandsCore::trafficPosition(int i) const {
-  return getTraffic(i).getPosition();
-}
-
-Velocity KinematicBandsCore::trafficVelocity(int i) const {
-  return getTraffic(i).getVelocity();
-}
-
-Vect3 KinematicBandsCore::own_s() const {
+Vect3 const & KinematicBandsCore::own_s() const {
   return ownship.get_s();
 }
 
-Velocity KinematicBandsCore::own_v() const {
+Velocity const & KinematicBandsCore::own_v() const {
   return ownship.get_v();
 }
 
-Vect3 KinematicBandsCore::pos_to_s(const Position& p) const {
-  return ownship.pos_to_s(p);
+Vect3 const & KinematicBandsCore::traffic_s(int i) const {
+  return traffic[i].get_s();
 }
 
-Vect3 KinematicBandsCore::traffic_s(int i) const {
-  return pos_to_s(trafficPosition(i));
-}
-
-Vect3 KinematicBandsCore::traffic_s(const TrafficState& ac) const {
-  return pos_to_s(ac.getPosition());
-}
-
-Velocity KinematicBandsCore::vel_to_v(const Position& p, const Velocity& v) const {
-  return ownship.vel_to_v(p,v);
-}
-
-Velocity KinematicBandsCore::traffic_v(int i) const {
-  return vel_to_v(trafficPosition(i),trafficVelocity(i));
-}
-
-Velocity KinematicBandsCore::traffic_v(const TrafficState& ac) const {
-  return vel_to_v(ac.getPosition(),ac.getVelocity());
+Velocity const & KinematicBandsCore::traffic_v(int i) const {
+  return traffic[i].get_v();
 }
 
 /**
- * Returns true if aircraft are currently in Violation
+ * Put in conflict_acs_ the list of aircraft predicted to be in conflict for the given alert level.
+ * Requires: 1 <= alert_level <= parameters.alertor.mostSevereAlertLevel()
  */
-bool KinematicBandsCore::checkViolation(const TrafficState& ac) const {
-  return detector->violation(own_s(),own_v(),traffic_s(ac),traffic_v(ac));
+void KinematicBandsCore::conflict_aircraft(int alert_level) {
+  Detection3D* detector = parameters.alertor.getLevel(alert_level).getDetectorRef();
+  double tin  = PINFINITY;
+  double tout = NINFINITY;
+  for (TrafficState::nat i = 0; i < traffic.size(); ++i) {
+    TrafficState ac = traffic[i];
+    ConflictData det = detector->conflictDetection(own_s(),own_v(),ac.get_s(),ac.get_v(),
+        0,parameters.getLookaheadTime());
+    if (det.conflict()) {
+      if (det.getTimeIn() <= parameters.alertor.getLevel(alert_level).getAlertingTime()) {
+        conflict_acs_[alert_level-1].push_back(ac);
+      }
+      tin = std::min(tin,det.getTimeIn());
+      tout = std::max(tout,det.getTimeOut());
+    }
+  }
+  tiov_.push_back(Interval(tin,tout));
 }
 
 /**
- * Returns true if the aircraft will be in Violation within time [B,T]
+ * Return list of conflict aircraft for a given alert level.
+ * Requires: 1 <= alert_level <= parameters.alertor.mostSevereAlertLevel()
  */
-ConflictData KinematicBandsCore::checkConflict(const TrafficState& ac, double B, double T) const {
-  return detector->conflictDetection(own_s(),own_v(),traffic_s(ac),traffic_v(ac),B,T);
+std::vector<TrafficState> const & KinematicBandsCore::conflictAircraft(int alert_level) {
+  update();
+  if (alert_level >= 1 && alert_level <= parameters.alertor.mostSevereAlertLevel()) {
+    return conflict_acs_[alert_level-1];
+  }
+  return TrafficState::INVALIDL;
 }
 
-int KinematicBandsCore::epsilonH(const OwnshipState& ownship, const TrafficState& ac) {
-  Position pi = ac.getPosition();
-  Velocity vi = ac.getVelocity();
-  Vect2 s = ownship.get_s().Sub(ownship.pos_to_s(pi)).vect2();
-  Vect2 v = ownship.get_v().Sub(ownship.vel_to_v(pi,vi)).vect2();
-  return CriteriaCore::horizontalCoordination(s,v);
+/**
+ * Return time interval of violation for given alert level
+ * Requires: 1 <= alert_level <= alertor.mostSevereAlertLevel()
+ */
+Interval const & KinematicBandsCore::timeIntervalOfViolation(int alert_level) {
+  update();
+  if (alert_level >= 1 && alert_level <= parameters.alertor.mostSevereAlertLevel()) {
+      return tiov_[alert_level-1];
+  }
+  return Interval::EMPTY;
 }
 
-int KinematicBandsCore::epsilonV(const OwnshipState& ownship, const TrafficState& ac) {
-  Position pi = ac.getPosition();
-  Velocity vi = ac.getVelocity();
-  Vect3 si = ownship.pos_to_s(pi);
-  Vect3 s = ownship.get_s().Sub(si);
-  return CriteriaCore::verticalCoordinationLoS(s,ownship.get_v(),ownship.vel_to_v(pi,vi),
-      ownship.getId(), ac.getId());
+int KinematicBandsCore::epsilonH(const TrafficState& ownship, const TrafficState& ac) {
+  if (ownship.isValid() && ac.isValid()) {
+    Vect2 s = ownship.get_s().Sub(ac.get_s()).vect2();
+    Vect2 v = ownship.get_v().Sub(ac.get_v()).vect2();
+    return CriteriaCore::horizontalCoordination(s,v);
+  } else {
+    return 0;
+  }
 }
 
-Detection3D* KinematicBandsCore::getCoreDetectionPtr() const {
-  return detector;
+int KinematicBandsCore::epsilonV(const TrafficState& ownship, const TrafficState& ac) {
+  if (ownship.isValid() && ac.isValid()) {
+    Vect3 s = ownship.get_s().Sub(ac.get_s());
+    return CriteriaCore::verticalCoordinationLoS(s,ownship.get_v(),ac.get_v(),
+        ownship.getId(), ac.getId());
+  } else {
+    return 0;
+  }
 }
 
-Detection3D& KinematicBandsCore::getCoreDetectionRef() const {
-  return *detector;
+TrafficState const & KinematicBandsCore::criteria_ac() const {
+  return parameters.isEnabledConflictCriteria() ? most_urgent_ac : TrafficState::INVALID;
 }
 
-void KinematicBandsCore::setCoreDetectionPtr(const Detection3D* cd) {
-  delete detector;
-  detector = cd->copy();
+TrafficState const & KinematicBandsCore::recovery_ac() const {
+  return parameters.isEnabledRecoveryCriteria() ? most_urgent_ac : TrafficState::INVALID;
 }
 
-void KinematicBandsCore::setCoreDetectionRef(const Detection3D& cd) {
-  setCoreDetectionPtr(&cd);
+std::string KinematicBandsCore::toString() const {
+  int precision = Constants::get_output_precision();
+  std::string s="";
+  s+="## KinematicBandsCore Parameters\n";
+  s+=parameters.toString();
+  s+="## KinematicBandsCore Internals\n";
+  s+="outdated_ = "+Fmb(outdated_)+"\n";
+  s+="most_urgent_ac_ = "+most_urgent_ac.getId()+"\n";
+  s+="epsh_ = "+Fmi(epsh_)+"\n";
+  s+="epsv_ = "+Fmi(epsv_)+"\n";
+  for (TrafficState::nat i=0; i < conflict_acs_.size(); ++i) {
+    s+="conflict_acs_["+Fmi(i)+"]: "+
+        TrafficState::listToString(conflict_acs_[i])+"\n";
+  }
+  for (Interval::nat i=0; i < tiov_.size(); ++i) {
+      s+="tiov_["+Fmi(i)+"]: "+
+              tiov_[i].toString(precision)+"\n";
+  }
+  s+="## Ownship and Traffic\n";
+  s+="NAME sx sy sz vx vy vz time\n";
+  s+="[none] [m] [m] [m] [m/s] [m/s] [m/s] [s]\n";
+  s+=ownship.getId()+", "+ownship.get_s().formatXYZ(precision,"",", ","")+
+      ", "+own_v().formatXYZ(precision,"",", ","")+", 0\n";
+  for (TrafficState::nat i = 0; i < traffic.size(); i++) {
+    s+=traffic[i].getId()+", "+traffic_s(i).formatXYZ(precision,"",", ","")+
+        ", "+traffic_v(i).formatXYZ(precision,"",", ","")+", 0\n";
+  }
+  return s;
+
 }
 
 }

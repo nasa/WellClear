@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 United States Government as represented by
+ * Copyright (c) 2015-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -19,6 +19,7 @@ class ParameterProvider {
 	virtual ~ParameterProvider() = 0;
 
     virtual ParameterData getParameters() const = 0;
+    virtual void updateParameterData(ParameterData& p) const = 0;
 
 };
 

@@ -1,68 +1,75 @@
+/*
+ * Copyright (c) 2015-2016 United States Government as represented by
+ * the National Aeronautics and Space Administration.  No copyright
+ * is claimed in the United States under Title 17, U.S.Code. All Other
+ * Rights Reserved.
+ */
 package gov.nasa.larcfm.ACCoRD;
 
 import gov.nasa.larcfm.ACCoRD.Daidalus;
+import gov.nasa.larcfm.IO.SequenceReader;
 import gov.nasa.larcfm.Util.Position;
-import gov.nasa.larcfm.Util.SequenceReader;
 import gov.nasa.larcfm.Util.Velocity;
+
 import java.util.ArrayList;
 
 
 public class DaidalusFileWalker {
 
-  private SequenceReader sr;
-  private ArrayList<Double> times;
-  private int index;
+  private SequenceReader sr_;
+  private ArrayList<Double> times_;
+  private int index_;
 
   public DaidalusFileWalker(String filename) {
-    sr = new SequenceReader(filename);
+    sr_ = new SequenceReader(filename);
     init();
   }
 
   public void resetInputFile(String filename) {
-    sr = new SequenceReader(filename);
+    sr_ = new SequenceReader(filename);
     init();
   }
 
   private void init() {
-    sr.setWindowSize(1);
-    index = 0;
-    times = sr.sequenceKeys();
-    if (times.size() > 0) 
-      sr.setActive(times.get(0));
+    sr_.setWindowSize(1);
+    index_ = 0;
+    times_ = sr_.sequenceKeys();
+    if (times_.size() > 0) 
+      sr_.setActive(times_.get(0));
   }
 
   public double firstTime() {
-    if (!times.isEmpty()) {
-      return times.get(0);
+    if (!times_.isEmpty()) {
+      return times_.get(0);
     } 
     return Double.POSITIVE_INFINITY;
   }
 
   public double lastTime() {
-    if (!times.isEmpty()) {
-      return times.get(times.size()-1);
+    if (!times_.isEmpty()) {
+      return times_.get(times_.size()-1);
     }
     return Double.NEGATIVE_INFINITY;
   }
 
   public int getIndex() {
-    return index;
+    return index_;
   }
 
   public double getTime() {
-    if (0 <= index && index < times.size()) {
-      return times.get(index);
+    if (0 <= index_ && index_ < times_.size()) {
+      return times_.get(index_);
     } else {
       return Double.NaN;
     }
   }
 
   public boolean atBeginning() {
-    return index == 0;
+    return index_ == 0;
   }
 
   public boolean atEnd() {
-    return index == times.size();
+    return index_ == times_.size();
   }
 
   public boolean goToTime(double t) {
@@ -70,9 +77,9 @@ public class DaidalusFileWalker {
   }
 
   public boolean goToTimeStep(int i) {
-    if (0 <= i && i < times.size()) {
-      index = i;
-      sr.setActive(times.get(index));
+    if (0 <= i && i < times_.size()) {
+      index_ = i;
+      sr_.setActive(times_.get(index_));
       return true;
     }
     return false;
@@ -83,19 +90,19 @@ public class DaidalusFileWalker {
   }
 
   public void goToEnd() {
-    goToTimeStep(times.size());
+    goToTimeStep(times_.size());
   }
 
   public void goNext() {
-    boolean ok = goToTimeStep(index+1);
+    boolean ok = goToTimeStep(index_+1);
     if (!ok) {
-      index = times.size();
+      index_ = times_.size();
     }
   }
 
   public void goPrev() {
     if (!atBeginning()) {
-      goToTimeStep(index-1);
+      goToTimeStep(index_-1);
     }
   }
 
@@ -103,8 +110,8 @@ public class DaidalusFileWalker {
     int i = -1;
     if (t >= firstTime() && t <= lastTime()) {
       i = 0;
-      for (; i < times.size()-1; ++i) {
-        if (t >= times.get(i) && t < times.get(i+1)) {
+      for (; i < times_.size()-1; ++i) {
+        if (t >= times_.get(i) && t < times_.get(i+1)) {
           break;
         }
       }
@@ -114,10 +121,10 @@ public class DaidalusFileWalker {
 
   public void readState(Daidalus daa) {
     daa.reset();
-    for (int ac = 0; ac < sr.size();++ac) {
-      String ida = sr.getName(ac);
-      Position sa = sr.getPosition(ac);
-      Velocity va = sr. getVelocity(ac);
+    for (int ac = 0; ac < sr_.size();++ac) {
+      String ida = sr_.getName(ac);
+      Position sa = sr_.getPosition(ac);
+      Velocity va = sr_. getVelocity(ac);
       if (ac==0) {
         daa.setOwnshipState(ida,sa,va,getTime());
       } else {

@@ -8,7 +8,7 @@
  *
  * Contact: George Hagen
  *
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -99,6 +99,14 @@ namespace larcfm {
   
   ParameterData& StateReader::getParametersRef() {
 	  return input.getParametersRef();
+  }
+
+  ParameterData StateReader::getParameters() const {
+	  return input.getParameters();
+  }
+
+  void StateReader::updateParameterData(ParameterData& p) const {
+	  p.copy(input.getParameters(), true);
   }
 
   void StateReader::loadfile() {
@@ -276,7 +284,7 @@ namespace larcfm {
 //        tm = getd(fields2[2]) + 60 * getd(fields2[1]) + 3600 * getd(fields2[0]);
         tm = Util::parse_time(s);
       } else {
-        tm = input.getColumn(head[TM_CLK]);
+        tm = input.getColumn(head[TM_CLK], "s");
       }
     } catch (std::runtime_error e) {
       error.addError("error parsing time at line "+Fm0(input.lineNumber()));

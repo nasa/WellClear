@@ -1,104 +1,68 @@
 /*
- * Copyright (c) 2015 United States Government as represented by
+ * Copyright (c) 2015-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
  */
+
 #include "KinematicGsBands.h"
 #include "Vect3.h"
 #include "Velocity.h"
 #include "Position.h"
-#include "Detection3D.h"
-#include "OwnshipState.h"
-#include "TrafficState.h"
 #include "Interval.h"
 #include "BandsRegion.h"
 #include "Integerval.h"
+#include "KinematicBandsParameters.h"
 #include "ProjectedKinematics.h"
-#include <cmath>
-#include "DefaultDaidalusParameters.h"
-
 
 namespace larcfm {
 
-KinematicGsBands::KinematicGsBands() {
-  intervals = std::vector<Interval>();
-  regions = std::vector<BandsRegion::Region>();
-  recovery_time = 0;
-  min = DefaultDaidalusParameters::getMinGroundSpeed();
-  max = DefaultDaidalusParameters::getMaxGroundSpeed();
-  step = DefaultDaidalusParameters::getGroundSpeedStep();
-  do_recovery = DefaultDaidalusParameters::isEnabledRecoveryGroundSpeedBands();
-  horizontal_accel = DefaultDaidalusParameters::getHorizontalAcceleration();
+KinematicGsBands::KinematicGsBands(const KinematicBandsParameters& parameters) : KinematicRealBands(
+    parameters.getMinGroundSpeed(),
+    parameters.getMaxGroundSpeed(),
+    parameters.getGroundSpeedStep(),
+    parameters.isEnabledRecoveryGroundSpeedBands()) {
+  horizontal_accel_ = parameters.getHorizontalAcceleration();
 }
 
-KinematicGsBands::KinematicGsBands(const KinematicGsBands& b) {
-  intervals = std::vector<Interval>();
-  regions = std::vector<BandsRegion::Region>();
-  recovery_time = 0;
-  min = b.min;
-  max = b.max;
-  step = b.step;
-  do_recovery = b.do_recovery;
-  horizontal_accel = b.horizontal_accel;
+KinematicGsBands::KinematicGsBands(const KinematicGsBands& b) : KinematicRealBands(
+    b.get_min(),b.get_max(),b.get_rel(),b.get_mod(),b.get_step(),b.get_recovery()){
+  horizontal_accel_ = b.horizontal_accel_;
 }
 
-void KinematicGsBands::setHorizontalAcceleration(double val) {
-  if (val >= 0 && val != horizontal_accel) {
-    horizontal_accel = val;
+bool KinematicGsBands::instantaneous_bands() const {
+  return horizontal_accel_ == 0;
+}
+
+double KinematicGsBands::get_horizontal_accel() const {
+  return horizontal_accel_;
+}
+
+void KinematicGsBands::set_horizontal_accel(double val) {
+  if (val != horizontal_accel_) {
+    horizontal_accel_ = val;
     reset();
   }
 }
 
-double KinematicGsBands::getHorizontalAcceleration() const {
-  return horizontal_accel;
+double KinematicGsBands::own_val(const TrafficState& ownship) const {
+  return ownship.groundSpeed();
 }
 
-std::pair<Vect3, Velocity> KinematicGsBands::trajectory(const OwnshipState& ownship, double time, bool dir) const {
-  std::pair<Position,Velocity> posvel = ProjectedKinematics::gsAccel(ownship.getPosition(),ownship.getVelocity(),time,
-      (dir?1:-1)*horizontal_accel);
+double KinematicGsBands::time_step(const TrafficState& ownship) const {
+  return get_step()/horizontal_accel_;
+}
+
+std::pair<Vect3, Velocity> KinematicGsBands::trajectory(const TrafficState& ownship, double time, bool dir) const {
+  std::pair<Position,Velocity> posvel;
+  if (instantaneous_bands()) {
+    double gs = ownship.getVelocity().gs()+(dir?1:-1)*j_step_*get_step();
+    posvel = std::pair<Position,Velocity>(ownship.getPosition(),ownship.getVelocity().mkGs(gs));
+  } else {
+    posvel = ProjectedKinematics::gsAccel(ownship.getPosition(),ownship.getVelocity(),time,
+        (dir?1:-1)*horizontal_accel_);
+  }
   return std::pair<Vect3, Velocity>(ownship.pos_to_s(posvel.first),ownship.vel_to_v(posvel.first,posvel.second));
-}
-
-bool KinematicGsBands::any_red(Detection3D* conflict_det, Detection3D* recovery_det, const TrafficState& repac,
-    double B, double T, const OwnshipState& ownship, const std::vector<TrafficState>& traffic) const {
-  double gso = ownship.getVelocity().gs();
-  int maxdown = (int)std::max(std::ceil((gso-min)/step),0.0)+1;
-  int maxup = (int)std::max(std::ceil((max-gso)/step),0.0)+1;
-  double tstep = step/horizontal_accel;
-  int epsh = 0;
-  if (repac.isValid()) {
-    epsh = KinematicBandsCore::epsilonH(ownship,repac);
-  }
-  return KinematicIntegerBands::any_int_red(conflict_det,recovery_det,tstep,B,T,0,B,maxdown,maxup,ownship,traffic,repac,epsh,0,0);
-}
-
-bool KinematicGsBands::all_red(Detection3D* conflict_det, Detection3D* recovery_det, const TrafficState& repac,
-    double B, double T, const OwnshipState& ownship, const std::vector<TrafficState>& traffic) const {
-  double gso = ownship.getVelocity().gs();
-  int maxdown = (int)std::max(std::ceil((gso-min)/step),0.0)+1;
-  int maxup = (int)std::max(std::ceil((max-gso)/step),0.0)+1;
-  double tstep = step/horizontal_accel;
-  int epsh = 0;
-  if (repac.isValid()) {
-    epsh = KinematicBandsCore::epsilonH(ownship,repac);
-  }
-  return KinematicIntegerBands::all_int_red(conflict_det,recovery_det,tstep,B,T,0,B,maxdown,maxup,ownship,traffic,repac,epsh,0,0);
-}
-
-void KinematicGsBands::none_bands(IntervalSet& noneset, Detection3D* conflict_det, Detection3D* recovery_det, const TrafficState& repac, double B, double T,
-    const OwnshipState& ownship, const std::vector<TrafficState>& traffic) const {
-  double gso = ownship.getVelocity().gs();
-  int maxdown = (int)std::max(std::ceil((gso-min)/step),0.0)+1;
-  int maxup = (int)std::max(std::ceil((max-gso)/step),0.0)+1;
-  double tstep = step/horizontal_accel;
-  std::vector<Integerval> gsint = std::vector<Integerval>();
-  int epsh = 0;
-  if (repac.isValid()) {
-    epsh = KinematicBandsCore::epsilonH(ownship,repac);
-  }
-  KinematicIntegerBands::kinematic_bands_combine(gsint,conflict_det,recovery_det,tstep,B,T,0,B,maxdown,maxup,ownship,traffic,repac,epsh,0);
-  KinematicIntegerBands::toIntervalSet(noneset,gsint,step,gso,min,max);
 }
 
 }

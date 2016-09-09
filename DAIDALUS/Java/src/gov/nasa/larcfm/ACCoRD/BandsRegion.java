@@ -4,7 +4,7 @@
  * Contact: Jeff Maddalon
  * Organization: NASA/Langley Research Center
  * 
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -17,22 +17,53 @@ package gov.nasa.larcfm.ACCoRD;
  * region of conflict prevention information.
  */
 public enum BandsRegion { 
-  /* UNKNOWN : Returned when a band is requested for a value beyond the min-max range
-   * NONE: No band (green)
-   * NEAR: Near conflict band (red)
-   * RECOVERY: Band for an infeasible or loss of separation case (dashed red)
-   * FAR: Far conflict band (yellow)
-   */
-  
-  UNKNOWN("<UNKNOWN>"), NONE("<NONE>"), NEAR("<NEAR>"), RECOVERY("<RECOVERY>"), MID("<MID>"), FAR("<FAR>"), ;
+	/* UNKNOWN : Invalid band
+	 * NONE: No band 
+	 * RECOVERY: Band for violation recovery
+	 * NEAR: Near conflict band 
+	 * MID: Mid conflict bands 
+	 * FAR: Far conflict band
+	 */
 
-  private String name;
+	UNKNOWN("UNKNOWN"), NONE("NONE"), RECOVERY("RECOVERY"), NEAR("NEAR"), MID("MID"), FAR("FAR");
 
-  BandsRegion(String name) {
-    this.name = name;
-  }
+	private String name;
 
-  public String toString() {
-    return name;
-  }
+	BandsRegion(String nm) {
+		name = nm;
+	}
+
+	public String toString() {
+		return name;
+	}
+
+	boolean isValidBand() {
+		return this != UNKNOWN;
+	}
+
+	boolean isResolutionBand() {
+		return this == NONE || this == RECOVERY;
+	}
+
+	boolean isConflictBand() {
+		return isValidBand() && !isResolutionBand();  
+	}
+
+	// RECOVERY=NONE < FAR < MID < NEAR
+	int order() {
+		if (isResolutionBand()) {
+			return 0;
+		}
+		if (this == FAR) {
+			return 1;
+		}
+		if (this == MID) {
+			return 2;
+		}
+		if (this == NEAR) {
+			return 3;
+		}
+		return -1;
+	}
+
 }

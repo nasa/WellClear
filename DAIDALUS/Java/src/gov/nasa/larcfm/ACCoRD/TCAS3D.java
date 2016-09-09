@@ -1,17 +1,16 @@
 /*
- * Copyright (c) 2012-2015 United States Government as represented by
+ * Copyright (c) 2012-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
  */
+
 package gov.nasa.larcfm.ACCoRD;
+
 import gov.nasa.larcfm.Util.*;
 
 public class TCAS3D implements Detection3D {
   String id = "";
-
-  /** set to true to add pvsio-friendly output to stderr for verification purposes. */
-  public static boolean pvsCheck = false; 
 
   private TCASTable table;
 
@@ -117,12 +116,12 @@ public class TCAS3D implements Detection3D {
     double time_mintau = -1;
     double dist_mintau = -1;
 
-    Vect2 so2 = so.vect2();
-    Vect2 si2 = si.vect2();
-    Vect2 s2 = so2.Sub(si2);
+    Vect3 s = so.Sub(si);
+    Velocity v = vo.Sub(vi);
+    Vect2 s2 = s.vect2();
     Vect2 vo2 = vo.vect2();
     Vect2 vi2 = vi.vect2();
-    Vect2 v2 = vo2.Sub(vi2);
+    Vect2 v2 = v.vect2();
     int sl = TCASTable.getSensitivityLevel(so.z);
     boolean usehmdf = table.getHMDFilter();
     double TAU  = table.getTAU(sl);
@@ -131,20 +130,16 @@ public class TCAS3D implements Detection3D {
     double HMD  = table.getHMD(sl);
     double ZTHR = table.getZTHR(sl);
 
-    print_PVS_input(so,vo,si,vi,B,T);
-
     if (usehmdf && !cd2d_TCAS_after(HMD,s2,vo2,vi2,B)) {
       time_mintau = TCAS2D.time_of_min_tau(DMOD,B,T,s2,v2);
       dist_mintau = so.linear(vo, time_mintau).Sub(si.linear(vi, time_mintau)).cyl_norm(table.getDMOD(8), table.getZTHR(8));
-      print_PVS_output(time_in, time_out,"(case 1)");
-      return new ConflictData(time_in,time_out,time_mintau,dist_mintau);
+      return new ConflictData(time_in,time_out,time_mintau,dist_mintau,s,v);
     }
     double sz = so.z-si.z;
     if (Util.almost_equals(vo.z, vi.z) && Math.abs(sz) > ZTHR) {
       time_mintau = TCAS2D.time_of_min_tau(DMOD,B,T,s2,v2);
       dist_mintau = so.linear(vo, time_mintau).Sub(si.linear(vi, time_mintau)).cyl_norm(table.getDMOD(8), table.getZTHR(8));
-      print_PVS_output(time_in, time_out,"(case 2)");
-      return new ConflictData(time_in,time_out,time_mintau,dist_mintau);
+      return new ConflictData(time_in,time_out,time_mintau,dist_mintau,s,v);
     }
     double vz = vo.z-vi.z;
     double tentry = B;
@@ -160,8 +155,7 @@ public class TCAS3D implements Detection3D {
     if (texit < B || T < tentry) {
       time_mintau = TCAS2D.time_of_min_tau(DMOD,B,T,s2,v2);
       dist_mintau = so.linear(vo, time_mintau).Sub(si.linear(vi, time_mintau)).cyl_norm(table.getDMOD(8), table.getZTHR(8));
-      print_PVS_output(time_in, time_out,"(case 3)");
-      return new ConflictData(time_in,time_out,time_mintau,dist_mintau);
+      return new ConflictData(time_in,time_out,time_mintau,dist_mintau,s,v);
     }
     double tin = Math.max(B,tentry);
     double tout = Math.min(T,texit);
@@ -175,8 +169,7 @@ public class TCAS3D implements Detection3D {
     (usehmdf && HMD < DMOD && exit_at_centry && !los_at_centry)) { 
       time_mintau = TCAS2D.time_of_min_tau(DMOD,B,T,s2,v2);
       dist_mintau = so.linear(vo, time_mintau).Sub(si.linear(vi, time_mintau)).cyl_norm(table.getDMOD(8), table.getZTHR(8));
-      print_PVS_output(time_in, time_out,"(case 4)");
-      return new ConflictData(time_in,time_out,time_mintau,dist_mintau);
+      return new ConflictData(time_in,time_out,time_mintau,dist_mintau,s,v);
     }
     if (usehmdf && HMD < DMOD) {
       double exitTheta = T;
@@ -188,20 +181,17 @@ public class TCAS3D implements Detection3D {
       if (RAin2D_lookahead <= minRAoutTheta) {
         time_mintau = TCAS2D.time_of_min_tau(DMOD,RAin2D_lookahead,minRAoutTheta,s2,v2);
         dist_mintau = so.linear(vo, time_mintau).Sub(si.linear(vi, time_mintau)).cyl_norm(table.getDMOD(8), table.getZTHR(8));
-        print_PVS_output(time_in, time_out,"(case 5)");
-        return new ConflictData(time_in,time_out,time_mintau,dist_mintau);
+        return new ConflictData(time_in,time_out,time_mintau,dist_mintau,s,v);
       }
       time_mintau = TCAS2D.time_of_min_tau(DMOD,B,T,s2,v2);
       dist_mintau = so.linear(vo, time_mintau).Sub(si.linear(vi, time_mintau)).cyl_norm(table.getDMOD(8), table.getZTHR(8));
-      print_PVS_output(time_in, time_out,"(case 6)");
-      return new ConflictData(time_in,time_out,time_mintau,dist_mintau);
+      return new ConflictData(time_in,time_out,time_mintau,dist_mintau,s,v);
     }
     time_in = RAin2D_lookahead;
     time_out = RAout2D_lookahead;
     time_mintau = TCAS2D.time_of_min_tau(DMOD,RAin2D_lookahead,RAout2D_lookahead,s2,v2);
     dist_mintau = so.linear(vo, time_mintau).Sub(si.linear(vi, time_mintau)).cyl_norm(table.getDMOD(8), table.getZTHR(8));
-    print_PVS_output(time_in, time_out,"(case 7)");
-    return new ConflictData(time_in,time_out,time_mintau,dist_mintau);
+    return new ConflictData(time_in,time_out,time_mintau,dist_mintau,s,v);
   }
 
   /**
@@ -361,38 +351,12 @@ public class TCAS3D implements Detection3D {
     return table.getHMDFilter();
   }
 
-  private void print_PVS_input(Vect3 so, Velocity vo, Vect3 si, Velocity vi, double B, double T) {
-    //  Thread.dumpStack();
-    if (pvsCheck) {
-      int sl = TCASTable.getSensitivityLevel(so.z);
-      boolean usehmdf = table.getHMDFilter();
-      double TAU  = table.getTAU(sl);
-      double TCOA = table.getTCOA(sl);
-      double DMOD = table.getDMOD(sl);
-      double HMD  = table.getHMD(sl);
-      double ZTHR = table.getZTHR(sl);
-      System.err.println("(# DMOD := "+f.Fm8(DMOD)+", HMD := "+f.Fm8(HMD)
-          +", ZTHR := "+f.Fm8(ZTHR)+", TAU := "+f.Fm8(TAU)+", TCOA := "+f.Fm8(TCOA)
-          +", B := "+f.Fm8(B)+", T := "+f.Fm8(T)+", hmdf? := "+(usehmdf ? "TRUE" : "FALSE")+" #) % SL="+sl);     
-      System.err.println("(# x := "+f.Fm8(so.x())+", y := "+f.Fm8(so.y())+", z := "+f.Fm8(so.z())+" #) % so");
-      System.err.println("(# x := "+f.Fm8(vo.x())+", y := "+f.Fm8(vo.y())+", z := "+f.Fm8(vo.z())+" #) % vo");
-      System.err.println("(# x := "+f.Fm8(si.x())+", y := "+f.Fm8(si.y())+", z := "+f.Fm8(si.z())+" #) % si");
-      System.err.println("(# x := "+f.Fm8(vi.x())+", y := "+f.Fm8(vi.y())+", z := "+f.Fm8(vi.z())+" #) % vi"); 
-      System.err.flush();
-    } 
-  }
-
-  private void print_PVS_output(double time_in, double time_out, String comment) {
-    if (pvsCheck) {
-      //      System.err.println((time_in <= time_out ? "TRUE" : "FALSE")+" % "+comment);
-      System.err.println("("+f.Fm8(time_in)+","+f.Fm8(time_out)+") % TCAS3D time in/out "+comment);
-      //      System.err.println(f.Fm8(time_mintau)+" % tca");  
-      System.err.flush();
-    }
-  }
-
   public String toString() {
     return (id.equals("") ? "" : id+" = ")+getSimpleClassName()+": {"+table.toString()+"}";
+  }
+  
+  public String toPVS(int prec) {
+    return table.toPVS(prec);
   }
 
   public ParameterData getParameters() {
@@ -403,15 +367,11 @@ public class TCAS3D implements Detection3D {
 
   public void updateParameterData(ParameterData p) {
     table.updateParameterData(p);
-    //    p.set("pvsCheck",pvsCheck);
     p.set("id",id);
   }
 
   public void setParameters(ParameterData p) {
     table.setParameters(p);
-    //    if (p.contains("pvsCheck")) {
-    //      pvsCheck = p.getBool("pvsCheck");
-    //    }
     if (p.contains("id")) {
       id = p.getString("id");
     }

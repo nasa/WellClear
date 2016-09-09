@@ -1,249 +1,290 @@
 /*
- * Copyright (c) 2015 United States Government as represented by
+ * Copyright (c) 2015-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
  */
 package gov.nasa.larcfm.ACCoRD;
 
+import gov.nasa.larcfm.Util.Constants;
+import gov.nasa.larcfm.Util.Interval;
 import gov.nasa.larcfm.Util.Position;
 import gov.nasa.larcfm.Util.Vect2;
 import gov.nasa.larcfm.Util.Vect3;
 import gov.nasa.larcfm.Util.Velocity;
+import gov.nasa.larcfm.Util.f;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class KinematicBandsCore implements Detection3DAcceptor {
+public class KinematicBandsCore {
 
-  public static TCASTable RA = new TCASTable();
+	public static TCASTable RA = new TCASTable();
 
-  /* Absolute ownship state */
-  public OwnshipState ownship;
-  /* Absolute list of traffic states */
-  public ArrayList<TrafficState> traffic;
-  /* Conflict detector */
-  public Detection3D detector;
-  /* Implicit bands are bands where only conflict bands are indicated. Other types of bands are implicit */
-  public boolean implicit_bands; 
-  /* Lookahead time. This is the time horizon used in the computation of bands (T > 0) */
-  public double lookahead; 
-  /* Alerting time. This is the first time prior to a violation when bands are
-   * computed (when this value is 0, lookahead time is used instead) */
-  public double alerting_time; 
-  /* Maximum time for recovery bands. After this time, bands algorithm gives up 
-   * (when this value is 0, lookahead time is used instead) */
-  public double max_recovery_time; 
-  /* Stability time for the computation of recovery bands. Recovery bands are computed at time 
-   * of first green plus this time. */
-  public double recovery_stability_time; 
-  public String criteria_ac; /* Most urgent aircraft */
-  public boolean conflict_crit; /* Use criteria for conflict bands */
-  public boolean recovery_crit; /* Use criteria for recovery bands */
-  /* Minimum horizontal separation for recovery (when this value is 0, TCAS RA HMD value
-   * is used instead) */
-  public double min_horizontal_recovery; 
-  /* Minimum vertical separation for recovery (when this value is 0, TCAS RA ZTHR value
-   * is used instead) */
-  public double min_vertical_recovery;   
-  /* Compute collision avoidance bands */
-  public boolean ca_bands; 
+	/* Absolute ownship state */
+	public TrafficState ownship;
+	/* Absolute list of traffic states */
+	public List<TrafficState> traffic;
+	/* Kinematic bands parameters */
+	public KinematicBandsParameters parameters;
+	/* Most urgent aircraft */
+	public TrafficState most_urgent_ac; 
 
-  public KinematicBandsCore(Detection3D det) {
-    ownship = OwnshipState.INVALID;
-    traffic = new ArrayList<TrafficState>(); 
-    implicit_bands = DefaultDaidalusParameters.isEnabledImplicitBands();
-    lookahead = DefaultDaidalusParameters.getLookaheadTime();
-    alerting_time = DefaultDaidalusParameters.getAlertingTime();
-    max_recovery_time = DefaultDaidalusParameters.getMaxRecoveryTime();
-    recovery_stability_time = DefaultDaidalusParameters.getRecoveryStabilityTime();
-    criteria_ac = TrafficState.INVALID.getId();
-    conflict_crit = DefaultDaidalusParameters.isEnabledConflictCriteria();
-    recovery_crit = DefaultDaidalusParameters.isEnabledRecoveryCriteria();
-    min_horizontal_recovery = DefaultDaidalusParameters.getMinHorizontalRecovery();
-    min_vertical_recovery = DefaultDaidalusParameters.getMinVerticalRecovery();
-    ca_bands = DefaultDaidalusParameters.isEnabledCollisionAvoidanceBands();
-    detector = det.copy();
-  }
+	/* Boolean to control re-computation of cached values */
+	private boolean outdated_; 
+	/* Cached horizontal epsilon for implicit coordination */
+	private int epsh_; 
+	/* Cached vertical epsilon for implicit coordination */
+	private int epsv_; 
+	/* The length of conflict_acs_ is greater than or equal to the length of the alert levels. */
+	/* Cached list of conflict aircraft per alert level */
+	private List<List<TrafficState>> conflict_acs_; 
+	/* Cached list of time intervals of violation per alert level */
+	private List<Interval> tiov_; //
 
-  public KinematicBandsCore(KinematicBandsCore core) {
-    ownship = new OwnshipState(core.ownship);
-    for (int i = 0; i < core.traffic.size(); ++i) {
-      TrafficState ac = core.traffic.get(i);
-      traffic.add(new TrafficState(ac));
-    }
-    implicit_bands = core.implicit_bands;
-    lookahead = core.lookahead;
-    alerting_time = core.alerting_time;
-    max_recovery_time = core.max_recovery_time;
-    recovery_stability_time = core.recovery_stability_time;
-    criteria_ac = core.criteria_ac;
-    conflict_crit = core.conflict_crit;
-    recovery_crit = core.recovery_crit;
-    min_horizontal_recovery = core.min_horizontal_recovery;
-    min_vertical_recovery = core.min_vertical_recovery;
-    ca_bands = core.ca_bands;
-    detector = core.detector.copy();
-  }
+	public KinematicBandsCore(KinematicBandsParameters params) {
+		ownship = TrafficState.INVALID;
+		traffic = new ArrayList<TrafficState>(); 
+		parameters = new KinematicBandsParameters(params);
+		most_urgent_ac = TrafficState.INVALID;
+		conflict_acs_ = new ArrayList<List<TrafficState>>();
+		tiov_ = new ArrayList<Interval>();
+		reset();
+	}
 
-  /**
-   *  Clear ownship and traffic data from this object.   
-   */
-  public void clear() {
-    ownship = OwnshipState.INVALID;
-    traffic.clear();
-  }
+	public KinematicBandsCore(KinematicBandsCore core) {
+		setKinematicBandsCore(core);
+	}
 
-  /**
-   * Return actual alerting time in seconds. 
-   */
-  public double alertingTime() {
-    return alerting_time > 0 ? alerting_time : lookahead;
-  }
+	/**
+	 * Set kinematic bands core
+	 */
+	public void setKinematicBandsCore(KinematicBandsCore core) {
+		ownship = core.ownship;
+		traffic = new ArrayList<TrafficState>(); 
+		traffic.addAll(core.traffic);
+		parameters = new KinematicBandsParameters(core.parameters);
+		most_urgent_ac = core.most_urgent_ac;
+		conflict_acs_ = new ArrayList<List<TrafficState>>();
+		tiov_ = new ArrayList<Interval>();
+		reset();	
+	}
 
-  /**
-   *  Returns actual maximum recovery time in seconds. 
-   */ 
-  public double maxRecoveryTime() {
-    return max_recovery_time > 0 ? max_recovery_time : lookahead;
-  }
+	/**
+	 *  Clear ownship and traffic data from this object.   
+	 */
+	public void clear() {
+		ownship = TrafficState.INVALID;
+		traffic.clear();
+		reset();
+	}
 
-  /**
-   * Returns actual minimum horizontal separation for recovery bands in internal units. 
-   */
-  public double minHorizontalRecovery() {
-    if (min_horizontal_recovery > 0) 
-      return min_horizontal_recovery;
-    int sl = !hasOwnship() ? 3 : Math.max(3,TCASTable.getSensitivityLevel(ownship.getPosition().alt()));
-    return RA.getHMD(sl);
-  }
+	/**
+	 *  Reset cached values 
+	 */
+	public void reset() {
+		outdated_ = true;
+		epsh_ = 0;
+		epsv_ = 0;
+		tiov_.clear();
+	}
 
-  /** 
-   * Returns actual minimum vertical separation for recovery bands in internal units. 
-   */
-  public double minVerticalRecovery() {
-    if (min_vertical_recovery > 0) 
-      return min_vertical_recovery;
-    int sl = !hasOwnship() ? 3 : Math.max(3,TCASTable.getSensitivityLevel(ownship.getPosition().alt()));
-    return RA.getZTHR(sl);
-  }
+	/**
+	 *  Update cached values 
+	 */
+	private void update() {
+		if (outdated_) {
+			for (int alert_level=1; alert_level <= parameters.alertor.mostSevereAlertLevel(); ++alert_level) {
+				if (alert_level-1 >= conflict_acs_.size()) {
+					conflict_acs_.add(new ArrayList<TrafficState>());
+				} else {
+					conflict_acs_.get(alert_level-1).clear();
+				}
+				conflict_aircraft(alert_level);
+			}
+			epsh_ = epsilonH(ownship,most_urgent_ac);
+			epsv_ = epsilonV(ownship,most_urgent_ac);
+			outdated_ = false;
+		} 
+	}
 
-  public boolean hasOwnship() {
-    return ownship.isValid();
-  }
+	/**
+	 *  Returns horizontal epsilon for implicit coordination with respect to criteria ac
+	 */
+	public int epsilonH() {
+		update();
+		return epsh_;
+	}
 
-  public OwnshipState getOwnship() {
-    return ownship;
-  }
+	/**
+	 *  Returns vertical epsilon for implicit coordination with respect to criteria ac
+	 */
+	public int epsilonV() {
+		update();
+		return epsv_;
+	}
 
-  public TrafficState getTraffic(int i) {
-    return traffic.get(i);
-  }
+	/**
+	 * Returns actual minimum horizontal separation for recovery bands in internal units. 
+	 */
+	public double minHorizontalRecovery() {
+		double min_horizontal_recovery = parameters.getMinHorizontalRecovery();
+		if (min_horizontal_recovery > 0) 
+			return min_horizontal_recovery;
+		int sl = !hasOwnship() ? 3 : Math.max(3,TCASTable.getSensitivityLevel(ownship.getPosition().alt()));
+		return RA.getHMD(sl);
+	}
 
-  public int trafficSize() {
-    return traffic.size();
-  }
-  
-  public TrafficState getTraffic(String id) {
-    return TrafficState.getTraffic(traffic,id);
-  }
+	/** 
+	 * Returns actual minimum vertical separation for recovery bands in internal units. 
+	 */
+	public double minVerticalRecovery() {
+		double min_vertical_recovery = parameters.getMinVerticalRecovery();
+		if (min_vertical_recovery > 0) 
+			return min_vertical_recovery;
+		int sl = !hasOwnship() ? 3 : Math.max(3,TCASTable.getSensitivityLevel(ownship.getPosition().alt()));
+		return RA.getZTHR(sl);
+	}
 
-  public boolean hasTraffic() {
-    return traffic.size() > 0;
-  }
+	public boolean hasOwnship() {
+		return ownship.isValid();
+	}
 
-  public double getRecoveryStabilityTime() {
-    return recovery_stability_time;
-  }
+	public TrafficState intruder(String id) {
+		return TrafficState.findAircraft(traffic,id);
+	}
 
-  public double getLookahead() {
-    return lookahead;
-  }
+	public boolean hasTraffic() {
+		return traffic.size() > 0;
+	}
 
-  public Position trafficPosition(int i) {
-    return getTraffic(i).getPosition();
-  }
+	public Position trafficPosition(int i) {
+		return traffic.get(i).getPosition();
+	}
 
-  public Velocity trafficVelocity(int i) {
-    return getTraffic(i).getVelocity();
-  }
+	public Velocity trafficVelocity(int i) {
+		return traffic.get(i).getVelocity();
+	}
 
-  public Vect3 own_s() {
-    return ownship.get_s();
-  }
+	public Vect3 own_s() {
+		return ownship.get_s();
+	}
 
-  public Velocity own_v() {
-    return ownship.get_v();
-  }
+	public Velocity own_v() {
+		return ownship.get_v();
+	}
 
-  public Vect3 pos_to_s(Position p) {
-    return ownship.pos_to_s(p);
-  }
+	public Vect3 traffic_s(int i) {
+		return traffic.get(i).get_s();
+	}
 
-  public Vect3 traffic_s(int i) {
-    return pos_to_s(trafficPosition(i));
-  }
+	public Velocity traffic_v(int i) {
+		return traffic.get(i).get_v();
+	}
 
-  public Vect3 traffic_s(TrafficState ac) {
-    return pos_to_s(ac.getPosition());
-  }
+	/**
+	 * Put in conflict_acs_ the list of aircraft predicted to be in conflict for the given alert level.
+	 * Requires: 1 <= alert_level <= alertor.mostSevereAlertLevel()
+	 */
+	private void conflict_aircraft(int alert_level) {
+		Detection3D detector = parameters.alertor.getLevel(alert_level).getDetector();
+		double tin  = Double.POSITIVE_INFINITY;
+		double tout = Double.NEGATIVE_INFINITY;
+		for (int i = 0; i < traffic.size(); ++i) {
+			TrafficState ac = traffic.get(i);
+			ConflictData det = detector.conflictDetection(own_s(),own_v(),ac.get_s(),ac.get_v(),
+					0,parameters.getLookaheadTime());
+			if (det.conflict()) {
+				if (det.getTimeIn() <= parameters.alertor.getLevel(alert_level).getAlertingTime()) {
+					conflict_acs_.get(alert_level-1).add(ac);
+				} 
+				tin = Math.min(tin,det.getTimeIn());
+				tout = Math.max(tout,det.getTimeOut());
+			} 
+		}
+		tiov_.add(new Interval(tin,tout));
+	}
 
-  public Velocity vel_to_v(Position p, Velocity v) {
-    return ownship.vel_to_v(p,v);
-  }
+	/**
+	 * Return list of conflict aircraft for a given alert level.
+	 * Requires: 1 <= alert_level <= alertor.mostSevereAlertLevel()
+	 */
+	public List<TrafficState> conflictAircraft(int alert_level) {
+		update();
+		if (alert_level >= 1 && alert_level <= parameters.alertor.mostSevereAlertLevel()) {
+			return conflict_acs_.get(alert_level-1);
+		}
+		return TrafficState.INVALIDL;
+	}
 
-  public Velocity traffic_v(int i) {
-    return vel_to_v(trafficPosition(i),trafficVelocity(i));
-  }
+	/**
+	 * Return time interval of violation for given alert level
+	 * Requires: 1 <= alert_level <= alertor.mostSevereAlertLevel()
+	 */
+	public Interval timeIntervalOfViolation(int alert_level) {
+		update();
+		if (alert_level >= 1 && alert_level <= parameters.alertor.mostSevereAlertLevel()) {
+			return tiov_.get(alert_level-1);
+		}
+		return Interval.EMPTY;
+	}
 
-  public Velocity traffic_v(TrafficState ac) {
-    return vel_to_v(ac.getPosition(),ac.getVelocity());
-  }
+	public static int epsilonH(TrafficState ownship, TrafficState ac) {
+		if (ownship.isValid() && ac.isValid()) {
+			Vect2 s = ownship.get_s().Sub(ac.get_s()).vect2();
+			Vect2 v = ownship.get_v().Sub(ac.get_v()).vect2();   
+			return CriteriaCore.horizontalCoordination(s,v);
+		} else {
+			return 0;
+		}
+	}
 
-  /**
-   * Returns true if the aircraft are in violation at current time
-   */
-  public boolean checkViolation(TrafficState ac) {
-    return detector.violation(own_s(),own_v(),traffic_s(ac),traffic_v(ac));
-  }
+	public static int epsilonV(TrafficState ownship, TrafficState ac) {
+		if (ownship.isValid() && ac.isValid()) {
+			Vect3 s = ownship.get_s().Sub(ac.get_s());
+			return CriteriaCore.verticalCoordinationLoS(s,ownship.get_v(),ac.get_v(),
+					ownship.getId(), ac.getId());
+		} else {
+			return 0;
+		}
+	}
 
-  /**
-   * Returns true if the aircraft will be in Violation within time [B,T]
-   */
-  public ConflictData checkConflict(TrafficState ac, double B, double T) {
-    return detector.conflictDetection(own_s(),own_v(),traffic_s(ac),traffic_v(ac),B,T);
-  }
+	public TrafficState criteria_ac() {
+		return parameters.isEnabledConflictCriteria() ? most_urgent_ac : TrafficState.INVALID;
+	}
 
-  static public int epsilonH(OwnshipState ownship, TrafficState ac) {
-    Position pi = ac.getPosition();
-    Velocity vi = ac.getVelocity();
-    Vect2 s = ownship.get_s().Sub(ownship.pos_to_s(pi)).vect2();
-    Vect2 v = ownship.get_v().Sub(ownship.vel_to_v(pi,vi)).vect2();      
-    return CriteriaCore.horizontalCoordination(s,v);
-  }
+	public TrafficState recovery_ac() {
+		return parameters.isEnabledRecoveryCriteria() ? most_urgent_ac : TrafficState.INVALID;
+	}
 
-  static public int epsilonV(OwnshipState ownship, TrafficState ac) {
-    Position pi = ac.getPosition();
-    Velocity vi = ac.getVelocity();
-    Vect3 si = ownship.pos_to_s(pi);
-    Vect3 s = ownship.get_s().Sub(si);
-    return CriteriaCore.verticalCoordinationLoS(s,ownship.get_v(),ownship.vel_to_v(pi,vi),
-        ownship.getId(), ac.getId());
-  }
-
-  public Detection3D getCoreDetection() {
-    return getConflictDetector();
-  }
-
-  public void setCoreDetection(Detection3D det) {
-    setConflictDetector(det);
-  }
-
-  public Detection3D getConflictDetector() {
-    return detector;
-  }
-
-  public void setConflictDetector(Detection3D det) {
-    detector = det.copy();
-  }
+	public String toString() {
+		int precision = Constants.get_output_precision();
+		String s="";
+		s+="## KinematicBandsCore Parameters\n";
+		s+=parameters.toString();
+		s+="## KinematicBandsCore Internals\n";
+		s+="outdated_ = "+outdated_+"\n";		
+		s+="most_urgent_ac_ = "+most_urgent_ac.getId()+"\n";
+		s+="epsh_ = "+f.Fmi(epsh_)+"\n";
+		s+="epsv_ = "+f.Fmi(epsv_)+"\n";		
+		for (int i=0; i < conflict_acs_.size(); ++i) {
+			s+="conflict_acs_["+f.Fmi(i)+"]: "+
+					TrafficState.listToString(conflict_acs_.get(i))+"\n";
+		}
+		for (int i=0; i < tiov_.size(); ++i) {
+			s+="tiov_["+f.Fmi(i)+"]: "+
+					tiov_.get(i).toString(precision)+"\n";
+		}
+		s+="## Ownship and Traffic\n";
+		s+="NAME sx sy sz vx vy vz time\n";
+		s+="[none] [m] [m] [m] [m/s] [m/s] [m/s] [s]\n";
+		s+=ownship.getId()+", "+ownship.get_s().formatXYZ(precision,"",", ","")+
+				", "+own_v().formatXYZ(precision,"",", ","")+", 0\n";
+		for (int i = 0; i < traffic.size(); i++) {
+			s+=traffic.get(i).getId()+", "+traffic_s(i).formatXYZ(precision,"",", ","")+
+					", "+traffic_v(i).formatXYZ(precision,"",", ","")+", 0\n";
+		}
+		return s;
+	}
 
 }

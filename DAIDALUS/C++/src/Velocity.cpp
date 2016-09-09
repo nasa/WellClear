@@ -8,7 +8,7 @@
  * NOTES: 
  * Track is True North/clockwise
  *
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -17,6 +17,7 @@
 #include "Velocity.h"
 #include "GreatCircle.h"
 #include "Units.h"
+#include "Util.h" // NaN def
 #include "format.h"
 #include "Constants.h"
 #include "string_util.h"
@@ -114,12 +115,26 @@ double Velocity::track(const std::string& utrk) const {
 	return Units::to(utrk,trk());
 }
 
+/**
+ * Compass angle in radians in the range [<code>0</code>, <code>2*Math.PI</code>).
+ * Convention is clockwise with respect to north.
+ *
+ * @return the compass angle [rad]
+ */
 double Velocity::compassAngle() const {
 	return vect2().compassAngle();
 }
 
-double Velocity::compassAngle(const std::string& ucomp) const {
-	return Units::to(ucomp,compassAngle());
+/**
+ * Compass angle in explicit units in corresponding range [<code>0</code>, <code>2*Math.PI</code>).
+ * Convention is clockwise with respect to north.
+ *
+ *  @param u the explicit units of compass angle
+ *
+ *  @return the compass angle [u]
+ */
+double Velocity::compassAngle(const std::string& u) const {
+	return Units::to(u,compassAngle());
 }
 
 double Velocity::gs() const {
@@ -145,6 +160,9 @@ bool Velocity::compare(const Velocity& v, double maxTrk, double maxGs, double ma
 	return true;
 }
 
+bool Velocity::compare(const Velocity& v, double horizDelta, double vertDelta) {
+	return std::abs(z-v.z) <= vertDelta && vect2().Sub(v.vect2()).norm() <= horizDelta;
+}
 
 std::string Velocity::toString() const {
 	return toString(Constants::get_output_precision());
@@ -237,7 +255,7 @@ std::string Velocity::toStringNP(int precision) const {
 const Velocity Velocity::ZEROV(0.0,0.0,0.0);
 
 const Velocity& Velocity::INVALIDV() {
-	static Velocity* v = new Velocity(std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN());
+	static Velocity* v = new Velocity(NaN, NaN, NaN);
 	return *v;
 
 }

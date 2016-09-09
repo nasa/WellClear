@@ -8,7 +8,7 @@
  * NOTES: 
  * Track is True North/clockwise
  *
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -98,12 +98,12 @@ public:
 	/**
 	 * Compass angle in explicit units in corresponding range [<code>0</code>, <code>2*Math.PI</code>).
 	 * Convention is clockwise with respect to north.
-	 *  
-	 *  @param ucomp the explicit units of compass angle
-	 *  
-	 *  @return the compass angle [ucomp]
+	 *
+	 *  @param u the explicit units of compass angle
+	 *
+	 *  @return the compass angle [u]
 	 */
-	double compassAngle(const std::string& ucomp) const;
+	double compassAngle(const std::string& u) const;
 
 	/**
 	 * Ground speed in internal units.
@@ -142,6 +142,14 @@ public:
 	 */
 	bool compare(const Velocity& v, double maxTrk, double maxGs, double maxVs);
 
+	/**
+	 * Compare two velocities based on horizontal and vertical components.  This could be used against a set of nacV ADS-B limits, for example.
+	 * @param v other Velocity
+	 * @param horizDelta horizontal tolerance (absolute value)
+	 * @param vertDelta vertical tolerance (absolute value)
+	 * @return true if the velocities are within both horizontal and vertical tolerances of each other.
+	 */
+	bool compare(const Velocity& v, double horizDelta, double vertDelta);
 
 	/** String representation of the velocity in polar coordinates (compass angle and groundspeed) */
 	std::string toString() const;

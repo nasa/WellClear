@@ -3,7 +3,7 @@
  *
  * Contact: Jeff Maddalon (j.m.maddalon@nasa.gov)
  *
- * Copyright (c) 2014-2015 United States Government as represented by
+ * Copyright (c) 2014-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -144,7 +144,7 @@ namespace larcfm {
 	 * @param unit the unit for this column.  If you don't know, then use "unspecified"
 	 */
 	void SeparatedOutput::addHeading(const std::string& name, const std::string& unit) {
-		header_count++;
+		++header_count;
 		setHeading(header_count, name, unit);
 	}
 
@@ -160,8 +160,8 @@ namespace larcfm {
 			string nn = *n;
 			string uu = *u;
 			addHeading(nn, uu);
-			n++;
-			u++;
+			++n;
+			++u;
 		}
 	}
 
@@ -173,12 +173,12 @@ namespace larcfm {
 		vector<string>::const_iterator nu = names_and_units.begin();
 		while (nu != names_and_units.end()) {
 			std::string n = *nu;
-			nu++;
+			++nu;
 			if (nu != names_and_units.end()) {
 				string nuu = *nu;
 				addHeading(n, nuu);
 			}
-			nu++;
+			++nu;
 		}
 	}
 
@@ -193,7 +193,7 @@ namespace larcfm {
 		if ( ! caseSensitive) {
 			heading_new = toLowerCase(heading);
 		}
-		for (int i = 0; i < (int) header_str.size(); i++) {
+		for (int i = 0; i < (int) header_str.size(); ++i) {
 			if (heading_new == header_str[i]) {
 				rtn = i;
 				break;
@@ -299,7 +299,7 @@ namespace larcfm {
      */
 	void SeparatedOutput::addColumn(const std::vector<std::string>& vals) {
 		std::vector<std::string>::const_iterator val;
-		for (val = vals.begin(); val != vals.end(); val++) {
+		for (val = vals.begin(); val != vals.end(); ++val) {
 			addColumn(*val);
 		}
     }
@@ -368,7 +368,7 @@ namespace larcfm {
    void SeparatedOutput::setParameters(const ParameterData& pr) {
 	   std::vector<std::string> l = pr.getList();
 	   std::vector<std::string>::const_iterator p;
-	   for (p = l.begin(); p != l.end(); p++) {
+	   for (p = l.begin(); p != l.end(); ++p) {
 		   params.push_back(*p+" = "+pr.getString(*p));
 	   }
    }
@@ -383,7 +383,7 @@ namespace larcfm {
    void SeparatedOutput::addComment(const std::string& c) {
 		std::vector<std::string> tmparray = split(c, "\n");
 		std::vector<std::string>::const_iterator tmp;
-		for (tmp = tmparray.begin(); tmp != tmparray.end(); tmp++) {
+		for (tmp = tmparray.begin(); tmp != tmparray.end(); ++tmp) {
 			comments.push_back(*tmp);
 		}
    }
@@ -394,18 +394,18 @@ namespace larcfm {
 	void SeparatedOutput::writeLine() {
 //		try {
 			if ( comments.size() != 0 ) {
-				for (std::vector<std::string>::const_iterator line = comments.begin(); line != comments.end(); line++) {
+				for (std::vector<std::string>::const_iterator line = comments.begin(); line != comments.end(); ++line) {
 					fp(writer, comment_char);
 					fpln(writer, *line);
-					size_l++;
+					++size_l;
 				}
 				comments.clear();
 			}
 			if ( ! header) {
 				if (params.size() != 0) {
-					for (std::vector<std::string>::const_iterator p = params.begin(); p != params.end(); p++) {
+					for (std::vector<std::string>::const_iterator p = params.begin(); p != params.end(); ++p) {
 						fpln(writer,*p);
-						size_l++;
+						++size_l;
 					}
 				}
 				print_line(header_str);
@@ -428,11 +428,11 @@ namespace larcfm {
     		return;
     	}
     	fp(writer, vals[0]);
-    	for (int i = 1; i < (int) vals.size(); i++) {
+    	for (int i = 1; i < (int) vals.size(); ++i) {
     		fp(writer, delim+space+vals[i]);
     	}
     	fpln(writer,"");
-    	size_l++;
+    	++size_l;
     }
 
     
@@ -440,19 +440,19 @@ namespace larcfm {
     	std::string str = "SeparateOutput: ";
     	str += "\n";
     	str += " header_str:";
-		for (std::vector<std::string>::const_iterator line = header_str.begin(); line != header_str.end(); line++) {
+		for (std::vector<std::string>::const_iterator line = header_str.begin(); line != header_str.end(); ++line) {
     		str += ", " + *line;
     	}
 
     	str += "\n";
     	str += " units_str:";
-		for (std::vector<std::string>::const_iterator line = units_str.begin(); line != units_str.end(); line++) {
+		for (std::vector<std::string>::const_iterator line = units_str.begin(); line != units_str.end(); ++line) {
     		str += ", " + *line;
     	}
 
     	str += "\n";
     	str += " line_str:";
-		for (std::vector<std::string>::const_iterator line = line_str.begin(); line != line_str.end(); line++) {
+		for (std::vector<std::string>::const_iterator line = line_str.begin(); line != line_str.end(); ++line) {
     		str += ", " + *line;
     	}
 

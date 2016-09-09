@@ -3,15 +3,13 @@
  * 
  * 2-D vectors.
  * 
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
  */
 
 package gov.nasa.larcfm.Util;
-
-import java.text.DecimalFormat;
 
 /**
  * 2-Dimensional mathematical vectors.
@@ -33,7 +31,7 @@ public /*final*/ class Vect2 {
    * Creates a zero vector.
    */
   private Vect2() {
-    x=y=0.0;
+    this(0.0,0.0);
   }
 
   /**
@@ -125,6 +123,8 @@ public /*final*/ class Vect2 {
   public boolean almostEquals(Vect2 v) {
     return Util.almost_equals(x,v.x) && Util.almost_equals(y,v.y);
   }
+
+
 
 
   /**
@@ -493,7 +493,6 @@ public /*final*/ class Vect2 {
   public static double distPerp(Vect2 s, Vect2 v, Vect2 q) {
     double tp = q.Sub(s).dot(v)/v.sqv();
     return s.Add(v.Scal(tp)).Sub(q).norm();
-
   }
 
   /**
@@ -552,6 +551,18 @@ public /*final*/ class Vect2 {
 
   public String toPVS(int prec) {
     return "(# x:= "+f.FmPrecision(x,prec)+", y:= "+f.FmPrecision(y,prec)+" #)";
+  }
+
+  /**
+   * Returns true if x components and y components of both vectors are within the given bounds
+   * @param v2
+   * @param epsilon
+   * @return
+   */
+  public boolean within_epsilon(Vect2 v2, double epsilon) {
+    if (Math.abs(x - v2.x) > epsilon) return false;
+    if (Math.abs(y - v2.y) > epsilon) return false;
+    return true;  
   }
 
 }

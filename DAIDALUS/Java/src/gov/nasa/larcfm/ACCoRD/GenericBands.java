@@ -4,7 +4,7 @@
  * Contact: Jeff Maddalon
  * Organization: NASA/Langley Research Center
  * 
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -54,30 +54,6 @@ public interface GenericBands {
   /** Returns the range of vertical speeds output by bands in feet/min. */
   public double getMaxVerticalSpeed(String unit);
 
-//  /** Sets a minimum size for green/no conflict bands to be allowed, to avoid
-//   * "eye of the needle" situations. Any green bands smaller than this will not be reported.
-//   * @param trk minimum acceptable track angle, in degrees
-//   */
-//  //[CAM] public void setTrackTolerance(double trk, String unit);
-//  /** Returns minimum acceptable track angle, in degrees */
-//  //[CAM] public double getTrackTolerance(String unit);
-//
-//  /** Sets a minimum size for green/no conflict bands to be allowed, to avoid
-//   * "eye of the needle" situations. Any green bands smaller than this will not be reported.
-//   * @param gs minimum acceptable ground speed, in knots
-//   */
-//  //[CAM] public void setGroundSpeedTolerance(double gs, String unit);
-//  /** Returns minimum acceptable ground speed, in knots */
-//  //[CAM] public double getGroundSpeedTolerance(String unit);
-//
-//  /** Sets a minimum size for green/no conflict bands to be allowed, to avoid
-//   * "eye of the needle" situations. Any green bands smaller than this will not be reported.
-//   * @param vs minimum acceptable vertical speed, in ft/min
-//   */
-//  //[CAM] public void setVerticalSpeedTolerance(double vs, String unit);
-//  /** Returns minimum acceptable ground speed, in ft/min */
-//  //[CAM] public double getVerticalSpeedTolerance(String unit);
-
   /** Clear all band information. */
   public void clear();
 
@@ -95,7 +71,7 @@ public interface GenericBands {
    * NEAR. If a single time version of bands is used, then
    * [NEAR|NONE] is returned.  If a version of bands with two times
    * is used, then [NEAR|MID|NONE] is returned. */
-  public BandsRegion trackRegionOf(double trk, String unit);
+  public BandsRegion regionOfTrack(double trk, String unit);
 
 
   /** Return the number of bands of ground speeds */
@@ -112,7 +88,7 @@ public interface GenericBands {
    * of bands is used, then [NEAR|NONE] is returned.  If a version
    * of bands with two times is used, then [NEAR|MID|NONE] is
    * returned. */
-  public BandsRegion groundSpeedRegionOf(double gs, String unit);
+  public BandsRegion regionOfGroundSpeed(double gs, String unit);
 
 
   /** Return the number of bands of vertical speeds */
@@ -129,6 +105,6 @@ public interface GenericBands {
    * version of bands is used, then [NEAR|NONE] is returned.  If a
    * version of bands with two times is used, then [NEAR|MID|NONE]
    * is returned. */
-  public BandsRegion verticalSpeedRegionOf(double vs, String unit);
+  public BandsRegion regionOfVerticalSpeed(double vs, String unit);
 
 }

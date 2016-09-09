@@ -6,7 +6,7 @@
  *           Anthony Narkawicz         NASA Langley Research Center
  *
  *
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -22,7 +22,7 @@ package gov.nasa.larcfm.Util;
  */
 public class Projection {
 
-      public enum ProjectionType {UNKNOWN_PROJECTION, SIMPLE, SIMPLE_NO_POLAR, ENU, AZIEQUI, FLATEARTH, STEREO};
+      public enum ProjectionType {UNKNOWN_PROJECTION, SIMPLE, SIMPLE_NO_POLAR, ENU, AZIEQUI, FLATEARTH, STEREO, FAST, ORTHO};
 
 
 	  private static EuclideanProjection projection = new ENUProjection(0,0,0);
@@ -122,7 +122,9 @@ public class Projection {
 		  	case ENU: projection = new ENUProjection(0,0,0); break;
 		  	case AZIEQUI: projection = new AziEquiProjection(0,0,0); break;
 		  	case FLATEARTH: projection = new FlatEarthProjection(0,0,0); break;
+		  	case ORTHO: projection = new OrthographicProjection(0,0,0); break;
 		  	case STEREO: //projection = new StereographicProjection(0,0,0); break; // NOT WORKING
+		  	case FAST: //projection  = new FastApproximateProjection(0,0,0); break;
 		  	case UNKNOWN_PROJECTION: break; // do nothing
 		  }
 	  }

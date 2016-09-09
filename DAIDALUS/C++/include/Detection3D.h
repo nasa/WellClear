@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2015 United States Government as represented by
+ * Copyright (c) 2013-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -49,6 +49,10 @@ public:
     return getSimpleClassName();
   }
   virtual std::string toString() const = 0;
+  virtual std::string toPVS(int prec) const {
+    (void)prec;
+    return "";
+  }
 
   virtual std::string getIdentifier() const = 0;
   virtual void setIdentifier(const std::string& s) = 0;

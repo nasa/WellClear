@@ -4,7 +4,7 @@
  * Contact: Jeff Maddalon
  * Organization: NASA/Langley Research Center
  *
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -21,6 +21,7 @@
 #include <string>
 #include "Velocity.h"
 #include "LatLonAlt.h"
+#include "Triple.h"
 
 
 namespace larcfm {
@@ -146,6 +147,8 @@ namespace larcfm {
    */
   static double initial_course(LatLonAlt p1, LatLonAlt p2);
 
+  static double final_course(LatLonAlt p1, LatLonAlt p2);
+
   /**
    * A representative course (course relative to true north) for the entire
    * arc on the great circle route from lat/long #1 to lat/long #2. The value
@@ -257,6 +260,63 @@ namespace larcfm {
    */
   static LatLonAlt linear_rhumb(const LatLonAlt& s, double track, double dist);
 
+
+	/**
+	 * Solve the spherical triangle when one has a side (in angular distance), another side, and an angle between sides.
+	 * The angle is <b>not</b> between the sides.  The sides are labeled a, b, and c.  The angles are labelled A, B, and
+	 * C.  Side a is opposite angle A, and so forth.<p>
+	 *
+	 * Given these constraints, in some cases two solutions are possible.  To
+	 * get one solution set the parameter firstSolution to true, to get the other set firstSolution to false.  A firstSolution == true
+	 * will return a smaller angle, B, than firstSolution == false.
+	 *
+	 * @param b one side (in angular distance)
+	 * @param a another side (in angular distance)
+	 * @param A the angle opposite the side a
+	 * @param firstSolution select which solution to use
+	 * @return a Triple of angles B and C, and the side c.
+	 */
+	static Triple<double,double,double> side_side_angle(double b, double a, double A, bool firstSolution);
+
+	/**
+	 * Solve the spherical triangle when one has a side (in angular distance), and two angles.
+	 * The side is <b>not</b> between the angles.  The sides are labeled a, b, and c.  The angles are labelled A, B, and
+	 * C.  Side a is opposite angle A, and so forth.<p>
+	 *
+	 * Given these constraints, in some cases two solutions are possible.  To
+	 * get one solution set the parameter firstSolution to true, to get the other set firstSolution to false.  A firstSolution == true
+	 * will return a smaller side, b, than firstSolution == false.
+	 *
+	 * @param a one side (in angular distance)
+	 * @param A the angle opposite the side a
+	 * @param B another angle
+	 * @param firstSolution select which solution to use
+	 * @return a Triple of side b, angle C, and the side c.
+	 */
+	static Triple<double,double,double> side_angle_angle(double a, double A, double B, bool firstSolution);
+
+	/**
+	 * This implements the spherical cosine rule to complete a triangle on the unit sphere
+	 * @param a side a (angular distance)
+	 * @param C angle between sides a and b
+	 * @param b side b (angular distance)
+	 * @return triple of A,B,c (angle opposite a, angle opposite b, side opposite C)
+	 */
+	static Triple<double,double,double> side_angle_side(double a, double C, double b);
+
+	/**
+	 * This implements the supplemental (polar triangle) spherical cosine rule to complete a triangle on the unit sphere
+	 * @param A angle A
+	 * @param c side between A and B (angular distance
+	 * @param B angle B
+	 * @return triple of a,b,C (side opposite A, side opposite B, angle opposite c)
+	 */
+	static Triple<double,double,double> angle_side_angle(double A, double c, double B);
+
+private:
+	static bool gauss_check(double a, double b, double c, double A, double B, double C);
+public:
+
 	/**
 	 * Find a point from the given lat/lon when traveling along the great circle with
 	 * the given initial velocity for the given amount of time.  
@@ -318,6 +378,10 @@ namespace larcfm {
      * @return the LatLonAlt point on the segment that is closest (horizontally) to x
      */
     static LatLonAlt closest_point_circle(const LatLonAlt& p1, const LatLonAlt& p2, const LatLonAlt& x);
+
+  private:
+    static LatLonAlt closest_point_circle(const LatLonAlt& p1, const LatLonAlt& p2, const LatLonAlt& x, double a, double b, double c, double A, double B, double C);
+  public:
     
     /**
      * This returns the point on the great circle segment running through p1 and p2 that is closest to point x.
@@ -350,6 +414,15 @@ namespace larcfm {
      * and will generally not be the same as the (non-projected) track angle difference between them.
      */
     static double angleBetween(const LatLonAlt& a1, const LatLonAlt& a2, const LatLonAlt& b1, const LatLonAlt& b2);
+
+	/**
+	 * Return angle between great circles
+	 * @param a point on gc1
+	 * @param b intersection of gc1 and gc2
+	 * @param c point on gc2
+	 * @return
+	 */
+    static double angle_between(const LatLonAlt& a, const LatLonAlt& b, const LatLonAlt& c);
 
     /**
      * Return true if x is "behind" ll, considering its current direction of travel, v.

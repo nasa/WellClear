@@ -7,7 +7,7 @@
  *
  * Holding area for universal projection information.  All projection objects should be retrieved using these functions.
  *
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -18,6 +18,7 @@
 #include "SimpleNoPolarProjection.h"
 #include "ENUProjection.h"
 #include "AziEquiProjection.h"
+#include "OrthographicProjection.h"
 #include "LatLonAlt.h"
 #include "string_util.h"
 #include <string>
@@ -65,6 +66,8 @@ namespace larcfm {
 		  p = ENU;
 	  } else if (toLowerCase(s).compare("aziequi") == 0) {
 		  p = AZIEQUI;
+	  } else if (toLowerCase(s).compare("ortho") == 0) {
+		  p = ORTHO;
 	  }
 	  return p;
   }

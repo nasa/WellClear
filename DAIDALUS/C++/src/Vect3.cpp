@@ -6,7 +6,7 @@
  *
  * 3-D vectors.
  *
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -18,6 +18,7 @@
 #include "string_util.h"
 #include "format.h"
 #include "Constants.h"
+#include "Util.h" // NaN def
 
 namespace larcfm {
 
@@ -185,12 +186,12 @@ std::string Vect3::toString() const {
 }
 
 std::string Vect3::toString(int precision) const {
-  return formatXYZ(precision,"(",", ",")");
+	return formatXYZ(precision,"(",", ",")");
 }
 
 std::string Vect3::toStringNP(const std::string& xunit, const std::string& yunit, const std::string& zunit, int prec) const {
 	return FmPrecision(Units::to(xunit,x),prec)+", "+FmPrecision(Units::to(yunit,y),prec)+", " +
-	  FmPrecision(Units::to(zunit,z),prec);
+			FmPrecision(Units::to(zunit,z),prec);
 }
 
 std::string Vect3::formatXYZ(int prec, const std::string& pre, const std::string& mid, const std::string& post) const {
@@ -211,7 +212,7 @@ bool Vect3::isInvalid() const {
 const Vect3 Vect3::ZERO(0.0,0.0,0.0);
 
 const Vect3& Vect3::INVALID() {
-	static Vect3* v = new Vect3(std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN());
+	static Vect3* v = new Vect3(NaN, NaN, NaN);
 	return *v;
 }
 

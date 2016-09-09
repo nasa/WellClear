@@ -6,7 +6,7 @@
  *
  * 3-D vectors.
  *
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -218,7 +218,7 @@ public:
 	 *
 	 * @return the 2-dimensional projection of <code>this</code>.
 	 */
-	Vect2  vect2() const;
+	Vect2 vect2() const;
 
 	/**
 	 * Make a unit vector from the current vector.  If it is a zero vector, then a copy is returned.

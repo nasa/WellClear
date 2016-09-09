@@ -3,7 +3,7 @@
  * 
  * Contact: Jeff Maddalon (j.m.maddalon@nasa.gov)
  *
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -31,6 +31,14 @@ LatLonAlt::LatLonAlt() :
 			alti(0) {
 }
 
+  LatLonAlt& LatLonAlt::operator= (const LatLonAlt& lla) {
+    lati = lla.lati;
+    longi = lla.longi;
+    alti = lla.alti;
+    
+    return *this;
+  }
+  
 bool LatLonAlt::operator == (const LatLonAlt& v) const {
 	return lati == v.lati && longi == v.longi && alti == v.alti;
 }
@@ -188,4 +196,24 @@ const LatLonAlt LatLonAlt::parse(const std::string& str) {
 	return LatLonAlt::INVALID;
 }
 
+
+  LatLonAlt LatLonAlt::normalize(double lat, double lon, double alt) {
+		  double nlat, nlon;
+		  nlon = Util::to_pi(lon);
+		  lat = Util::to_pi(lat);
+		  nlat = Util::to_pi2_cont(lat);
+		  if (lat != nlat) {
+		    nlon = Util::to_pi(nlon + Pi);
+		  }
+		  return LatLonAlt::mk(nlat, nlon, alt);
+	  }
+
+	  LatLonAlt LatLonAlt::normalize(double lat, double lon) {
+		  return normalize(lat, lon, 0.0);
+	  }
+
+	  LatLonAlt LatLonAlt::normalize() const {
+		  return normalize(lat(), lon(), alt());
+	  }
+  
 }

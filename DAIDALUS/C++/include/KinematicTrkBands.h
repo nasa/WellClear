@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 United States Government as represented by
+ * Copyright (c) 2015-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -10,46 +10,39 @@
 #include "KinematicRealBands.h"
 #include "Detection3D.h"
 #include "TrafficState.h"
-#include "OwnshipState.h"
 #include "IntervalSet.h"
-#include <vector>
 
 namespace larcfm {
 
 
 class KinematicTrkBands : public KinematicRealBands {
 
-  private:
-  double turn_rate;
-  double bank_angle;  // Only used when turn_rate is set to 0
+private:
+  double turn_rate_;
+  double bank_angle_;  // Only used when turn_rate is set to 0
 
-
-  public:
-  KinematicTrkBands();
+public:
+  KinematicTrkBands(const KinematicBandsParameters& parameters);
 
   KinematicTrkBands(const KinematicTrkBands& b);
 
-  void setTurnRate(double val);
+  bool instantaneous_bands() const;
 
-  void setBankAngle(double val);
+  double get_turn_rate() const;
 
-  double getBankAngle() const;
+  void set_turn_rate(double val);
 
-  double getTurnRate() const;
+  double get_bank_angle() const;
 
-  bool almostNear(KinematicBandsCore& core, double val, double thr);
+  void set_bank_angle(double val);
 
-  std::pair<Vect3, Velocity> trajectory(const OwnshipState& ownship, double time, bool dir) const;
+  double own_val(const TrafficState& ownship) const;
 
-  bool any_red(Detection3D* conflict_det, Detection3D* recovery_det, const TrafficState& repac,
-      double B, double T, const OwnshipState& ownship, const std::vector<TrafficState>& traffic) const;
+  double time_step(const TrafficState& ownship) const;
 
-  bool all_red(Detection3D* conflict_det, Detection3D* recovery_det, const TrafficState& repac,
-      double B, double T, const OwnshipState& ownship, const std::vector<TrafficState>& traffic) const;
+  std::pair<Vect3, Velocity> trajectory(const TrafficState& ownship, double time, bool dir) const;
 
-  void none_bands(IntervalSet& noneset, Detection3D* conflict_det, Detection3D* recovery_det, const TrafficState& repac, double B, double T,
-      const OwnshipState& ownship, const std::vector<TrafficState>& traffic) const;
-  };
+};
 
 }
 

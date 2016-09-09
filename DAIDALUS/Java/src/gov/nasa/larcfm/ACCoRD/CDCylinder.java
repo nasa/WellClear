@@ -40,7 +40,7 @@
  * t_in  : Time to loss of separation
  * t_out : Time to recovery of loss of separation
  * 
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -56,14 +56,10 @@ import gov.nasa.larcfm.Util.LossData;
 import gov.nasa.larcfm.Util.ParameterData;
 import gov.nasa.larcfm.Util.Vect3;
 import gov.nasa.larcfm.Util.Velocity;
-import gov.nasa.larcfm.Util.f;
 
 public class CDCylinder implements Detection3D {
 
   private CD3DTable table;
-
-  private static boolean pvsCheck = false;
-
 
   private String id = "";
 
@@ -201,6 +197,10 @@ public class CDCylinder implements Detection3D {
   public String toString() {
     return (id.equals("") ? "" : id+" = ")+getSimpleClassName()+": {"+table.toString()+"}";
   }
+  
+  public String toPVS(int prec) {
+    return table.toPVS(prec);
+  }
 
   public boolean violation(Vect3 so, Velocity vo, Vect3 si, Velocity vi, double D, double H) {
     return CD3D.lossOfSep(so,si,D,H);
@@ -220,22 +220,12 @@ public class CDCylinder implements Detection3D {
   }
 
   public ConflictData conflictDetection(Vect3 so, Velocity vo, Vect3 si, Velocity vi, double D, double H, double B, double T) {
-    //f.pln("CDCylinder.conflictDetection so="+so.toStringNP("m","m","m",6)+" si="+si.toStringNP("m","m","m",6)+" vo="+vo.toString()+" vi="+vi.toString()+" D="+D+" H="+H+" B="+B+" T="+T);    
-    double t_tca = CD3D.tccpa(so.Sub(si), vo, vi, D, H, B, T);
-    double dist_tca = so.linear(vo, t_tca).Sub(si.linear(vi, t_tca)).cyl_norm(D, H);
-    LossData ld = CD3D.detection(so.Sub(si),vo,vi,D,H,B,T);
-    if (pvsCheck) {
-      System.err.println("(# D := "+f.Fm8(D)+", H := "+f.Fm8(H)+", B := "+f.Fm8(B)+", T := "+f.Fm8(T)+" #) % CD3D");
-      System.err.println("(# x := "+f.Fm8(so.x())+", y := "+f.Fm8(so.y())+", z := "+f.Fm8(so.z())+" #) % so");
-      System.err.println("(# x := "+f.Fm8(vo.x())+", y := "+f.Fm8(vo.y())+", z := "+f.Fm8(vo.z())+" #) % vo");
-      System.err.println("(# x := "+f.Fm8(si.x())+", y := "+f.Fm8(si.y())+", z := "+f.Fm8(si.z())+" #) % si");
-      System.err.println("(# x := "+f.Fm8(vi.x())+", y := "+f.Fm8(vi.y())+", z := "+f.Fm8(vi.z())+" #) % vi");
-      System.err.println(""+ld.conflict());
-      System.err.println("("+f.Fm8(ld.getTimeIn())+","+f.Fm8(ld.getTimeOut())+") % time in/out");
-      System.err.println(f.Fm8(t_tca)+" % tca");
-    }
-    //f.pln("CDCylinder.conflictDetection return ="+ld.toString());
-    return new ConflictData(ld,t_tca,dist_tca);
+    Vect3 s = so.Sub(si);
+    Velocity v = vo.Sub(vi);
+    double t_tca = CD3D.tccpa(s, vo, vi, D, H, B, T);
+    double dist_tca = s.linear(v,t_tca).cyl_norm(D, H);
+    LossData ld = CD3D.detection(s,vo,vi,D,H,B,T);
+    return new ConflictData(ld,t_tca,dist_tca,s,v);
   }
 
   public ConflictData conflictDetection(Vect3 so, Velocity vo, Vect3 si, Velocity vi, double B, double T) {
@@ -258,15 +248,11 @@ public class CDCylinder implements Detection3D {
 
   public void updateParameterData(ParameterData p) {
     table.updateParameterData(p);
-    //    p.set("pvsCheck",pvsCheck);
     p.set("id",id);
   }
 
   public void setParameters(ParameterData p) {
     table.setParameters(p);
-    //    if (p.contains("pvsCheck")) {
-    //      pvsCheck = p.getBool("pvsCheck");
-    //    }
     if (p.contains("id")) {
       id = p.getString("id");
     }

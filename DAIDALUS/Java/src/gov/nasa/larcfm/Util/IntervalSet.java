@@ -4,7 +4,7 @@
  * Authors: Jeff Maddalon
  * Organization: NASA/Langley Research Center
  *
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -21,8 +21,8 @@ import java.util.Iterator;
  * The IntervalSet class represents a set of "double" values.  Ranges
  * of doubles are maintained as intervals (Interval).  These Intervals
  * are ordered consecutively from lowest to highest. Standard set
- * operations of <tt>in</tt> (membership), <tt>union</tt> (set union), 
- * <tt>intersect<tt> (set intersection), and <tt>diff</tt> (set difference) 
+ * operations of <code>in</code> (membership), <code>union</code> (set union), 
+ * <code>intersect</code> (set intersection), and <code>diff</code> (set difference) 
  * are provided.<p>
  *
  * Within the IntervalSet, intervals are generally considered closed (including end-points), and the
@@ -32,15 +32,15 @@ import java.util.Iterator;
  * The intervals are numbered 0 to size()-1.  To cycle through the
  * intervals one may:<p>
  *
- * <pre>
+ * <code>
  * IntervalSet set;
  *
- * for( int i = 0; i < set.size(); i++) {
+ * for( int i = 0; i &lt; set.size(); i++) {
  *   Interval r;
  *   r = set.getInterval(i);
  *   ... work with r ...
  * }
- * </pre>
+ * </code>
  *
  * The current implementation does not allocate any dynamic (heap) memory.
  */
@@ -265,27 +265,29 @@ public class IntervalSet implements Iterable<Interval> {//, ErrorReporter {
    * This method uses "almost" inequalities to compute the addition.
    */
   public void almost_add(double l, double u) {   
-    IntervalSet m = new IntervalSet(this);
-    clear();
-    boolean go = false;
-    for (int i=0; i < m.size(); ++i) {
-      Interval ii = m.getInterval(i);
-      if (go) {
-        union(ii);
-      } else if (Util.almost_leq(ii.low,l,Util.PRECISION_DEFAULT) && Util.almost_leq(l,ii.up,Util.PRECISION_DEFAULT) ||
-          Util.almost_leq(l,ii.low,Util.PRECISION_DEFAULT) && Util.almost_leq(ii.low,u,Util.PRECISION_DEFAULT)) {
-        l = Math.min(ii.low,l);
-        u = Math.max(ii.up,u);
-      } else if (Util.almost_less(u,ii.low,Util.PRECISION_DEFAULT)) {
-        union(new Interval(l,u));
-        union(ii);
-        go = true;
-      } else {
-        union(ii);
+    if (Util.almost_less(l,u)) {
+      IntervalSet m = new IntervalSet(this);
+      clear();
+      boolean go = false;
+      for (int i=0; i < m.size(); ++i) {
+        Interval ii = m.getInterval(i);
+        if (go) {
+          union(ii);
+        } else if (Util.almost_leq(ii.low,l) && Util.almost_leq(l,ii.up) ||
+            Util.almost_leq(l,ii.low) && Util.almost_leq(ii.low,u)) {
+          l = Math.min(ii.low,l);
+          u = Math.max(ii.up,u);
+        } else if (Util.almost_less(u,ii.low)) {
+          union(new Interval(l,u));
+          union(ii);
+          go = true;
+        } else {
+          union(ii);
+        }
       }
-    }
-    if (!go) {
-      union(new Interval(l,u));
+      if (!go) {
+        union(new Interval(l,u));
+      }
     }
   }
 
@@ -302,27 +304,27 @@ public class IntervalSet implements Iterable<Interval> {//, ErrorReporter {
       while (i < m.size() && j < n.size()) {
         Interval ii = m.getInterval(i);
         Interval jj = n.getInterval(j);
-        if (Util.almost_leq(jj.low,ii.low,Util.PRECISION_DEFAULT) &&
-            Util.almost_less(ii.low,jj.up,Util.PRECISION_DEFAULT)) {
-          if (Util.almost_leq(ii.up,jj.up,Util.PRECISION_DEFAULT)) {
+        if (Util.almost_leq(jj.low,ii.low) &&
+            Util.almost_less(ii.low,jj.up)) {
+          if (Util.almost_leq(ii.up,jj.up)) {
             union(ii);
             ++i;
           } else {
             union(new Interval(ii.low,jj.up));
             ++j;
           }
-        } else if (Util.almost_leq(ii.low,jj.low,Util.PRECISION_DEFAULT) &&
-            Util.almost_less(jj.low,ii.up,Util.PRECISION_DEFAULT)) {
-          if (Util.almost_leq(jj.up,ii.up,Util.PRECISION_DEFAULT)) {
+        } else if (Util.almost_leq(ii.low,jj.low) &&
+            Util.almost_less(jj.low,ii.up)) {
+          if (Util.almost_leq(jj.up,ii.up)) {
             union(jj);
             ++j;
           } else {
             union(new Interval(jj.low,ii.up));
             ++i;
           }
-        } else if (Util.almost_leq(ii.up,jj.low,Util.PRECISION_DEFAULT)){
+        } else if (Util.almost_leq(ii.up,jj.low)){
           ++i;
-        } else if (Util.almost_leq(jj.up,ii.low,Util.PRECISION_DEFAULT)){
+        } else if (Util.almost_leq(jj.up,ii.low)){
           ++j;
         }
       }

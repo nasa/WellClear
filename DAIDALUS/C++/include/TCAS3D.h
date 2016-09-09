@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2015 United States Government as represented by
+ * Copyright (c) 2012-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -20,11 +20,7 @@ private:
   TCASTable table;
   std::string id;
 
-  void print_PVS_input(const Vect3& so, const Velocity& vo, const Vect3& si, const Velocity& vi, double B, double T) const;
-  void print_PVS_output(double time_in, double time_out, const std::string& comment) const;
-
 public:
-  static bool pvsCheck;
   
   /** Constructor that uses the default TCAS tables. */
   TCAS3D();
@@ -55,14 +51,15 @@ public:
   TCAS3D* copy() const;
   TCAS3D* make() const;
 
-  std::string getSimpleClassName() const;
+  virtual std::string getSimpleClassName() const;
 
-  std::string toString() const;
+  virtual std::string toString() const;
+  virtual std::string toPVS(int prec) const;
 
-  std::string getIdentifier() const;
-  void setIdentifier(const std::string& id);
+  virtual std::string getIdentifier() const;
+  virtual void setIdentifier(const std::string& id);
 
-  bool equals(Detection3D* d) const;
+  virtual bool equals(Detection3D* d) const;
 
   ParameterData getParameters() const;
   void updateParameterData(ParameterData& p) const;

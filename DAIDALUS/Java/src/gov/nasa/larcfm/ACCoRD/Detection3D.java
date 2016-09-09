@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2015 United States Government as represented by
+ * Copyright (c) 2013-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -100,5 +100,10 @@ public interface Detection3D extends ParameterAcceptor {
    * @return
    */
   public boolean contains(Detection3D cd);
+  
+  /** 
+   * Return a PVS representation of the object.
+   */
+  public String toPVS(int prec);
   
 }

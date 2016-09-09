@@ -4,7 +4,7 @@
  * 
  * manages a history of aircraft state information
  *
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -132,7 +132,10 @@ public final class AircraftState implements ErrorReporter {
     	this(id, DEFAULT_BUFFER_SIZE);
     }
     
-    /** Return the name of this object */
+    /** Return the name of this object 
+     * 
+     * @return name
+     */
     public String name() {
     	return id;
     }
@@ -312,7 +315,7 @@ public final class AircraftState implements ErrorReporter {
 	// from index 0..i is shifted down one place. i is an external index
 	//
 	// Assumes:
-	// 1. 0 <= i < size
+	// 1. 0 &lt;= i &lt; size
 	// 2. i is the correct place to insert the data; time is correctly ordered: t(i) < tm < t(i+1)
 	// 3. the projection_done flag is set by somewhere else
 	private void insertAt(int i, Position ss, Velocity vv, double tm) {
@@ -480,7 +483,7 @@ public final class AircraftState implements ErrorReporter {
 				error.addWarning("No projection defined in updateProjection()");
 				sp = Projection.createProjection(LatLonAlt.ZERO);
 			}
-			//f.pln("$$$ AircraftState.updateProjection RECOMPUTE! sp = "+sp);
+			//f.pln(" $$$ AircraftState.updateProjection RECOMPUTE! sp = "+sp);
 			for (int j = 0; j < size(); j++){                     // project all the points for aircraft id
 				Position s = position(j);
 				projS2[j] = sp.project2(s.lla());
@@ -732,11 +735,11 @@ public final class AircraftState implements ErrorReporter {
 		 boolean gsOk = delGs < Units.from("kn",10);
 		 boolean vsOk = delVs < Units.from("fpm",10);
          if (!trkOk)
-        	 System.out.println("$$$$$$$$$ delTrk = "+delTrk);
+        	 System.out.println(" $$>> delTrk = "+delTrk);
          if (!gsOk)
-        	 System.out.println("$$$$$$$$$ delGs = "+delGs);
+        	 System.out.println(" $$>> delGs = "+delGs);
          if (!trkOk)
-        	 System.out.println("$$$$$$$$$ delVs = "+delVs);
+        	 System.out.println(" $$>> delVs = "+delVs);
 		 return trkOk && gsOk && vsOk;
 	}
 
@@ -756,8 +759,8 @@ public final class AircraftState implements ErrorReporter {
             NavPoint np2 = new NavPoint(s2,t2);
             Velocity calcVel = np1.initialVelocity(np2);
             if (!closeEnough(v1,calcVel)) {
-            	System.out.println("$$$$$$$$$ velocity from "+j+" to "+(j+1)+" not consistent!");
-            	System.out.println("$$$$$$$$$ v = "+v1+" calculated v = "+calcVel);
+            	System.out.println(" $$>> velocity from "+j+" to "+(j+1)+" not consistent!");
+            	System.out.println(" $$>> v = "+v1+" calculated v = "+calcVel);
             	chk = false;
              }
 		}
@@ -828,7 +831,7 @@ public final class AircraftState implements ErrorReporter {
 		if (i >= size || i < 0 || size < 2) return 0.0;
 		StateVector svt = get(i);
 		StateVector svtm1 = get(i-1);
-		//f.pln("$$$ svt = "+svt+" svtm1 = "+svtm1);
+		//f.pln(" $$$ svt = "+svt+" svtm1 = "+svtm1);
 		return (svt.v().trk() - svtm1.v().trk())/(svt.t() - svtm1.t());
 	}
 
@@ -1062,35 +1065,35 @@ public final class AircraftState implements ErrorReporter {
 
 	
     
-    /** Storing protection zone data.  A value <= 0 indicates no specific information.  Experimental. */
+    /** Storing protection zone data.  A value &lt;= 0 indicates no specific information.  Experimental. */
     public double getDetDistance() {
     	return d_d;
     }
-    /** Storing protection zone data.  A value <= 0 indicates no specific information.  Experimental. */
+    /** Storing protection zone data.  A value &lt;= 0 indicates no specific information.  Experimental. */
     public double getDetHeight() {
     	return d_h;
     }
-    /** Storing protection zone data.  A value <= 0 indicates no specific information.  Experimental. */
+    /** Storing protection zone data.  A value &lt;= 0 indicates no specific information.  Experimental. */
     public double getResDistance() {
     	return r_d;
     }
-    /** Storing protection zone data.  A value <= 0 indicates no specific information.  Experimental. */
+    /** Storing protection zone data.  A value &lt;= 0 indicates no specific information.  Experimental. */
     public double getResHeight() {
     	return r_h;
     }
-    /** Storing protection zone data.  A value <= 0 indicates no specific information.  Experimental. */
+    /** Storing protection zone data.  A value &lt;= 0 indicates no specific information.  Experimental. */
     public void setDetDistance(double d) {
     	d_d = d;
     }
-    /** Storing protection zone data.  A value <= 0 indicates no specific information.  Experimental. */
+    /** Storing protection zone data.  A value &lt;= 0 indicates no specific information.  Experimental. */
     public void setDetHeight(double h) {
     	d_h = h;
     }
-    /** Storing protection zone data.  A value <= 0 indicates no specific information.  Experimental. */
+    /** Storing protection zone data.  A value &lt;= 0 indicates no specific information.  Experimental. */
     public void setResDistance(double d) {
     	r_d = d;
     }
-    /** Storing protection zone data.  A value <= 0 indicates no specific information.  Experimental. */
+    /** Storing protection zone data.  A value &lt;= 0 indicates no specific information.  Experimental. */
     public void setResHeight(double h) {
     	r_h = h;
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -25,26 +25,20 @@ using std::cout;
 using std::cerr;
 using std::ostream;
 
-string Fm0i(int i) {
-	std::ostringstream ss;
-	ss << i;
-	return ss.str();
-}
-
-string Fm0(int v) {
+string Fmi(int v) {
 	std::ostringstream s;
 	s << std::fixed << std::noshowpoint << v;
 	return s.str();
 }
 
-string Fm0(unsigned int v) {
+string Fmui(unsigned int v) {
 	std::ostringstream s;
 	s << std::fixed << std::noshowpoint << v;
 	return s.str();
 }
 
 
-string Fm0u(unsigned long v) {
+string Fmul(unsigned long v) {
 	std::ostringstream s;
 	s << std::fixed << std::noshowpoint << v;
 	return s.str();
@@ -57,14 +51,7 @@ inline double fm_nz(double v, int precision) {
 	return v+0.0; // This removes actual negative zeros
 }
 
-string Fm0(double v) {
-	std::ostringstream s;
-	s.precision(0);
-	s << std::fixed << std::noshowpoint << v;
-	return s.str();
-}
-
-string Fm2is(double v) {
+string Fm2z(double v) {
 	std::ostringstream s;
 	if (v < 0) {
 		s << "-";
@@ -80,13 +67,17 @@ string Fm2is(double v) {
 	return s.str();
 }
 
-string Fm3i(double v) {
+string Fm3z(double v) {
 	std::ostringstream s;
 	s.width(3);
 	s.precision(0);
 	s.fill('0');
 	s << std::fixed << v;
 	return s.str();
+}
+
+string Fm0(double v) {
+	return FmPrecision(v,0);
 }
 
 string Fm1(double v) {
@@ -126,10 +117,34 @@ string FmPrecision(double v) {
 }
 
 string FmPrecision(double v, int precision) {
+	if (ISNAN(v)) {
+		return "NaN";
+	}
+	if (ISINF(v)) {
+		string s = "infty";
+		if (v < 0) {
+			return "-"+s;
+		}
+		return s;
+	}
 	std::ostringstream s;
 	s.precision(precision);
-	s << std::fixed << (precision == 0 ? std::noshowpoint : std::showpoint) << fm_nz(v,precision+1);
+	s << std::fixed;
+	if (precision == 0) {
+		s << std::noshowpoint;
+	} else {
+		s << std::showpoint;
+	}
+	s << fm_nz(v,precision+1);
 	return s.str();
+}
+
+string FmLead(int i, int precision) {
+	std::ostringstream oss;
+	oss.fill('0');
+	oss.width(precision);
+	oss << std::fixed << std::noshowpoint << i;
+	return oss.str();
 }
 
 string Fmb(bool b) {
@@ -168,8 +183,11 @@ string Fobj(const std::vector<std::string>& v) {
 
 std::string list2str(const std::vector<std::string>& l, const std::string& delimiter) {
 	string s = "";
-	for (unsigned int i = 0; i < l.size(); i++) {
-		s += l[i]+delimiter;
+	if (l.size() > 0) {
+		s+=l[0];
+		for (unsigned int i = 1; i < l.size(); i++) {
+			s += delimiter + l[i];
+		}
 	}
 	return s;
 }
@@ -285,5 +303,10 @@ string fvStr2(const Vect2& v) {
 string fvStr2(const Vect3& v) {
 	return "("+Units::str("deg",v.vect2().compassAngle())+", "+Units::str("knot",v.norm())+", "+Units::str("fpm",v.z)+")";
 }
+
+string double2PVS(double val, int prec) {
+	return FmPrecision(val,prec)+"::ereal";
+}
+
 
 }

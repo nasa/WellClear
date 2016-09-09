@@ -3,7 +3,7 @@
  *
  * State-based Implicit Criteria
  *
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -15,14 +15,10 @@
 #include "Util.h"
 #include "Kinematics.h"
 #include "ACCoRDConfig.h"
-//#include "OldLosCriteria.h"
 #include <string>
 #include <float.h>
 
 namespace larcfm {
-
-using std::cout;
-using std::endl;
 
 int CriteriaCore::horizontalCoordination(const Vect2& s, const Vect2& v) {
   return sign(v.det(s));
@@ -68,7 +64,7 @@ int CriteriaCore::verticalCoordinationConflict(const Vect3& s, const Vect3& v, d
   if (Util::almost_equals(v.z,0) || v2.isZero() ||
       d < 0 || eq(v.z,Util::sq(b)-a*c,s.z*a-v.z*b)) {
     //fpln(" verticalCoordination: Part 1, s = "+f.sStr(s));
-    return CriteriaCore::breakSymmetry(s, ownship, traffic);
+    return breakSymmetry(s, ownship, traffic);
   }
   if (gt(v.z,Util::sq(b)-a*c,s.z*a-v.z*b)) {
     //fpln(" verticalCoordination: Part 2, s = "+f.sStr(s));
@@ -178,7 +174,7 @@ Vect3 CriteriaCore::vertical_decision_vect(const Vect3& s, const Vect3& vo, cons
 // Compute an absolute repulsive vertical direction
 int CriteriaCore::losr_vs_dir(const Vect3& s, const Vect3& vo, const Vect3& vi,
     double caD, double caH, std::string ownship, std::string traffic) {
-  int rtn = CriteriaCore::breakSymmetry(CriteriaCore::vertical_decision_vect(s,vo,vi,caD,caH),ownship,traffic);
+  int rtn = breakSymmetry(vertical_decision_vect(s,vo,vi,caD,caH),ownship,traffic);
   //fpln(" >>>>>>>>>>> losr_vs_dir: s.z = "+s.z+ " rtn = "+rtn);
   return rtn;
 }
@@ -215,15 +211,15 @@ void CriteriaCore::printRepulsiveCriteria2DTerms(const Vect2& s, const Vect2& vo
   fpln("#### repulsiveCriteria, nvo = "+fvStr2(nvo)+" vo = "+fvStr2(vo)+" vi = "+fvStr2(vi));
   fpln("#### repulsiveCriteria: s = "+fsStr(s)+" eps*s.det(v) <= 0 = "+bool2str(eps*s.det(v) <= 0)+" eps*s.det(nv) <= 0 = "+bool2str(eps*s.det(nv) <= 0));
   fpln("#### repulsiveCriteria: s.dot(v) < 0 = "+bool2str(s.dot(v) < 0)+ "  eps*nv.det(v) < 0 = "+bool2str(eps*nv.det(v) < 0));
-  fpln("#### repulsiveCriteria: eps = "+Fm0(eps)+ " s.dot(nv) >= 0 = "+bool2str(s.dot(nv) >=0));
+  fpln("#### repulsiveCriteria: eps = "+Fmi(eps)+ " s.dot(nv) >= 0 = "+bool2str(s.dot(nv) >=0));
   fpln("#### repulsiveCriteria: (s.dot(v) >=0 && s.dot(nv) >s.dot(v)) = "+bool2str((s.dot(v) >=0 && s.dot(nv) >s.dot(v))));
   fpln("#### repulsiveCriteria: s.det(v) = "+Fm4(s.det(v))+"s.dot(v) = "+Fm4(s.dot(v))+"  nv.det(v) =" +Fm4(nv.det(v))+"  s.dot(nv) ="+Fm4(s.dot(nv)));
-  fpln("#### rtn = "+Fm0(rtn));
+  fpln("#### rtn = "+Fmi(rtn));
 }
 
 
 void CriteriaCore::printRepulsiveCriteriaTerms(const Vect3& s, const Vect3& vo, const Vect3& vi,const Vect3& nvo, int eps) {
-  CriteriaCore::printRepulsiveCriteria2DTerms(s.vect2(),vo.vect2(),vi.vect2(),nvo.vect2(),eps);
+  printRepulsiveCriteria2DTerms(s.vect2(),vo.vect2(),vi.vect2(),nvo.vect2(),eps);
 }
 
 
@@ -239,7 +235,7 @@ bool CriteriaCore::vs_bound_crit(const Vect3& s, const Vect3& v, const Vect3& nv
     rtn = eps*nv.z > eps*v.z && -eps*v.z*nv.vect2().dot(v2) + eps*nv.z*v2.sqv() >= 0;
   else
     rtn = eps*nv.z >= 0;
-  //fpln(">>>>>>>>>>>>> vs_bound_crit: eps = "+Fm0(eps)+" rtn = "+bool2str(rtn));
+  //fpln(">>>>>>>>>>>>> vs_bound_crit: eps = "+Fmi(eps)+" rtn = "+bool2str(rtn));
   return rtn;
 }
 
@@ -264,7 +260,7 @@ bool CriteriaCore:: vertical_los_criterion(const Vect3& s, const Vect3& v, const
 bool CriteriaCore::verticalRepulsiveCriterion(const Vect3& s, const Vect3& vo, const Vect3& vi, const Vect3& nvo,
     double H, double minrelvs, int epsh, int epsv) {
   bool rtn =  vertical_los_criterion(s,vo.Sub(vi),nvo.Sub(vi),epsv,H,minrelvs);
-  //fpln(">>>>>>>>>>>>> vertical_los_repulsive_criterion: ownship = "+ownship+" traffic = "+traffic+" eps = "+Fm0(eps)+" rtn = "+bool2str(rtn));
+  //fpln(">>>>>>>>>>>>> vertical_los_repulsive_criterion: ownship = "+ownship+" traffic = "+traffic+" eps = "+Fmi(eps)+" rtn = "+bool2str(rtn));
   return rtn;
 }
 
@@ -311,7 +307,7 @@ bool CriteriaCore::criteria(const Vect3& s, const Velocity&  vo, const Velocity&
     //		else
     //			vlc = OldLosCriteria::vertical_los_criterion(s,vo,vi, 90, nvo,H, epsv);
     //		if (ACCoRDConfig::LosRepulsiveCrit) {
-    //int epsH = CriteriaCore::horizontalCoordination(s.vect2(),vo.Sub(vi).vect2());
+    //int epsH = horizontalCoordination(s.vect2(),vo.Sub(vi).vect2());
     hlc = horizontalRepulsiveCriteria(s,  vo, vi, nvo, epsh);
     //		} else {
     //			hlc = OldLosCriteria::horizontal_los_criterion(s.vect2(),vo.vect2(),vi.vect2(),120, nvo.vect2(), D);
@@ -323,8 +319,8 @@ bool CriteriaCore::criteria(const Vect3& s, const Velocity&  vo, const Velocity&
   } else {
     //std::cout << "criteria case 2" << std::endl;
     Velocity v = Velocity::make(vo.Sub(vi));
-    //		int epsH = CriteriaCore::horizontalCoordination(s.vect2(),v.vect2());
-    //		int epsV = CriteriaCore::verticalCoordination(s,v,D,epsh, epsv);
+    //		int epsH = horizontalCoordination(s.vect2(),v.vect2());
+    //		int epsV = verticalCoordination(s,v,D,epsh, epsv);
     Velocity nv = Velocity::make(nvo.Sub(vi));
     //std::cout << s.toString() << " " << v.toString() << " " << epsH << " " << epsV << " " << nv.toString() << " " << D << " " << H << std::endl;
     return criterion_3D(s,v,epsh,epsv,nv,D,H);
@@ -344,9 +340,9 @@ Vect2 CriteriaCore::incr_trk_vect(const Vect2& vo, double step, int dir) {
 }
 
 int CriteriaCore::losr_trk_iter_dir(const Vect2& s, const Vect2& vo, const Vect2& vi, double step, int eps) {
-  if (CriteriaCore::horizontal_los_criterion(s,vo,vi,incr_trk_vect(vo,step,1),eps))
+  if (horizontal_los_criterion(s,vo,vi,incr_trk_vect(vo,step,1),eps))
     return 1;
-  if (CriteriaCore::horizontal_los_criterion(s,vo,vi,incr_trk_vect(vo,step,-1),eps))
+  if (horizontal_los_criterion(s,vo,vi,incr_trk_vect(vo,step,-1),eps))
     return -1;
   return 0;
 }
@@ -361,9 +357,9 @@ Vect2 CriteriaCore::incr_gs_vect(const Vect2& vo, double step, int dir) {
 }
 
 int CriteriaCore::losr_gs_iter_dir(const Vect2& s, const Vect2& vo, const Vect2& vi, double mings, double maxgs, double step, int eps) {
-  if (vo.norm() + step <= maxgs && CriteriaCore::horizontal_los_criterion(s,vo,vi,incr_gs_vect(vo,step,1),eps))
+  if (vo.norm() + step <= maxgs && horizontal_los_criterion(s,vo,vi,incr_gs_vect(vo,step,1),eps))
     return 1;
-  if (vo.norm() - step >= mings && CriteriaCore::horizontal_los_criterion(s,vo,vi,incr_gs_vect(vo,step,-1),eps))
+  if (vo.norm() - step >= mings && horizontal_los_criterion(s,vo,vi,incr_gs_vect(vo,step,-1),eps))
     return -1;
   return 0;
 }
@@ -379,7 +375,7 @@ int CriteriaCore::vsSearchDirection(int epsv) {
 }
 
 int CriteriaCore::dataVsRateEpsilon(const Vect3& s, const Velocity& vo, const Velocity& vi, int epsv, double vsRate){
-  int trafSrchDir = CriteriaCore::vsSearchDirection(epsv);
+  int trafSrchDir = vsSearchDirection(epsv);
   int absDir = -1;
   if (vsRate >= 0) absDir = 1;
   if (absDir == trafSrchDir) return epsv;
@@ -389,7 +385,7 @@ int CriteriaCore::dataVsRateEpsilon(const Vect3& s, const Velocity& vo, const Ve
 
 
 int CriteriaCore::dataTurnEpsilon(const Vect3& s, const Velocity& vo, const Velocity& vi, int epsh, double trackRate){
-  int trafSrchDir = CriteriaCore::trkSearchDirection(s.Neg(), vi, vo, epsh);
+  int trafSrchDir = trkSearchDirection(s.Neg(), vi, vo, epsh);
   int absDir = -1;
   if (trackRate >= 0) absDir = 1;
   if (absDir == trafSrchDir) return epsh;

@@ -4,7 +4,7 @@
  * Contact: Jeff Maddalon 
  * Organization: NASA/Langley Research Center
  * 
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -143,7 +143,7 @@ import java.io.IOException;
  * 
  * <li>The above examples (using either strings or factors) are the preferred
  * use of the Units class; however, this notation can become
- * cumbersome--especially when specifing values inside code. An alternate use of
+ * cumbersome--especially when specifying values inside code. An alternate use of
  * the Units class is to multiply by the conversion factor when specifying
  * constants. For example:
  * <p>
@@ -156,7 +156,7 @@ import java.io.IOException;
  * <p>
  * 
  * The "to" and "from" methods are preferred, because some conversions are not
- * simply multipling a factor, but involve an offset also. Those that involve an
+ * simply multiplying a factor, but involve an offset also. Those that involve an
  * offset (currently only degreeC and degreeF), must use the "to" and "from"
  * methods. Forms such as <tt>double temp = 32.0 * degreeF;</tt> are
  * <i>always</i> wrong.
@@ -190,7 +190,7 @@ import java.io.IOException;
  * <tt>a = Math.cos(right_angle);</tt>
  * <p>
  * 
- * <li>The units for thermodynamic temperature are degreeC, degreeF, degreeK,
+ * <li>The units for thermodynamic temperature are degreeC, degreeF, K,
  * and degreeR, representing Celsius, Farenheit, Kelvin, and Rankin.
  * <p>
  * 
@@ -276,7 +276,7 @@ import java.io.IOException;
  * occur automatically.
  * <p>
  * 
- * <li>The purpose of this class is geared to modelling large engineered systems
+ * <li>The purpose of this class is geared to modeling large engineered systems
  * such as airplanes. As such, many units useful in other disciplines are not
  * defined (such as the "carat" or a "bushel"). However, they may be defined in
  * future versions of this class.
@@ -289,9 +289,9 @@ import java.io.IOException;
  * 
  * <li>Much care was used in defining each of these conversion factors. The full
  * precision from appropriate standards documents was used. However, some units
- * are defined as the arithmetic relationship between "more fundamental"
- * quantities. In these cases, the conversion factors are limited in resolution
- * to the double precision operations in Java. For most engineering purposes
+ * are defined as the arithmetic relationship between 'more fundamental'
+ * quantities. In these cases, the conversion factors are limited to the resolution
+ * of double precision operations. For most engineering purposes
  * (see the point above) this is more than good enough; however, someone working
  * with very precise quantities (> 12 significant digits), should be aware of
  * the possibility of differences.
@@ -414,11 +414,13 @@ public final class Units {
   /** kelvin, base unit of thermodynamic temperature (SI) */
   public static final double K;
   /**
-   * Degrees kelvin. According to NIST special publication 330 (p29) this unit
+   * Degrees kelvin. This unit
+   * represents the base unit of thermodynamic temperature (SI). <p>  
+   * According to NIST special publication 330 (p29) this unit
    * should not be called "degrees kelvin", but rather "kelvin". We hope the
    * reader is not too upset that consistency with other units of
-   * thermodynamic temperature was favored over strict correctness. This unit
-   * represents the base unit of thermodynamic temperature (SI)
+   * thermodynamic temperature was favored over strict correctness. Note
+   * the unit 'K' is also defined.
    */
   public static final double degreeK;
 
@@ -428,6 +430,12 @@ public final class Units {
    */
   public static final double degreeR;
 
+  public static final String degreeStr = "\u00B0";
+  public static final String degreeCStr = "\u00B0C";
+  public static final String degreeFStr = "\u00B0F";
+  public static final String degreeRStr = "\u00B0R";
+  
+  
   // These aren't fundamental, but they are useful
 
   /**
@@ -618,7 +626,8 @@ public final class Units {
    * There is no internationally accepted abbreviation for a nautical
    * mile. Symbols that have been used include M, NM, Nm, nm, and nmi. NM
    * seems to be the preferred abbreviation from the International Civil
-   * Aviation Organization (ICAO).
+   * Aviation Organization (ICAO). The abbreviation nm should not
+   * be used, because it could be confused with nanometers.
    */
   public static final double NM = nautical_mile;
 
@@ -792,6 +801,7 @@ public final class Units {
       addCoreUnit("deg", deg, "rad");
       addSimilarUnit("radian", "rad");
       addSimilarUnit("degree", "deg");
+      addSimilarUnit(degreeStr,"deg");
       addUnit("Hz", hertz);
       addSimilarUnit("hertz", "Hz");
     } catch (UnitException e) {
@@ -831,6 +841,7 @@ public final class Units {
       addSimilarUnit("second", "s");
       addSimilarUnit("minute", "min");
       addSimilarUnit("hour", "h");
+      addSimilarUnit("hr", "h");
       addUnit("ms", 0.001, "s");
       addUnit("d", 24.0, "hour");
       addSimilarUnit("day", "d");
@@ -846,7 +857,7 @@ public final class Units {
       addCoreUnit("in", in, "m");
       addUnit("yard", 3.0, "ft");
       addCoreUnit("NM", NM, "m");
-      addSimilarUnit("nm", "NM");
+      addSimilarUnit("nm", "NM");  // Do not add nm, nm means nanometers, not nautical miles
       addSimilarUnit("nmi", "NM");
       addCoreUnit("mi", mi, "m");
       addSimilarUnit("metre", "m");
@@ -873,22 +884,36 @@ public final class Units {
     }
 
     try {
-      addUnit("K", K);
-      addCoreUnit("degreeR", degreeR, "K");
+    	addUnit("K", K);
+    	addSimilarUnit("degreeK", "K");
 
-      UnitPair kUnitPair = getUnitPair("K");
+    	//
+    	// Use a different style here to "addSimilarUnit" because the negative
+    	// factors for degreeC and degreeF will cause exceptions to be thrown
+    	//
+    	
+    	UnitPair kUnitPair = getUnitPair("K");
 
-      kUnitPair.compatible.add("degreeC");
-      unitTable.put("degreeC",
-          new UnitPair(degreeC, kUnitPair.compatible));
+    	kUnitPair.compatible.add(Units.degreeCStr); //"degreeC");
+    	unitTable.put("degreeC",
+    			new UnitPair(degreeC, kUnitPair.compatible));
+    	unitTable.put(Units.degreeCStr,
+    			new UnitPair(degreeC, kUnitPair.compatible));
 
-      kUnitPair.compatible.add("degreeF");
-      unitTable.put("degreeF",
-          new UnitPair(degreeF, kUnitPair.compatible));
+    	kUnitPair.compatible.add(Units.degreeFStr); //"degreeF");
+    	unitTable.put("degreeF",
+    			new UnitPair(degreeF, kUnitPair.compatible));
+    	unitTable.put(Units.degreeFStr,
+    			new UnitPair(degreeF, kUnitPair.compatible));
 
-      addSimilarUnit("degreeK", "K");
+    	//
+    	// Back to the regular style
+    	//
+    	addCoreUnit(Units.degreeRStr, degreeR, "K");
+    	addSimilarUnit("degreeR", Units.degreeRStr);
+    	
     } catch (UnitException e) {
-      throw new Error(e.getMessage());
+    	throw new Error(e.getMessage());
     }
 
     try {
@@ -899,6 +924,7 @@ public final class Units {
       addSimilarUnit("fps", "ft/s");
       addSimilarUnit("foot_per_second", "ft/s");
       addSimilarUnit("feet_per_second", "ft/s");
+      addSimilarUnit("feet/second", "ft/s");
       addCoreUnit("knot", knot, "m/s");
       addSimilarUnit("kn", "knot");
       addSimilarUnit("kts", "knot");
@@ -1053,8 +1079,29 @@ public final class Units {
 
   /** Determine if the given string is a valid unit */
   public static boolean isUnit(String unit) {
-
     return getUnitPairInternal(unit) != null;
+  }
+
+  /**
+   * Clean up the unit string that may contain brackets or extra space. For
+   * instance, " [ feet]" becomes "feet". However, if the unit is "[  fred]"
+   * then "fred" will be returned.
+   */
+  private static String cleanOnly(String unit) {
+	  StringBuilder sb = new StringBuilder(unit);
+	  String ut;
+	  trimBuilder(sb);
+
+	  ut = sb.toString();
+	  if (sb.length() > 2) {
+		  if (sb.charAt(0) == '[' && sb.charAt(sb.length() - 1) == ']') {
+			  sb.deleteCharAt(0);
+			  sb.deleteCharAt(sb.length() - 1);
+			  trimBuilder(sb);
+			  ut = sb.toString();
+		  }
+	  }
+	  return ut;
   }
 
   /**
@@ -1063,25 +1110,12 @@ public final class Units {
    * recognized, then "unspecified" is returned.
    */
   public static String clean(String unit) {
-    StringBuilder sb = new StringBuilder(unit);
-    String ut;
-    trimBuilder(sb);
-
-    ut = sb.toString();
-    if (sb.length() > 2) {
-      if (sb.charAt(0) == '[' && sb.charAt(sb.length() - 1) == ']') {
-        sb.deleteCharAt(0);
-        sb.deleteCharAt(sb.length() - 1);
-        trimBuilder(sb);
-        ut = sb.toString();
-      }
-    }
-
-    if (isUnit(ut)) {
-      return ut;
-    } else {
-      return "unspecified";
-    }
+	  String ut = Units.cleanOnly(unit);
+	  if (isUnit(ut)) {
+		  return ut;
+	  } else {
+		  return "unspecified";
+	  }
   }
 
   private static void trimBuilder(StringBuilder sb) {
@@ -1382,9 +1416,24 @@ public final class Units {
   }
 
   /**
+   * Return the internal (factor 1.0) unit compatable with this unit
+   * @param unit unit to check
+   * @return unit with factor 1.0 that is compatible with this unit.  In the event the unit is recognized but has no factor 1.0 equivalent, this will return the empty string.
+   * This will throw a UnitException if the unit is not recognized.
+   */
+  public static String getCompatibleInternalUnit(String unit) {
+	  String[] compat = getCompatibleUnits(unit);
+	  for (int i = 0; i < compat.length; i++) {
+		  if (getFactor(compat[i]) == 1.0) {
+			   return compat[i];
+		  }
+	  }
+	  return "";
+  }
+  
+  /**
    * Returns the list of all units currently registered to the Units class and
-   * returns this list in sorted order. A full list of units is located <a
-   * href="doc-files/units.html">here</a>.
+   * returns this list in sorted order.
    */
   public static String[] getAllUnits() {
     Set<String> set;
@@ -1468,6 +1517,7 @@ public final class Units {
     to(getFactor(unit), value);
   }
 
+
   /**
    * Convert the values in the given array <b>to</b> the units indicated by
    * the parameter "factor" from internal units.
@@ -1538,30 +1588,49 @@ public final class Units {
   }
 
   /**
-   * Convert <b>from</b> the units indicated by "factor" to internal units.
+   * Convert the values in the given array <b>to</b> the units indicated by
+   * the parameter "factor" from internal units.
+   * <p>
+   * 
+   * @param unit
+   *            the string representation of a unit conversion factor, For
+   *            example "m/s" See {@link #getAllUnits} for allowable strings.
+   * @param value
+   *            the array of values to be converted
+   * @exception UnitException
+   *                Thrown if the unit was not found.
+   */
+  public static void to(String unit, double[][][] value) throws UnitException {
+    to(getFactor(unit), value);
+  }
+  
+  /**
+   * Convert the values in the given array <b>to</b> the units indicated by
+   * the parameter "factor" from internal units.
    * <p>
    * 
    * @param factor
    *            the unit conversion factor, for example Units.METER
    * @param value
-   *            the value (in units specfied by the parameter "factor") to be
-   *            converted
-   * @return the parameter "value" converted to internal units
+   *            the array of values to be converted
    * @exception UnitException
    *                Thrown if the conversion factor is invalid.
    */
-  public static double from(double factor, double value) throws UnitException {
+  public static void to(double factor, double[][][] value) throws UnitException {
 
-    if (factor <= 0.0) {
-      if (factor == degreeC) {
-        return ((value + C_OFFSET) * K);
-      } else if (factor == degreeF) {
-        return ((value + F_OFFSET) * degreeR);
-      } else {
-        throw new UnitException("Invalid conversion factor");
-      }
-    }
-    return (value * factor);
+	  if (factor <= 0.0) {
+		  for (int i = 0; i < value.length; i++) {
+			  to(factor, value[i]);
+		  }
+	  } else {
+		  for (int i = 0; i < value.length; i++) {
+			  for (int j = 0; j < value[i].length; j++) {
+				  for (int k = 0; j < value[i].length; j++) {
+					  value[i][j][k] /= factor;
+				  }
+			  }
+		  }
+	  }
   }
 
   /**
@@ -1580,7 +1649,35 @@ public final class Units {
    */
   public static double from(String units, double value) throws UnitException {
     return from(getFactor(units), value);
+  }  
+  
+  /**
+   * Convert <b>from</b> the units indicated by "factor" to internal units.
+   * <p>
+   * 
+   * @param factor
+   *            the unit conversion factor, for example Units.METER
+   * @param value
+   *            the value (in units specfied by the parameter "factor") to be
+   *            converted
+   * @return the parameter "value" converted to internal units
+   * @exception UnitException
+   *                Thrown if the conversion factor is invalid.
+   */
+  public static double from(double factor, double value) throws UnitException {
+
+	  if (factor <= 0.0) {
+		  if (factor == degreeC) {
+			  return ((value + C_OFFSET) * K);
+		  } else if (factor == degreeF) {
+			  return ((value + F_OFFSET) * degreeR);
+		  } else {
+			  throw new UnitException("Invalid conversion factor");
+		  }
+	  }
+	  return (value * factor);
   }
+
 
   /**
    * Convert the values in the given array <b>from</b> the units indicated by
@@ -1641,7 +1738,7 @@ public final class Units {
       throws UnitException {
     from(getFactor(factor), value);
   }
-
+  
   /**
    * Convert the values in the given array <b>from</b> the units indicated by
    * "factor" to internal units.
@@ -1670,6 +1767,52 @@ public final class Units {
     }
   }
 
+  /**
+   * Convert the values in the given array <b>from</b> the units indicated by
+   * "factor" to internal units.
+   * <p>
+   * 
+   * @param factor
+   *            the string representation of a unit conversion factor, For
+   *            example "m/s" See {@link #getAllUnits} for allowable strings.
+   * @param value
+   *            the array of values to be converted
+   * @exception UnitException
+   *                Thrown if the unit was not found.
+   */
+  public static void from(String factor, double[][][] value) throws UnitException {
+    from(getFactor(factor), value);
+  }
+
+  /**
+   * Convert the values in the given array <b>from</b> the units indicated by
+   * "factor" to internal units.
+   * <p>
+   * 
+   * @param factor
+   *            the unit conversion factor, for example Units.METER
+   * @param value
+   *            the array of values to be converted
+   * @exception UnitException
+   *                Thrown if the conversion factor is invalid.
+   */
+  public static void from(double factor, double[][][] value)
+		  throws UnitException {
+
+	  if (factor <= 0.0) {
+		  for (int i = 0; i < value.length; i++) {
+			  from(factor, value[i]);
+		  }
+	  } else {
+		  for (int i = 0; i < value.length; i++) {
+			  for (int j = 0; j < value[i].length; j++) {
+				  for (int k = 0; k < value[i].length; k++) {
+					  value[i][j][k] *= factor;
+				  }
+			  }
+		  }
+	  }
+  }
 
   /**
    * Determine if the value (in internal units) was orginally in some form of specified units, if
@@ -1687,11 +1830,11 @@ public final class Units {
    *                Thrown if the unit was not found.
    */
   public static double fromInternal(String defaultUnits, String units, double value) throws UnitException {
-    if (units.equals("unspecified")) {
-      return from(getFactor(defaultUnits), value);			
-    } else {
-      return value;
-    }
+	  if (units.equals("unspecified")) {
+		  return from(getFactor(defaultUnits), value);			
+	  } else {
+		  return value;
+	  }
   }
 
   /**
@@ -1732,48 +1875,9 @@ public final class Units {
     return to(toUnit, from(fromUnit, value));
   }
 
-  //private static final Pattern numre = Pattern.compile("\\s*([-+0-9\\.]+)\\s*(\\[*[]\\sa-zA-Z]*)(.*)");
-  private static final Pattern numre = Pattern.compile("\\s*([-+0-9\\.]+)\\s*\\[?\\s*([-/^_a-zA-Z0-9]*)\\s*\\]?(.*)");
-  /**
-   * Parse a string, including an optional units identifier, as a double value.
-   * If the string does not contain a unit, then the value is interpreted as an "unspecified" unit. This version does not
-   * parse numbers in exponential notation, e.g., "10e-4".  
-   * @param s string to parse
-   * @param default_value if the string is not recognized as a valid value, the result to be returned 
-   * @return value
-   */
-  public static double parse(String s, double default_value) {
-    Matcher m = numre.matcher(s);
-    if (m.matches()) {
-      //f.pln("v"+m.group(1));
-      //f.pln("u"+m.group(2));			
-      double dbl;
-      try {
-        dbl = Double.parseDouble(m.group(1));
-      } catch (NumberFormatException e) {
-        dbl = default_value;
-      }
-      String unit = Units.clean(m.group(2));
-      dbl = Units.from(unit, dbl);		   
-      return dbl;
-      //			double dbl;
-      //			String[] fields = s.split(" ");
-      //			if (fields.length < 1) return 0.0;
-      //			try {
-      //				dbl = Double.parseDouble(fields[0]);
-      //			} catch (NumberFormatException e) {
-      //				dbl = 0.0;
-      //			}
-      //			if (fields.length > 1) {
-      //				String unit = Units.clean(fields[1]);
-      //				dbl = Units.from(unit, dbl);		   
-      //			}
-      //			return dbl;
-    } else {
-      return default_value;
-    }
-  }
-
+  // This regex expression basically says is the string roughly in two parts, something that looks like a 
+  // number and something that looks like a unit.
+  private static final Pattern numre = Pattern.compile("\\s*([-+0-9\\.]+)\\s*\\[?\\s*([-/^_a-zA-Z0-9\u00B0]*)\\s*\\]?\\s*$");
   /**
    * Parse a string, representing a value and a unit. 
    * If the string does not contain a unit, then the unit "unspecified" is returned.
@@ -1795,20 +1899,97 @@ public final class Units {
   }
 
   /**
-   * Parse a string into a value, then convert this value to the given units.
-   * This value is interpreted as the "unitsFrom" unit by default (unless the string s contains units).
-   * @param defaultUnitsFrom the default units to convert the value from  
-   * @param unitsTo the units to convert the value to
-   * @param s string to parse
+   * Parse a string into a value in internal units.  
+   * If the string contains a unit, then the value is understood in terms of that unit.  If no
+   * unit is specified in the string, then the unit in "defautlUnitsFrom" is used.
+   * @param defaultUnitsFrom the default units to convert the value from (if no text unit is specified) 
+   * @param str string to parse
+   * @param defaultValue the default value is the parameter 'value' is invalid. The units used are the defaultUnitsFrom. 
    * @return converted value
    */
-  public static double parse(String defaultUnitsFrom, String unitsTo, String s) {
-    double dbl = parse(s,0.0);
-    String unit = parseUnits(s);
-    if ( unit.equals("unspecified")) {
-      dbl = Units.from(defaultUnitsFrom, dbl);
-    } 
-    return Units.to(unitsTo, dbl);
+  public static double parse(String defaultUnitsFrom, String str, double defaultValue) {
+	  double dbl;
+	  double dv = from(defaultUnitsFrom,defaultValue);
+
+	  String unit;
+	  Matcher m = numre.matcher(str);
+	  if (m.matches()) { 
+		  unit = Units.cleanOnly(m.group(2));
+		  //f.pln(" $$$ group 1: "+m.group(1)+"  group 2: "+m.group(2));
+		  if (Units.isUnit(unit)) {
+			  try {
+				  dbl = Double.parseDouble(m.group(1));
+				  dbl = Units.from(unit, dbl);		   
+			  } catch (NumberFormatException e) {
+				  dbl = dv;
+			  }
+		  } else {
+			  try {
+				  dbl = Double.parseDouble(m.group(1));
+				  dbl = Units.from(defaultUnitsFrom, dbl);		
+				  // The logic here can be debated.  If parse("ft", "10 fjkdsj", 5)
+				  // is called, what should be returned? Units.from("ft", 10) or Units.from("ft", 5)?
+				  // I chose Units.from("ft", 10) because in the degenerate case of 
+				  // parse("10 jfkdjks", 5)--that is, with an implied default unit of "internal"--
+				  // returning 10 seems more correct than returning 5.
+			  } catch (NumberFormatException e) {
+				  dbl = dv;
+			  }
+		  }
+	  } else {
+		  dbl = dv;
+	  }
+	  return dbl;
+  }
+
+  /**
+   * Parse a string, including an optional units identifier, as a double value.
+   * If the string does not contain a (valid) unit, then the value is interpreted as an "unspecified" unit. This version does not
+   * parse numbers in exponential notation, e.g., "10e-4".  
+   * @param str string to parse
+   * @param default_value if the string is not recognized as a valid value, the result to be returned 
+   * @return value
+   */
+  public static double parse(String str, double default_value) {
+	  	return parse("internal", str, default_value);
+  }
+  
+  /**
+   * Parse a string, including an optional units identifier, as a double value.
+   * If the string does not contain a unit, then the value is interpreted as an "unspecified" unit. This version does not
+   * parse numbers in exponential notation, e.g., "10e-4".  
+   * @param str string to parse
+   * @return value
+   */
+  public static double parse(String str) {
+	  return parse("internal", str, 0.0);
+  }
+
+  /**
+   * Parse a string into a value in internal units.  
+   * If the string contains a unit, then the value is understood in terms of that unit.  If no
+   * unit is specified in the string, then the unit in "defautlUnitsFrom" is used.
+   * @param defaultUnitsFrom the default units to convert the value from (if no text unit is specified) 
+   * @param str string to parse
+   * @return converted value
+   */
+  public static double parse(String defaultUnitsFrom, String str) {
+	  return parse(defaultUnitsFrom, str, 0.0);
+  }
+
+  
+  
+  
+  /**
+   * Parse a string into a value, then convert this value to the given units.
+   * This value is interpreted as the "defautlUnitsFrom" unit by default (unless the string s contains units).
+   * @param defaultUnitsFrom the default units to convert the value from (if no text unit is specified) 
+   * @param unitsTo the units to convert the value to
+   * @param value string to parse
+   * @return converted value
+   */
+  public static double parse(String defaultUnitsFrom, String unitsTo, String value) {
+    return Units.to(unitsTo, parse(defaultUnitsFrom, value));
   }
 
   /**

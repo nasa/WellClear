@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 United States Government as represented by
+ * Copyright (c) 2015-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -15,13 +15,13 @@ Integerval::Integerval(int l, int u) {
 }
 
 std::string Integerval::toString() const {
-  return "[" + Fm0(lb) + "," + Fm0(ub) + "]";
+  return "[" + Fmi(lb) + "," + Fmi(ub) + "]";
 }
 
 std::string Integerval::FmVector(const std::vector<Integerval>& l) {
   std::string s = "[";
   bool space = false;
-  for (int i=0; i < l.size(); ++i) {
+  for (std::vector<Integerval>::size_type i=0; i < l.size(); ++i) {
     if (space) {
       s += " ";
     } else {

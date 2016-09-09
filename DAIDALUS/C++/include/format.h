@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015 United States Government as represented by
+ * Copyright (c) 2011-2016 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -11,29 +11,26 @@
 #include <string>
 #include "Vect2.h"
 #include "Vect3.h"
-//#include "Vect4.h"
 
 namespace larcfm {
-  /** Turn an integer into a string */
-  std::string Fm0i(int i);
+  /** Format an int with 0 decimal places */
+  std::string Fmi(int v);
+  /** Format an unsigned in with 0 decimal places */
+  std::string Fmui(unsigned int v);
+  /** Format an unsigned long with 0 decimal places */
+  std::string Fmul(unsigned long v);
   /** Format a double with 0 decimal places */
   std::string Fm0(double v);
-  /** Format an int with 0 decimal places */
-  std::string Fm0(int v);
-  /** Format an unsigned in with 0 decimal places */
-  std::string Fm0(unsigned int v);
-  /** Format an unsigned long with 0 decimal places */
-  std::string Fm0u(unsigned long v);
   /** Format a double with 1 decimal place */
   std::string Fm1(double v);
   /** Format a double with 2 decimal place */
   std::string Fm2(double v);
   /** Format a double with 2 decimal place, filled with zeros */
-  std::string Fm2is(double v);
+  std::string Fm2z(double v);
   /** Format a double with 3 decimal place */
   std::string Fm3(double v);
   /** Format a double with 3 decimal place, filled with zeros */
-  std::string Fm3i(double v);
+  std::string Fm3z(double v);
   /** Format a double with 4 decimal place */
   std::string Fm4(double v);
   /** Format a double with 6 decimal place */
@@ -44,6 +41,9 @@ namespace larcfm {
   std::string Fm12(double v);
   /** Format a double with 16 decimal place */
   std::string Fm16(double v);
+
+  /** Format an integer to have at least precision digits */
+  std::string FmLead(int i, int precision);
 
   std::string FmPrecision(double v);
   std::string FmPrecision(double v, int precision);
@@ -116,6 +116,7 @@ namespace larcfm {
   std::string Farray(double const v[], int sz);
   std::string Farray(std::string const v[], int sz);
 
+  std::string double2PVS(double val, int prec);
 
 }
 #endif /* FORMAT_H_ */
