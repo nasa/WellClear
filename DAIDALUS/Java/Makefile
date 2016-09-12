@@ -10,7 +10,7 @@ all: example
 lib: $(SRCS)
 	@echo 
 	@echo "** Building DAIDALUS jar library"
-	$(JAVAC) -cp src src/gov/nasa/larcfm/Util/*.java src/gov/nasa/larcfm/ACCoRD/*.java
+	$(JAVAC) -cp src src/gov/nasa/larcfm/IO/*.java src/gov/nasa/larcfm/Util/*.java src/gov/nasa/larcfm/ACCoRD/*.java
 	cd src; $(JAR) cvf ../lib/DAIDALUS.jar gov/nasa/larcfm/IO/*.class gov/nasa/larcfm/Util/*.class gov/nasa/larcfm/ACCoRD/*.class
 
 example:
@@ -19,7 +19,7 @@ example:
 	$(JAVAC) -cp lib/DAIDALUS.jar DaidalusExample.java
 	@echo 
 	@echo "** To run DaidalusExample type:"
-	@echo "java -cp lib/DAIDALUS.jar:. DaidalusExample"
+	@echo "./DaidalusExample"
 
 clean:
 	rm -f DaidalusExample.class $(OBJS) lib/DAIDALUS.jar

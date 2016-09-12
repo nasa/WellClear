@@ -19,7 +19,7 @@ guidance.
 
 Although the core algorithms of DAIDALUS remain the same, the
 application programming interface (API) of V1.a has changed with
-respect to the family V0.99* releases. These changes were necessary to
+respect to the family of V0.99* releases. These changes were necessary to
 accommodate the evolution of the computational requirement in the
 MOPS. DAIDALUS V1.a is the base code for the upcoming version 1.0.
 As the MOPS continues to evolve, small changes in the API are expected.
@@ -34,7 +34,7 @@ repository, visit [http://shemesh.larc.nasa.gov/people/cam/DAIDALUS](http://shem
 
 ### Current Release
 
-v1.a (September 11, 2016)
+v1.a0 (September 11, 2016)
 
 ### License
 
