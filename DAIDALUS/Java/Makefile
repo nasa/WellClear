@@ -1,6 +1,6 @@
 # Simple Makefile to build DAIDALUS library and example application
 
-SRCS  = $(wildcard src/gov/nasa/larcfm/Util/*.java src/gov/nasa/larcfm/ACCoRD/*.java)
+SRCS  = $(wildcard src/gov/nasa/larcfm/IO/*.java src/gov/nasa/larcfm/Util/*.java src/gov/nasa/larcfm/ACCoRD/*.java)
 OBJS  = $(SRCS:.java=.class)
 JAVAC = javac
 JAR   = jar
@@ -11,7 +11,7 @@ lib: $(SRCS)
 	@echo 
 	@echo "** Building DAIDALUS jar library"
 	$(JAVAC) -cp src src/gov/nasa/larcfm/Util/*.java src/gov/nasa/larcfm/ACCoRD/*.java
-	cd src; $(JAR) cvf ../lib/DAIDALUS.jar gov
+	cd src; $(JAR) cvf ../lib/DAIDALUS.jar gov/nasa/larcfm/IO/*.class gov/nasa/larcfm/Util/*.class gov/nasa/larcfm/ACCoRD/*.class
 
 example:
 	@echo 
