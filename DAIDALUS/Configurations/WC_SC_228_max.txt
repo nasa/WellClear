@@ -34,7 +34,7 @@ recovery_gs = true
 recovery_vs = true
 recovery_alt = true
 # if ca_bands is true, keep computing recovery bands by reducing min horizontal/vertical recovery until NMAC
-ca_bands = false
+ca_bands = true
 # ca_factor is the reduction factor, when computing CA bands
 ca_factor = 0.2000
 # Contours Parameters

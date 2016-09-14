@@ -24,7 +24,7 @@ vertical_nmac = 100.000000 [ft]
 # Recovery Bands Parameters
 recovery_stability_time = 2.000000 [s]
 # If min_horizontal_recovery is set to 0, TCAS RA HMD is used instead
-min_horizontal_recovery = 0.600000 [nmi]
+min_horizontal_recovery = 0.660000 [nmi]
 # If min_vertical_recovery is set to 0, TCAS RA ZTHR is used instead
 min_vertical_recovery = 450.000000 [ft]
 conflict_crit = false
