@@ -44,37 +44,32 @@ that are used in the current draft of RTCA SC-228 MOPS V3.6
   the class of aircraft that are able to perform a turn rate of 1.5
   deg/s and meet the performance maneuverability listed in
   Section 1.2.3 System Limitations of the RTCA SC-228 MOPS V3.6
- (2016-8-19):
+ (2016-8-19).
   In this configuration, the alerting and maneuvering guidance logics
   use buffered definitions of preventive, corrective, and warning
   volumes to accommodate for certain types of sensor uncertainty.
   The maneuver guidance logic assumes kinematic maneuvers
   maneuvers. Furthermore, recovery bands are computed until NMAC.
-  The only difference between `WC_SC_228_nom_a.txt` and
-  `WC_SC_228_nom_b.txt` configuration is the turn rate.
+  The only difference between configurations `WC_SC_228_nom_a.txt` and
+  `WC_SC_228_nom_b.txt` is the turn rate.
 
 * [`WC_SC_228_nom_b.txt`](Configurations/WC_SC_228_nom_b.txt): This
   configuration corresponds to a nominal instantiation of DAIDALUS for
   the class of aircraft that are able to perform a turn rate of 3.0
   deg/s and meet the performance maneuverability listed in
   Section 1.2.3 System Limitations of the RTCA SC-228 MOPS V3.6
- (2016-8-19):
+ (2016-8-19).
   In this configuration, the alerting and maneuvering guidance logics
   use buffered definitions of preventive, corrective, and warning
   volumes to accommodate for certain types of sensor uncertainty.
   The maneuver guidance logic assumes kinematic maneuvers
   maneuvers. Furthermore, recovery bands are computed until NMAC.
-  The only difference between `WC_SC_228_nom_a.txt` and
-  `WC_SC_228_nom_b.txt` configuration is the turn rate.
+  The only difference between configurations `WC_SC_228_nom_a.txt` and
+  `WC_SC_228_nom_b.txt` is the turn rate.
  
 ### Contact
 
 Cesar A. Munoz (cesar.a.munoz@nasa.gov), NASA Langley Research Center
-
-
-
-Cesar A. Munoz (cesar.a.munoz@nasa.gov), NASA Langley Research Center
-
 
 ## Logo
 The DAIDALUS logo was designed by 
