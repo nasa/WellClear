@@ -11,11 +11,13 @@ civil airspace.
 The includes definitions in Matlab of a family of well-clear violation volumes.
 
 DAIDALUS is the Detect and Avoid reference implementation of the RTCA
-SC-228 MOPS. The current release implements the functionality
-described in Appendix G of MOPS V3.6 (2016-8-19) including WC
-detection logic, alerting logic based on hazard and non-hazard
-volumes, and multi-level instantaneous and kinematic maneuver
-guidance.
+SC-228 MOPS. The current software release implements the Detect and
+Avoid functionality
+described in Appendix G of the current draft of SC-228 MOPS V3.6
+(2016-8-19) such as:
+* detection logic,
+* alerting logic based on hazard and non-hazard volumes, and
+* multi-level instantaneous and kinematic maneuver guidance.
 
 Although the core algorithms of DAIDALUS remain the same, the
 application programming interface (API) of V1.a has changed with
