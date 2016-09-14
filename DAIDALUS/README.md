@@ -5,8 +5,8 @@ The directory `Configurations` includes the following DAIDALUS' configurations f
 that are used in the current draft of RTCA SC-228 MOPS V3.6
 (2016-8-19):
 
-** CAVEAT: SOME CONFIGUARATION VALUES ARE STILL MATTER OF
-   RESEARCH. THEY MAY CHANGE PRIOR TO RELEASE OF DAIDALUS v1.0.0.**
+**CAVEAT**: SOME CONFIGURATION VALUES ARE STILL MATTER OF
+   RESEARCH. THEY MAY CHANGE PRIOR TO RELEASE OF DAIDALUS v1.0.0.
 
 * [`WC_SC_228_std.txt`](Configurations/WC_SC_228_std.txt):
   In this configuration, the alerting and maneuvering guidance logics use minimum average alerting
