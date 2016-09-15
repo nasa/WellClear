@@ -3,12 +3,12 @@
 Detect and AvoID Alerting Logic for Unmanned Systems
 ========
 
-This repository include a prototype implementation written in Java and
+This repository includes a prototype implementation written in Java and
 C++ of *DAIDALUS* (Detect and Aovid Alerting Logic for Unmanned Systems).
 *DAIDALUS* is a reference implementation of a detect and avoid concept
 intended to support the integration of Unmanned Aircraft Systems into
 civil airspace.
-The includes definitions in Matlab of a family of well-clear violation volumes.
+The repository also includes definitions in Matlab of a family of well-clear violation volumes.
 
 DAIDALUS is the Detect and Avoid reference implementation of the RTCA
 SC-228 MOPS. The current software release implements the Detect and
@@ -41,12 +41,11 @@ v1.a0 (September 11, 2016)
 ### License
 
 The code in this repository is released under NASA's Open Source
-Agreement. See the file NOSA.pdf in the directories Matlab, Java, and C++.
+Agreement. See the file LICENSE.pdf in Matlab and the directory LICENSE in DAIDALUS.
 
 ### Contact
 
 Cesar A. Munoz (cesar.a.munoz@nasa.gov), NASA Langley Research Center
-
 
 ## Logo
 The DAIDALUS logo was designed by 

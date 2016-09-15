@@ -18,30 +18,6 @@ that are used in the current draft of RTCA SC-228 MOPS V3.6
   configuration should only be used as reference to an
   ideal algorithm with perfect information.
   
-* [`WC_SC_228_min.txt`](Configurations/WC_SC_228_min.txt): This
-  configuration corresponds to the minimum detect and avoid
-  threshold values used for the generation of the encounter
-  characterization files in Appendix P.
-  In this configuration, the alerting and maneuvering guidance logics use late alerting
-  time and hazard volumes for computing preventive, corrective, and warning alerts and
-  guidance. The maneuver guidance logic assumes instantaneous
-  maneuvers. Furthermore, recovery bands are computed until NMAC.
- This configuration should only be used to check the performance of an actual
-  implementation against the minimum values in the
-  encounter characterization files in Appendix P.
-  
-* [`WC_SC_228_max.txt`](Configurations/WC_SC_228_max.txt): This
-  configuration corresponds to the maximum detect and avoid
-  threshold values used for the generation of the encounter
-  characterization files in Appendix P.
-  In this configuration, the alerting and maneuvering guidance logics use early alerting
-  time and an approximation of the complement of the non-hazard volumes for computing preventive, corrective, and warning alerts and
-  guidance. The maneuver guidance logic assumes instantaneous
-  maneuvers. Furthermore, recovery bands are computed until NMAC.
-  This configuration should only be used to check the performance of an actual
-  implementation against the maximum values in the
-  encounter characterization files in Appendix P.
-  
 * [`WC_SC_228_nom_a.txt`](Configurations/WC_SC_228_nom_a.txt): This
   configuration corresponds to a nominal instantiation of DAIDALUS for
   the class of aircraft that are able to perform a turn rate of 1.5
@@ -69,7 +45,31 @@ that are used in the current draft of RTCA SC-228 MOPS V3.6
   maneuvers. Furthermore, recovery bands are computed until NMAC.
   The only difference between configurations `WC_SC_228_nom_a.txt` and
   `WC_SC_228_nom_b.txt` is the turn rate.
- 
+
+* [`WC_SC_228_min.txt`](Configurations/WC_SC_228_min.txt): This
+  configuration corresponds to the minimum detect and avoid
+  threshold values used for the generation of the encounter
+  characterization files in Appendix P.
+  In this configuration, the alerting and maneuvering guidance logics use late alerting
+  time and hazard volumes for computing preventive, corrective, and warning alerts and
+  guidance. The maneuver guidance logic assumes instantaneous
+  maneuvers. Furthermore, recovery bands are computed until NMAC.
+ This configuration should only be used to check the performance of an actual
+  implementation against the minimum values in the
+  encounter characterization files in Appendix P.
+  
+* [`WC_SC_228_max.txt`](Configurations/WC_SC_228_max.txt): This
+  configuration corresponds to the maximum detect and avoid
+  threshold values used for the generation of the encounter
+  characterization files in Appendix P.
+  In this configuration, the alerting and maneuvering guidance logics use early alerting
+  time and an approximation of the complement of the non-hazard volumes for computing preventive, corrective, and warning alerts and
+  guidance. The maneuver guidance logic assumes instantaneous
+  maneuvers. Furthermore, recovery bands are computed until NMAC.
+  This configuration should only be used to check the performance of an actual
+  implementation against the maximum values in the
+  encounter characterization files in Appendix P.
+   
 ### Contact
 
 Cesar A. Munoz (cesar.a.munoz@nasa.gov), NASA Langley Research Center

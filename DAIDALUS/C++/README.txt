@@ -49,8 +49,6 @@ in a Unix environment, type
 
 $ make
 
-The code is compatible with Java development kit version 1.8.0_45.
-
 Running example applications
 ----------------------------
 
