@@ -72,9 +72,5 @@ that are used in the current draft of RTCA SC-228 MOPS V3.6
    
 ### Contact
 
-Cesar A. Munoz (cesar.a.munoz@nasa.gov), NASA Langley Research Center
-
-## Logo
-The DAIDALUS logo was designed by 
-[Mahyar Malekpour](http://shemesh.larc.nasa.gov/people/mrm/publications.htm#ETC) (NASA).
+[Cesar A. Munoz](http://shemesh.larc.nasa.gov/people/cam) (cesar.a.munoz@nasa.gov), NASA Langley Research Center.
 
