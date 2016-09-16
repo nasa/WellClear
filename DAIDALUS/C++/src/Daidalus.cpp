@@ -98,7 +98,7 @@ void Daidalus::set_WC_SC_228_MOPS() {
  */
 void Daidalus::set_Buffered_WC_SC_228_MOPS(bool type) {
   parameters.alertor = AlertLevels::Buffered_WC_SC_228_Thresholds();
-  parameters.setKinematicBands(true);
+  parameters.setKinematicBands(type);
   parameters.setCollisionAvoidanceBands(true);
   parameters.setCollisionAvoidanceBandsFactor(0.2);
   parameters.setMinHorizontalRecovery(1.0,"nmi");
@@ -586,7 +586,7 @@ std::string Daidalus::toString() const {
 
 std::string Daidalus::release() {
   return "DAIDALUS++ V-"+KinematicBandsParameters::VERSION+
-      "-FormalATM-"+Constants::version+" (Sept-11-2016)";
+      "-FormalATM-"+Constants::version+" (Sept-16-2016)";
 }
 
 }

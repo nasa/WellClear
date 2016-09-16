@@ -22,7 +22,7 @@ final public class KinematicBandsParameters implements ParameterAcceptor, ErrorR
 	/**
 	 * DAIDALUS version
 	 */
-	public static final String VERSION = "1.a0";
+	public static final String VERSION = "1.a1";
 
 	/**
 	 * Alertor
@@ -1192,7 +1192,7 @@ final public class KinematicBandsParameters implements ParameterAcceptor, ErrorR
 	 */
 	public void setKinematicBands(boolean type) {
 		// Section 1.2.3, DAA MOPS SC-228 V3.6
-		turn_rate_ = Units.from("deg/s",type ? 3.0 : 1/5); 
+		turn_rate_ = Units.from("deg/s",type ? 3.0 : 1.5); 
 		bank_angle_ = 0;
 		horizontal_accel_ = Units.from("m/s^2",2.0); 
 		vertical_accel_ = Units.from("G",0.25);

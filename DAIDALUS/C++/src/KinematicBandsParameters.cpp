@@ -18,7 +18,7 @@ namespace larcfm {
 /**
  * DAIDALUS version
  */
-const std::string KinematicBandsParameters::VERSION = "1.a0";
+const std::string KinematicBandsParameters::VERSION = "1.a1";
 
 /* NOTE: By default, no alert levels are configured */
 KinematicBandsParameters::KinematicBandsParameters() : error("DaidalusParameters") {
@@ -1144,7 +1144,7 @@ void KinematicBandsParameters::setInstantaneousBands() {
  */
 void KinematicBandsParameters::setKinematicBands(bool type) {
   // Section 1.2.3, DAA MOPS SC-228 V3.6
-  turn_rate_ = Units::from("deg/s",type ? 3.0 : 1/5);
+  turn_rate_ = Units::from("deg/s",type ? 3.0 : 1.5);
   bank_angle_ = 0;
   horizontal_accel_ = Units::from("m/s^2",2.0);
   vertical_accel_ = Units::from("G",0.25);

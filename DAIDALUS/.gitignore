@@ -1,2 +1,6 @@
 *.o
 *.class
+*~
+*.old
+tmp/
+C++/DaidalusExample

@@ -1,6 +1,6 @@
 DAIDALUS: Detect and Avoid Alerting Logic for Unmanned Systems
 -----------------------------------------------------
-Release: 1.a0, September 11, 2016
+Release: 1.a1, September 16, 2016
 Authors: Cesar Munoz, George Hagen, Anthony Narkawicz
 Contact: Cesar A. Munoz (Cesar.A.Munoz@nasa.gov)
 
@@ -9,12 +9,18 @@ the National Aeronautics and Space Administration.  No copyright
 is claimed in the United States under Title 17, U.S.Code. All Other 
 Rights Reserved.
 
+Release DAIDALUS 1.a1, September 16, 2016  
+---------------------
+Fixed a bug in set_Buffered_WC_SC_228_MOPS(boolean type), where the
+parameter type was ignored, and setKinematicBands(boolean type), where
+turn_rate was set to 1/5, e.g., 0, instead of 1.5.
+
 Release DAIDALUS 1.a0, September 11, 2016  
 ---------------------
-This is a minor update to 1.a. It fixed a problem in the preparation
-of the C++ release.  It also fixes a bug in the setting of Min/Max 
-gs,vs, and alt parameters in the method setKinematicBandsParameters of
-the class KinematicMultiBands that mainly affected the C++ version.
+Fixed a problem in the preparation of the C++ release.  Fixed a bug in
+the setting of Min/Max gs,vs, and alt parameters in the method
+setKinematicBandsParameters of the class KinematicMultiBands that
+mainly affected the C++ version.
 
 Release DAIDALUS 1.a, September 11, 2016  
 ---------------------
