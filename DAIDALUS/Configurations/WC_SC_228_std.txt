@@ -1,9 +1,9 @@
-# V-1.a0
+# V-1.a2
 # Conflict Bands Parameters
 lookahead_time = 180.000000 [s]
 left_trk = 180.000000 [deg]
 right_trk = 180.000000 [deg]
-min_gs = 0.000000 [knot]
+min_gs = 10.000000 [knot]
 max_gs = 700.000000 [knot]
 min_vs = -5000.000000 [fpm]
 max_vs = 5000.000000 [fpm]

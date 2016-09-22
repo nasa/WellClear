@@ -17,6 +17,13 @@ that are used in the current draft of RTCA SC-228 MOPS V3.6
   used by default when a `Daidalus` object is created. However, this
   configuration should only be used as reference to an
   ideal algorithm with perfect information.
+
+  This configuration can be obtained with the following code:
+  
+  ```
+  Daidalus daa  = new Daidalus();
+  daa.parameters.saveToFile("WC_SC_228_std.txt");
+  ```
   
 * [`WC_SC_228_nom_a.txt`](Configurations/WC_SC_228_nom_a.txt): This
   configuration corresponds to a nominal instantiation of DAIDALUS for
@@ -32,6 +39,14 @@ that are used in the current draft of RTCA SC-228 MOPS V3.6
   The only difference between configurations `WC_SC_228_nom_a.txt` and
   `WC_SC_228_nom_b.txt` is the turn rate.
 
+   This configuration can be obtained with the following code:
+  
+  ```java
+  Daidalus daa  = new Daidalus();
+  daa.set_Buffered_WC_SC_228_MOPS(false);
+  daa.parameters.saveToFile("WC_SC_228_nom_a.txt");
+  ```
+
 * [`WC_SC_228_nom_b.txt`](Configurations/WC_SC_228_nom_b.txt): This
   configuration corresponds to a nominal instantiation of DAIDALUS for
   the class of aircraft that are able to perform a turn rate of 3.0
@@ -46,6 +61,12 @@ that are used in the current draft of RTCA SC-228 MOPS V3.6
   The only difference between configurations `WC_SC_228_nom_a.txt` and
   `WC_SC_228_nom_b.txt` is the turn rate.
 
+  ```
+  Daidalus daa  = new Daidalus();
+  daa.set_Buffered_WC_SC_228_MOPS(true);
+  daa.parameters.saveToFile("WC_SC_228_nom_b.txt");
+  ```
+
 * [`WC_SC_228_min.txt`](Configurations/WC_SC_228_min.txt): This
   configuration corresponds to the minimum detect and avoid
   threshold values used for the generation of the encounter
@@ -54,7 +75,7 @@ that are used in the current draft of RTCA SC-228 MOPS V3.6
   time and hazard volumes for computing preventive, corrective, and warning alerts and
   guidance. The maneuver guidance logic assumes instantaneous
   maneuvers. Furthermore, recovery bands are computed until NMAC.
- This configuration should only be used to check the performance of an actual
+  This configuration should only be used to check the performance of an actual
   implementation against the minimum values in the
   encounter characterization files in Appendix P.
   

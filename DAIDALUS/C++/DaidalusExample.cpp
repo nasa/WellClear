@@ -188,9 +188,10 @@ int main(int argc, char* argv[]) {
 	daa.parameters.saveToFile(default_parameters);
 	std::cout << "Default parameters written to file " << default_parameters << "\n" << std::endl;
 
-	// DAIDALUS is configured by default to unbuffered WC, instantaneous bands.
-	// Uncomment the following line to get buffered WC, kinematic bands.
-	//daa.set_Buffered_WC_SC_228_MOPS(true);
+	// By default, DAIDALUS is configured to unbuffered WC, instantaneous bands.
+	// Uncomment one of the following lines to get buffered WC, kinematic bands. 
+	// daa.set_Buffered_WC_SC_228_MOPS(false); // Turn rate 1.5 [deg/s]
+	// daa.set_Buffered_WC_SC_228_MOPS(true); // Turn rate 3.0 [deg/s]
 
 	// Load parameters if configuration file exists.
 	std::string my_parameters = "my_parameters.txt";
@@ -213,7 +214,6 @@ int main(int argc, char* argv[]) {
 	daa.setWindField(wind);
 
 	// Print information about the Daidalus Object
-	std::cout << daa.toString() << std::endl;
 	std::cout << "Number of Aircraft: " << daa.numberOfAircraft() << std::endl;
 	std::cout << "Last Aircraft Index: " << daa.lastTrafficIndex() << std::endl;
 	std::cout <<  std::endl;

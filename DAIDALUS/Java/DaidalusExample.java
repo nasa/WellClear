@@ -20,9 +20,10 @@ class DaidalusExample {
 		daa.parameters.saveToFile(default_parameters);
 		System.out.println("Default parameters written to file "+default_parameters+"\n");
 
-		// DAIDALUS is configured by default to unbuffered WC, instantaneous bands.
-		// Uncomment the following line to get buffered WC, kinematic bands. 
-		// daa.set_Buffered_WC_SC_228_MOPS(true);
+		// By default, DAIDALUS is configured to unbuffered WC, instantaneous bands.
+		// Uncomment one of the following lines to get buffered WC, kinematic bands. 
+		// daa.set_Buffered_WC_SC_228_MOPS(false); // Turn rate 1.5 [deg/s]
+		// daa.set_Buffered_WC_SC_228_MOPS(true); // Turn rate 3.0 [deg/s]
 
 		// Load parameters if configuration file exists.
 		String my_parameters = "my_parameters.txt";
@@ -45,7 +46,6 @@ class DaidalusExample {
 		daa.setWindField(wind);
 
 		// Print information about the Daidalus Object
-		System.out.println(daa.toString());
 		System.out.println("Number of Aircraft: "+daa.numberOfAircraft());
 		System.out.println("Last Aircraft Index: "+daa.lastTrafficIndex());
 		System.out.println();

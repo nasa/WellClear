@@ -1,6 +1,6 @@
 DAIDALUS: Detect and Avoid Alerting Logic for Unmanned Systems
 -----------------------------------------------------
-Release: 1.a1, September 16, 2016
+Release: 1.a2, September 23, 2016
 Authors: Cesar Munoz, George Hagen, Anthony Narkawicz
 Contact: Cesar A. Munoz (Cesar.A.Munoz@nasa.gov)
 
@@ -8,6 +8,23 @@ Copyright: Copyright (c) 2014 United States Government as represented by
 the National Aeronautics and Space Administration.  No copyright 
 is claimed in the United States under Title 17, U.S.Code. All Other 
 Rights Reserved.
+
+Release DAIDALUS 1.a2, September 23, 2016  
+---------------------
+* Fixed memory leaks in the AlertLevels class in C++.
+* Changed default minimun ground speed to 10 [knots]. The previous value was 0,
+which is not a valid ground speed. The minimum ground speed must be greater than
+the ground speed step.
+* Fixed a border case problem when detection was computed at exactly late alerting time. The
+previous behavior always returned false in this case. The current behavior checks
+if there is a violation at that unique position in time.
+* Changed the beahvior of track resolution, when the returned values is greater than 180.
+In this release, the returned value is positive infinity, for the right resolution,
+and negative infinity, for the left resolution.
+* Fixed a problem in the characterization of regions in the case of recovery bands.
+The previous behavior always returned either NEAR or RECOVERY regions, which is not
+always correct. The current behavior returns the correct saturated region or RECOVERY.
+Thanks to Randal Guendel (MIT/LL) for pointing this out.
 
 Release DAIDALUS 1.a1, September 16, 2016  
 ---------------------
@@ -19,8 +36,7 @@ Release DAIDALUS 1.a0, September 11, 2016
 ---------------------
 Fixed a problem in the preparation of the C++ release.  Fixed a bug in
 the setting of Min/Max gs,vs, and alt parameters in the method
-setKinematicBandsParameters of the class KinematicMultiBands that
-mainly affected the C++ version.
+setKinematicBandsParameters of the class KinematicMultiBands.
 
 Release DAIDALUS 1.a, September 11, 2016  
 ---------------------
