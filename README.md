@@ -37,7 +37,7 @@ repository, visit [http://shemesh.larc.nasa.gov/fm/DAIDALUS](http://shemesh.larc
 
 ### Current Release
 
-v1.a1 (September 16, 2016)
+v1.a2 (September 23, 2016)
 
 ### License
 
