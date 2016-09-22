@@ -61,7 +61,7 @@ that are used in the current draft of RTCA SC-228 MOPS V3.6
   The only difference between configurations `WC_SC_228_nom_a.txt` and
   `WC_SC_228_nom_b.txt` is the turn rate.
 
-  ```
+  ```java
   Daidalus daa  = new Daidalus();
   daa.set_Buffered_WC_SC_228_MOPS(true);
   daa.parameters.saveToFile("WC_SC_228_nom_b.txt");
