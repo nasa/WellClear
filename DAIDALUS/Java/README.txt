@@ -1,7 +1,7 @@
 DAIDALUS: Detect and Avoid Alerting Logic for Unmanned Systems
 -----------------------------------------------------
 Version:  Java
-Release: 1.a2, September 23, 2016
+Release: 1.a2, September 26, 2016
 Authors: Cesar Munoz, George Hagen, Anthony Narkawicz
 Contact: Cesar A. Munoz (Cesar.A.Munoz@nasa.gov)
 
@@ -30,9 +30,9 @@ Description of Files
 
 README.txt : This file.
 RELEASE-NOTES.txt: Log of changes and revisions.
-NOSA.pdf: NASA Open Source Agreement. 
-src/: Directory of java code. 
-lib/: Directory of jar file. 
+LICENSES/: Directory containing NASA's Open Source Agreements.
+src/: Directory of Java code.
+lib/: Directory containing jar file.
 doc/: Directory of documentation.
 default_parameters.txt: File of DAIDALUS configuration parameters and
 default values.

@@ -1,7 +1,7 @@
 DAIDALUS: Detect and Avoid Alerting Logic for Unmanned Systems
 -----------------------------------------------------
 Version:  C++
-Release: 1.a2, September 23, 2016
+Release: 1.a2, September 26, 2016
 Authors: Cesar Munoz, George Hagen, Anthony Narkawicz
 Contact: Cesar A. Munoz (Cesar.A.Munoz@nasa.gov)
 
@@ -30,10 +30,10 @@ Description of Files
 
 README.txt : This file.
 RELEASE-NOTES.txt: Log of changes and revisions.
-NOSA.pdf: NASA Open Source Agreement.
+LICENSES/: Directory containing NASA's Open Source Agreements.
 src/: Directory of C++ code.
 include/: Directory of C++ headers.
-lib/: Directory of library file.
+lib/: Directory containing library file.
 doc/: Directory of documentation.
 default_parameters.txt: File of DAIDALUS configuration parameters and
 default values.

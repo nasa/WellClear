@@ -1,6 +1,6 @@
 DAIDALUS: Detect and Avoid Alerting Logic for Unmanned Systems
 -----------------------------------------------------
-Release: 1.a2, September 23, 2016
+Release: 1.a2, September 26, 2016
 Authors: Cesar Munoz, George Hagen, Anthony Narkawicz
 Contact: Cesar A. Munoz (Cesar.A.Munoz@nasa.gov)
 
@@ -9,8 +9,14 @@ the National Aeronautics and Space Administration.  No copyright
 is claimed in the United States under Title 17, U.S.Code. All Other 
 Rights Reserved.
 
-Release DAIDALUS 1.a2, September 23, 2016  
----------------------
+Release DAIDALUS 1.a2
+------------------
+September 26, 2016
+* Fixed mismatch between tiovs_ and conflict_acs_ in
+KinematicBandsCore. This error affected timeToViolation for a
+given alert level.
+
+September 23, 2016
 * Fixed memory leaks in the AlertLevels class in C++.
 * Changed default minimun ground speed to 10 [knots]. The previous value was 0,
 which is not a valid ground speed. The minimum ground speed must be greater than
