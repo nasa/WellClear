@@ -1,6 +1,6 @@
 DAIDALUS: Detect and Avoid Alerting Logic for Unmanned Systems
 -----------------------------------------------------
-Release: 1.a2, September 26, 2016
+Release: 1.0, November 18, 2016
 Authors: Cesar Munoz, George Hagen, Anthony Narkawicz
 Contact: Cesar A. Munoz (Cesar.A.Munoz@nasa.gov)
 
@@ -8,6 +8,17 @@ Copyright: Copyright (c) 2014 United States Government as represented by
 the National Aeronautics and Space Administration.  No copyright 
 is claimed in the United States under Title 17, U.S.Code. All Other 
 Rights Reserved.
+
+Release DAIDALUS 1.0
+--------------------
+* First non-alpha release of DAIDALUS. Parameters and thresholds have
+  been configured according to DAA_MOPS_ToPMC_V3.8_2016-11-10.
+* Used "almost equality" instead of "==" in guidance computation to
+  mitigate numerical issues at the limits of the well-clear volume.
+* Provided interface to non-hazard volume, which is defined using VMOD
+  instead of TCOA.
+* Fixed directional resolution logic for track, which in some cases
+  returned maneuvers that were more than 180 degrees in one direction.
 
 Release DAIDALUS 1.a2
 ------------------

@@ -1,7 +1,6 @@
 DAIDALUS: Detect and Avoid Alerting Logic for Unmanned Systems
 -----------------------------------------------------
-Version:  Java
-Release: 1.a2, September 26, 2016
+Release: Java - 1.0, November 18, 2016
 Authors: Cesar Munoz, George Hagen, Anthony Narkawicz
 Contact: Cesar A. Munoz (Cesar.A.Munoz@nasa.gov)
 

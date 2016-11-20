@@ -14,6 +14,7 @@ lib: $(SRCS)
 	cd src; $(JAR) cvf ../lib/DAIDALUS.jar gov/nasa/larcfm/IO/*.class gov/nasa/larcfm/Util/*.class gov/nasa/larcfm/ACCoRD/*.class
 
 example:
+	test -f lib/DAIDALUS.jar || make lib
 	@echo 
 	@echo "** Building DaidalusExample application"
 	$(JAVAC) -cp lib/DAIDALUS.jar DaidalusExample.java

@@ -13,19 +13,18 @@ The repository also includes definitions in Matlab of a family of well-clear vio
 DAIDALUS is the Detect and Avoid reference implementation of the RTCA
 SC-228 MOPS. The current software release implements the Detect and
 Avoid functionality
-described in Appendix G of the current draft of SC-228 MOPS V3.6
-(2016-8-19) such as
+described in Appendix G of the current draft of SC-228 MOPS V3.8
+(2016-11-10) such as
 
 *  detection logic,
 *  alerting logic based on hazard and non-hazard volumes, and
 *  multi-level instantaneous and kinematic maneuver guidance.
 
 Although the core algorithms of DAIDALUS remain the same, the
-application programming interface (API) of v1.a* has changed with
+application programming interface (API) of v1.* has changed with
 respect to the family of v0.99* releases. These changes were necessary to
 accommodate the evolution of the computational requirement in the
-MOPS. DAIDALUS v1.a* is the base code for the upcoming version 1.0.
-As the MOPS continues to evolve, small changes in the API are expected.
+MOPS.
 
 ### Documentation
 The API document for the current version is still work in progress. In the meantime,
@@ -37,7 +36,7 @@ repository, visit [http://shemesh.larc.nasa.gov/fm/DAIDALUS](http://shemesh.larc
 
 ### Current Release
 
-v1.a2 (September 26, 2016)
+v1.0 (November 18, 2016)
 
 ### License
 
