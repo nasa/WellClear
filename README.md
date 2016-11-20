@@ -36,7 +36,7 @@ repository, visit [http://shemesh.larc.nasa.gov/fm/DAIDALUS](http://shemesh.larc
 
 ### Current Release
 
-v1.0 (November 18, 2016)
+V-1.0-FormalATM-v2.6.1 (Nov-18-2016)
 
 ### License
 
