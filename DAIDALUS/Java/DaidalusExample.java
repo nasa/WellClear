@@ -25,44 +25,47 @@ class DaidalusExample {
 		// daa.set_Buffered_WC_SC_228_MOPS(false); // Turn rate 1.5 [deg/s]
 		// daa.set_Buffered_WC_SC_228_MOPS(true); // Turn rate 3.0 [deg/s]
 
-		// Load parameters if configuration file exists.
-		String my_parameters = "my_parameters.txt";
-		if (daa.parameters.loadFromFile(my_parameters)) {
-			System.out.println("Read parameters from file "+my_parameters+"\n");
-		} 
+		// If needed, load parameters from a configuration file. In that case,
+		// uncomment the following line.
+		// daa.parameters.loadFromFile("my_parameters.txt");
 
-		// Get aircraft state information for ownship and intruder
-		Position so = Position.makeLatLonAlt(33.95,"deg", -96.7,"deg", 8700.0,"ft");
-		Velocity vo = Velocity.makeTrkGsVs(206.0,"deg", 151.0,"knot", 0.0,"fpm");
-		Position si = Position.makeLatLonAlt(33.86191658,"deg", -96.73272601,"deg", 9000.0,"ft"); 
-		Velocity vi = Velocity.makeTrkGsVs(0.0,"deg", 210.0,"knot", 0,"fpm"); 
+		double t = 0.0;
+		// for all times t (in this example, only one time step is illustrated)
+		  // Add ownship state at time t
+	  	  Position so = Position.makeLatLonAlt(33.95,"deg", -96.7,"deg", 8700.0,"ft");
+		  Velocity vo = Velocity.makeTrkGsVs(206.0,"deg", 151.0,"knot", 0.0,"fpm");
+		  daa.setOwnshipState("ownship",so,vo,t);
 
-		// Add new plans
-		daa.setOwnshipState("ownship",so,vo,0.0);
-		daa.addTrafficState("intruder",si,vi);
+		  // Add all traffic states at time t
+		  // ... some traffic ...
+		  Position si = Position.makeLatLonAlt(33.86191658,"deg", -96.73272601,"deg", 9000.0,"ft"); 
+		  Velocity vi = Velocity.makeTrkGsVs(0.0,"deg", 210.0,"knot", 0,"fpm"); 
+		  daa.addTrafficState("ith-intruder",si,vi);
+		  // ... more traffic ...
+	       
+  		  // Set wind information
+		  Velocity wind = Velocity.makeTrkGsVs(45,"deg", 10,"knot", 0,"fpm");
+		  daa.setWindField(wind);
 
-		// Set wind information
-		Velocity wind = Velocity.makeTrkGsVs(45,"deg", 10,"knot", 0,"fpm");
-		daa.setWindField(wind);
+		  // Print information about the Daidalus Object
+		  System.out.println("Number of Aircraft: "+daa.numberOfAircraft());
+		  System.out.println("Last Aircraft Index: "+daa.lastTrafficIndex());
+		  System.out.println();
 
-		// Print information about the Daidalus Object
-		System.out.println("Number of Aircraft: "+daa.numberOfAircraft());
-		System.out.println("Last Aircraft Index: "+daa.lastTrafficIndex());
-		System.out.println();
+		  // Detect conflicts with every traffic aircraft
+		  printDetection(daa);
 
-		// Detect conflicts with every traffic aircraft
-		printDetection(daa);
+		  // Call alerting logic for each traffic aircraft.
+		  printAlerts(daa);
 
-		// Call alerting logic for each traffic aircraft.
-		printAlerts(daa);
+		  // Create bands object and compute bands
+		  KinematicMultiBands bands = daa.getKinematicMultiBands();
 
-		// Create bands object and compute bands
-		KinematicMultiBands bands = daa.getKinematicMultiBands();
+		  printBands(daa,bands);
 
-		printBands(daa,bands);
-
-		// Print points of well-clear violation contours, i.e., blobs
-		printContours(daa);
+		  // Print points of well-clear violation contours, i.e., blobs
+		  printContours(daa);
+	       // continue with next time step
 
 	} 
 

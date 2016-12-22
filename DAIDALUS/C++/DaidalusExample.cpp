@@ -193,46 +193,49 @@ int main(int argc, char* argv[]) {
 	// daa.set_Buffered_WC_SC_228_MOPS(false); // Turn rate 1.5 [deg/s]
 	// daa.set_Buffered_WC_SC_228_MOPS(true); // Turn rate 3.0 [deg/s]
 
-	// Load parameters if configuration file exists.
-	std::string my_parameters = "my_parameters.txt";
-	if (daa.parameters.loadFromFile(my_parameters)) {
-		std::cout << "Read parameters from file " << my_parameters << "\n" << std::endl;
-	}
+	// If needed, load parameters from a configuration file. In that case,
+	// uncomment the following line.
+	// daa.parameters.loadFromFile("my_parameters.txt");
 
-	// Get aircraft state information for ownship and intruder
-	Position so = Position::makeLatLonAlt(33.95,"deg", -96.7,"deg", 8700.0,"ft");
-	Velocity vo = Velocity::makeTrkGsVs(206.0,"deg", 151.0,"knot", 0.0,"fpm");
-	Position si = Position::makeLatLonAlt(33.86191658,"deg", -96.73272601,"deg", 9000.0,"ft");
-	Velocity vi = Velocity::makeTrkGsVs(0.0,"deg", 210.0,"knot", 0,"fpm");
+	double t = 0.0;
+	// for all times t (in this example, only one time step is illustrated)
+	  // Add ownship state at time t
+	  Position so = Position::makeLatLonAlt(33.95,"deg", -96.7,"deg", 8700.0,"ft");
+	  Velocity vo = Velocity::makeTrkGsVs(206.0,"deg", 151.0,"knot", 0.0,"fpm");
+  	  daa.setOwnshipState("ownship",so,vo,t);
 
-	// Add new plans
-	daa.setOwnshipState("ownship",so,vo,0.0);
-	daa.addTrafficState("intruder",si,vi);
+	  // Add all traffic states at time t
+	  // ... some traffic ...
+	  Position si = Position::makeLatLonAlt(33.86191658,"deg", -96.73272601,"deg", 9000.0,"ft");
+	  Velocity vi = Velocity::makeTrkGsVs(0.0,"deg", 210.0,"knot", 0,"fpm");
+	  daa.addTrafficState("ith-intruder",si,vi);
+	  // ... more traffic ...
 
-	// Set wind information
-	Velocity wind = Velocity::makeTrkGsVs(45,"deg", 10,"knot", 0,"fpm");
-	daa.setWindField(wind);
+	  // Set wind information
+	  Velocity wind = Velocity::makeTrkGsVs(45,"deg", 10,"knot", 0,"fpm");
+	  daa.setWindField(wind);
 
-	// Print information about the Daidalus Object
-	std::cout << "Number of Aircraft: " << daa.numberOfAircraft() << std::endl;
-	std::cout << "Last Aircraft Index: " << daa.lastTrafficIndex() << std::endl;
-	std::cout <<  std::endl;
+	  // Print information about the Daidalus Object
+	  std::cout << "Number of Aircraft: " << daa.numberOfAircraft() << std::endl;
+	  std::cout << "Last Aircraft Index: " << daa.lastTrafficIndex() << std::endl;
+	  std::cout <<  std::endl;
 
-	// Detect conflicts with every traffic aircraft
-	printDetection(daa);
+	  // Detect conflicts with every traffic aircraft
+	  printDetection(daa);
 
-	// Call alerting logic for each traffic aircraft.
-	printAlerts(daa);
+	  // Call alerting logic for each traffic aircraft.
+	  printAlerts(daa);
 
-	// Define multi bands object
-	KinematicMultiBands bands;
+	  // Define multi bands object
+	  KinematicMultiBands bands;
 
-	// Compute kinematic bands
-	daa.kinematicMultiBands(bands);
-	printBands(daa,bands);
+	  // Compute kinematic bands
+	  daa.kinematicMultiBands(bands);
+	  printBands(daa,bands);
 
-	// Print points of well-clear violation contours, i.e., blobs
-	printContours(daa);
+	  // Print points of well-clear violation contours, i.e., blobs
+	  printContours(daa);
+       // continue with next time step  
 
 }
 
