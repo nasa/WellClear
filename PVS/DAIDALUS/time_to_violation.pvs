@@ -1,0 +1,61 @@
+time_to_violation  % [ parameters ]
+		: THEORY
+
+  BEGIN
+
+  IMPORTING 
+  los_and_cd, 
+  alertor
+
+ TTVL: TYPE = list[[Aircraft, [real,real], bool]]
+
+ aircraft_and_ttv_list(cd:ConfDetector, at:nnreal, lat:nnreal, own:Aircraft, traffic:Traffic): TTVL = 
+    map(LAMBDA(ac:Aircraft):
+        LET eeint = cd(0, lat, own, ac), 
+	conf = ((eeint`1<=eeint`2) AND (eeint`1<=at)) IN 
+	(ac, eeint, conf))(traffic)
+
+ ac_ttv_lists_it(al: list[AlertTable], lat:nnreal, own:Aircraft, traffic:Traffic, (len_plus1: nat | len_plus1>=length(al))): RECURSIVE list[[nat, TTVL]] = 
+     IF null?(al) THEN (: :) 
+     ELSE LET at = car(al) IN
+          cons( (len_plus1-length(al), aircraft_and_ttv_list(table_to_ConfDet(at`wcv), at`alerting_time, lat, own, traffic) ), 
+ 	       ac_ttv_lists_it(cdr(al), lat, own, traffic, len_plus1))
+     ENDIF 
+     MEASURE length(al) 
+ 
+ ac_ttv_lists(alertor: Alertor, lat:nnreal, own: Aircraft, traffic: Traffic): list[[nat, TTVL]] = 
+    ac_ttv_lists_it(alertor`2, lat,  own, traffic, length(alertor`2)+1)
+
+ conf_traffic_split(ttvl: TTVL): RECURSIVE [Traffic, Traffic] = 
+   IF null?(ttvl) THEN ( (: :), (: :)) 
+   ELSE LET ac_data = car(ttvl), 
+            cdr_data = conf_traffic_split(cdr(ttvl)) IN
+    IF ac_data`3 THEN ( cons(ac_data`1, cdr_data`1), cdr_data`2)
+    ELSE ( cdr_data`1, cons(ac_data`1, cdr_data`2))
+    ENDIF
+   ENDIF 
+   MEASURE length(ttvl)
+
+ conf_traffic_splits(ttvlls: list[[nat, TTVL]]): list[[nat,[Traffic,Traffic]]] = 
+    map(LAMBDA(nttv: [nat, TTVL]): (nttv`1, conf_traffic_split(nttv`2)))(ttvlls)
+ 
+ 
+
+ time_to_violation_list(ac_ttv_list: TTVL): list[[real,real]] = 
+   map(LAMBDA(ac_and_ttv:[Aircraft, [real,real], bool]): ac_and_ttv`2)(ac_ttv_list)
+
+ alert_from_ttv(ttvl: [nat, TTVL]): RECURSIVE nat = 
+  IF null?(ttvl`2) THEN 0 
+  ELSIF car(ttvl`2)`3 THEN ttvl`1 
+  ELSE alert_from_ttv( (ttvl`1, cdr(ttvl`2)))
+  ENDIF 
+  MEASURE length(ttvl`2)
+
+ alert_from_ttvs(ttvls: list[[nat, TTVL]]): RECURSIVE nat = 
+  IF null?(ttvls) THEN 0
+  ELSE max(alert_from_ttv(car(ttvls)), alert_from_ttvs(cdr(ttvls)))
+  ENDIF
+  MEASURE length(ttvls)
+ 
+
+  END time_to_violation

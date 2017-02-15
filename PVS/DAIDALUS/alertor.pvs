@@ -1,0 +1,40 @@
+alertor  % [ parameters ]
+		: THEORY
+
+  BEGIN
+
+  IMPORTING los_and_cd
+
+  Region: TYPE = {NONE, FAR, MID, NEAR, RECOVERY, UNKNOWN}
+
+  better_region(r1,r2:Region): Region = 
+    IF r1 = NONE OR r2 = NONE THEN NONE
+    ELSIF r1 = RECOVERY OR r2 = RECOVERY THEN RECOVERY
+    ELSIF r1 = FAR OR r2 = FAR THEN FAR
+    ELSIF r1 = MID OR r2 = MID THEN MID
+    ELSIF r1 = NEAR OR r2 = NEAR THEN NEAR 
+    ELSE UNKNOWN
+    ENDIF
+
+  Spread : TYPE = [real, real]
+ 
+  WCVTable : TYPE = [# DTHR: posreal,
+  	     	       ZTHR: posreal,
+		       TTHR: nnreal,
+		       TCOA: nnreal #]
+
+  AlertTable : TYPE = [# wcv: WCVTable, 
+  	       	      	 alerting_time: nnreal,
+			 early_alerting_time: nnreal, 
+			 region: Region,
+			 spread_trk: Spread, 
+			 spread_gs: Spread,
+  			 spread_vs: Spread,
+			 spread_alt: Spread   #]
+
+  Alertor : TYPE  = {al: [nat, list[AlertTable]] | (null?[AlertTable](al`2) AND al`1=0) OR (al`1>0 AND al`1 <=length(al`2))} 
+  
+  table_to_ConfDet(wcvtable: WCVTable): ConfDetector = 
+    wcv_taumod_cd(wcvtable`TTHR, wcvtable`TCOA, wcvtable`DTHR, wcvtable`ZTHR)
+
+  END alertor

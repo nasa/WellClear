@@ -1,0 +1,217 @@
+wcv_fun : THEORY
+
+
+BEGIN
+
+  IMPORTING WellClear@WCV,
+  	    WellClear@horizontal_WCV_taumod,
+	    reals@best_rational
+
+  s,v  : VAR Vect3  
+  B    : VAR nnreal
+  T    : VAR posreal
+  tvar : VAR TimeVar
+  TTHR: VAR posreal
+  TCOA: VAR nnreal
+  DTHR,ZTHR: VAR posreal
+  X: VAR {cz:posreal | cz<1}
+
+  box_norm(x,y:nnreal): nnreal =
+    IF max(x,y)>=1 THEN max(x,y)
+    ELSE sqrt(sq(x)+(1-sq(x))*sq(y)) ENDIF
+
+  divs?(DTHR,tvar): bool =
+    FORALL (s,v): (vect2(s)*vect2(v)>0 IMPLIES (sqv(vect2(s))>sq(DTHR)
+    	   	   IMPLIES tvar(vect2(s),vect2(v))<0)) AND
+		  (vect2(s)*vect2(v)<0 IMPLIES (sqv(vect2(s))>sq(DTHR)
+		   IFF tvar(vect2(s),vect2(v))>0)) 
+
+  tau_mod_divs: LEMMA
+    divs?(DTHR,taumod[TTHR,DTHR])
+
+  horizontal_WCV_rewrite: LEMMA
+    divs?(DTHR,tvar) IMPLIES
+    (horizontal_WCV[TTHR,DTHR](tvar)(s,v) IFF
+    (sqv(vect2(s))<=sq(DTHR) OR
+    (sqv(vect2(s)+max(tcpa(vect2(s),vect2(v)),0)*vect2(v))<=sq(DTHR)AND
+     tvar(vect2(s),vect2(v))<=TTHR)))
+
+  vertical_WCV_rewrite: LEMMA FORALL (sz,vz:real):
+    vertical_WCV[TCOA,ZTHR](sz,vz) IFF
+    (abs(sz)<=ZTHR OR
+    (abs(sz+max(tcoa(sz,vz),0)*vz)<=ZTHR AND tcoa(sz,vz)<=TCOA))
+
+  vertical_wcv_norm(ZTHR,TCOA)(sz,vz:real): nnreal =
+    IF TCOA=0 THEN abs(sz)/ZTHR
+    ELSE min(abs(sz)/ZTHR,max(abs(sz+max(tcoa(sz,vz),0)*vz)/ZTHR,tcoa(sz, vz)/TCOA)) ENDIF
+
+  vertical_wcv_norm_def: LEMMA
+    (vertical_WCV[TCOA,ZTHR](s`z,v`z) IFF
+    vertical_wcv_norm(ZTHR,TCOA)(s`z,v`z)<=1)
+
+  horizontal_wcv_xdist(DTHR)(s,v):nnreal =
+    IF norm(vect2(v))=0 THEN abs(s`x)/DTHR
+    ELSE
+        norm(vect2(s)+tcpa(vect2(s),vect2(v))*vect2(v))/DTHR
+    ENDIF
+
+  horizontal_wcv_discr(TTHR,DTHR)(s:Vect3,v:Vect3|vect2(v)/=zero): real =
+        LET a=sqv(vect2(v)),
+            b=2*(vect2(s)*vect2(v))+TTHR*sqv(vect2(v)),
+    	    c=sqv(vect2(s))+TTHR*(vect2(s)*vect2(v))-sq(DTHR)
+        IN discr(a,b,c)
+
+  horizontal_wcv_discr_pos: LEMMA vect2(v)/=zero AND
+    (EXISTS (t:real): norm(vect2(s)+t*vect2(v))<=DTHR)
+    IMPLIES
+    horizontal_wcv_discr(TTHR,DTHR)(s,v)>=0
+
+  horizontal_wcv_test(TTHR,DTHR)(s,v): nnreal =
+    sqrt(sq(DTHR)+max(-TTHR*(vect2(s)*vect2(v)),0))
+
+  horizontal_wcv_test_def: LEMMA
+    horizontal_WCV[TTHR,DTHR](taumod[TTHR,DTHR])(s,v)
+    IFF
+    (norm(vect2(s))<=horizontal_wcv_test(TTHR,DTHR)(s,v)
+     AND
+     sqv(vect2(s)+tcpa(vect2(s),vect2(v))*vect2(v))<=sq(DTHR))
+
+  horizontal_wcv_ydist(TTHR,DTHR)(s,v): nnreal =
+    LET tca = tcpa(vect2(s),vect2(v)),
+      	tcadist = norm(vect2(s)+tca*vect2(v))
+    IN
+      IF norm(vect2(v))=0 THEN
+          abs(s`y)/DTHR
+      ELSIF vect2(s)*vect2(v)>=0 THEN
+          norm(vect2(v))*abs(tca)/DTHR
+      ELSIF tcadist>DTHR THEN
+          0
+      ELSE
+        LET a=sqv(vect2(v)),
+            b=2*(vect2(s)*vect2(v))+TTHR*sqv(vect2(v)),
+    	    c=sqv(vect2(s))+TTHR*(vect2(s)*vect2(v))-sq(DTHR),
+	    thisroot = root(a,b,c,-1),
+	    ydist = tca/(tca-thisroot)
+	IN
+	    IF thisroot<=0 THEN
+	        ydist
+	    ELSE
+	        thisroot/(tca-thisroot)+1
+	    ENDIF
+      ENDIF
+
+  horizontal_wcv_ydist_decreasing: LEMMA FORALL (t1,t2:nnreal):
+    vect2(s+t1*v)*vect2(v)<=0 AND vect2(s+t2*v)*vect2(v)<=0 AND
+    t1<=t2
+    IMPLIES
+    horizontal_wcv_ydist(TTHR,DTHR)(s+t1*v,v)>=
+    horizontal_wcv_ydist(TTHR,DTHR)(s+t2*v,v)
+
+  horizontal_wcv_norm(TTHR,DTHR)(s,v): nnreal =
+    LET hnormx = horizontal_wcv_xdist(DTHR)(s,v),
+	hnormy = horizontal_wcv_ydist(TTHR,DTHR)(s,v)
+    IN
+      IF vect2(s)*vect2(v)>=0 THEN sqrt(sq(hnormx)+sq(hnormy))
+      ELSE
+        box_norm(hnormx,hnormy)
+      ENDIF
+
+  %  -tca/(Theta_D[DTHR](vect2(s),vect2(v),1)-tca)
+
+		    % IF tcadist<=DTHR AND vect2(s)*vect2(v)<=0 THEN tca/(tca-root(a,b,c,-1)) 
+	    	    % ELSIF tcadist<=DTHR THEN -tca/(Theta_D[DTHR](vect2(s),vect2(v),1)-tca)
+		    % ELSIF vect2(s)*vect2(v)<=0 THEN tca/TTHR
+		    % ELSE 0 ENDIF
+
+    % LET x = norm(vect2(s)+tcpa(vect2(s),vect2(v))*vect2(v))/DTHR IN
+    % IF vect2(s)*vect2(v)<=0 THEN
+    %   sqrt(sq(x)+(1-sq(x))*sq(tvar(vect2(s), vect2(v))/TTHR))
+    % ELSE 
+    % % y = min(sqv(vect2(s))/sq(DTHR),tvar(vect2(s), vect2(v))/TTHR) IN
+    % LET y = max(norm(vect2(s) + max(tcpa(vect2(s), vect2(v)),0) * 
+    % 	    		     vect2(v))/DTHR,tvar(vect2(s), vect2(v))/TTHR)
+    % IN IF vect2(s)*vect2(v)norm(vect2(s))<=DTHR THEN X*norm(vect2(s))/DTHR
+    %    ELSE (y-1)*(1-X)+1)
+
+  horizontal_wcv_norm_def: LEMMA 
+    ((horizontal_WCV[TTHR,DTHR](taumod[TTHR,DTHR])(s,v) AND 
+      norm(vect2(s)+tcpa(s,v)*vect2(v))<=DTHR) IFF
+    horizontal_wcv_norm(TTHR,DTHR)(s,v)<=1)
+
+  horizontal_wcv_norm_decreasing: LEMMA FORALL (t1,t2:nnreal):
+    vect2(s+t1*v)*vect2(v)<=0 AND vect2(s+t2*v)*vect2(v)<=0 AND
+    t1<=t2
+    IMPLIES
+    horizontal_wcv_norm(TTHR,DTHR)(s+t1*v,v)>=
+    horizontal_wcv_norm(TTHR,DTHR)(s+t2*v,v)
+
+  horizontal_wcv_norm_increasing: LEMMA FORALL (t1,t2:nnreal):
+    vect2(s+t1*v)*vect2(v)>=0 AND vect2(s+t2*v)*vect2(v)>=0 AND
+    t1<=t2
+    IMPLIES
+    horizontal_wcv_norm(TTHR,DTHR)(s+t1*v,v)<=
+    horizontal_wcv_norm(TTHR,DTHR)(s+t2*v,v)
+
+  no_double_min?(f:[nnreal->nnreal]): bool =
+    FORALL (t:nnreal,t2:nnreal): t<t2 AND f(t)<=f(t2)
+      IMPLIES
+      (FORALL (tt:nnreal): t2<=tt IMPLIES f(t2)<=f(tt))
+
+  box_norm_no_double_min: LEMMA FORALL (f,g:(no_double_min?)):
+    no_double_min?(LAMBDA (t:nnreal): box_norm(f(t),g(t)))
+
+  wcv_norm(TTHR,TCOA,DTHR,ZTHR)(s,v): nnreal =
+    LET hnorm = horizontal_wcv_norm(TTHR,DTHR)(s,v),
+    	vnorm = vertical_wcv_norm(ZTHR,TCOA)(s`z,v`z),
+	maxnorm = max(hnorm,vnorm)
+    IN
+      IF maxnorm>=1 THEN maxnorm
+      ELSE sqrt(sq(hnorm)+(1-sq(hnorm))*sq(vnorm))
+      ENDIF
+
+
+  WCV_norm_def: LEMMA 
+    (WCV[TTHR,TCOA,DTHR,ZTHR](taumod[TTHR,DTHR])(s,v) IFF
+    wcv_norm(TTHR,TCOA,DTHR,ZTHR)(s,v)<=1)
+
+  wcv_norm_0: LEMMA
+    wcv_norm(TTHR,TCOA,DTHR,ZTHR)(s,v)=0
+    IFF
+    s=zero	
+
+  A(T:real,s,v): real = -T*sqv(vect2(v))*sqv(vect2(v))
+
+  B(D,T:real,s,v): real = 2*D^2*sqv(vect2(v))-2*T*(vect2(s)*vect2(v))*sqv(vect2(v))
+
+  C(D,T:real,s,v): real = 2*(vect2(s)*vect2(v))*D^2 - 
+    2*T*(vect2(s)*vect2(v))^2 + T*sqv(vect2(s))*sqv(vect2(v))
+
+  fooloo: LEMMA FORALL (D,T,t:real):
+    quadratic(A(T,s,v),B(D,T,s,v),C(D,T,s,v))(t) =
+    (D^2-T*(vect2(s+t*v)*vect2(v)))*2*(vect2(s+t*v)*vect2(v))+sqv(vect2(s+t*v))*T*sqv(vect2(v))
+
+  fooloo2: LEMMA FORALL (X,D,T,t:real):
+    discr(A(T,s,v),B(D,T,s,v),C(D,T,s,v))=sq(2*sqv(vect2(v)))*X
+
+
+  DMODtest: posreal = 4000
+  HMDtest: posreal = 4000
+  ZTHRtest: posreal = 450
+  TTHRtest: posreal = 35
+  TCOAtest: nnreal = 0
+  stest: Vect3 = (-15000,2500,0)
+  vtest: Vect3 = (150,0,0)
+
+  IMPORTING TCASII@tcas_tau[DMODtest]
+
+  testfun(t:nnreal): real = 
+    LET ans = wcv_norm(TTHRtest,TCOAtest,DMODtest,ZTHRtest)(stest+t*vtest,vtest)
+    IN best_rational(ans,ans+1/100)
+
+  tfuntest(i:nat): RECURSIVE list[real] =
+    IF i=0 THEN (: testfun(0) :)
+    ELSE append(tfuntest(i-1),(: testfun(i) :)) ENDIF MEASURE i
+
+  foo: LEMMA LET A = testfun(0), B = testfun(5) IN A=0 AND B=0 IMPLIES FALSE
+
+END wcv_fun

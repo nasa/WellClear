@@ -1,0 +1,111 @@
+daidalus_io : THEORY
+
+BEGIN
+ 
+  IMPORTING get_kinematic_bands, 
+            PVSioChecker@pvsio_checker,
+	    structures@Maybe
+
+  KinematicBand: TYPE = [list[RealBand],list[Region], real, list[string], list[string]]
+
+  GCore: Global[Core, defcore]
+  GParam: Global[Parameters, defparam]
+
+   
+  pp_rb(rb:RealBand) : string = 
+    format("(# lb := ~f, ub := ~f #)",(lb(rb),ub(rb)))
+
+  pp_lrb(lrb:list[RealBand]) : string = 
+    format("(: ~{~a~^, ~} :)",{|map(pp_rb,lrb)|})
+
+  pp_bands(bpp:KinematicBand) : string =
+    LET (b,a,r,cor,prev) = bpp IN 
+    format("( ~a, ~a, ~f )",(pp_lrb(b),a,r))
+
+  load_parameters(param:Parameters): void = 
+    set[Parameters](GParam, param) AND 
+    set[Core](GCore, update_from_param_all(val(GCore), param))
+
+  xml_band_init(bands:list[RealBand], (regions:list[Region]|length(bands) = length(regions)), acc:string): 
+    RECURSIVE string = 
+    IF null?(bands) THEN acc 
+    ELSE LET band = car(bands), 
+    	     region = car(regions),
+	     remain_bands = cdr(bands), 
+	     remain_regions = cdr(regions), 
+	     newstring = acc+"    <band region='"+pvs2str(region)+"'>
+      <lower> "+to_str(band`lb)+
+	     " </lower>
+      <upper> "+to_str(band`ub)+ 
+	     " </upper>
+    </band>
+" IN
+    xml_band_init(remain_bands, remain_regions, newstring)
+    ENDIF
+    MEASURE length(bands) 
+
+  xml_band(bands:list[RealBand],(regions:list[Region]|length(bands) = length(regions))): 
+    string = xml_band_init(bands,regions,"")
+
+  xml_kinematic_band(tb:string,kb:KinematicBand) : string = "
+  <bands type='"+tb+"' recovery_time='"+to_str(kb`3)+"'>
+"+xml_band(kb`1, kb`2)+"  </bands>"
+
+  xml_bands(ucore:UpdatedCore,utrk,ugs,uvs:nnreal): string =
+    LET trkb = IF utrk=0 THEN "" ELSE xml_kinematic_band("trk",get_kinematic_trk_bands(ucore,utrk)) ENDIF,
+        vsb = IF ugs=0 THEN "" ELSE xml_kinematic_band("gs",get_kinematic_gs_bands(ucore,ugs)) ENDIF,
+        gsb = IF uvs=0 THEN "" ELSE xml_kinematic_band("vs",get_kinematic_vs_bands(ucore,uvs)) ENDIF IN
+  "<daidalus>"+trkb+vsb+gsb+"
+</daidalus>"
+
+  daidalus((traffic:Traffic | NOT null?(traffic) ), crit_ac:string ,utrk,ugs,uvs:nnreal): string = 
+    LET core:Core = val(GCore), 
+        own = car(traffic), 
+        acs = cdr(traffic),
+        new_ra = update_RA_in_place(core`min_horizontal_recovery,core`min_vertical_recovery, own`s`z), 
+        Omega = update_omega_in_place(core`omega, core`bank_angle, gs(own`v)), 
+        most_urg = update_most_urgent_in_place(crit_ac, own, acs, core`conflict_crit, core`recovery_crit), 
+        Ucore:UpdatedCore = core WITH [ `ownship := own,
+                                `traffic := acs,
+				`cd2 :=new_ra`1, 
+				`min_horizontal_recovery:= new_ra`2, 
+				`min_vertical_recovery:= new_ra`3, 
+				`omega:= Omega,
+				`most_urgent:= most_urg`1, 
+				`epsH:= most_urg`2, 
+				`epsV:= most_urg`3, 
+				`conflict_crit:= most_urg`4, 
+				`recovery_crit:= most_urg`5, 
+				`outdated:=false] IN
+    xml_bands(Ucore,utrk,ugs,uvs)
+
+ bands_out((traffic:Traffic | NOT null?(traffic) ), crit_ac:string): void = 
+    LET core:Core = val(GCore), 
+        own = car(traffic), 
+        acs = cdr(traffic),
+        new_ra = update_RA_in_place(core`min_horizontal_recovery,core`min_vertical_recovery, own`s`z), 
+        Omega = update_omega_in_place(core`omega, core`bank_angle, gs(own`v)), 
+        most_urg = update_most_urgent_in_place(crit_ac, own, acs, core`conflict_crit, core`recovery_crit), 
+        Ucore:UpdatedCore = core WITH [ `ownship := own,
+                                `traffic := acs,
+				`cd2 :=new_ra`1, 
+				`min_horizontal_recovery:= new_ra`2, 
+				`min_vertical_recovery:= new_ra`3, 
+				`omega:= Omega,
+				`most_urgent:= most_urg`1, 
+				`epsH:= most_urg`2, 
+				`epsV:= most_urg`3, 
+				`conflict_crit:= most_urg`4, 
+				`recovery_crit:= most_urg`5, 
+				`outdated:=false], 
+	trk = get_kinematic_trk_bands(Ucore,1), 
+ 	gs = get_kinematic_gs_bands(Ucore,1), 
+	vs = get_kinematic_vs_bands(Ucore,1), 
+	prttrk = printf("Track Bands:~%~a~%", pp_bands(trk)), 
+	prtgs = printf("Ground Speed Bands:~%~a~%", pp_bands(gs)),  
+	prtvs = printf("Vertical Speed Bands:~%~a~%", pp_bands(vs)) IN
+	TRUE 
+
+
+ 
+END daidalus_io

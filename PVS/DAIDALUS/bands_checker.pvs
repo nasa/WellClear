@@ -1,0 +1,199 @@
+bands_checker : THEORY
+
+  BEGIN
+
+  IMPORTING PVSioChecker@pvsio_checker,
+            test_bands, alerting_bands, alerting_thresholds, structures@set_as_list
+
+  BandPP: TYPE = [list[RealBand],list[Region], real]
+  GCore: Global[Core, defcore]
+  NumSamp: Global[nat, 400]
+  FailRate: Global[rat, 0.01]
+  TTRThresh: Global[rat, 0.5]
+  TTVThresh: Global[rat, 0.5]
+  
+  
+  pp_rb(rb:RealBand) : string = 
+    format("(# lb := ~f, ub := ~f #)",(lb(rb),ub(rb)))
+
+  pp_lrb(lrb:list[RealBand]) : string = 
+    format("(: ~{~a~^, ~} :)",{|map(pp_rb,lrb)|})
+
+  pp_bands(bpp:BandPP) : string =
+    LET (b,a,r) = bpp IN 
+    format("( ~a, ~a, ~f )",(pp_lrb(b),a,r))
+
+  check_samples(fout:OStream, io,pvs:BandPP, band:string, lb,ub:real, sample,fails:nat): 
+   RECURSIVE nat = 
+   IF sample = 0 THEN fails
+   ELSE LET test_point = lb+(ub-lb)*RANDOM,
+   	    io_index = first_band_contains(test_point, io`1),
+	    pvs_index = first_band_contains(test_point, pvs`1), 
+	    io_valid:bool = IF io_index<length(io`2) THEN TRUE
+	    		    ELSE fprintf(fout, band+": point ~f out of range for io~%", test_point) & FALSE
+			    ENDIF, 
+	    pvs_valid:bool = IF pvs_index<length(pvs`2) THEN TRUE
+	    		    ELSE fprintf(fout, band+": point ~f out of range for pvs~%", test_point) & FALSE
+			    ENDIF IN
+	IF io_valid AND pvs_valid THEN
+	   LET io_region = nth(io`2, io_index), 
+	       pvs_region = nth(pvs`2, pvs_index) IN
+	   IF io_region = pvs_region THEN 
+	      check_samples(fout, io, pvs, band, lb, ub, sample-1, fails)
+	   ELSE LET write = fprintf(fout, band+": point ~f is ~a for io, and ~a for pvs~%",(test_point, io_region, pvs_region)) IN
+	      check_samples(fout, io, pvs, band, lb, ub, sample-1, fails+1)
+	   ENDIF
+	ELSE check_samples(fout, io, pvs, band, lb, ub, sample-1, fails+1)
+	ENDIF
+    ENDIF
+    MEASURE sample 
+
+  check_samp(fout:OStream, io,pvs:BandPP, band:string, lb,ub:real, samples:nat): nat = 
+  	IF length(io`2) = 1 AND length(pvs`2) = 1 THEN
+	   IF io`2 = pvs`2 THEN 0 
+	   ELSE samples
+	   ENDIF
+	ELSE check_samples(fout, io, pvs, band, lb, ub, samples, 0)
+	ENDIF
+
+  check_ttv_lists(fout:OStream, io_ttv, pvs_ttv: list[[real, real]], ac_id:list[string], return:bool): 
+    RECURSIVE bool = 
+    IF null?(io_ttv) THEN return 
+    ELSE LET io= car(io_ttv), io_rest = cdr(io_ttv), 
+    	     pvs= car(pvs_ttv), pvs_rest = cdr(pvs_ttv), 
+	     id = car(ac_id), id_rest = cdr(ac_id) IN
+	IF abs(io`1 - pvs`1) <= val(TTVThresh) AND abs(io`2 - pvs`2) <=val(TTVThresh) THEN 
+	   check_ttv_lists(fout, io_rest, pvs_rest, id_rest, return)
+	ELSE LET pr = fprintf(fout, "Time to violation failed for Aircraft "+id+".~%IO interval is ~a, PVS interval is ~a.~%",(io, pvs)) IN
+	   check_ttv_lists(fout, io_rest, pvs_rest, id_rest, FALSE) 
+	ENDIF
+    ENDIF
+    MEASURE length(io_ttv)
+
+  check_alert_lists(fout:OStream, io_alert, pvs_alert: list[below(5)], ac_id:list[string], return:bool): 
+    RECURSIVE bool = 
+    IF null?(io_alert) THEN return 
+    ELSE LET io= car(io_alert), io_rest = cdr(io_alert), 
+    	     pvs= car(pvs_alert), pvs_rest = cdr(pvs_alert), 
+	     id = car(ac_id), id_rest = cdr(ac_id) IN
+	IF io - pvs = 0 THEN 
+	   check_alert_lists(fout, io_rest, pvs_rest, id_rest, return)
+	ELSE LET pr = fprintf(fout, "Alerting failed for Aircraft "+id+".~%IO alert is ~a, PVS alert is ~a.~%",(io, pvs)) IN
+	   check_alert_lists(fout, io_rest, pvs_rest, id_rest, FALSE) 
+	ENDIF
+    ENDIF
+    MEASURE length(io_alert)
+   
+  header?(fin:IStream, fout:OStream):void = 
+   LET param = str2pvs[Parameters](readln_checker(fin)) IN
+   set[Core](GCore, update_from_param_all(defcore, param)) 
+
+ read_add_traffic(fin:IStream, core:Core, n:nat): RECURSIVE Core = 
+   IF n=0 THEN core
+   ELSE LET idi:string = readln_checker(fin),
+       	    si:Vect3 = str2pvs[Vect3](readln_checker(fin)),
+      	    vi:Vect3 = str2pvs[Vect3](readln_checker(fin)),
+      	    intruder:Aircraft = (#s:=si,v:=vi, id:=idi#), 
+      	    recore:Core = update_add_to_traffic(core, intruder) IN
+   read_add_traffic(fin, recore, n-1) 
+   ENDIF
+   MEASURE n
+
+ check?(fin:IStream,fout:OStream) : bool = 
+  LET scenario:string = readln_checker(fin),
+      time:real =  str2pvs[real](readln_checker(fin)), 
+      acl:Traffic = str2pvs[list[Aircraft]](readln_checker(fin)),
+      crit_ac:string = readln_checker(fin),
+      own = car(acl), 
+      traffic = cdr(acl),
+      Core = val(GCore),
+      new_ra = update_RA_in_place(Core`min_horizontal_recovery,Core`min_vertical_recovery, own`s`z), 
+      Omega = update_omega_in_place(Core`omega, Core`bank_angle, gs(own`v)), 
+      most_urg = update_most_urgent_in_place(crit_ac, own, traffic, Core`conflict_crit, Core`recovery_crit), 
+      Ucore:UpdatedCore = Core WITH [ `ownship := own,
+                                `traffic := traffic,
+				`cd2 :=new_ra`1, 
+				`min_horizontal_recovery:= new_ra`2, 
+				`min_vertical_recovery:= new_ra`3, 
+				`omega:= Omega,
+				`most_urgent:= most_urg`1, 
+				`epsH:= most_urg`2, 
+				`epsV:= most_urg`3, 
+				`conflict_crit:= most_urg`4, 
+				`recovery_crit:= most_urg`5, 
+				`outdated:=false],
+      ktb_pvs = get_kinematic_trk_bands(Ucore, 1),
+      tb_pvs:BandPP = (ktb_pvs`1, ktb_pvs`2, ktb_pvs`3),
+      kgsb_pvs = get_kinematic_gs_bands(Ucore, 1),
+      gsb_pvs:BandPP = (kgsb_pvs`1, kgsb_pvs`2, kgsb_pvs`3),
+      kvsb_pvs = get_kinematic_vs_bands(Ucore, 1),
+      vsb_pvs:BandPP = (kvsb_pvs`1, kvsb_pvs`2, kvsb_pvs`3),
+      tb_io:BandPP = str2pvs[BandPP](readln_checker(fin)),
+      tb_prev:list[string] = str2pvs[list[string]](readln_checker(fin)),
+      tb_corr:list[string] = str2pvs[list[string]](readln_checker(fin)), 
+      gsb_io:BandPP = str2pvs[BandPP](readln_checker(fin)),
+      gsb_prev:list[string] = str2pvs[list[string]](readln_checker(fin)), 
+      gsb_corr:list[string] = str2pvs[list[string]](readln_checker(fin)), 
+      vsb_io:BandPP = str2pvs[BandPP](readln_checker(fin)),
+      vsb_prev:list[string] = str2pvs[list[string]](readln_checker(fin)), 
+      vsb_corr:list[string] = str2pvs[list[string]](readln_checker(fin)),
+      alt_bands_io:BandPP = str2pvs[BandPP](readln_checker(fin)),
+      ttv_ints_io:list[[real, real]] = str2pvs[list[[real, real]]](readln_checker(fin)),
+      ac_and_ttv_list:list[[Aircraft, [real, real]]] = aircraft_and_ttv_list(Ucore),
+      ttv_ints_pvs:list[[real, real]] = time_to_violation_list(ac_and_ttv_list),
+      id_list:list[string] = traf_id(Ucore`traffic),
+      alerting_list_io:list[below(5)] = str2pvs[list[below(5)]](readln_checker(fin)),
+      alerting_list_pvs:list[below(5)] = IF Ucore`bands_alerting THEN  
+      				        bands_alerting(Ucore, ktb_pvs, kvsb_pvs, kgsb_pvs, ac_and_ttv_list)  
+      				   ELSE thresholds_alerting(Ucore)
+				   ENDIF, 
+      track_fails:nat = check_samp(fout, tb_io, tb_pvs, "track", 0, 2*pi, val(NumSamp)),
+      gs_fails:nat = check_samp(fout, gsb_io, gsb_pvs, "ground", Ucore`mings, Ucore`maxgs, val(NumSamp)),
+      vs_fails:nat = check_samp(fout, vsb_io, vsb_pvs, "vertical", Ucore`minvs, Ucore`maxvs, val(NumSamp)),
+      numfails = track_fails+gs_fails+vs_fails,
+      tr_failwrite = IF track_fails = 0 THEN TRUE
+      		     ELSE fprintf(fout, "Track failed ~a points.~%IO track is ~a~%PVS track is ~a~%",(track_fails, pp_bands(tb_io), pp_bands(tb_pvs))) & FALSE
+    	     	     ENDIF,
+      gs_failwrite = IF gs_fails = 0 THEN TRUE
+      		     ELSE fprintf(fout, "Ground failed ~a points.~%IO ground is ~a~%PVS ground is ~a~%",(gs_fails, pp_bands(gsb_io), pp_bands(gsb_pvs))) & FALSE
+    	     	     ENDIF,
+      vs_failwrite = IF vs_fails = 0 THEN TRUE
+      		     ELSE fprintf(fout, "Vertical failed ~a points.~%IO vertical is ~a~%PVS vertical is ~a~%",(vs_fails, pp_bands(vsb_io), pp_bands(vsb_pvs))) & FALSE
+    	     	     ENDIF,
+      trk_ttr_check = IF abs(tb_pvs`3 - tb_io`3)<= val(TTRThresh) THEN TRUE
+      		      ELSE fprintf(fout, "Track time to recovery failed.~% IO is ~f, PVS is ~f.~%",(tb_io`3, tb_pvs`3)) & FALSE
+		      ENDIF, 
+      gs_ttr_check = IF abs(gsb_pvs`3 - gsb_io`3)<= val(TTRThresh) THEN TRUE
+      		      ELSE fprintf(fout, "Ground time to recovery failed.~% IO is ~f, PVS is ~f.~%",(gsb_io`3, gsb_pvs`3)) & FALSE
+		      ENDIF, 
+      vs_ttr_check = IF abs(vsb_pvs`3 - vsb_io`3)<= val(TTRThresh) THEN TRUE
+      		      ELSE fprintf(fout, "Vertical time to recovery failed.~% IO is ~f, PVS is ~f.~%",(vsb_io`3, vsb_pvs`3)) & FALSE
+		      ENDIF,  
+      ttv_check = IF check_ttv_lists(fout, ttv_ints_io, ttv_ints_pvs, id_list, TRUE) THEN TRUE
+      		  ELSE  fprintf(fout, "Time to violation intervals failed.~% See above for more information.~%") & FALSE
+		      ENDIF,  
+      alert_check = IF check_alert_lists(fout, alerting_list_io, alerting_list_pvs, id_list, TRUE) THEN TRUE
+      		  ELSE  fprintf(fout, "Alerting logic failed.~% See above for more information.~%") & FALSE
+		      ENDIF,
+      failwrite = IF numfails = 0 & trk_ttr_check & gs_ttr_check & vs_ttr_check & ttv_check & alert_check THEN TRUE
+      		  ELSE fprintf(fout, "Data above for scenario ~a at time ~a. Number of failures is ~a, out of ~a samples.~%",(scenario, time, numfails, 3*val(NumSamp))) & FALSE
+		  ENDIF, 
+      allowed = FailRate*val(NumSamp) IN
+     % printf("~a~&", numfails) &
+      track_fails<=allowed & gs_fails<=allowed & vs_fails<=allowed 
+      & trk_ttr_check & gs_ttr_check & vs_ttr_check & ttv_check & alert_check
+
+  main_single(file:string,records:nat): void =
+    checker_with_header(file,check?,header?,records)
+  
+  multi_file_check(fin:IStream, fout:OStream): void = 
+    LET file:string = readln_checker(fin), 
+        run:void = main_single(file, 0) IN
+ 	TRUE
+  
+  main(file, extension:string): void =
+    set[string](OutExtension, extension) &
+    checker(file, multi_file_check, 0)
+
+
+  END bands_checker

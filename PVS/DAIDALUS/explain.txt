@@ -1,0 +1,22 @@
+In the graphs, the blue line is our method using the x-dist and y-dist based on time to entry. The green line represents using the RangePen function and multiplying the three values. The red line represents using the RangePen function with the sqrt(x^2+(1-x^2)*y^2) method.
+
+The following are drawbacks of using the RangePen function in the metric. These are true regardless of whether the multiplication method or the sqrt(x^2+(1-x^2)*y^2) method is used.
+
+1. The sharp point at tcpa. This means that the derivative of the metric is discontinuous. Even in a horizontal scenario with no vertical component, the function turns up right before tcpa, and then goes flat at the tca. What this means is that right before tcpa, the metric says the situation is improving very quickly, but then once tcpa is reached (and hence they are diverging), the situation is not improving nearly as quickly. This seems a bit unintuitive.
+
+2. With a vertical component, the metric can actually start decreasing after tcpa, shortly after it was been increasing prior to tcpa. This is very unintuitive, even though it is due to the vertical component. In the example in the picture, this happens while the aircraft are converging both horizontally and vertically. So in this example, while converging in both dimensions right before tcpa, the metric says the situation is increasing quickly, but right after tcpa (while still converging vertically, i.e., time to coalt is 105), the metric says the situation is actually getting worse. That is strange.
+
+3. The minimum value of the metric over the entire encounter is a number that we don't understand yet. How do we compare an encounter with minimum value 0.4 to one with 0.8, for instance?
+
+4. The time at which the minimum value of this metric is reached is not well understood. What is the rationale for saying that the encounter suddenly starts to improve at that particular time? Alternatively, if the function had its minimum at time t=tcpa, there is rationale for saying that, during a horizontal-only encounter, the situation starts to improve at that time. Is there some geometric reason for saying that the function should turn upward at that particular time when using RangePen?
+
+
+The advantages of using the x-dist and y-dist method based on time to entry:
+
+1. There is no sharp point at tcpa. We *believe* that the derivative of the function is continuous in most cases. This means that whether we are quickly improving/getting worse changes slowly rather than all at once. You can't instantly go from "quickly improving" to "getting worse" during a linear encounter.
+
+2. There is only one local minimum of the function. 
+
+3. The minimum value of the metric over an entire horizontal-only encounter has an intuitive meaning. If encounter 1 reaches the minimum metric value 0.4 and encounter 2 reaches the minimum value 0.8, it means that the distance at tcpa of encounter 1 is exactly half that of encounter 2. 
+
+4. The minimum occurs at tcpa for horizontal-only encounters, which is a time that we understand. While there could be arguments made based on geometry that another time would be a good place for the minimum, the advantage of having the minimum at tcpa is that we have an intuitive understanding of what that time is. Alternatively, with RangePen, it hasn't been demonstrated (either from a geometric viewpoint or an operational argument) that the time at which the function turns up is actually a time where the encounter starts to improve.

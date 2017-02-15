@@ -1,0 +1,100 @@
+mops_requirements : THEORY
+
+  BEGIN
+  
+  IMPORTING alerting_thresholds
+
+  MustAlertTable1: AlertTable = (# wcv       := WCV1,
+  	       		       lookahead := 60,
+  			       duration  := 0
+			       #)
+
+  MustAlertTable2: AlertTable = (# wcv       := WCV2,
+  	       		       lookahead := 55,
+  			       duration  := 0
+			       #)
+
+  MustAlertTable3: AlertTable = (# wcv       := WCV3,
+  	       		       lookahead := 55,
+  			       duration  := 0 
+			       #)
+
+  MustAlertTable4: AlertTable = (# wcv       := WCV3,
+  	       		       lookahead := 25,
+  			       duration  := 0 
+			       #)
+
+  must_alert(own:Aircraft)(intr:Aircraft): below(5) = 
+    IF alertor_from_table(MustAlertTable4)(own)(intr) THEN 3
+    ELSIF alertor_from_table(MustAlertTable3)(own)(intr) THEN 2
+    ELSIF alertor_from_table(MustAlertTable2)(own)(intr) THEN 1
+   % ELSIF alertor_from_table(MustAlertTable1)(own)(intr) THEN 1
+    ELSE 0 
+    ENDIF
+
+  must_alert_list(ucore:UpdatedCore): list[below(5)] = 
+   map(must_alert(ucore`ownship), ucore`traffic)
+  
+  sq_HMDp(own, intr: Aircraft): nnreal = 
+  LET s = vect2(own`s-intr`s), 
+      nzv = vect2(own`v-intr`v) IN
+   IF nzv = zero THEN gs(s) ELSE horizontal_sq_dtca(s,nzv) ENDIF 
+  
+  vert_diverge(sz, vz: real): bool = 
+  abs(sz - vz) <= abs(sz + vz)
+
+  dh_p_gt(own:Aircraft, intr:Aircraft,  dist, time: posreal): bool =
+  LET sz = own`s`z-intr`s`z, 
+      vz = own`v`z-intr`v`z IN
+  IF abs(sz)<= dist THEN FALSE
+  ELSIF vert_diverge(sz, vz) THEN TRUE
+  ELSE time <= (dist - abs(sz))/abs(vz) 
+  ENDIF
+
+  must_not_alert_bool(own: Aircraft, alertor:[Aircraft->bool], HMD_p_thr, dh_p_thr, time_thr: posreal)(intr:Aircraft): [bool, [bool, bool, bool]] = 
+    LET wcv:bool =  (NOT alertor(intr)),  
+    	hmd:bool =  sq_HMDp(own, intr)> sq(HMD_p_thr), 
+	dhp:bool =  dh_p_gt(own, intr, dh_p_thr, time_thr),
+        ans:bool =  wcv OR hmd OR dhp IN  
+        (ans, (wcv, hmd, ans))
+
+  MustNotAlertTable1: AlertTable = (# wcv       := WCV1,
+  	       		       lookahead := 85,
+  			       duration  := 0
+			       #)
+  MustNotAlertTable2: AlertTable = (# wcv       := WCV2,
+  	       		       lookahead := 75,
+  			       duration  := 0
+			       #)
+
+  MustNotAlertTable3: AlertTable = (# wcv       := WCV3,
+  	       		       lookahead := 75,
+  			       duration  := 0 
+			       #)
+
+  MustNotAlertTable4: AlertTable = (# wcv       := WCV3,
+  	       		       lookahead := 35,
+  			       duration  := 0 
+			       #)
+
+   must_not_alert(own:Aircraft)(intr:Aircraft): [upto(5), [bool, bool, bool]] = 
+     % LET mna1 = must_not_alert_bool(own, alertor_from_table(MustNotAlertTable1)(own), 5*nmi, 1300*ft, 85)(intr) IN 
+     %  IF mna1`1 THEN (1, mna1`2) 
+     %  ELSE 
+       LET mna2 = must_not_alert_bool(own, alertor_from_table(MustNotAlertTable2)(own), 2*nmi, 800*ft, 75)(intr) IN
+       IF mna2`1 THEN (1, mna2`2)
+       ELSE LET mna3 = must_not_alert_bool(own, alertor_from_table(MustNotAlertTable3)(own), 1.5*nmi, 450*ft, 75)(intr) IN
+         IF mna3`1 THEN (2, mna3`2)
+	 ELSE LET mna4 = must_not_alert_bool(own, alertor_from_table(MustNotAlertTable4)(own), 1*nmi, 450*ft, 35)(intr) IN
+	   IF mna4`1 THEN (3, mna4`2)
+	   ELSE (4,(FALSE, FALSE, FALSE))
+	   ENDIF
+	 ENDIF
+       ENDIF    
+     %ENDIF
+     
+ 
+   must_not_alert_list(ucore:UpdatedCore): list[[upto(5), [bool, bool, bool]]] = 
+     map(must_not_alert(ucore`ownship), ucore`traffic)
+
+  END mops_requirements

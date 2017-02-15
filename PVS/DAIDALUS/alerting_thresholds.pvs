@@ -1,0 +1,93 @@
+alerting_thresholds  % [ parameters ]
+		: THEORY
+
+  BEGIN
+
+  % ASSUMING
+   % assuming declarations
+  % ENDASSUMING
+
+  IMPORTING get_kinematic_bands
+
+ 
+
+  AlertTable : TYPE = [# wcv: WCVTable, 
+  	       	      	 lookahead: nnreal, 
+			 duration: nnreal #] 
+
+  WCV1: WCVTable  = (# DTHR := 2*nmi,
+  		       ZTHR := 1200*ft,
+		       TTHR := 35,
+		       TCOA := 0 
+		       #)
+
+  WCV2: WCVTable  = (# DTHR := 0.66*nmi,
+  		       ZTHR := 700*ft,
+		       TTHR := 35,
+		       TCOA := 0 
+		       #)
+
+  WCV3: WCVTable  = (# DTHR := 0.66*nmi,
+  		       ZTHR := 450*ft,
+		       TTHR := 35,
+		       TCOA := 0
+		       #)
+
+  AlertTable1: AlertTable = (# wcv       := WCV2,
+  	       		       lookahead := 60,
+  			       duration  := 0
+			       #)
+
+  AlertTable2: AlertTable = (# wcv       := WCV3,
+  	       		       lookahead := 60,
+  			       duration  := 0
+			       #)
+
+  AlertTable3: AlertTable = (# wcv       := WCV3,
+  	       		       lookahead := 30,
+  			       duration  := 0 
+			       #)
+
+  AlertTable4: AlertTable = (# wcv       := WCV3,
+  	       		       lookahead := 20,
+  			       duration  := 0 
+			       #)
+
+  AlertTableList: list[AlertTable] = (: AlertTable3, AlertTable2, AlertTable1 :)
+  
+
+  WCV_from_table(wcvtable: WCVTable): ConfDetector = 
+    wcv_taumod_cd(wcvtable`TTHR, wcvtable`TCOA, wcvtable`DTHR, wcvtable`ZTHR)
+
+  alertor_from_conf(cd: ConfDetector, duration, lookahead: nnreal)(aco:Aircraft)(aci:Aircraft): bool = 
+    LET ent_ex = cd(0,lookahead, aco, aci) IN
+        ent_ex`2-ent_ex`1 > duration 
+
+  alertor_from_table(at: AlertTable)(aco:Aircraft)(aci:Aircraft): bool =
+    LET wcv = WCV_from_table(at`wcv) IN
+    alertor_from_conf(wcv, at`duration, at`lookahead)(aco)(aci) 
+
+  AlertorList(atl:list[AlertTable]): list[[Aircraft->[Aircraft->bool]]] = map(LAMBDA(at:AlertTable): alertor_from_table(at), atl)   
+
+  alert_from_alertor_list(alertor_list: list[[Aircraft->[Aircraft->bool]]])(aco:Aircraft)(aci:Aircraft): RECURSIVE below(length(alertor_list)+1) = 
+    IF null?(alertor_list) THEN 0
+    ELSE LET alert = car(alertor_list), alert_rest = cdr(alertor_list) IN
+       IF alert(aco)(aci) THEN length(alertor_list)
+       ELSE alert_from_alertor_list(alert_rest)(aco)(aci)
+       ENDIF
+    ENDIF
+    MEASURE length(alertor_list)
+
+  thresholds_alerting(atl:list[AlertTable])(ucore:UpdatedCore): list[below(length(atl)+1)] = 
+   map(alert_from_alertor_list(AlertorList(atl))(ucore`ownship))(ucore`traffic)
+
+  thresholds_alerting_default(ucore:UpdatedCore): list[below(5)] = 
+   thresholds_alerting(AlertTableList)(ucore) 
+
+
+
+  
+
+
+
+  END alerting_thresholds

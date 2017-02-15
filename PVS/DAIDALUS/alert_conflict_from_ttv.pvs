@@ -1,0 +1,97 @@
+alert_conflict_from_ttv  % [ parameters ]
+		: THEORY
+
+  BEGIN
+
+  IMPORTING 
+  time_to_violation
+
+  
+
+  % a type for holding the information about alerting, conflict lists, and first red time 
+  AlCoRt: TYPE = 
+    [# alert_list:    list[int], 
+     warn_conf:    list[Aircraft], 
+     corr_conf: list[Aircraft], 
+     prev_conf: list[Aircraft],
+     warn_no_conf:    list[Aircraft],
+     corr_no_conf:    list[Aircraft],
+     prev_no_conf:    list[Aircraft],  
+     first_red:         real #]
+
+  update_alcort( ttvrec: [Aircraft, [real, real]], alcort: AlCoRt, i: below(4)): 
+     AlCoRt = 
+     IF   i=0  THEN alcort WITH [ `alert_list := cons(0, alcort`alert_list), 
+     	       	    	   	  `warn_no_conf := cons(ttvrec`1, alcort`warn_no_conf),
+     	      	     	          `corr_no_conf := cons(ttvrec`1, alcort`corr_no_conf),
+				  `prev_no_conf := cons(ttvrec`1, alcort`prev_no_conf) ] 
+     ELSIF i=1 THEN alcort WITH [ `alert_list := cons(1, alcort`alert_list), 
+     	       	    	   	  `prev_conf := cons(ttvrec`1, alcort`prev_conf), 
+     	       	    	   	  `warn_no_conf := cons(ttvrec`1, alcort`warn_no_conf),
+     	      	     	          `corr_no_conf := cons(ttvrec`1, alcort`corr_no_conf) ] 
+     ELSIF i=2 THEN alcort WITH [ `alert_list := cons(2, alcort`alert_list), 
+     	       	    	   	  `corr_conf := cons(ttvrec`1, alcort`corr_conf),
+     	       	    	   	  `prev_conf := cons(ttvrec`1, alcort`prev_conf), 
+     	       	    	   	  `warn_no_conf := cons(ttvrec`1, alcort`warn_no_conf), 
+				  `first_red := min(alcort`first_red, ttvrec`2`1)]
+     ELSE           alcort WITH [ `alert_list := cons(3, alcort`alert_list), 
+     		    	   	  `warn_conf := cons(ttvrec`1, alcort`warn_conf),
+     	       	    	   	  `corr_conf := cons(ttvrec`1, alcort`corr_conf),
+     	       	    	   	  `prev_conf := cons(ttvrec`1, alcort`prev_conf), 
+				  `first_red := min(alcort`first_red, ttvrec`2`1)]
+     ENDIF
+
+  get_alcort_it( ttv_cor: TTVL, (ttv_prev: TTVL | length(ttv_prev) = length(ttv_cor)), warn_at, corr_at, prev_at:nnreal, ret: AlCoRt): 
+    RECURSIVE AlCoRt = 
+      IF null?(ttv_cor) THEN ret
+      ELSE 
+        LET cor = car(ttv_cor) IN
+        IF cor`2`1<cor`2`2 THEN 
+	  IF cor`2`1<= warn_at THEN
+	    LET nalcort = update_alcort(cor, ret,3) IN 
+	    get_alcort_it(cdr(ttv_cor), cdr(ttv_prev), warn_at,corr_at,prev_at, nalcort)
+	  ELSIF cor`2`1<= corr_at THEN
+	    LET nalcort = update_alcort(cor, ret,2) IN 
+	    get_alcort_it(cdr(ttv_cor), cdr(ttv_prev), warn_at,corr_at,prev_at, nalcort)
+	  ELSE LET prev = car(ttv_cor) IN 
+	    IF prev`2`1<prev`2`2 AND prev`2`1<=prev_at THEN 
+	      LET nalcort = update_alcort(prev, ret,1) IN 
+	      get_alcort_it(cdr(ttv_cor), cdr(ttv_prev), warn_at,corr_at,prev_at, nalcort)
+	    ELSE LET nalcort = update_alcort(prev, ret,0) IN 
+	      get_alcort_it(cdr(ttv_cor), cdr(ttv_prev), warn_at,corr_at,prev_at, nalcort)
+	    ENDIF
+	  ENDIF
+	ELSE LET prev = car(ttv_cor) IN 
+	  IF prev`2`1<prev`2`2 AND prev`2`1<=prev_at THEN 
+	    LET nalcort = update_alcort(prev, ret,1) IN 
+	    get_alcort_it(cdr(ttv_cor), cdr(ttv_prev), warn_at,corr_at,prev_at, nalcort)
+	  ELSE LET nalcort = update_alcort(prev, ret,0) IN 
+	    get_alcort_it(cdr(ttv_cor), cdr(ttv_prev), warn_at,corr_at,prev_at, nalcort)
+	  ENDIF
+	ENDIF
+      ENDIF
+      MEASURE length(ttv_cor)
+
+  get_alcort(ttv_cor: TTVL, (ttv_prev: TTVL | length(ttv_prev) = length(ttv_cor)), warn_at, corr_at, prev_at, lookahead:nnreal):
+    AlCoRt = 
+    LET alcort = get_alcort_it(ttv_cor, ttv_prev, warn_at, corr_at, prev_at, 
+                 (# alert_list:= null[int], 
+		    warn_conf:= null[Aircraft], 
+                    corr_conf:= null[Aircraft], 
+         	    prev_conf:= null[Aircraft],
+  		    warn_no_conf:= null[Aircraft], 
+                    corr_no_conf:= null[Aircraft], 
+         	    prev_no_conf:= null[Aircraft],
+  		    first_red:=         lookahead +1 #)) IN
+       (# alert_list:= reverse(alcort`alert_list), 
+          warn_conf:= reverse(alcort`warn_conf), 
+          corr_conf:= reverse(alcort`corr_conf), 
+          prev_conf:= reverse(alcort`prev_conf),
+  	  warn_no_conf:= reverse(alcort`warn_no_conf), 
+          corr_no_conf:= reverse(alcort`corr_no_conf), 
+          prev_no_conf:= reverse(alcort`prev_no_conf),
+  	  first_red:= IF alcort`first_red = lookahead+1 THEN -1 ELSE alcort`first_red ENDIF #)
+    	  
+
+
+  END alert_conflict_from_ttv

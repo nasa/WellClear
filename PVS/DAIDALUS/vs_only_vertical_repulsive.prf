@@ -1,0 +1,1484 @@
+(vs_only_vertical_repulsive
+ (IMP_vertical_los_crit_CA_TCC1 0
+  (IMP_vertical_los_crit_CA_TCC1-1 nil 3631031545
+   ("" (skeep)
+    (("" (lemma "break_vz_symm_comm")
+      (("" (inst?) (("" (assert) nil nil)) nil)) nil))
+    nil)
+   ((break_vz_symm_comm formula-decl nil vs_only_vertical_repulsive
+     nil)
+    (sign_neg_clos application-judgement "Sign" sign "reals/")
+    (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
+    (real nonempty-type-from-decl nil reals nil))
+   nil))
+ (IMP_vertical_los_crit_CA_TCC2 0
+  (IMP_vertical_los_crit_CA_TCC2-1 nil 3631031545
+   ("" (lemma "break_vz_symm_sz") (("" (propax) nil nil)) nil)
+   ((break_vz_symm_sz formula-decl nil vs_only_vertical_repulsive nil))
+   nil))
+ (vertical_repulsive_crit_indep 0
+  (vertical_repulsive_crit_indep-1 nil 3630945552
+   ("" (skeep)
+    (("" (lemma "break_vz_symm_sz")
+      (("" (inst?)
+        ((""
+          (case "NOT vertical_decision_vect(so - si, vo - vi)`z /= 0 ")
+          (("1" (assert) nil nil)
+           ("2" (assert)
+            (("2" (flatten)
+              (("2" (replaces -1)
+                (("2" (expand "vertical_decision_vect")
+                  (("2" (lift-if)
+                    (("2" (split -)
+                      (("1" (flatten)
+                        (("1" (split -)
+                          (("1" (flatten)
+                            (("1" (assert)
+                              (("1"
+                                (split -)
+                                (("1"
+                                  (flatten)
+                                  (("1"
+                                    (assert)
+                                    (("1"
+                                      (ground)
+                                      (("1"
+                                        (expand
+                                         "vertical_repulsive_crit")
+                                        (("1"
+                                          (hide (4 5))
+                                          (("1" (grind) nil nil))
+                                          nil))
+                                        nil)
+                                       ("2"
+                                        (expand
+                                         "vertical_repulsive_crit")
+                                        (("2"
+                                          (hide (5 6))
+                                          (("2"
+                                            (grind
+                                             :exclude
+                                             "horizontal_tca")
+                                            nil
+                                            nil))
+                                          nil))
+                                        nil))
+                                      nil))
+                                    nil))
+                                  nil)
+                                 ("2"
+                                  (flatten)
+                                  (("2"
+                                    (assert)
+                                    (("2"
+                                      (lemma "vectors_3D.sqv_eq_0")
+                                      (("2"
+                                        (inst?)
+                                        (("2"
+                                          (assert)
+                                          (("2"
+                                            (rewrite "sub_eq_zero")
+                                            (("2"
+                                              (replace -1)
+                                              (("2"
+                                                (assert)
+                                                (("2"
+                                                  (expand
+                                                   "vertical_repulsive_crit")
+                                                  (("2"
+                                                    (assert)
+                                                    (("2"
+                                                      (ground)
+                                                      (("1"
+                                                        (grind
+                                                         :exclude
+                                                         "CA_cyl_conflict_ever?")
+                                                        nil
+                                                        nil)
+                                                       ("2"
+                                                        (grind
+                                                         :exclude
+                                                         ("horizontal_tca"
+                                                          "CA_cyl_conflict_ever?"))
+                                                        nil
+                                                        nil))
+                                                      nil))
+                                                    nil))
+                                                  nil))
+                                                nil))
+                                              nil))
+                                            nil))
+                                          nil))
+                                        nil))
+                                      nil))
+                                    nil))
+                                  nil))
+                                nil))
+                              nil))
+                            nil)
+                           ("2" (flatten) (("2" (assert) nil nil))
+                            nil))
+                          nil))
+                        nil)
+                       ("2" (split 4)
+                        (("1" (flatten)
+                          (("1" (assert)
+                            (("1" (replace -1)
+                              (("1"
+                                (assert)
+                                (("1"
+                                  (split -)
+                                  (("1"
+                                    (flatten)
+                                    (("1"
+                                      (assert)
+                                      (("1"
+                                        (split)
+                                        (("1"
+                                          (flatten)
+                                          (("1"
+                                            (split)
+                                            (("1"
+                                              (flatten)
+                                              (("1"
+                                                (grind
+                                                 :exclude
+                                                 ("horizontal_tca"
+                                                  "CA_cyl_conflict_ever?"))
+                                                nil
+                                                nil))
+                                              nil)
+                                             ("2"
+                                              (grind
+                                               :exclude
+                                               ("horizontal_tca"
+                                                "CA_cyl_conflict_ever?"))
+                                              nil
+                                              nil))
+                                            nil))
+                                          nil)
+                                         ("2"
+                                          (grind
+                                           :exclude
+                                           ("horizontal_tca"
+                                            "CA_cyl_conflict_ever?"))
+                                          nil
+                                          nil))
+                                        nil))
+                                      nil))
+                                    nil)
+                                   ("2"
+                                    (flatten)
+                                    (("2"
+                                      (split -)
+                                      (("1"
+                                        (flatten)
+                                        (("1"
+                                          (assert)
+                                          (("1"
+                                            (split)
+                                            (("1"
+                                              (flatten)
+                                              (("1"
+                                                (assert)
+                                                (("1"
+                                                  (split -)
+                                                  (("1"
+                                                    (flatten)
+                                                    (("1"
+                                                      (assert)
+                                                      (("1"
+                                                        (case
+                                                         "horizontal_tca(so-si,vo-vi)>0")
+                                                        (("1"
+                                                          (copy -1)
+                                                          (("1"
+                                                            (mult-by
+                                                             -1
+                                                             "abs((vo-vi)`z)")
+                                                            (("1"
+                                                              (grind
+                                                               :exclude
+                                                               ("horizontal_tca"
+                                                                "CA_cyl_conflict_ever?"))
+                                                              nil
+                                                              nil))
+                                                            nil))
+                                                          nil)
+                                                         ("2"
+                                                          (case
+                                                           "horizontal_tca(so-si,vo-vi)>=0")
+                                                          (("1"
+                                                            (case
+                                                             "horizontal_tca(so-si,vo-vi)=0")
+                                                            (("1"
+                                                              (replaces
+                                                               -1)
+                                                              (("1"
+                                                                (assert)
+                                                                nil
+                                                                nil))
+                                                              nil)
+                                                             ("2"
+                                                              (assert)
+                                                              nil
+                                                              nil))
+                                                            nil)
+                                                           ("2"
+                                                            (assert)
+                                                            (("2"
+                                                              (expand
+                                                               "horizontal_tca"
+                                                               1)
+                                                              (("2"
+                                                                (cross-mult
+                                                                 1)
+                                                                (("2"
+                                                                  (ground)
+                                                                  (("2"
+                                                                    (lemma
+                                                                     "vectors_2D.sqv_eq_0")
+                                                                    (("2"
+                                                                      (inst?)
+                                                                      (("2"
+                                                                        (assert)
+                                                                        nil
+                                                                        nil))
+                                                                      nil))
+                                                                    nil))
+                                                                  nil))
+                                                                nil))
+                                                              nil))
+                                                            nil))
+                                                          nil))
+                                                        nil))
+                                                      nil))
+                                                    nil)
+                                                   ("2"
+                                                    (case "nvo = vi")
+                                                    (("1"
+                                                      (replaces -1)
+                                                      (("1"
+                                                        (assert)
+                                                        (("1"
+                                                          (expand
+                                                           "vertical_repulsive_crit")
+                                                          (("1"
+                                                            (case
+                                                             "horizontal_tca(so-si,vo-vi)>0")
+                                                            (("1"
+                                                              (copy -1)
+                                                              (("1"
+                                                                (mult-by
+                                                                 -1
+                                                                 "abs((vo-vi)`z)")
+                                                                (("1"
+                                                                  (grind
+                                                                   :exclude
+                                                                   ("horizontal_tca"
+                                                                    "CA_cyl_conflict_ever?"))
+                                                                  nil
+                                                                  nil))
+                                                                nil))
+                                                              nil)
+                                                             ("2"
+                                                              (case
+                                                               "horizontal_tca(so-si,vo-vi)>=0")
+                                                              (("1"
+                                                                (case
+                                                                 "horizontal_tca(so-si,vo-vi)=0")
+                                                                (("1"
+                                                                  (replaces
+                                                                   -1)
+                                                                  (("1"
+                                                                    (assert)
+                                                                    nil
+                                                                    nil))
+                                                                  nil)
+                                                                 ("2"
+                                                                  (assert)
+                                                                  nil
+                                                                  nil))
+                                                                nil)
+                                                               ("2"
+                                                                (expand
+                                                                 "horizontal_tca"
+                                                                 1)
+                                                                (("2"
+                                                                  (cross-mult
+                                                                   1)
+                                                                  (("2"
+                                                                    (ground)
+                                                                    (("2"
+                                                                      (lemma
+                                                                       "vectors_2D.sqv_eq_0")
+                                                                      (("2"
+                                                                        (inst?)
+                                                                        (("2"
+                                                                          (assert)
+                                                                          nil
+                                                                          nil))
+                                                                        nil))
+                                                                      nil))
+                                                                    nil))
+                                                                  nil))
+                                                                nil))
+                                                              nil))
+                                                            nil))
+                                                          nil))
+                                                        nil))
+                                                      nil)
+                                                     ("2"
+                                                      (lemma
+                                                       "vectors_3D.sqv_eq_0")
+                                                      (("2"
+                                                        (inst?)
+                                                        (("2"
+                                                          (assert)
+                                                          (("2"
+                                                            (rewrite
+                                                             "sub_eq_zero")
+                                                            nil
+                                                            nil))
+                                                          nil))
+                                                        nil))
+                                                      nil))
+                                                    nil))
+                                                  nil))
+                                                nil))
+                                              nil)
+                                             ("2"
+                                              (flatten)
+                                              (("2"
+                                                (assert)
+                                                (("2"
+                                                  (expand
+                                                   "vertical_repulsive_crit")
+                                                  (("2"
+                                                    (rewrite
+                                                     "vz_distr_add")
+                                                    (("2"
+                                                      (replace -1)
+                                                      (("2"
+                                                        (assert)
+                                                        (("2"
+                                                          (replace -4)
+                                                          (("2"
+                                                            (assert)
+                                                            (("2"
+                                                              (case
+                                                               "horizontal_tca(so-si,vo-vi)>0")
+                                                              (("1"
+                                                                (lemma
+                                                                 "sign_mult")
+                                                                (("1"
+                                                                  (inst
+                                                                   -
+                                                                   "horizontal_tca(so-si,vo-vi)"
+                                                                   "(vo-vi)`z")
+                                                                  (("1"
+                                                                    (assert)
+                                                                    (("1"
+                                                                      (expand
+                                                                       "sign"
+                                                                       -1
+                                                                       2)
+                                                                      (("1"
+                                                                        (rewrite
+                                                                         "vz_scal")
+                                                                        (("1"
+                                                                          (replaces
+                                                                           -1)
+                                                                          (("1"
+                                                                            (hide-all-but
+                                                                             (-4
+                                                                              -7
+                                                                              5))
+                                                                            (("1"
+                                                                              (grind)
+                                                                              nil
+                                                                              nil))
+                                                                            nil))
+                                                                          nil))
+                                                                        nil))
+                                                                      nil))
+                                                                    nil))
+                                                                  nil))
+                                                                nil)
+                                                               ("2"
+                                                                (case
+                                                                 "horizontal_tca(so-si,vo-vi)=0")
+                                                                (("1"
+                                                                  (replaces
+                                                                   -1)
+                                                                  (("1"
+                                                                    (assert)
+                                                                    nil
+                                                                    nil))
+                                                                  nil)
+                                                                 ("2"
+                                                                  (case
+                                                                   "horizontal_tca(so-si,vo-vi)>=0")
+                                                                  (("1"
+                                                                    (assert)
+                                                                    nil
+                                                                    nil)
+                                                                   ("2"
+                                                                    (expand
+                                                                     "horizontal_tca"
+                                                                     1)
+                                                                    (("2"
+                                                                      (cross-mult
+                                                                       1)
+                                                                      (("2"
+                                                                        (ground)
+                                                                        (("2"
+                                                                          (lemma
+                                                                           "vectors_2D.sqv_eq_0")
+                                                                          (("2"
+                                                                            (inst?)
+                                                                            (("2"
+                                                                              (assert)
+                                                                              nil
+                                                                              nil))
+                                                                            nil))
+                                                                          nil))
+                                                                        nil))
+                                                                      nil))
+                                                                    nil))
+                                                                  nil))
+                                                                nil))
+                                                              nil))
+                                                            nil))
+                                                          nil))
+                                                        nil))
+                                                      nil))
+                                                    nil))
+                                                  nil))
+                                                nil))
+                                              nil))
+                                            nil))
+                                          nil))
+                                        nil)
+                                       ("2"
+                                        (flatten)
+                                        (("2" (assert) nil nil))
+                                        nil))
+                                      nil))
+                                    nil))
+                                  nil))
+                                nil))
+                              nil))
+                            nil))
+                          nil)
+                         ("2" (flatten)
+                          (("2" (assert)
+                            (("2" (split -)
+                              (("1"
+                                (flatten)
+                                (("1"
+                                  (assert)
+                                  (("1"
+                                    (case
+                                     "NOT (vect2(nvo - vi) = zero OR so - si = zero)")
+                                    (("1"
+                                      (hide 3)
+                                      (("1"
+                                        (expand "vs_only?")
+                                        (("1"
+                                          (hide-all-but (-1 -3 1))
+                                          (("1" (grind) nil nil))
+                                          nil))
+                                        nil))
+                                      nil)
+                                     ("2"
+                                      (replace -1)
+                                      (("2"
+                                        (replace -2)
+                                        (("2"
+                                          (assert)
+                                          (("2"
+                                            (case "so-si=zero")
+                                            (("1"
+                                              (assert)
+                                              (("1"
+                                                (rewrite "sub_eq_zero")
+                                                (("1"
+                                                  (replaces -1)
+                                                  (("1"
+                                                    (assert)
+                                                    (("1"
+                                                      (expand
+                                                       "vertical_repulsive_crit")
+                                                      (("1"
+                                                        (grind
+                                                         :exclude
+                                                         ("horizontal_tca"
+                                                          "CA_cyl_conflict_ever?"))
+                                                        nil
+                                                        nil))
+                                                      nil))
+                                                    nil))
+                                                  nil))
+                                                nil))
+                                              nil)
+                                             ("2"
+                                              (assert)
+                                              (("2"
+                                                (lift-if)
+                                                (("2"
+                                                  (expand
+                                                   "vertical_repulsive_crit")
+                                                  (("2"
+                                                    (hide 7)
+                                                    (("2"
+                                                      (split +)
+                                                      (("1"
+                                                        (flatten)
+                                                        nil
+                                                        nil)
+                                                       ("2"
+                                                        (assert)
+                                                        (("2"
+                                                          (grind
+                                                           :exclude
+                                                           ("horizontal_tca"
+                                                            "CA_cyl_conflict_ever?"))
+                                                          nil
+                                                          nil))
+                                                        nil))
+                                                      nil))
+                                                    nil))
+                                                  nil))
+                                                nil))
+                                              nil))
+                                            nil))
+                                          nil))
+                                        nil))
+                                      nil))
+                                    nil))
+                                  nil))
+                                nil)
+                               ("2"
+                                (flatten)
+                                (("2"
+                                  (assert)
+                                  (("2"
+                                    (assert)
+                                    (("2"
+                                      (split -)
+                                      (("1"
+                                        (flatten)
+                                        (("1"
+                                          (assert)
+                                          (("1"
+                                            (case
+                                             "vect2(nvo-vi) = vect2(vo-vi)")
+                                            (("1"
+                                              (assert)
+                                              (("1"
+                                                (case
+                                                 "horizontal_tca(so-si,vo-vi)>0")
+                                                (("1"
+                                                  (copy -1)
+                                                  (("1"
+                                                    (mult-by
+                                                     -1
+                                                     "abs((vo-vi)`z)")
+                                                    (("1"
+                                                      (case
+                                                       "horizontal_tca(so-si,nvo-vi) = horizontal_tca(so-si,vo-vi)")
+                                                      (("1"
+                                                        (replaces -1)
+                                                        (("1"
+                                                          (assert)
+                                                          (("1"
+                                                            (expand
+                                                             "vertical_repulsive_crit")
+                                                            (("1"
+                                                              (copy -7)
+                                                              (("1"
+                                                                (mult-by
+                                                                 -1
+                                                                 "horizontal_tca(so-si,vo-vi)")
+                                                                (("1"
+                                                                  (grind
+                                                                   :exclude
+                                                                   ("horizontal_tca"
+                                                                    "CA_cyl_conflict_ever?"))
+                                                                  nil
+                                                                  nil))
+                                                                nil))
+                                                              nil))
+                                                            nil))
+                                                          nil))
+                                                        nil)
+                                                       ("2"
+                                                        (assert)
+                                                        nil
+                                                        nil))
+                                                      nil))
+                                                    nil))
+                                                  nil)
+                                                 ("2"
+                                                  (case
+                                                   "horizontal_tca(so-si,vo-vi)=0")
+                                                  (("1"
+                                                    (replace -2)
+                                                    (("1"
+                                                      (replaces -1)
+                                                      (("1"
+                                                        (assert)
+                                                        nil
+                                                        nil))
+                                                      nil))
+                                                    nil)
+                                                   ("2"
+                                                    (case
+                                                     "horizontal_tca(so-si,vo-vi)>=0")
+                                                    (("1"
+                                                      (assert)
+                                                      nil
+                                                      nil)
+                                                     ("2"
+                                                      (expand
+                                                       "horizontal_tca"
+                                                       1)
+                                                      (("2"
+                                                        (cross-mult 1)
+                                                        (("2"
+                                                          (ground)
+                                                          (("1"
+                                                            (lemma
+                                                             "vectors_2D.sqv_eq_0")
+                                                            (("1"
+                                                              (inst?)
+                                                              (("1"
+                                                                (assert)
+                                                                nil
+                                                                nil))
+                                                              nil))
+                                                            nil)
+                                                           ("2"
+                                                            (lemma
+                                                             "vectors_2D.sqv_eq_0")
+                                                            (("2"
+                                                              (inst?)
+                                                              (("2"
+                                                                (assert)
+                                                                nil
+                                                                nil))
+                                                              nil))
+                                                            nil))
+                                                          nil))
+                                                        nil))
+                                                      nil))
+                                                    nil))
+                                                  nil))
+                                                nil))
+                                              nil)
+                                             ("2"
+                                              (assert)
+                                              (("2"
+                                                (split +)
+                                                (("1"
+                                                  (flatten)
+                                                  (("1"
+                                                    (assert)
+                                                    (("1"
+                                                      (hide-all-but
+                                                       (-4 2))
+                                                      (("1"
+                                                        (grind)
+                                                        nil
+                                                        nil))
+                                                      nil))
+                                                    nil))
+                                                  nil)
+                                                 ("2"
+                                                  (hide-all-but (-3 2))
+                                                  (("2"
+                                                    (grind)
+                                                    nil
+                                                    nil))
+                                                  nil))
+                                                nil))
+                                              nil))
+                                            nil))
+                                          nil))
+                                        nil)
+                                       ("2"
+                                        (flatten)
+                                        (("2"
+                                          (assert)
+                                          (("2"
+                                            (split +)
+                                            (("1"
+                                              (flatten)
+                                              (("1"
+                                                (assert)
+                                                (("1"
+                                                  (replaces
+                                                   -1
+                                                   3
+                                                   :dir
+                                                   rl)
+                                                  (("1"
+                                                    (hide-all-but
+                                                     (-2 3))
+                                                    (("1"
+                                                      (grind)
+                                                      nil
+                                                      nil))
+                                                    nil))
+                                                  nil))
+                                                nil))
+                                              nil)
+                                             ("2"
+                                              (flatten)
+                                              (("2"
+                                                (assert)
+                                                (("2"
+                                                  (split +)
+                                                  (("1"
+                                                    (flatten)
+                                                    (("1"
+                                                      (assert)
+                                                      (("1"
+                                                        (case
+                                                         "vect2(nvo-vi) = vect2(vo-vi)")
+                                                        (("1"
+                                                          (replace -1)
+                                                          (("1"
+                                                            (propax)
+                                                            nil
+                                                            nil))
+                                                          nil)
+                                                         ("2"
+                                                          (hide-all-but
+                                                           (-3 1))
+                                                          (("2"
+                                                            (grind)
+                                                            nil
+                                                            nil))
+                                                          nil))
+                                                        nil))
+                                                      nil))
+                                                    nil)
+                                                   ("2"
+                                                    (propax)
+                                                    nil
+                                                    nil))
+                                                  nil))
+                                                nil))
+                                              nil))
+                                            nil))
+                                          nil))
+                                        nil))
+                                      nil))
+                                    nil))
+                                  nil))
+                                nil))
+                              nil))
+                            nil))
+                          nil))
+                        nil))
+                      nil))
+                    nil))
+                  nil))
+                nil))
+              nil))
+            nil))
+          nil))
+        nil))
+      nil))
+    nil)
+   ((break_vz_symm_sz formula-decl nil vs_only_vertical_repulsive nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (vertical_decision_vect_antisymmetric name-judgement
+     "Decision_Vector" vs_only_vertical_repulsive nil)
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (abs_nat formula-decl nil abs_lems "reals/")
+    (sqv_eq_0 formula-decl nil vectors_3D "vectors/")
+    (comp_zero_z formula-decl nil vectors_3D "vectors/")
+    (sqv_zero formula-decl nil vectors_3D "vectors/")
+    (sub_eq_args formula-decl nil vectors_3D "vectors/")
+    (sub_eq_zero formula-decl nil vectors_3D "vectors/")
+    (real_le_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (vs_only? const-decl "bool" definitions_3D "ACCoRD/")
+    (sign const-decl "Sign" sign "reals/")
+    (abs const-decl "{n: nonneg_real | n >= m AND n >= -m}" real_defs
+         nil)
+    (vect2 const-decl "Vect2" vect_3D_2D "vectors/")
+    (real_minus_real_is_real application-judgement "real" reals nil)
+    (real_lt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
+    (minus_odd_is_odd application-judgement "odd_int" integers nil)
+    (real_times_real_is_real application-judgement "real" reals nil)
+    (minus_nzreal_is_nzreal application-judgement "nzreal" real_types
+     nil)
+    (vertical_repulsive_crit const-decl "bool"
+     vs_only_vertical_repulsive nil)
+    (real_plus_real_is_real application-judgement "real" reals nil)
+    (* const-decl "real" vectors_2D "vectors/")
+    (* const-decl "Vector" vectors_3D "vectors/")
+    (+ const-decl "Vector" vectors_3D "vectors/")
+    (* const-decl "[numfield, numfield -> numfield]" number_fields nil)
+    (both_sides_times_pos_ge1_imp formula-decl nil extra_real_props
+     nil)
+    (sqv const-decl "nnreal" vectors_3D "vectors/")
+    (* const-decl "real" vectors_3D "vectors/")
+    (nzint_times_nzint_is_nzint application-judgement "nzint" integers
+     nil)
+    (odd_times_odd_is_odd application-judgement "odd_int" integers nil)
+    (vz_scal formula-decl nil vectors_3D "vectors/")
+    (sign_mult formula-decl nil sign "reals/")
+    (int_times_even_is_even application-judgement "even_int" integers
+     nil)
+    (mult_divides1 application-judgement "(divides(n))" divides nil)
+    (mult_divides2 application-judgement "(divides(m))" divides nil)
+    (vz_distr_add formula-decl nil vectors_3D "vectors/")
+    (add_zero_right formula-decl nil vectors_3D "vectors/")
+    (scal_0 formula-decl nil vectors_3D "vectors/")
+    (sqv_eq_0 formula-decl nil vectors_2D "vectors/")
+    (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
+     "vect_analysis/")
+    (sqv const-decl "nnreal" vectors_2D "vectors/")
+    (nnreal type-eq-decl nil real_types nil)
+    (nonzero_real nonempty-type-eq-decl nil reals nil)
+    (div_mult_pos_neg_ge1 formula-decl nil extra_real_props nil)
+    (real_div_nzreal_is_real application-judgement "real" reals nil)
+    (minus_real_is_real application-judgement "real" reals nil)
+    (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
+     real_types nil)
+    (real_gt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (vo skolem-const-decl "Vect3" vs_only_vertical_repulsive nil)
+    (vi skolem-const-decl "Vect3" vs_only_vertical_repulsive nil)
+    (both_sides_times_pos_gt1 formula-decl nil real_props nil)
+    (horizontal_tca const-decl "real" definitions "ACCoRD/")
+    (Nz_vect2 type-eq-decl nil vectors_2D "vectors/")
+    (zero const-decl "Vector" vectors_2D "vectors/")
+    (Vector type-eq-decl nil vectors_2D "vectors/")
+    (Vect2 type-eq-decl nil vectors_2D_def "vectors/")
+    (sign_nat formula-decl nil sign "reals/")
+    (- const-decl "Vector" vectors_3D "vectors/")
+    (vertical_decision_vect const-decl
+     "{vq: Vect3 | (s /= zero OR v /= zero) IMPLIES vq /= zero}"
+     vertical_los_crit_CA "ACCoRD/")
+    (break_vz_symm formal-const-decl "[Vect3 -> Sign]"
+     vs_only_vertical_repulsive nil)
+    (Sign type-eq-decl nil sign "reals/")
+    (- const-decl "[numfield -> numfield]" number_fields nil)
+    (numfield nonempty-type-eq-decl nil number_fields nil)
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (nzint nonempty-type-eq-decl nil integers nil)
+    (int nonempty-type-eq-decl nil integers nil)
+    (integer_pred const-decl "[rational -> boolean]" integers nil)
+    (rational nonempty-type-from-decl nil rationals nil)
+    (rational_pred const-decl "[real -> boolean]" rationals nil)
+    (caTime formal-const-decl "posreal" vs_only_vertical_repulsive nil)
+    (caH formal-const-decl "posreal" vs_only_vertical_repulsive nil)
+    (caD formal-const-decl "posreal" vs_only_vertical_repulsive nil)
+    (H formal-const-decl "posreal" vs_only_vertical_repulsive nil)
+    (D formal-const-decl "posreal" vs_only_vertical_repulsive nil)
+    (posreal nonempty-type-eq-decl nil real_types nil)
+    (> const-decl "bool" reals nil)
+    (nonneg_real nonempty-type-eq-decl nil real_types nil)
+    (>= const-decl "bool" reals nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (number nonempty-type-decl nil numbers nil)
+    (zero const-decl "Vector" vectors_3D "vectors/")
+    (Vector type-eq-decl nil vectors_3D "vectors/")
+    (/= const-decl "boolean" notequal nil)
+    (OR const-decl "[bool, bool -> bool]" booleans nil)
+    (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
+    (real nonempty-type-from-decl nil reals nil))
+   shostak))
+ (vertical_repulsive_crit_indep_conv 0
+  (vertical_repulsive_crit_indep_conv-1 nil 3631029108
+   ("" (skeep)
+    (("" (lemma "break_vz_symm_sz")
+      (("" (inst?)
+        ((""
+          (case "NOT vertical_decision_vect(so - si, vo - vi)`z /= 0 ")
+          (("1" (assert) nil nil)
+           ("2" (assert)
+            (("2" (flatten)
+              (("2" (replaces -1)
+                (("2" (case "NOT vect2(nvo-vi) = vect2(vo-vi)")
+                  (("1" (assert)
+                    (("1" (hide-all-but (-2 1)) (("1" (grind) nil nil))
+                      nil))
+                    nil)
+                   ("2" (expand "vertical_repulsive_crit")
+                    (("2" (case "NOT horizontal_tca(so-si,vo-vi) > 0")
+                      (("1" (expand "horizontal_tca" 1)
+                        (("1" (cross-mult 1)
+                          (("1" (ground)
+                            (("1" (lemma "vectors_2D.sqv_eq_0")
+                              (("1"
+                                (inst?)
+                                (("1"
+                                  (assert)
+                                  (("1"
+                                    (replaces -1)
+                                    (("1" (assert) nil nil))
+                                    nil))
+                                  nil))
+                                nil))
+                              nil))
+                            nil))
+                          nil))
+                        nil)
+                       ("2" (expand "vertical_decision_vect")
+                        (("2" (replace -2)
+                          (("2" (lift-if)
+                            (("2" (split -)
+                              (("1"
+                                (flatten)
+                                (("1"
+                                  (split -)
+                                  (("1"
+                                    (flatten)
+                                    (("1"
+                                      (assert)
+                                      (("1"
+                                        (split -)
+                                        (("1"
+                                          (flatten)
+                                          (("1"
+                                            (assert)
+                                            (("1"
+                                              (ground)
+                                              (("1"
+                                                (replaces -1)
+                                                (("1"
+                                                  (assert)
+                                                  nil
+                                                  nil))
+                                                nil)
+                                               ("2"
+                                                (expand "vs_only?")
+                                                (("2"
+                                                  (replace -2)
+                                                  (("2"
+                                                    (assert)
+                                                    (("2"
+                                                      (mult-by
+                                                       -3
+                                                       "abs((nvo-vi)`z)")
+                                                      (("2"
+                                                        (grind
+                                                         :exclude
+                                                         ("horizontal_tca"
+                                                          "CA_cyl_conflict_ever?"))
+                                                        nil
+                                                        nil))
+                                                      nil))
+                                                    nil))
+                                                  nil))
+                                                nil))
+                                              nil))
+                                            nil))
+                                          nil)
+                                         ("2"
+                                          (split)
+                                          (("1"
+                                            (flatten)
+                                            (("1"
+                                              (assert)
+                                              (("1"
+                                                (hide -1)
+                                                (("1"
+                                                  (case "vo = vi")
+                                                  (("1"
+                                                    (replace -1)
+                                                    (("1"
+                                                      (assert)
+                                                      nil
+                                                      nil))
+                                                    nil)
+                                                   ("2"
+                                                    (lemma
+                                                     "vectors_3D.sqv_eq_0")
+                                                    (("2"
+                                                      (inst?)
+                                                      (("2"
+                                                        (assert)
+                                                        (("2"
+                                                          (rewrite
+                                                           "sub_eq_zero")
+                                                          nil
+                                                          nil))
+                                                        nil))
+                                                      nil))
+                                                    nil))
+                                                  nil))
+                                                nil))
+                                              nil))
+                                            nil)
+                                           ("2" (propax) nil nil))
+                                          nil))
+                                        nil))
+                                      nil))
+                                    nil)
+                                   ("2"
+                                    (flatten)
+                                    (("2"
+                                      (case "so - si = zero")
+                                      (("1" (propax) nil nil)
+                                       ("2" (assert) nil nil))
+                                      nil))
+                                    nil))
+                                  nil))
+                                nil)
+                               ("2"
+                                (flatten)
+                                (("2"
+                                  (case "so - si = zero")
+                                  (("1"
+                                    (assert)
+                                    (("1"
+                                      (case "so = si")
+                                      (("1"
+                                        (replace -1)
+                                        (("1" (assert) nil nil))
+                                        nil)
+                                       ("2"
+                                        (rewrite "sub_eq_zero")
+                                        nil
+                                        nil))
+                                      nil))
+                                    nil)
+                                   ("2"
+                                    (assert)
+                                    (("2"
+                                      (split -)
+                                      (("1"
+                                        (flatten)
+                                        (("1"
+                                          (replaces -1)
+                                          (("1" (assert) nil nil))
+                                          nil))
+                                        nil)
+                                       ("2"
+                                        (flatten)
+                                        (("2"
+                                          (assert)
+                                          (("2"
+                                            (split +)
+                                            (("1"
+                                              (flatten)
+                                              (("1"
+                                                (split +)
+                                                (("1"
+                                                  (flatten)
+                                                  (("1"
+                                                    (case
+                                                     "(so-si)`z = 0")
+                                                    (("1"
+                                                      (assert)
+                                                      (("1"
+                                                        (rewrite
+                                                         "vz_distr_add")
+                                                        (("1"
+                                                          (rewrite
+                                                           "vz_scal")
+                                                          (("1"
+                                                            (replace
+                                                             -1)
+                                                            (("1"
+                                                              (assert)
+                                                              (("1"
+                                                                (copy
+                                                                 -5)
+                                                                (("1"
+                                                                  (mult-by
+                                                                   -1
+                                                                   "abs((vo-vi)`z)")
+                                                                  (("1"
+                                                                    (grind
+                                                                     :exclude
+                                                                     ("horizontal_tca"
+                                                                      "CA_cyl_conflict_ever?"))
+                                                                    nil
+                                                                    nil))
+                                                                  nil))
+                                                                nil))
+                                                              nil))
+                                                            nil))
+                                                          nil))
+                                                        nil))
+                                                      nil)
+                                                     ("2"
+                                                      (assert)
+                                                      (("2"
+                                                        (hide -1)
+                                                        (("2"
+                                                          (replace -1)
+                                                          (("2"
+                                                            (rewrite
+                                                             "vz_distr_add")
+                                                            (("2"
+                                                              (rewrite
+                                                               "vz_scal")
+                                                              (("2"
+                                                                (assert)
+                                                                (("2"
+                                                                  (copy
+                                                                   -3)
+                                                                  (("2"
+                                                                    (mult-by
+                                                                     -1
+                                                                     "abs((vo-vi)`z)")
+                                                                    (("2"
+                                                                      (grind
+                                                                       :exclude
+                                                                       ("horizontal_tca"
+                                                                        "CA_cyl_conflict_ever?"))
+                                                                      nil
+                                                                      nil))
+                                                                    nil))
+                                                                  nil))
+                                                                nil))
+                                                              nil))
+                                                            nil))
+                                                          nil))
+                                                        nil))
+                                                      nil))
+                                                    nil))
+                                                  nil)
+                                                 ("2"
+                                                  (flatten)
+                                                  (("2"
+                                                    (replace -2)
+                                                    (("2"
+                                                      (assert)
+                                                      (("2"
+                                                        (rewrite
+                                                         "vz_distr_add")
+                                                        (("2"
+                                                          (rewrite
+                                                           "vz_scal")
+                                                          (("2"
+                                                            (replace
+                                                             -1)
+                                                            (("2"
+                                                              (assert)
+                                                              (("2"
+                                                                (copy
+                                                                 -4)
+                                                                (("2"
+                                                                  (mult-by
+                                                                   -1
+                                                                   "abs((vo-vi)`z)")
+                                                                  (("2"
+                                                                    (grind
+                                                                     :exclude
+                                                                     ("horizontal_tca"
+                                                                      "CA_cyl_conflict_ever?"))
+                                                                    nil
+                                                                    nil))
+                                                                  nil))
+                                                                nil))
+                                                              nil))
+                                                            nil))
+                                                          nil))
+                                                        nil))
+                                                      nil))
+                                                    nil))
+                                                  nil))
+                                                nil))
+                                              nil)
+                                             ("2"
+                                              (flatten)
+                                              (("2"
+                                                (assert)
+                                                (("2"
+                                                  (rewrite
+                                                   "vz_distr_add")
+                                                  (("2"
+                                                    (rewrite
+                                                     "vz_distr_add")
+                                                    (("2"
+                                                      (rewrite
+                                                       "vz_scal")
+                                                      (("2"
+                                                        (rewrite
+                                                         "vz_scal")
+                                                        (("2"
+                                                          (copy -2)
+                                                          (("2"
+                                                            (copy -1)
+                                                            (("2"
+                                                              (mult-by
+                                                               -1
+                                                               "abs((vo-vi)`z)")
+                                                              (("2"
+                                                                (mult-by
+                                                                 -2
+                                                                 "abs((nvo-vi)`z)")
+                                                                (("2"
+                                                                  (assert)
+                                                                  (("2"
+                                                                    (copy
+                                                                     -7)
+                                                                    (("2"
+                                                                      (mult-by
+                                                                       -1
+                                                                       "horizontal_tca(so-si,vo-vi)")
+                                                                      (("2"
+                                                                        (grind
+                                                                         :exclude
+                                                                         ("horizontal_tca"
+                                                                          "CA_cyl_conflict_ever?"))
+                                                                        nil
+                                                                        nil))
+                                                                      nil))
+                                                                    nil))
+                                                                  nil))
+                                                                nil))
+                                                              nil))
+                                                            nil))
+                                                          nil))
+                                                        nil))
+                                                      nil))
+                                                    nil))
+                                                  nil))
+                                                nil))
+                                              nil))
+                                            nil))
+                                          nil))
+                                        nil))
+                                      nil))
+                                    nil))
+                                  nil))
+                                nil))
+                              nil))
+                            nil))
+                          nil))
+                        nil)
+                       ("3" (flatten)
+                        (("3" (replaces -1) (("3" (assert) nil nil))
+                          nil))
+                        nil))
+                      nil))
+                    nil))
+                  nil))
+                nil))
+              nil))
+            nil))
+          nil))
+        nil))
+      nil))
+    nil)
+   ((break_vz_symm_sz formula-decl nil vs_only_vertical_repulsive nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (vertical_decision_vect_antisymmetric name-judgement
+     "Decision_Vector" vs_only_vertical_repulsive nil)
+    (real_lt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (abs_nat formula-decl nil abs_lems "reals/")
+    (Vect2 type-eq-decl nil vectors_2D_def "vectors/")
+    (vect2 const-decl "Vect2" vect_3D_2D "vectors/")
+    (vs_only? const-decl "bool" definitions_3D "ACCoRD/")
+    (real_minus_real_is_real application-judgement "real" reals nil)
+    (real_times_real_is_real application-judgement "real" reals nil)
+    (minus_nzreal_is_nzreal application-judgement "nzreal" real_types
+     nil)
+    (Vector type-eq-decl nil vectors_2D "vectors/")
+    (zero const-decl "Vector" vectors_2D "vectors/")
+    (Nz_vect2 type-eq-decl nil vectors_2D "vectors/")
+    (horizontal_tca const-decl "real" definitions "ACCoRD/")
+    (real_div_nzreal_is_real application-judgement "real" reals nil)
+    (div_mult_pos_neg_gt1 formula-decl nil extra_real_props nil)
+    (nonzero_real nonempty-type-eq-decl nil reals nil)
+    (nnreal type-eq-decl nil real_types nil)
+    (sqv const-decl "nnreal" vectors_2D "vectors/")
+    (* const-decl "real" vectors_2D "vectors/")
+    (minus_real_is_real application-judgement "real" reals nil)
+    (real_gt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
+    (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
+     "vect_analysis/")
+    (sqv_eq_0 formula-decl nil vectors_2D "vectors/")
+    (sqv_zero formula-decl nil vectors_2D "vectors/")
+    (dot_zero_right formula-decl nil vectors_2D "vectors/")
+    (sub_eq_args formula-decl nil vectors_3D "vectors/")
+    (sqv_zero formula-decl nil vectors_3D "vectors/")
+    (comp_zero_z formula-decl nil vectors_3D "vectors/")
+    (vect2_zero formula-decl nil vect_3D_2D "vectors/")
+    (sub_eq_zero formula-decl nil vectors_3D "vectors/")
+    (sqv_eq_0 formula-decl nil vectors_3D "vectors/")
+    (both_sides_times_pos_gt1 formula-decl nil real_props nil)
+    (vi skolem-const-decl "Vect3" vs_only_vertical_repulsive nil)
+    (nvo skolem-const-decl "Vect3" vs_only_vertical_repulsive nil)
+    (abs const-decl "{n: nonneg_real | n >= m AND n >= -m}" real_defs
+         nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
+     real_types nil)
+    (minus_odd_is_odd application-judgement "odd_int" integers nil)
+    (real_plus_real_is_real application-judgement "real" reals nil)
+    (* const-decl "Vector" vectors_3D "vectors/")
+    (+ const-decl "Vector" vectors_3D "vectors/")
+    (sign const-decl "Sign" sign "reals/")
+    (int_times_even_is_even application-judgement "even_int" integers
+     nil)
+    (mult_divides1 application-judgement "(divides(n))" divides nil)
+    (mult_divides2 application-judgement "(divides(m))" divides nil)
+    (dot_zero_left formula-decl nil vectors_2D "vectors/")
+    (both_sides_times_pos_ge1_imp formula-decl nil extra_real_props
+     nil)
+    (* const-decl "[numfield, numfield -> numfield]" number_fields nil)
+    (vz_scal formula-decl nil vectors_3D "vectors/")
+    (vo skolem-const-decl "Vect3" vs_only_vertical_repulsive nil)
+    (* const-decl "real" vectors_3D "vectors/")
+    (sqv const-decl "nnreal" vectors_3D "vectors/")
+    (vz_distr_add formula-decl nil vectors_3D "vectors/")
+    (vertical_repulsive_crit const-decl "bool"
+     vs_only_vertical_repulsive nil)
+    (- const-decl "Vector" vectors_3D "vectors/")
+    (vertical_decision_vect const-decl
+     "{vq: Vect3 | (s /= zero OR v /= zero) IMPLIES vq /= zero}"
+     vertical_los_crit_CA "ACCoRD/")
+    (break_vz_symm formal-const-decl "[Vect3 -> Sign]"
+     vs_only_vertical_repulsive nil)
+    (Sign type-eq-decl nil sign "reals/")
+    (- const-decl "[numfield -> numfield]" number_fields nil)
+    (numfield nonempty-type-eq-decl nil number_fields nil)
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (nzint nonempty-type-eq-decl nil integers nil)
+    (int nonempty-type-eq-decl nil integers nil)
+    (integer_pred const-decl "[rational -> boolean]" integers nil)
+    (rational nonempty-type-from-decl nil rationals nil)
+    (rational_pred const-decl "[real -> boolean]" rationals nil)
+    (caTime formal-const-decl "posreal" vs_only_vertical_repulsive nil)
+    (caH formal-const-decl "posreal" vs_only_vertical_repulsive nil)
+    (caD formal-const-decl "posreal" vs_only_vertical_repulsive nil)
+    (H formal-const-decl "posreal" vs_only_vertical_repulsive nil)
+    (D formal-const-decl "posreal" vs_only_vertical_repulsive nil)
+    (posreal nonempty-type-eq-decl nil real_types nil)
+    (> const-decl "bool" reals nil)
+    (nonneg_real nonempty-type-eq-decl nil real_types nil)
+    (>= const-decl "bool" reals nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (number nonempty-type-decl nil numbers nil)
+    (zero const-decl "Vector" vectors_3D "vectors/")
+    (Vector type-eq-decl nil vectors_3D "vectors/")
+    (/= const-decl "boolean" notequal nil)
+    (OR const-decl "[bool, bool -> bool]" booleans nil)
+    (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
+    (real nonempty-type-from-decl nil reals nil))
+   nil))
+ (vertical_repulsive_crit_repulsive 0
+  (vertical_repulsive_crit_repulsive-1 nil 3631031653
+   ("" (skeep)
+    (("" (case "vect2(so-si)*vect2(vo-vi)<0")
+      (("1" (lemma "vertical_repulsive_crit_indep_conv")
+        (("1" (inst?)
+          (("1" (expand "repulsive_vertical_vs_only")
+            (("1" (ground) nil nil)) nil))
+          nil))
+        nil)
+       ("2" (lemma "vertical_repulsive_crit_indep")
+        (("2" (insteep -)
+          (("2" (expand "repulsive_vertical_vs_only")
+            (("2" (ground) nil nil)) nil))
+          nil))
+        nil))
+      nil))
+    nil)
+   ((- const-decl "Vector" vectors_3D "vectors/")
+    (Vector type-eq-decl nil vectors_3D "vectors/")
+    (vect2 const-decl "Vect2" vect_3D_2D "vectors/")
+    (Vect2 type-eq-decl nil vectors_2D_def "vectors/")
+    (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
+    (* const-decl "real" vectors_2D "vectors/")
+    (Vector type-eq-decl nil vectors_2D "vectors/")
+    (< const-decl "bool" reals nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (number nonempty-type-decl nil numbers nil)
+    (rational_pred const-decl "[real -> boolean]" rationals nil)
+    (rational nonempty-type-from-decl nil rationals nil)
+    (integer_pred const-decl "[rational -> boolean]" integers nil)
+    (int nonempty-type-eq-decl nil integers nil)
+    (/= const-decl "boolean" notequal nil)
+    (nzint nonempty-type-eq-decl nil integers nil)
+    (OR const-decl "[bool, bool -> bool]" booleans nil)
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (numfield nonempty-type-eq-decl nil number_fields nil)
+    (- const-decl "[numfield -> numfield]" number_fields nil)
+    (Sign type-eq-decl nil sign "reals/")
+    (repulsive_vertical_vs_only const-decl "bool"
+     vs_only_vertical_repulsive nil)
+    (vertical_repulsive_crit_indep_conv formula-decl nil
+     vs_only_vertical_repulsive nil)
+    (real_lt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (vertical_repulsive_crit_indep formula-decl nil
+     vs_only_vertical_repulsive nil))
+   shostak))
+ (vertical_repulsive_crit_coord_lem 0
+  (vertical_repulsive_crit_coord_lem-1 nil 3630947574
+   ("" (skeep)
+    (("" (typepred "eps") (("" (hide -1) (("" (grind) nil nil)) nil))
+      nil))
+    nil)
+   ((Sign type-eq-decl nil sign "reals/")
+    (- const-decl "[numfield -> numfield]" number_fields nil)
+    (numfield nonempty-type-eq-decl nil number_fields nil)
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (OR const-decl "[bool, bool -> bool]" booleans nil)
+    (nzint nonempty-type-eq-decl nil integers nil)
+    (int nonempty-type-eq-decl nil integers nil)
+    (integer_pred const-decl "[rational -> boolean]" integers nil)
+    (rational nonempty-type-from-decl nil rationals nil)
+    (rational_pred const-decl "[real -> boolean]" rationals nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (/= const-decl "boolean" notequal nil)
+    (number nonempty-type-decl nil numbers nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (real_minus_real_is_real application-judgement "real" reals nil)
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (real_times_real_is_real application-judgement "real" reals nil)
+    (sign_neg_clos application-judgement "Sign" sign "reals/")
+    (vertical_repulsive_crit const-decl "bool"
+     vs_only_vertical_repulsive nil)
+    (- const-decl "Vector" vectors_3D "vectors/")
+    (minus_odd_is_odd application-judgement "odd_int" integers nil))
+   shostak)))
+

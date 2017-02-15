@@ -1,0 +1,178 @@
+alerting_bands  % [ parameters ]
+		: THEORY
+
+  BEGIN
+
+  % ASSUMING
+   % assuming declarations
+  % ENDASSUMING
+
+  IMPORTING get_kinematic_bands, mops_requirements
+
+  % project_ac(t:nnreal)(ac:Aircraft): Aircraft = ac WITH [`s := ac`s+t*ac`v]
+
+  % project_traf(t:nnreal)(traffic:Traffic): Traffic = 
+  %   IF t=0 THEN traffic
+  %   ELSE map(project_ac(t))(traffic)
+  %   ENDIF 
+
+
+
+  vs_check(ucore:UpdatedCore, aci: Aircraft, vsSpread:nnreal):
+    % Returns TRUE if there is a red band within vsSpread of current vertical speed. 
+    bool = 
+    LET core  = ucore WITH [`traffic := (: aci :)], 
+    	vsb = get_kinematic_vs_bands(core, 1), 
+  	vs = core`ownship`v`z, 
+  	ind  = first_band_contains(vs, vsb`1),
+  	L = length(vsb`1) IN
+    IF ind = L THEN FALSE
+    % "IF" statement should never execute. Bands returns a partition of possible vertical speeds, 
+    %  so vs should be contained in one of them. If not, the vs is out of range. 
+    ELSIF nth(vsb`2, ind) = NEAR THEN
+         IF vsSpread = 0 THEN FALSE
+  	 ELSE TRUE 
+  	 ENDIF
+    ELSE LET band = nth(vsb`1, ind),
+             is_first = (ind = 0), 
+             is_last  = (ind = length(vsb`1)-1) IN
+        (  IF is_first THEN FALSE ELSE (vs-vsSpread < band`lb) ENDIF 
+         OR IF is_last THEN FALSE ELSE (vs+vsSpread > band`ub) ENDIF )
+    ENDIF
+        
+  gs_check(ucore:UpdatedCore, aci: Aircraft, gsSpread:nnreal):
+    % Returns TRUE if there is a red band within vsSpread of current vertical speed. 
+    bool = 
+    LET core  = ucore WITH [`traffic := (: aci :)], 
+    	gsb = get_kinematic_gs_bands(core, 1), 
+  	gs = gs(core`ownship`v), 
+  	ind  = first_band_contains(gs, gsb`1),
+  	L = length(gsb`1) IN
+    IF ind = L THEN FALSE
+    % "IF" statement should never execute. Bands returns a partition of possible vertical speeds, 
+    %  so gs should be contained in one of them. If not, gs is out of range.  
+    ELSIF nth(gsb`2, ind) = NEAR THEN
+         IF gsSpread = 0 THEN FALSE
+  	 ELSE TRUE 
+  	 ENDIF
+    ELSE LET band = nth(gsb`1, ind),
+             is_first = (ind = 0), 
+             is_last  = (ind = length(gsb`1)-1) IN
+        (  IF is_first THEN FALSE ELSE (gs-gsSpread < band`lb) ENDIF 
+         OR IF is_last THEN FALSE ELSE (gs+gsSpread > band`ub) ENDIF )
+    ENDIF
+  
+  track_check(ucore:UpdatedCore, aci: Aircraft, trackSpread:nnreal): 
+   % Returns TRUE if there is a red band within trackSpread of current vertical speed. 
+    bool = 
+    LET core  = ucore WITH [`traffic := (: aci :)], 
+    	trb = get_kinematic_trk_bands(core, 1), 
+  	trk = track(core`ownship`v), 
+  	ind  = first_band_contains(trk, trb`1),
+  	L = length(trb`1) IN
+    IF ind = L THEN FALSE
+    % "IF" statement should never execute. Bands returns a partition of possible track angles, 
+    %  so trk should be contained in one of them
+    ELSIF nth(trb`2, ind) = NEAR THEN
+         IF trackSpread = 0 THEN FALSE
+  	 ELSE TRUE 
+  	 ENDIF
+    % ELSIF executing while there is no conflict on the current trajectory says that there is a band
+    % adjacent to the trajectory. This should alert unless the threshold is 0.    
+    ELSE LET band = nth(trb`1, ind),
+             is_first = (ind = 0), 
+             is_last  = (ind = length(trb`1)-1) IN
+        (  IF is_first THEN 
+  	      	       IF trk-trackSpread<0 THEN
+  		          nth(trb`2, L-1)=NEAR OR 2*pi+trk-trackSpread<nth(trb`1, L-1)`lb
+  			  % wrapping around 2 pi. 
+  		       ELSE FALSE  
+  		       ENDIF
+   	   ELSE (trk-trackSpread < band`lb) 
+  	   ENDIF 
+         OR IF is_last THEN 
+  	               IF trk+trackSpread>2*pi THEN
+  		          nth(trb`2, L-1)=NEAR OR 2*pi-trk+trackSpread>nth(trb`1, 0)`ub
+  			  % wrapping around 2 pi. 
+  		       ELSE FALSE  
+  		       ENDIF 
+  	    ELSE (trk+trackSpread > band`ub) 
+  	    ENDIF )
+    ENDIF
+
+
+  bands_alerting_init(ucore:UpdatedCore, trk_alerting,vs_alerting,gs_alerting: bool, 
+  	         trb, vsb, gsb: {bands:[list[RealBand],list[Region],real, list[string], list[string]] | length(bands`1) = length(bands`2)}, time_to_warning: posreal) 
+  		 (ac_and_ttv: [Aircraft, [real,real]]):
+     below(5) = 
+       LET aci = ac_and_ttv`1, 
+           ttv = ac_and_ttv`2`1, 
+  	   mna = must_not_alert(ucore`ownship)(aci)`1 IN
+       IF member(aci`id, trb`5) AND mna>2 THEN % The aircraft has a corrective band 
+         LET TTV = %IF ucore`warning_when_recovery THEN 
+  	      %time_to_recovery(ucore, aci, IF ac_and_ttv`2=(1,-1) THEN LET nope = printf("that's odd~%") IN 0 ELSE ttv ENDIF, ucore`trk_alerting, ucore`vs_alerting, ucore`gs_alerting) 
+  	      %ELSE  
+	      ucore`cd(0, ucore`lookahead_time, ucore`ownship, aci)`1 
+	      %ENDIF 
+	      IN
+  	 IF TTV <= time_to_warning 
+  	    THEN 4
+  	 ELSE 3
+  	 ENDIF
+      ELSE   
+      	 LET intrack = trk_alerting AND member(aci`id, trb`4), 
+  	     invs = vs_alerting AND member(aci`id, vsb`4),
+  	     ings = gs_alerting AND member(aci`id, gsb`4) IN
+  	 IF (intrack OR invs OR ings) AND mna>1 THEN 2 
+  	 ELSIF alertor_from_table(MustAlertTable2)(ucore`ownship)(aci) AND mna>1 THEN 1
+  	 ELSE 0  % The aircraft has no bands in the selected dimensions. 
+  	 ENDIF 
+      ENDIF 
+
+  bands_alerting(ucore:UpdatedCore, trk_alerting,vs_alerting,gs_alerting: bool, 
+  	         trb, vsb, gsb: {bands:[list[RealBand],list[Region],real, list[string], list[string]] | length(bands`1) = length(bands`2)},
+  		 ac_and_ttv_list: list[[Aircraft,[real, real]]], time_to_warning: posreal): {L:list[below(5)] | length(L) = length(ac_and_ttv_list)} = 
+  		 map(bands_alerting_init(ucore,trk_alerting,vs_alerting,gs_alerting, trb, vsb, gsb, time_to_warning), ac_and_ttv_list) 
+
+  bands_alerting_init_alt(ucore:UpdatedCore, trk_alerting,vs_alerting,gs_alerting: bool, preventive_trk, preventive_vs, preventive_gs, preventive_alt: nnreal,
+  	         trb, vsb, gsb: {bands:[list[RealBand],list[Region],real, list[string], list[string]] | length(bands`1) = length(bands`2)}, time_to_warning: posreal) 
+  		 (ac_and_ttv: [Aircraft, [real,real]]):
+     below(5) = 
+       LET aci = ac_and_ttv`1, 
+           ttv = ac_and_ttv`2`1, 
+  	   mna = must_not_alert(ucore`ownship)(aci)`1 IN
+       IF member(aci`id, trb`5) AND mna>2  THEN % The aircraft has a corrective band AND must_not alert allows
+         LET TTV = %IF ucore`warning_when_recovery THEN 
+  	      %time_to_recovery(ucore, aci, IF ac_and_ttv`2=(1,-1) THEN LET nope = printf("that's odd~%") IN 0 ELSE ttv ENDIF, ucore`trk_alerting, ucore`vs_alerting, ucore`gs_alerting) 
+  	      %ELSE  
+	      ucore`cd(0, ucore`lookahead_time, ucore`ownship, aci)`1 
+	      %ENDIF 
+	      IN
+  	 IF TTV <= time_to_warning 
+  	    THEN 3
+  	 ELSE 2
+  	 ENDIF
+      ELSE 
+      	 IF alertor_from_table(MustAlertTable2)(ucore`ownship)(aci) OR
+  	    ( abs(ucore`ownship`s`z-aci`s`z) <= preventive_alt AND   
+  	    (   IF trk_alerting THEN track_check(ucore, aci, preventive_trk) ELSE FALSE ENDIF 
+  	      	 OR IF  vs_alerting THEN vs_check(ucore, aci, preventive_vs) ELSE FALSE ENDIF 
+  	      	 OR IF gs_alerting THEN gs_check(ucore, aci, preventive_gs) ELSE FALSE ENDIF )
+  		 AND mna>1)
+  	      THEN 1
+	     
+  	 ELSE 0  % The aircraft has no nearby bands in the selected dimensions and MOPS 'must alert 1' is false
+  	 ENDIF
+      ENDIF 
+
+   bands_alerting_alt(ucore:UpdatedCore, trk_alerting,vs_alerting,gs_alerting: bool, preventive_trk, preventive_vs, preventive_gs, preventive_alt: nnreal,
+   	         trb, vsb, gsb: {bands:[list[RealBand],list[Region],real, list[string], list[string]] | length(bands`1) = length(bands`2)},
+   		 ac_and_ttv_list: list[[Aircraft,[real, real]]], time_to_warning: posreal): {L:list[below(5)] | length(L) = length(ac_and_ttv_list)} = 
+   		 map(bands_alerting_init_alt(ucore, trk_alerting,vs_alerting,gs_alerting, preventive_trk, preventive_vs, preventive_gs, preventive_alt, trb, vsb, gsb, time_to_warning), ac_and_ttv_list) 
+   	       	          
+      	    
+       
+
+     
+
+  END alerting_bands

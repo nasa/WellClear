@@ -1,0 +1,40 @@
+ereal: THEORY
+
+  BEGIN
+
+extended: TYPE = {NaN, infty, neginfty};
+
+-(ex:extended): extended = IF ex = NaN THEN NaN
+			   ELSIF ex = infty THEN neginfty
+			   ELSE infty
+			   ENDIF;
+
+ereal: TYPE = union[real,extended];
+
+-(e:ereal): ereal = LET btest = inl?(e) IN
+ 	    	    IF btest then inl(-left(e))
+	    	    ELSE inr(-right(e))
+		    ENDIF;
+
+close(eps:nnreal, a, b:ereal): bool = 
+    IF inr?(a) OR inr?(b) 
+     THEN a=b
+    ELSE abs(left(a)-left(b))<=eps 
+    ENDIF;
+
+
+ CONVERSION inl[real, extended];
+ CONVERSION inr[real, extended]; 
+
+ereal2str(e:ereal) : string = IF inr?(e) THEN LET ee = right(e) IN
+		                 IF ee = NaN THEN "NaN" 
+				 ELSIF ee = infty THEN "infty" 
+				 ELSE "neginfty" 
+				 ENDIF
+			      ELSE format("~f", left(e)) 
+			      ENDIF
+		                 
+
+% CONVERION ereal2str
+
+  END ereal

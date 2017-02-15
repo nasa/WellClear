@@ -1,0 +1,11 @@
+TCASII Grand Totals: 142 proofs, 142 attempted, 142 succeeded (282.00 s)
+
+WellClear Grand Totals: 243 proofs, 243 attempted, 243 succeeded (191.20 s)
+
+DAIDALUS Grand Totals: 588 proofs, 588 attempted, 588 succeeded (437.08 s)
+
+TCASII                   [OK: 142 proofs]
+WellClear                [OK: 243 proofs]
+DAIDALUS                 [OK: 588 proofs]
+
+*** Grand Total: 973 proofs / 973 formulas. Missed: 0 formulas.

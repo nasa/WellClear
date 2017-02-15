@@ -1,0 +1,13 @@
+<h1 id="pvs-daidalus">PVS DAIDALUS</h1>
+<p><a href="http://pvs.csl.sri.com">PVS version 6.0</a> and the development version of the <a href="https://github.com/nasa/pvslib">NASA PVS Library</a> are required to proof-check the PVS DAIDALUS development. Furthermore, the directory <code>PVS</code> has to be added to the Unix environment variable <code>PVS_LIBRARY_PATH</code>. Depending upon your shell, one of the following lines has to be added to your startup script. In C shell (csh or tcsh), put this line in <code>~/.cshrc</code>, where <code>&lt;wellcleardir&gt;</code> is the absolute path to the directory <code>PVS</code>:</p>
+<pre><code>setenv PVS_LIBRARY_PATH &quot;&lt;wellclearpvsdir&gt;:$PVS_LIBRARY_PATH&quot;</code></pre>
+<p>In Borne shell (bash or sh), put this line in either <code>~/.bashrc or ~/.profile</code>:</p>
+<pre><code>export PVS_LIBRARY_PATH=&quot;&lt;wellclearpvsdir&gt;/nasalib:$PVS_LIBRARY_PATH&quot;</code></pre>
+<p>To proof-check the PVS DAIDALUS development, type the following command in a Unix shell.</p>
+<pre><code>$ provethem all-theories</code></pre>
+<p>The output of that command is</p>
+<pre><code>TCASII                   [OK: 142 proofs]
+WellClear                [OK: 243 proofs]
+DAIDALUS                 [OK: 588 proofs]
+
+*** Grand Total: 973 proofs / 973 formulas. Missed: 0 formulas.</code></pre>

@@ -1,0 +1,109 @@
+get_resolution: THEORY
+
+  BEGIN
+ 
+ IMPORTING get_kinematic_bands2
+
+ param: VAR Parameters
+ ucore: VAR UpdatedCore
+ unit: VAR posreal
+ 
+
+ res2ereal(res:[int, real], left: bool, unit: posreal):ereal = 
+      IF res`1 = 0 THEN inr(NaN)
+      ELSIF res`1 <0 THEN inr(IF left THEN neginfty ELSE infty ENDIF)
+      ELSE  inl(res`2/unit)
+      ENDIF
+
+
+ get_kinematic_trk_resolution(ucore, unit): [ereal,ereal] = 
+   % LET traffic = corrective_split(ucore)`1 IN
+   %  IF length(traffic) = 0 THEN (0,0,0,0) 
+   %  ELSE 
+      LET
+       los = cd2LOS(ucore`cd),
+       cd  = cd2CD(ucore`cd),
+       conf_det2 = cylinder_cd(ucore`min_horizontal_recovery, ucore`min_vertical_recovery),
+       los2 = cd2LOS(conf_det2),
+       cd2 = cd2CD(conf_det2), 
+       muf_param = most_urgent_function(ucore`most_urgent, ucore`ownship, ucore`traffic, ucore`conflict_crit, ucore`recovery_crit), 
+   	crit? =  muf_param`4,
+       FGfun = 	kinematic_track_first_green(los,cd,los2,cd2,FALSE,ucore`ownship`s,
+  	ucore`ownship`v,ucore`traffic,muf_param`1,
+  	 muf_param`2,muf_param`3,crit?,crit?,ucore`omega)
+	 (0,ucore`lookahead_time,0,0,round(ucore`lefttrk/ucore`track_step), 
+	 round(ucore`righttrk/ucore`track_step),ucore`track_step),
+       Lres = FGfun(-1), 
+       Rres = FGfun(1) IN 
+      (res2ereal(Lres, TRUE, unit), res2ereal(Rres, FALSE,unit))
+   % ENDIF
+
+ get_kinematic_vs_resolution(ucore, unit): [ereal,ereal] = 
+   % LET traffic = corrective_split(ucore)`1 IN
+   %  IF length(traffic) = 0 THEN (0,0,0,0) 
+   %  ELSE 
+      LET
+       los = cd2LOS(ucore`cd),
+       cd  = cd2CD(ucore`cd),
+       conf_det2 = cylinder_cd(ucore`min_horizontal_recovery, ucore`min_vertical_recovery),
+       los2 = cd2LOS(conf_det2),
+       cd2 = cd2CD(conf_det2), 
+       muf_param = most_urgent_function(ucore`most_urgent, ucore`ownship, ucore`traffic, ucore`conflict_crit, ucore`recovery_crit), 
+   	crit? =  muf_param`4,
+       FGfun = 	kinematic_vs_first_green(los,cd,los2,cd2,FALSE,ucore`ownship`s,
+  	ucore`ownship`v,ucore`traffic,muf_param`1,
+  	 muf_param`2,muf_param`3,crit?,crit?,ucore`vs_accel, 
+  	ucore`minvs, ucore`maxvs)
+        (0,ucore`lookahead_time,0,0,ucore`vs_step), 
+       Dres = FGfun(-1), 
+       Ures = FGfun(1) IN 
+      (res2ereal(Dres, TRUE, unit), res2ereal(Ures, FALSE,unit))
+    % ENDIF
+
+  get_kinematic_gs_resolution(ucore, unit): [ereal,ereal] = 
+   % LET traffic = corrective_split(ucore)`1 IN
+   %  IF length(traffic) = 0 THEN (0,0,0,0) 
+   %  ELSE 
+      LET
+       los = cd2LOS(ucore`cd),
+       cd  = cd2CD(ucore`cd),
+       conf_det2 = cylinder_cd(ucore`min_horizontal_recovery, ucore`min_vertical_recovery),
+       los2 = cd2LOS(conf_det2),
+       cd2 = cd2CD(conf_det2), 
+       muf_param = most_urgent_function(ucore`most_urgent, ucore`ownship, ucore`traffic, ucore`conflict_crit, ucore`recovery_crit), 
+   	crit? =  muf_param`4,
+       FGfun = 	kinematic_gs_first_green(los,cd,los2,cd2,FALSE,ucore`ownship`s,
+  	ucore`ownship`v,ucore`traffic,muf_param`1,
+  	 muf_param`2,muf_param`3,crit?,crit?,ucore`gs_accel, 
+  	ucore`mings, ucore`maxgs)
+        (0,ucore`lookahead_time,0,0,ucore`gs_step), 
+       Dres = FGfun(-1), 
+       Ures = FGfun(1) IN 
+      (res2ereal(Dres, TRUE, unit), res2ereal(Ures, FALSE,unit))
+    % ENDIF
+
+  % get_kinematic_alt_resolution(ucore, unit): [ereal,ereal] = 
+  %  % LET traffic = corrective_split(ucore)`1 IN
+  %  %  IF length(traffic) = 0 THEN (0,0,0,0) 
+  %  %  ELSE 
+  %     LET
+  %      los = cd2LOS(ucore`cd),
+  %      cd  = cd2CD(ucore`cd),
+  %      conf_det2 = cylinder_cd(ucore`min_horizontal_recovery, ucore`min_vertical_recovery),
+  %      los2 = cd2LOS(conf_det2),
+  %      cd2 = cd2CD(conf_det2),
+  %      FGfun(eps:Sign) = IF ucore`vertical_rate = 0 THEN 
+  %          instant_alt_first_green(los,cd,los2,cd2,FALSE,0,ucore`lookahead_time,0,0,
+  % 	   ucore`ownship`s,ucore`ownship`v,ucore`traffic,
+  %          ucore`minalt, ucore`maxalt,ucore`alt_step,eps)
+  % 	   ELSE 
+  % 	   kinematic_alt_first_green(los,cd,los2,cd2,FALSE,0,ucore`lookahead_time,0,0,
+  % 	   ucore`ownship`s,ucore`ownship`v,ucore`traffic,
+  %          ucore`minalt, ucore`maxalt,ucore`alt_step,1,
+  % 	   ucore`vertical_rate,ucore`vs_accel,-ucore`vs_accel, TRUE,eps)
+  % 	   ENDIF, 
+  %      Dres = FGfun(-1), 
+  %      Ures = FGfun(1) IN 
+  %     (res2ereal(Dres, TRUE, unit), res2ereal(Ures, FALSE,unit))
+
+  END get_resolution

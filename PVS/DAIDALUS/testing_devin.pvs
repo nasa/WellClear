@@ -1,0 +1,47 @@
+testing_devin  % [ parameters ]
+		: THEORY
+
+  BEGIN
+
+  IMPORTING los_and_cd, 
+
+    get_kinematic_bands2
+
+
+los_cd, los_cd2: VAR LOS_CD
+   t, T: VAR nnreal
+   own, int: VAR Aircraft
+   traffic: VAR Traffic
+   rec?: VAR bool
+
+
+
+   AT: AlertTable = (# wcv:= (# DTHR := 1222.3200000000, ZTHR := 137.1600000000, TTHR := 35.0, TCOA := 0.0 #), alerting_time:= 25.0, late_alerting_time:= 55.0, region:= NEAR, spread_trk:= (0.0000000000,0.0000000000), spread_gs:= (0.0000000000,0.0000000000), spread_vs:= (0.0000000000,0.0000000000), spread_alt:= (0.0000000000,0.0000000000) #)
+
+   aircraft(north, east, alt, heading, gs, vs: real, name: string): Aircraft = 
+    (# id:= name, 
+       v:= (gs*kts*sin(heading*deg), gs*kts*cos(heading*deg), vs*fpm), 
+       s:= (east*nmi, north*nmi, alt*ft) #)
+   
+
+  trred(los_cd)(los_cd2)(t, T, own)(traffic): bool = 
+  any_trk_red(0.0523598776, -pi, pi,  0.000174532925)(los_cd)(los_cd2)(t, T, own)(traffic)
+
+  trkinit(los_cd)(los_cd2)(t, T, own, rec?)(traffic): list[RealBand] = 
+  trk_bands_init(0.0523598776, -pi, pi,  0.000174532925)(1,1,FALSE,FALSE)(los_cd)(los_cd2)(t, T, own, rec?)(traffic)
+
+  trkrec: Recovery = 
+    get_recovery(55, 0, 0.9*nmi, 450*ft, 0.2, FALSE)
+
+   
+  cyl(t, T, own, int): [real, real] = 
+     cylinder_cd(0.9*nmi, 450*ft)(t, T, own, int)
+
+  test_bands: [[Aircraft, Traffic]->[list[RealBand], ereal, list[string], list[string]]] =
+    get_one_bands(cyl, trkrec)( AT , TRUE)(trred, trkinit)
+
+  turnac(own): Aircraft = let (so, vo) = turnOmega(own`s, own`v, 1, 0.0523598776) IN
+               (# id := own `id, s:= so, v:=vo #)
+
+
+  END testing_devin

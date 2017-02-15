@@ -1,0 +1,232 @@
+last_time_to_maneuver: THEORY
+
+  BEGIN
+
+  IMPORTING get_kinematic_bands2, ereal
+
+  
+
+  project_traf(t:nnreal)(traffic:Traffic): Traffic = 
+    IF t=0 THEN traffic
+    ELSE map(project_ac(t))(traffic)
+    ENDIF 
+
+  last_time_to_maneuver(par: Parameters, (ucore: UpdatedCore | pc_comp(ucore, par)), bands_init: BandsInit)(ac:Aircraft): 
+  ereal = 
+     IF par`alertor`1 = 0 THEN inr[real,extended](NaN) 
+     ELSE LET conf_id = par`alertor`1-1, 
+  	      alerttable =  nth(par`alertor`2, conf_id),
+	      cd =  table_to_ConfDet(alerttable`wcv), 
+ 	      lat =  alerttable`early_alerting_time,
+	      %lat = alerttable`alerting_time,
+  	      T = cd(0, lat, ucore`ownship, ac) 
+	      %,prt = printf("~a, ~a~%", (T`1, T`2) )
+	      IN
+          IF T`1<0 OR T`1>=T`2 THEN inr(NaN)
+	  ELSIF T`1 = 0 THEN inr(neginfty)
+          ELSE 
+            LET los_cd: LOS_CD = (# los:= cd2LOS(cd),
+                                    cd := cd2CD(cd) #),
+  	        los_cd2: LOS_CD = (# los:= cd2LOS(ucore`cd2),
+	               	             cd := cd2CD(ucore`cd2) #),
+                all_red(t:nnreal): bool =
+       	          LET prown = project_ac(t)(ucore`ownship),
+	              traffic = project_traf(t)((: ac :)),
+		      %traffic = (: ac :),
+		      bands = bands_init(los_cd)(los_cd2)(0, lat, prown, FALSE)(traffic)
+		      %,prt = printf("~a~%", bands)
+	          IN
+                  null?(bands) OR some_ac?(LAMBDA(ac:Aircraft): los_cd`los(prown`s, prown`v, ac`s, ac`v))(traffic)
+            IN
+            IF all_red(0) THEN let p=printf("all_red(0) is true~%") IN
+	       inr(neginfty) 
+	    ELSIF NOT all_red(T`1) THEN %LET p = printf("error in ltm gs. Not all_red at time to violation ~a.~%", T) IN 
+	       inl(T`1)
+	    ELSE LET Tcalc = first_time(all_red, 0, T`1, FALSE) IN
+               IF Tcalc = 0 THEN inr(neginfty)
+	       ELSE inl(Tcalc)
+	       ENDIF
+	    ENDIF 
+          ENDIF 
+     ENDIF
+
+   trk_ltm_list(par: Parameters, (ucore: UpdatedCore | pc_comp(ucore, par)))(traffic:Traffic): list[ereal] = 
+     LET bands_init = trk_bands_init(ucore`turn_rate, par`left_trk, par`right_trk, 
+     	 	        par`trk_step)(1,1,FALSE, FALSE) 
+     IN
+     map(last_time_to_maneuver(par, ucore, bands_init))(traffic)  
+
+   vs_ltm_list(par: Parameters, (ucore: UpdatedCore | pc_comp(ucore, par)))(traffic:Traffic): list[ereal] = 
+     LET bands_init = vs_bands_init(par`vertical_accel, par`min_vs, par`max_vs, 
+     	 	        par`vs_step)(1,1,FALSE, FALSE) 
+     IN
+     map(last_time_to_maneuver(par, ucore, bands_init))(traffic)  
+
+   gs_ltm_list(par: Parameters, (ucore: UpdatedCore | pc_comp(ucore, par)))(traffic:Traffic): list[ereal] = 
+     LET bands_init = gs_bands_init(par`horizontal_accel, par`min_gs, par`max_gs, 
+     	 	        par`gs_step)(1,1,FALSE, FALSE) 
+     IN
+     map(last_time_to_maneuver(par, ucore, bands_init))(traffic)  
+
+   alt_ltm_list(par: Parameters,(ucore: UpdatedCore | pc_comp(ucore, par)))(traffic:Traffic): list[ereal] = 
+     LET bands_init = alt_bands_init(par`vertical_accel, par`min_alt, par`max_alt, 
+     	 	        par`alt_step, par`vertical_rate)(1,1,FALSE, FALSE) 
+     IN
+     map(last_time_to_maneuver(par, ucore, bands_init))(traffic)
+  
+END last_time_to_maneuver
+ 
+%%%%%%%%%%%%%%%
+% OLD VERSIONS
+%%%%%%%%%%%%%%
+
+  % last_time_to_maneuver_trk(par: Parameters, ucore: UpdatedCore)(ac:Aircraft): 
+  % ereal = LET conf_id = par`alertor`1-1, 
+  % 	      alerttable =  nth(par`alertor`2, conf_id),
+  % 	      cd =  table_to_ConfDet(alerttable`wcv), 
+  % 	      lat =  alerttable`early_alerting_time,
+  % 	      T = cd(0, lat, ucore`ownship, ac) IN
+  %        IF T`1<0 OR T`1> T`2 THEN inr(NaN)
+  %        ELSE 
+  %        LET los = cd2LOS(cd),
+  %      	     cd  = cd2CD(cd),
+  %      	     los2 = cd2LOS(ucore`cd2),
+  %      	     cd2 = cd2CD(ucore`cd2),
+  % 	     all_red(t:nnreal): bool =
+  %      	     LET vo = ucore`ownship`v, 
+  %      	       so = ucore`ownship`s+t*vo, 
+  % 	       traffic = project_traf(t)((: ac :))
+  % 	       % ,muf_param = most_urgent_function(ucore`most_urgent, ucore`ownship, traffic, ucore`conflict_crit, ucore`recovery_crit)
+  %            IN 
+  %      	       all_kinematic_track_red(los,cd,los2,cd2,FALSE,so,
+  % 	          vo,traffic,
+  % 		 % muf_param`1,muf_param`2,muf_param`3,muf_param`4,muf_param`4,
+  % 		  gen_most_urg, 1,1,FALSE,FALSE,
+  % 		  par`turn_rate,1,FALSE)
+  % 		  (0,lat,0,0,round(par`left_trk/par`trk_step), 
+  % 		  round(par`right_trk/par`trk_step),par`trk_step)
+  %        IN
+  %        IF all_red(0) THEN inr(neginfty)
+  % 	 ELSIF NOT all_red(T`1) THEN % LET p = printf("error in ltm trk. Not all_red at time to violation ~a.~%", T) IN   %debugging
+  % 	       inl(T`1)
+  % 	 ELSE LET Tcalc = first_time(all_red, 0, T`1, FALSE) IN
+  %             IF Tcalc = 0 THEN inr(neginfty)
+  % 	      ELSE inl(Tcalc)
+  % 	      ENDIF
+  % 	 ENDIF
+  %        ENDIF
+ 
+  % trk_ltm_list(par: Parameters, ucore:UpdatedCore)(traffic:Traffic): list[ereal] = 
+  %    map(last_time_to_maneuver_trk(par, ucore))(traffic)
+
+  % last_time_to_maneuver_vs(par: Parameters, ucore: UpdatedCore)(ac:Aircraft): 
+  % ereal =  LET conf_id = par`alertor`1-1, 
+  % 	      alerttable =  nth(par`alertor`2, conf_id),
+  % 	      cd =  table_to_ConfDet(alerttable`wcv), 
+  % 	      lat =  alerttable`early_alerting_time,
+  % 	      T = cd(0, lat, ucore`ownship, ac) IN
+  %        IF T`1<0 OR T`1>T`2 THEN inr(NaN)
+  %        ELSE 
+  %        LET los = cd2LOS(cd),
+  %      	     cd  = cd2CD(cd),
+  %      	     los2 = cd2LOS(ucore`cd2),
+  %      	     cd2 = cd2CD(ucore`cd2),
+  % 	     all_red(t:nnreal): bool =
+  %      	     LET vo = ucore`ownship`v, 
+  %      	       so = ucore`ownship`s+t*vo,
+  % 	       traffic = project_traf(t)((: ac :))
+  %              %,muf_param = most_urgent_function(ucore`most_urgent, ucore`ownship, traffic, ucore`conflict_crit, ucore`recovery_crit) 
+  %            IN 
+  %      	       all_kinematic_vs_red(los,cd,los2,cd2, FALSE,so,
+  % 		  vo,traffic,
+  % 		  %muf_param`1,muf_param`2,muf_param`3,muf_param`4,muf_param`4,
+  % 		  gen_most_urg, 1,1,FALSE,FALSE,
+  % 		  par`vertical_accel,1,FALSE,par`min_vs, par`max_vs)
+  %                 (0,lat,0,0,par`vs_step)
+  %        IN
+  %        IF all_red(0) THEN inr(neginfty) 
+  % 	 ELSIF NOT all_red(T`1) THEN %LET p = printf("error in ltm vs. Not all_red at time to violation ~a.~%", T) IN 
+  % 	       inl(T`1)
+  % 	 ELSE LET Tcalc = first_time(all_red, 0, T`1, FALSE) IN
+  %             IF Tcalc = 0 THEN inr(-infty)
+  % 	      ELSE inl(Tcalc)
+  % 	      ENDIF
+  % 	 ENDIF 
+  % 	 ENDIF
+
+  % vs_ltm_list(par: Parameters, ucore:UpdatedCore)(traffic:Traffic): list[ereal] = 
+  %    map(last_time_to_maneuver_vs(par, ucore))(traffic)
+
+  % last_time_to_maneuver_gs(par: Parameters, ucore: UpdatedCore)(ac:Aircraft): 
+  % ereal = LET conf_id = par`alertor`1-1, 
+  % 	      alerttable =  nth(par`alertor`2, conf_id),
+  % 	      cd =  table_to_ConfDet(alerttable`wcv), 
+  % 	      lat =  alerttable`early_alerting_time,
+  % 	      T = cd(0, lat, ucore`ownship, ac) IN
+  %        IF T`1<0 OR T`1>T`2 THEN inr(NaN)
+  %        ELSE 
+  %        LET los = cd2LOS(cd),
+  %      	     cd  = cd2CD(cd),
+  %      	     los2 = cd2LOS(ucore`cd2),
+  %      	     cd2 = cd2CD(ucore`cd2),
+  % 	     all_red(t:nnreal): bool =
+  %      	     LET vo = ucore`ownship`v, 
+  %      	       so = ucore`ownship`s+t*vo,
+  % 	       traffic = project_traf(t)((: ac :))
+  % 	       %,muf_param = most_urgent_function(ucore`most_urgent, ucore`ownship, traffic, ucore`conflict_crit, ucore`recovery_crit)
+  % 	     IN
+  %      	       all_kinematic_gs_red(los,cd,los2,cd2,FALSE,so,
+  % 		  vo,traffic,
+  % 		  % muf_param`1,muf_param`2,muf_param`3,muf_param`4,muf_param`4,
+  % 		  gen_most_urg, 1,1,FALSE,FALSE,
+  % 		  par`horizontal_accel,1,FALSE,par`min_gs, par`max_gs)
+  %                 (0,lat,0,0,par`gs_step) 
+  %        IN
+  %        IF all_red(0) THEN inr(neginfty) 
+  % 	 ELSIF NOT all_red(T`1) THEN %LET p = printf("error in ltm gs. Not all_red at time to violation ~a.~%", T) IN 
+  % 	       inl(T`1)
+  % 	 ELSE LET Tcalc = first_time(all_red, 0, T`1, FALSE) IN
+  %             IF Tcalc = 0 THEN inr(-infty)
+  % 	      ELSE inl(Tcalc)
+  % 	      ENDIF
+  % 	 ENDIF 
+  %        ENDIF
+
+  % gs_ltm_list(par: Parameters, ucore:UpdatedCore)(traffic:Traffic): list[ereal] = 
+  %    map(last_time_to_maneuver_gs(par, ucore))(traffic)
+
+
+  % last_time_to_maneuver_alt(par: Parameters, ucore: UpdatedCore)(ac:Aircraft):
+  % ereal = LET conf_id = par`alertor`1-1, 
+  % 	      alerttable =  nth(par`alertor`2, conf_id),
+  % 	      cd =  table_to_ConfDet(alerttable`wcv), 
+  % 	      lat =  alerttable`early_alerting_time,
+  % 	      T = cd(0, lat, ucore`ownship, ac) IN
+  %        IF T`1<0 OR T`1>T`2 THEN inr(NaN)
+  % 	 ELSIF T`1 = 0 THEN inr(neginfty)
+  %        ELSE 
+  %        LET los_cd: LOS_CD = (# los:= cd2LOS(cd),
+  %                           cd := cd2CD(cd) #),
+  % 	     los_cd2: LOS_CD = (# los:= cd2LOS(ucore`cd2),
+  % 		 	     cd := cd2CD(ucore`cd2) #),
+  %           all_red(t:nnreal): bool =
+  %      	     LET prown = project_ac(t)(ucore`ownship),
+  % 	       traffic = project_traf(t)((: ac :))
+  % 	       %,muf_param = most_urgent_function(ucore`most_urgent, ucore`ownship, traffic, ucore`conflict_crit, ucore`recovery_crit)
+  % 	     IN
+  %            null?(alt_bands_init(par`vertical_accel, par`min_alt, par`max_alt, par`alt_step, par`vertical_rate)
+  %             (1,1,FALSE,FALSE)
+  %             (los_cd)(los_cd2)(0, lat, prown, FALSE)(traffic))
+  %        IN
+  %        IF all_red(0) THEN inr(neginfty) 
+  % 	 ELSIF NOT all_red(T`1) THEN %LET p = printf("error in ltm gs. Not all_red at time to violation ~a.~%", T) IN 
+  % 	       inl(T`1)
+  % 	 ELSE LET Tcalc = first_time(all_red, 0, T`1, FALSE) IN
+  %             IF Tcalc = 0 THEN inr(neginfty)
+  % 	      ELSE inl(Tcalc)
+  % 	      ENDIF
+  % 	 ENDIF 
+  %        ENDIF
+
+  % alt_ltm_list(par: Parameters, ucore:UpdatedCore)(traffic:Traffic): list[ereal] = 
+  %    map(last_time_to_maneuver_alt(par, ucore))(traffic)

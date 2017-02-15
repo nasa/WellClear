@@ -1,0 +1,105 @@
+%------------------------------------------------------------------------------
+%    Simple Vertical Repulsion
+%    This criterion is to be used iteratively
+%    It is used for vertical speed only maneuvers 
+%
+%   
+%------------------------------------------------------------------------------
+vs_only_vertical_repulsive[D,H,caD,caH,caTime: posreal,
+         ( IMPORTING ACCoRD@definitions_3D )
+         break_vz_symm:[Vect3 ->  Sign] %% Break symmetry when v`z = 0
+      ] : THEORY                        
+BEGIN
+
+  ASSUMING
+
+    break_vz_symm_comm : ASSUMPTION
+      FORALL (s:Vect3):
+        s /= zero IMPLIES
+        break_vz_symm(-s) = -break_vz_symm(s)
+
+    break_vz_symm_sz : ASSUMPTION
+      FORALL (s:Vect3):
+        s`z /= 0 IMPLIES 
+        break_vz_symm(s) = sign(s`z)
+
+    % Future work: continuity of break symmetry
+
+  ENDASSUMING
+
+IMPORTING ACCoRD@vertical[H],
+  	    ACCoRD@space_3D[D,H],
+	    ACCoRD@vertical_los_crit_CA[D,H,caD,caH,caTime,break_vz_symm]
+
+  vo,vi,
+  nvi,nvo,
+  v,nv,
+  s,so,si : VAR Vect3
+  t,t1,t2,
+  tm      : VAR real
+  tr      : VAR posreal %% Parameter that specifies maximum time to recover
+  eps	  : VAR Sign
+  tn	  : VAR nnreal
+  sz,vz,
+  nvz,
+  voz,viz,
+  nvoz,
+  nviz,
+  soz,siz : VAR real
+  MinRelVertSpeed,
+  MinRelVertSpeedo,
+  MinRelVertSpeedi: VAR posreal
+
+  repulsive_vertical_vs_only(s,v)(nv): bool = 
+    abs(vertical_decision_vect(s,nv)`z)>=
+    abs(vertical_decision_vect(s,v)`z) OR
+    (vect2(s)*vect2(v)>=0 AND 
+      (nv`z=0 OR sign(nv`z)=sign(s`z)) 
+      AND v`z=0)
+
+  % only to be used when vect2(s)*vect2(v)<0
+  vertical_repulsive_crit(s,v,eps)(nv): bool =
+    eps*nv`z>=eps*v`z % only to be used when vect2(s)*vect2(v)<0
+
+  vertical_repulsive_crit_indep: LEMMA
+    eps = break_vz_symm(vertical_decision_vect(so-si,vo-vi)) AND
+    vs_only?(vo)(nvo) AND
+    vertical_repulsive_crit(so-si,vo-vi,eps)(nvo-vi) AND
+    (NOT CA_cyl_conflict_ever?(so-si,nvo-vi)) AND
+    (NOT CA_cyl_conflict_ever?(so-si,vo-vi))
+    IMPLIES
+    (abs(vertical_decision_vect(so-si,nvo-vi)`z)>=
+    abs(vertical_decision_vect(so-si,vo-vi)`z) OR
+    ((nvo-vi)`z=0 OR sign((nvo-vi)`z)=sign((so-si)`z)) AND (vo-vi)`z=0)
+
+  vertical_repulsive_crit_indep_conv: LEMMA
+    eps = break_vz_symm(vertical_decision_vect(so-si,vo-vi)) AND
+    vs_only?(vo)(nvo) AND
+    vertical_repulsive_crit(so-si,vo-vi,eps)(nvo-vi) AND
+    (NOT CA_cyl_conflict_ever?(so-si,nvo-vi)) AND
+    (NOT CA_cyl_conflict_ever?(so-si,vo-vi)) AND
+    vect2(so-si)*vect2(vo-vi)<0
+    IMPLIES
+    (abs(vertical_decision_vect(so-si,nvo-vi)`z)>=
+    abs(vertical_decision_vect(so-si,vo-vi)`z))
+
+  vertical_repulsive_crit_repulsive: LEMMA 
+    eps = break_vz_symm(vertical_decision_vect(so-si,vo-vi)) AND
+    vs_only?(vo)(nvo) AND
+    vertical_repulsive_crit(so-si,vo-vi,eps)(nvo-vi) AND
+    (NOT CA_cyl_conflict_ever?(so-si,nvo-vi)) AND
+    (NOT CA_cyl_conflict_ever?(so-si,vo-vi))
+    IMPLIES
+    repulsive_vertical_vs_only(so-si,vo-vi)(nvo-vi)
+
+
+  vertical_repulsive_crit_coord_lem: LEMMA %must choose opposite epsilons
+    vertical_repulsive_crit(so-si,vo-vi,eps)(nvo-vi) AND
+    vertical_repulsive_crit(si-so,vi-vo,-eps)(nvi-vo)
+    IMPLIES
+    vertical_repulsive_crit(so-si,vo-vi,eps)(nvo-nvi)
+
+
+
+
+END vs_only_vertical_repulsive

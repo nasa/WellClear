@@ -1,0 +1,123 @@
+format_bands  % [ parameters ]
+		: THEORY
+
+  BEGIN
+
+  % ASSUMING
+   % assuming declarations
+  % ENDASSUMING
+
+  IMPORTING real_bands, 
+            alertor
+
+ % Region: TYPE = {NONE, MID, NEAR, RECOVERY, UNKNOWN}
+
+  red(indic:below(2)): Region = 
+    IF indic  =  0 THEN MID
+    ELSE NEAR
+    ENDIF
+
+  green(rec?:bool): Region = 
+   IF rec? THEN RECOVERY
+   ELSE NONE
+   ENDIF
+
+  cut_low(rb: list[RealBand], LB: real): RECURSIVE list[RealBand] = 
+    IF null?(rb) THEN rb
+    ELSE LET band = car(rb) IN
+      IF band`lb > LB THEN rb
+      ELSIF band`ub <= LB then cut_low(cdr(rb), LB)
+      ELSE cons((# lb:= LB, ub:=band`ub #), cdr(rb))
+      ENDIF
+    ENDIF
+    MEASURE length(rb)
+
+   % Note: formatting for recovery is later. 
+  format_gen_it(lower,upper: real, nearbands, midbands: list[RealBand], LB:real,
+    formatted:{TL:[list[RealBand], list[Region]] | length(TL`1) = length(TL`2)}): 
+    RECURSIVE {TL:[list[RealBand], list[Region]] | length(TL`1) = length(TL`2)} = 
+    IF LB = upper THEN formatted
+    ELSIF null?(nearbands) THEN ( cons((#lb:=LB, ub:=upper#), formatted`1), cons(NEAR, formatted`2))
+    ELSE LET nearband = car(nearbands) IN
+         IF nearband`lb = LB THEN  
+             IF null?(midbands) THEN 
+                LET fmtd = (cons((#lb:=LB, ub:=nearband`ub#), formatted`1), cons(MID, formatted`2)), 
+	      	  nLB = nearband`ub, 
+		  newnear = cut_low(nearbands, nLB), 
+		  newmid = cut_low(midbands, nLB) IN
+                format_gen_it(lower, upper, newnear, newmid, nLB, fmtd)
+             ELSE LET midband = car(midbands) IN
+	     	  IF midband`lb<= LB THEN 
+		    LET fmtd = (cons((#lb:=LB, ub:=midband`ub#), formatted`1), cons(NONE, formatted`2)), 
+	      	        nLB = midband`ub, 
+		        newnear = cut_low(nearbands, nLB), 
+		        newmid = cut_low(midbands, nLB) IN
+                    format_gen_it(lower, upper, newnear, newmid, nLB, fmtd)
+		  ELSE LET nLB = min(nearband`ub, midband`lb), 
+		           fmtd = (cons((#lb:=LB, ub:=nLB#), formatted`1), cons(MID, formatted`2)), 
+			   newnear = cut_low(nearbands, nLB), 
+		 	   newmid = cut_low(midbands, nLB) IN
+                       format_gen_it(lower, upper, newnear, newmid, nLB, fmtd) 
+		  ENDIF
+              ENDIF
+	 ELSE LET fmtd = (cons((#lb:=LB, ub:=nearband`lb#), formatted`1), cons(NEAR, formatted`2)), 
+	      	  nLB = nearband`lb, 
+		  newnear = cut_low(nearbands, nLB), 
+		  newmid = cut_low(midbands, nLB) IN
+              format_gen_it(lower, upper, newnear, newmid, nLB, fmtd) 
+         ENDIF
+    ENDIF
+    MEASURE length(nearbands) + length(midbands)
+
+  % format_nonempty: LEMMA 
+  %   FORALL (lower,upper: real, (bands: [list[RealBand], below(2)] |length(bands`1)>0), 
+  %   formatted:{TL:[list[RealBand], list[Region]] | length(TL`1) = length(TL`2)}): 
+  %    cons?(format_gen_it(lower, upper, bands, formatted)`1)
+
+   format_gen(lower, upper: real, nearbands, midbands: list[RealBand] ): 
+      {TL:[list[RealBand], list[Region]] | length(TL`1) = length(TL`2)} = 
+       LET preformatted = 
+           format_gen_it(lower, upper, nearbands, midbands, lower, (null[RealBand], null[Region])),
+	   formatted = (reverse(preformatted`1), reverse(preformatted`2)) IN
+	   formatted
+  
+  format_bands(rec?:bool, lower, upper: real, nearbands, midbands: list[RealBand] ): 
+      {TL:[list[RealBand], list[Region]] | length(TL`1) = length(TL`2)} =
+      LET bands = format_gen(lower, upper, nearbands, midbands) IN
+        IF rec? THEN (bands`1, map(LAMBDA (r:Region): IF r=NEAR THEN RECOVERY ELSE r ENDIF)(bands`2))
+	ELSE bands
+	ENDIF
+	   
+
+  cutoff(lower, upper:real, bands: list[RealBand]): list[RealBand] =
+    filter( LAMBDA (rb:RealBand): rb`ub > lower AND rb`lb < upper)(bands)
+
+
+   format_track_pre(left, right, trk: real, nearbands, midbands: list[RealBand]): 	      
+     {TL:[list[RealBand], list[Region]] | length(TL`1) = length(TL`2)} = 
+     IF left = pi AND right = pi  
+       THEN format_gen(0, 2*pi, nearbands, midbands)
+     ELSE  
+       LET trl = to2pi(trk-left), 
+       	   trr = to2pi(trk+right) IN
+       IF trl>trr THEN 
+       	  LET (fb, fr) = format_gen(0, trr, cutoff(0, trl, nearbands), cutoff(0, trl, midbands)), 
+	      (mb, mr) = ( (: (# lb:=trr, ub:= trl #) :), (: UNKNOWN :)),
+	      (lb, lr) = format_gen(trl, 2*pi, cutoff(trr, 2*pi, nearbands), cutoff(trr, 2*pi, midbands)) IN
+          (append(append(fb,mb),lb), append(append(fr, mr), lr))
+       ELSE  
+         LET (fb, fr) = ( (: (# lb:=0, ub:= trl #) :), (: UNKNOWN :)), 
+	      (mb, mr) = format_gen(trl, trr, cutoff(trl, trr, nearbands), cutoff(trl,trr,midbands)),
+	      (lb, lr) = ( (: (# lb:=trr, ub:= 2*pi #) :), (: UNKNOWN :)) IN
+          (append(append(fb,mb),lb), append(append(fr, mr), lr))
+       ENDIF
+     ENDIF
+ 
+  format_trk(rec?:bool, left, right, trk: real, nearbands, midbands: list[RealBand]): 	     {TL:[list[RealBand], list[Region]] | length(TL`1) = length(TL`2)} = 
+      LET bands = format_track_pre(left, right, trk, nearbands, midbands) IN
+        IF rec? THEN (bands`1, map(LAMBDA (r:Region): IF r=MID THEN RECOVERY ELSE r ENDIF)(bands`2))
+	ELSE bands
+	ENDIF
+  
+
+  END format_bands

@@ -1,0 +1,34 @@
+inst_bands2  
+		: THEORY
+
+  BEGIN
+
+ IMPORTING los_and_cd
+
+ NTRAJ: TYPE  = [Aircraft-> [int->Aircraft]]
+
+ cd1, cd2: VAR CDfun_0
+ own, intr: VAR Aircraft
+ traffic: VAR list[Aircraft]
+ t,T: VAR nnreal
+ i: VAR int
+ new_own: VAR NTRAJ
+ dir:Sign
+ band_bnd: nnreal
+
+ has_conflict_ac?(cd1, cd2, t, T)(own)(intr): bool = 
+   cd1(0,t,own`s,own`v,intr`s,intr`v) OR 
+   NOT cd2(0,t,own`s,own`v,intr`s,intr`v) 
+
+ has_conflict_traf?(cd1, cd2, t, T)(own)(traffic): bool = 
+   some_ac?(has_conflict_ac?(cd1,cd2,t,T)(own))(traffic)
+
+ has_conflict_at_step?(new_own)(cd1,cd2,t,T)(own)(traffic)(i): bool = 
+   has_conflict_traf?(cd1,cd2,t,T)(new_own(own)(i))(traffic)
+ 
+ %band_dir(): RECURSIVE list[RealBand] =
+   
+ 
+  
+
+  END inst_bands2

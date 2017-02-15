@@ -1,0 +1,184 @@
+mops_checker : THEORY
+
+  BEGIN
+
+  IMPORTING PVSioChecker@pvsio_checker,
+            test_bands, alerting_bands, alerting_thresholds, structures@set_as_list, mops_requirements
+
+  BandPP: TYPE = [list[RealBand],list[Region], real]
+  GCore: Global[Core, defcore]
+  NumSamp: Global[nat, 400]
+  FailRate: Global[rat, 0.01]
+  TTRThresh: Global[rat, 0.5]
+  TTVThresh: Global[rat, 0.5]
+  mops012: Global[nat, 0]
+  mops303: Global[nat, 0]
+  mops412: Global[nat, 0]
+  mopsEarly: Global[nat, 0]
+  mopsLate: Global[nat, 0]
+  mnaWC: Global[nat, 0]
+  mnaHMD: Global[nat, 0]
+  mnaDh_p: Global[nat, 0]
+  
+  pp_rb(rb:RealBand) : string = 
+    format("(# lb := ~f, ub := ~f #)",(lb(rb),ub(rb)))
+
+  pp_lrb(lrb:list[RealBand]) : string = 
+    format("(: ~{~a~^, ~} :)",{|map(pp_rb,lrb)|})
+
+  pp_bands(bpp:BandPP) : string =
+    LET (b,a,r) = bpp IN 
+    format("( ~a, ~a, ~f )",(pp_lrb(b),a,r))
+
+
+   
+  header?(DMOD, alert_time, tcoa: nnreal)(fin:IStream, fout:OStream):void = 
+   LET param = str2pvs[Parameters](readln_checker(fin)) IN
+   set[Core](GCore, update_from_param_all(defcore, param WITH [
+   	      `alerting_time := alert_time,              
+	      `DTHR := DMOD*nmi, 
+	      `lookahead_time:= alert_time+30, 
+	      `TCOA := tcoa  ])   ) 
+   & fprintf(fout, "DMOD = ~f nmi, Alerting time = ~f, TCOA = ~f~%",(DMOD, alert_time, tcoa)) 
+   
+
+
+  check_mops_alerts_iter(fout:OStream, alerts:list[below(5)], (must_alerts:list[below(5)] | length(must_alerts) = length(alerts)), 
+  		     (must_not_alerts:list[[upto(5), [bool, bool, bool]]] | length(must_not_alerts) = length(alerts)), oa, om: list[upto(5)], omn: list[[upto(5), [bool,bool,bool]] ] ): 
+    RECURSIVE bool = 
+    IF null?(alerts) THEN TRUE 
+    ELSE LET alert = car(alerts), must_alert = car(must_alerts), mna = car(must_not_alerts), must_not_alert = mna`1 IN
+      IF must_alert > alert 
+         THEN LET increm = set[nat](mopsLate, val(mopsLate)+1) AND 
+	 (IF (alert=0 AND must_alert=1 AND must_not_alert=2) THEN 
+	 set[nat](mops012, val(mops012)+1) ELSE TRUE ENDIF) IN
+	 fprintf(fout, "Failed MOPS alerting late.~% Actual   Alerts ~a~% Must     Alerts ~a~% Must not Alerts ~a~%",(oa, om, map(lambda(a:[upto(5), [bool, bool, bool]]): a`1, omn))) & FALSE  
+      ELSIF alert >= must_not_alert 
+      	 THEN LET 
+	  write1 = fprintf(fout, "Failed MOPS alerting early due to"), 
+	  increm = set[nat](mopsEarly, val(mopsEarly)+1) AND 
+         (IF (alert=3 AND must_alert=0 AND must_not_alert=3) THEN 
+	   set[nat](mops303, val(mops303)+1) ELSE TRUE ENDIF)  AND 
+	 (IF (alert=4 AND must_alert=1 AND must_not_alert=2) THEN 
+	   set[nat](mops412, val(mops412)+1) ELSE TRUE ENDIF), 
+	   earlywc = IF mna`2`1 THEN set[nat](mnaWC, val(mnaWC)+1) AND fprintf(fout, " wcv") ELSE TRUE ENDIF,
+	   earlyhmd = IF mna`2`2 THEN set[nat](mnaHMD, val(mnaHMD)+1) AND fprintf(fout, " hmd") ELSE TRUE ENDIF,
+	   early = IF mna`2`3 THEN set[nat](mnaDh_p, val(mnaDh_p)+1) AND fprintf(fout, " dh_p") ELSE TRUE ENDIF 
+	   IN
+	 fprintf(fout, "~% Actual   Alerts ~a~% Must     Alerts ~a~% Must not Alerts ~a~%",(oa, om, map(lambda(a:[upto(5), [bool, bool, bool]]): a`1, omn))) & FALSE  
+      ELSE check_mops_alerts_iter(fout, cdr(alerts), cdr(must_alerts), cdr(must_not_alerts), oa, om, omn)
+      ENDIF
+    ENDIF
+    MEASURE length(alerts)
+
+  check_mops_alerts(fout:OStream, alerts:list[below(5)], (must_alerts:list[below(5)] | length(must_alerts) = length(alerts)), 
+  		     (must_not_alerts:list[[upto(5), [bool, bool, bool]]] | length(must_not_alerts) = length(alerts))): bool = 
+     check_mops_alerts_iter(fout, alerts, must_alerts, must_not_alerts, alerts, must_alerts, must_not_alerts)
+
+
+  check_mops?(fin:IStream,fout:OStream) : bool =
+     IF even?(val(Records)) THEN 
+  LET scenario:string = readln_checker(fin),
+      time:real =  str2pvs[real](readln_checker(fin)), 
+      acl:Traffic = str2pvs[list[Aircraft]](readln_checker(fin)), 
+      own = car(acl), 
+      traffic = cdr(acl),
+      Core = val(GCore),
+      new_ra = update_RA_in_place(Core`min_horizontal_recovery,Core`min_vertical_recovery, own`s`z), 
+      Omega = update_omega_in_place(Core`omega, Core`bank_angle, gs(own`v)),  
+      Ucore:UpdatedCore = Core WITH [ `ownship := own,
+                                `traffic := traffic, 
+				`cd2 :=new_ra`1, 
+				`min_horizontal_recovery:= new_ra`2, 
+				`min_vertical_recovery:= new_ra`3, 
+				`omega:= Omega, 
+				`outdated:=false],
+      ktb_pvs = get_kinematic_trk_bands(Ucore, 1),
+      tb_pvs:BandPP = (ktb_pvs`1, ktb_pvs`2, ktb_pvs`3),
+      kgsb_pvs = get_kinematic_gs_bands(Ucore, 1),
+      gsb_pvs:BandPP = (kgsb_pvs`1, kgsb_pvs`2, kgsb_pvs`3),
+      kvsb_pvs = get_kinematic_vs_bands(Ucore, 1),
+      vsb_pvs:BandPP = (kvsb_pvs`1, kvsb_pvs`2, kvsb_pvs`3),
+      tb_io:BandPP = str2pvs[BandPP](readln_checker(fin)),
+      tb_prev:list[string] = str2pvs[list[string]](readln_checker(fin)),
+      tb_corr:list[string] = str2pvs[list[string]](readln_checker(fin)), 
+      gsb_io:BandPP = str2pvs[BandPP](readln_checker(fin)),
+      gsb_prev:list[string] = str2pvs[list[string]](readln_checker(fin)), 
+      gsb_corr:list[string] = str2pvs[list[string]](readln_checker(fin)), 
+      vsb_io:BandPP = str2pvs[BandPP](readln_checker(fin)),
+      vsb_prev:list[string] = str2pvs[list[string]](readln_checker(fin)), 
+      vsb_corr:list[string] = str2pvs[list[string]](readln_checker(fin)),
+      alt_bands_io:BandPP = str2pvs[BandPP](readln_checker(fin)),
+      ttv_ints_io:list[[real, real]] = str2pvs[list[[real, real]]](readln_checker(fin)),
+      ac_and_ttv_list:list[[Aircraft, [real, real]]] = aircraft_and_ttv_list(Ucore),
+      ttv_ints_pvs:list[[real, real]] = time_to_violation_list(ac_and_ttv_list),
+      id_list:list[string] = traf_id(Ucore`traffic),   
+      alerting_list_io:list[below(5)] = str2pvs[list[nat]](readln_checker(fin)),
+      endfile:bool = eof?(fin), 
+      alerting_list_pvs:list[below(5)] = IF Ucore`bands_alerting THEN  
+      				        bands_alerting(Ucore, ktb_pvs, kvsb_pvs, kgsb_pvs, ac_and_ttv_list)  
+      				   ELSE thresholds_alerting(Ucore)
+				   ENDIF,
+      must_alerts:list[below(5)]  = must_alert_list(Ucore), 
+      must_not_alerts:list[[upto(5), [bool, bool, bool]]]  = must_not_alert_list(Ucore), 
+      failwriter = IF check_mops_alerts(fout, alerting_list_pvs, must_alerts, must_not_alerts) THEN TRUE
+      		  ELSE fprintf(fout, "Failed alerting for scenario ~a at time ~a.~%", (scenario, time)) AND FALSE 
+		  ENDIF, 
+      endwriter = IF endfile THEN 
+           fprintf(fout, " Alerts summary.~% Early = ~a Late = ~a 012 = ~a 303 = ~a 412 = ~a", 
+ 	   (val(mopsEarly), val(mopsLate), val(mops012), val(mops303), val(mops412))) 
+	          ELSE TRUE ENDIF
+      IN
+      failwriter
+      ELSE LET
+      scenario:string = readln_checker(fin),
+      time:string = (readln_checker(fin)), 
+      acl = readln_checker(fin),
+      tb_io = (readln_checker(fin)),
+      tb_prev=(readln_checker(fin)),
+      tb_corr=(readln_checker(fin)), 
+      gsb_io=(readln_checker(fin)),
+      gsb_prev=(readln_checker(fin)), 
+      gsb_corr=(readln_checker(fin)), 
+      vsb_io=(readln_checker(fin)),
+      vsb_prev=(readln_checker(fin)), 
+      vsb_corr=(readln_checker(fin)),
+      alt_bands_io=(readln_checker(fin)),
+      ttv_ints_io=(readln_checker(fin)),
+      alerting_list_io=(readln_checker(fin))
+       	   IN
+	   TRUE
+  ENDIF
+      
+  mops_main(DMOD, alert_time, tcoa:nnreal)(file:string,records:nat): void =
+    LET reset = set[nat](mops012, 0) & set[nat](mops303, 0) & set[nat](mops412, 0) &
+        set[nat](mopsEarly, 0) & set[nat](mopsLate, 0) & set[nat](mnaWC, 0) &
+	set[nat](mnaHMD, 0) & set[nat](mnaDh_p, 0)  
+    IN 
+    checker_with_header(file,check_mops?,header?(DMOD, alert_time, tcoa),records) 
+ 
+  mops_multi_file_check(DMOD, alert_time, tcoa:nnreal)(fin:IStream, fout:OStream): void = 
+    LET file:string = readln_checker(fin), 
+        run:void = mops_main(DMOD, alert_time, tcoa)(file, 0) IN
+        fprintf(fout, " Alerts summary for ~a.~% Late = ~a Early = ~a~% EarlyWCV = ~a EarlyHMD = ~a EarlyDh_p = ~a  012 = ~a 303 = ~a 412 = ~a~%", 
+ 	 (file, val(mopsLate), val(mopsEarly), val(mnaWC), val(mnaHMD), val(mnaDh_p), val(mops012), val(mops303), val(mops412))) AND 
+ 	TRUE
+  
+  main(file:string, DMOD: string): void = 
+   LET dm = str2pvs[real](DMOD), 
+       aa = set[string](OutExtension, "dmod_"+DMOD+"_at_40_tcoa_0.out"), 
+       ab = checker(file, mops_multi_file_check(dm,40,0), 0), 
+       ba = set[string](OutExtension, "dmod_"+DMOD+"_at_40_tcoa_20.out"),
+       bb =  checker(file, mops_multi_file_check(dm,40,20), 0), 
+       ca = set[string](OutExtension, "dmod_"+DMOD+"_at_60_tcoa_0.out"), 
+       cb =  checker(file, mops_multi_file_check(dm,60,0), 0), 
+       da = set[string](OutExtension, "dmod_"+DMOD+"_at_60_tcoa_20.out"), 
+       db = checker(file, mops_multi_file_check(dm,60,20), 0), 
+       ea = set[string](OutExtension, "dmod_"+DMOD+"_at_75_tcoa_0.out"), 
+       eb = checker(file, mops_multi_file_check(dm,75,0), 0), 
+       fa = set[string](OutExtension, "dmod_"+DMOD+"_at_75_tcoa_20.out"), 
+       fb = checker(file, mops_multi_file_check(dm,75,20), 0)
+       IN
+       fb 
+
+  END mops_checker

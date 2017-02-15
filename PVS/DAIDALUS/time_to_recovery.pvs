@@ -1,0 +1,42 @@
+time_to_recovery: THEORY
+
+  BEGIN
+
+  IMPORTING get_kinematic_bands2
+  
+  time_to_recovery(ucore: UpdatedCore, aci:Aircraft, T:nnreal, UseTrack, UseVs, UseGs:bool): 
+  real = LET los = cd2LOS(ucore`cd),
+       	     cd  = cd2CD(ucore`cd),
+       	     los2 = cd2LOS(ucore`cd2),
+       	     cd2 = cd2CD(ucore`cd2),
+	     all_red(t:nnreal): bool =
+       	     LET vo = ucore`ownship`v, 
+       	       so = ucore`ownship`s+t*vo, 
+       	       traffic = (: aci WITH [`s:=aci`s+t*aci`v] :),
+	       muf_param = most_urgent_function(ucore`most_urgent, ucore`ownship, traffic, ucore`conflict_crit, ucore`recovery_crit),
+       	       red_trk: bool = UseTrack IMPLIES 
+       	          all_kinematic_track_red(los,cd,los2,cd2,FALSE,so,
+  	          vo,traffic,muf_param`1,muf_param`2,muf_param`3,
+		  muf_param`4,muf_param`4,ucore`omega,1,FALSE)
+		  (0,ucore`lookahead_time,0,0,round(ucore`lefttrk/ucore`track_step), 
+		  round(ucore`righttrk/ucore`track_step),ucore`track_step), 
+   	       red_vs: bool = UseVs IMPLIES
+	          all_kinematic_vs_red(los,cd,los2,cd2, FALSE,so,
+  		  vo,traffic,muf_param`1,muf_param`2,muf_param`3,
+		  muf_param`4,muf_param`4,ucore`vs_accel,
+		  1,FALSE,ucore`minvs, ucore`maxvs)
+                  (0,ucore`lookahead_time,0,0,ucore`vs_step),
+   	       red_gs:bool = UseGs IMPLIES
+	          all_kinematic_gs_red(los,cd,los2,cd2,FALSE,so,
+  		  vo,traffic,muf_param`1,muf_param`2,muf_param`3,
+		  muf_param`4,muf_param`4,ucore`gs_accel,
+		  1,FALSE,ucore`mings, ucore`maxgs)
+                  (0,ucore`lookahead_time,0,0,ucore`gs_step) IN
+	      red_trk AND red_vs AND red_gs IN
+         IF all_red(0) THEN 0 
+	 ELSIF NOT all_red(T) THEN LET p = printf("error in time_to_recovery. Not all_red at time to violation ~a.~%", T) IN T+1
+	 ELSE first_time(all_red, 0, T, TRUE)
+	 ENDIF 
+  
+
+  END time_to_recovery
