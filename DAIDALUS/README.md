@@ -88,5 +88,5 @@ that are used in the current draft of RTCA SC-228 MOPS V3.8
    
 ### Contact
 
-[Cesar A. Munoz](http://shemesh.larc.nasa.gov/people/cam) (cesar.a.munoz@nasa.gov), NASA Langley Research Center.
+[Cesar A. Munoz](http://shemesh.larc.nasa.gov/people/cam) (cesar.a.munoz@nasa.gov)
 
