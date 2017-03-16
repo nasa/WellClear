@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2016 United States Government as represented by
+ * Copyright (c) 2015-2017 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -14,6 +14,7 @@
 #include "Horizontal.h"
 #include "WCVTable.h"
 #include "LossData.h"
+#include "Util.h"
 #include "format.h"
 #include "string_util.h"
 
@@ -57,7 +58,7 @@ LossData WCV_TEP::horizontal_WCV_interval(double T, const Vect2& s, const Vect2&
     return LossData(time_in,time_out);
   if (sqs <= sqD) {
     time_in = 0;
-    time_out = std::min(T,Horizontal::Theta_D(s,v,1,table.getDTHR()));
+    time_out = Util::min(T,Horizontal::Theta_D(s,v,1,table.getDTHR()));
     return LossData(time_in,time_out);
   }
   if (sdotv > 0 || Horizontal::Delta(s,v,table.getDTHR()) < 0)
@@ -65,8 +66,8 @@ LossData WCV_TEP::horizontal_WCV_interval(double T, const Vect2& s, const Vect2&
   double tep = Horizontal::Theta_D(s,v,-1,table.getDTHR());
   if (tep-table.getTTHR() > T)
     return LossData(time_in,time_out);
-  time_in = std::max(0.0,tep-table.getTTHR());
-  time_out = std::min(T,Horizontal::Theta_D(s,v,1,table.getDTHR()));
+  time_in = Util::max(0.0,tep-table.getTTHR());
+  time_out = Util::min(T,Horizontal::Theta_D(s,v,1,table.getDTHR()));
   return LossData(time_in,time_out);
 }
 

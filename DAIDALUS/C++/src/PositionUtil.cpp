@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 United States Government as represented by
+ * Copyright (c) 2016-2017 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -45,7 +45,7 @@ namespace larcfm {
 		if (p1.isLatLon()) {
 			return GreatCircle::angle_between(p1.lla(), p2.lla(), p3.lla());
 		} else {
-			return VectFuns::angleBetween(p1.vect2(), p2.vect2(), p3.vect2());
+			return VectFuns::angle_between(p1.vect2(), p2.vect2(), p3.vect2());
 		}
 	}
 	

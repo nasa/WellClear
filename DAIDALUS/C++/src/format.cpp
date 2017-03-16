@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2016 United States Government as represented by
+ * Copyright (c) 2011-2017 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -10,6 +10,7 @@
 #include "Vect3.h"
 //#include "Vect4.h"
 #include "Util.h"
+#include "Triple.h"
 #include "Units.h"
 //#include "UnitSymbols.h"
 #include "Constants.h"
@@ -157,28 +158,84 @@ string bool2str(bool b) {
 	else return "false";
 }
 
+string FmPair(const std::pair<int,int>& v) {
+	return "("+Fm0(v.first)+","+Fm0(v.second)+")";
+}
+
+string FmPair(const std::pair<double,double>& v) {
+	return "("+Fm6(v.first)+","+Fm6(v.second)+")";
+}
+
+string FmTriple(const Triple<int,int,int>& v) {
+	return "("+Fm0(v.first)+","+Fm0(v.second)+","+Fm0(v.third)+")";
+}
+
+string FmTriple(const Triple<double,double,double>& v) {
+	return "("+Fm6(v.first)+","+Fm6(v.second)+","+Fm6(v.third)+")";
+}
+
 string Fobj(const std::vector<int>& v) {
-	string s = "";
+	string s = "[";
 	for (unsigned int i = 0; i < v.size(); i++) {
-		s += Fm0(v[i])+" ";
+		s += Fm0(v[i]);
+		if (i < v.size()-1) s += ", ";
 	}
-	return s;
+	return s+"]";
 }
 
 string Fobj(const std::vector<double>& v) {
-	string s = "";
+	string s = "[";
 	for (unsigned int i = 0; i < v.size(); i++) {
-		s += Fm4(v[i])+" ";
+		s += Fm4(v[i]);
+		if (i < v.size()-1) s += ", ";
 	}
-	return s;
+	return s+"]";
 }
 
 string Fobj(const std::vector<std::string>& v) {
-	string s = "";
+	string s = "[";
 	for (unsigned int i = 0; i < v.size(); i++) {
-		s += v[i]+" ";
+		s += v[i];
+		if (i < v.size()-1) s += ", ";
 	}
-	return s;
+	return s+"]";
+}
+
+
+string Fobj(const std::vector<std::pair<int,int> >& v) {
+	string s = "[";
+	for (unsigned int i = 0; i < v.size(); i++) {
+		s += FmPair(v[i]);
+		if (i < v.size()-1) s += ", ";
+	}
+	return s+"]";
+}
+
+string Fobj(const std::vector<std::pair<double,double> >& v) {
+	string s = "[";
+	for (unsigned int i = 0; i < v.size(); i++) {
+		s += FmPair(v[i]);
+		if (i < v.size()-1) s += ", ";
+	}
+	return s+"]";
+}
+
+string Fobj(const std::vector<Triple<int,int,int> >& v) {
+	string s = "[";
+	for (unsigned int i = 0; i < v.size(); i++) {
+		s += FmTriple(v[i]);
+		if (i < v.size()-1) s += ", ";
+	}
+	return s+"]";
+}
+
+string Fobj(const std::vector<Triple<double,double,double> >& v) {
+	string s = "[";
+	for (unsigned int i = 0; i < v.size(); i++) {
+		s += FmTriple(v[i]);
+		if (i < v.size()-1) s += ", ";
+	}
+	return s+"]";
 }
 
 std::string list2str(const std::vector<std::string>& l, const std::string& delimiter) {
@@ -198,7 +255,8 @@ std::string list2str(const std::vector<std::string>& l, const std::string& delim
 string Farray(int const v[], int sz) {
 	string s = "";
 	for (int i = 0; i < sz; i++) {
-		s += Fm0(v[i])+" ";
+		s += Fm0(v[i]);
+		if (i < sz-1) s += ", ";
 	}
 	return s;
 }
@@ -209,7 +267,8 @@ string Farray(int const v[], int sz) {
 string Farray(double const v[], int sz) {
 	string s = "";
 	for (int i = 0; i < sz; i++) {
-		s += Fm4(v[i])+" ";
+		s += Fm4(v[i]);
+		if (i < sz-1) s += ", ";
 	}
 	return s;
 }
@@ -220,7 +279,8 @@ string Farray(double const v[], int sz) {
 string Farray(std::string const v[], int sz) {
 	string s = "";
 	for (int i = 0; i < sz; i++) {
-		s += v[i]+" ";
+		s += v[i];
+		if (i < sz-1) s += ", ";
 	}
 	return s;
 }
@@ -233,6 +293,7 @@ string FmVec(Vect2 v) {
 string FmVec(Vect3 v) {
 	return "("+Fm16(v.x)+","+Fm16(v.y)+","+Fm16(v.z)+")";
 }
+
 
 string padLeft(string s, int n) {
 	//return string.format("%1$#" + n + "s", s);
@@ -260,8 +321,9 @@ void fp(const string& str) {
 }
 
 void fpln(ostream* os, const string& str) {
+	std::string newline = "\n";
 	os->write(str.c_str(),str.size());
-	os->write("\n",1);
+	os->write(newline.c_str(),newline.size());
 }
 
 void fp(ostream* os, const string& str) {

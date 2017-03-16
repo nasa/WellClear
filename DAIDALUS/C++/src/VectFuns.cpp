@@ -1,7 +1,7 @@
 /*
  * VectFuns.cpp
  * 
- * Copyright (c) 2011-2016 United States Government as represented by
+ * Copyright (c) 2011-2017 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -73,13 +73,13 @@ Velocity VectFuns::interpolateVelocity(const Velocity& v1, const Velocity& v2, d
 
 
 // This appears to use the right-hand rule to determine it returns the inside or outside angle
-double VectFuns::angleBetween(const Vect2& v1, const Vect2& v2) {
+double VectFuns::angle_between(const Vect2& v1, const Vect2& v2) {
 	Vect2 VV1 = v1.Scal(1.0/v1.norm());
 	Vect2 VV2 = v2.Scal(1.0/v2.norm());
 	return Util::atan2_safe(VV2.y,VV2.x)-Util::atan2_safe(VV1.y,VV1.x);
 }
 
-double VectFuns::angleBetween(const Vect2& a, const Vect2& b, const Vect2& c) {
+double VectFuns::angle_between(const Vect2& a, const Vect2& b, const Vect2& c) {
 	Vect2 A = b.Sub(a);
 	Vect2 B = b.Sub(c);
 	return Util::acos_safe(A.dot(B)/(A.norm()*B.norm()));
@@ -154,8 +154,8 @@ std::pair<Vect3,double> VectFuns::intersection(const Vect3& so3, const Velocity&
 	//f.pln(" $$$ intersection: tt = "+tt);
 	Vect3 intersec = so3.Add(vo3.Scal(tt));
 	double nZ = intersec.z;
-	double maxZ = std::max(so3.z,si3.z);
-	double minZ = std::min(so3.z,si3.z);
+	double maxZ = Util::max(so3.z,si3.z);
+	double minZ = Util::min(so3.z,si3.z);
 	if (nZ > maxZ) nZ = maxZ;
 	if (nZ < minZ) nZ = minZ;
 	return std::pair<Vect3,double>(intersec.mkZ(nZ),tt);
@@ -203,19 +203,35 @@ std::pair<Vect2,double> VectFuns::intersection(const Vect2& so1, const Vect2& so
 
 
 Vect3 VectFuns::closestPoint(const Vect3& a, const Vect3& b, const Vect3& so) {
-	Vect3 v = a.Sub(b).PerpL().Hat2D(); // perpendicular vector to line
-	Vect3 s2 = so.AddScal(100, v);
-	std::pair<Vect3, double> i = intersectionAvgZ(a,b,100,so,s2);
-	// need to fix altitude to be along the a-b line
-	return interpolate(a,b,i.second/100.0);
+	if (a.almostEquals(b)) return Vect3::INVALID();
+	Vect2 c = closestPoint(a.vect2(), b.vect2(), so.vect2());
+	Vect3 v = b.Sub(a);
+	double d1 = v.vect2().norm();
+	double d2 = c.Sub(a.vect2()).norm();
+	double d3 = c.Sub(b.vect2()).norm();
+	double f = d2/d1;
+	if (d3 > d1 && d3 > d2) { // negative direction
+		f = -f;
+	}
+	return a.AddScal(f, v);
+
+
+//	Vect3 v = a.Sub(b).PerpL().Hat2D(); // perpendicular vector to line
+//	Vect3 s2 = so.AddScal(100, v);
+//	std::pair<Vect3, double> i = intersectionAvgZ(a,b,100,so,s2);
+//	// need to fix altitude to be along the a-b line
+//	return interpolate(a,b,i.second/100.0);
 }
 
 Vect2 VectFuns::closestPoint(const Vect2& a, const Vect2& b, const Vect2& so) {
-	if (collinear(a,b,so)) return so;
-	Vect2 v = a.Sub(b).PerpL().Hat(); // perpendicular vector to line
-	Vect2 s2 = so.AddScal(100, v);
-	Vect2 cp = intersection(so,s2,100,a,b).first;
-	return cp;
+	// translate a to origin, then project so onto the line defined by ab, then translate back to a
+	Vect2 ab = b.Sub(a);
+	return ab.Scal(so.Sub(a).dot(ab)/ab.dot(ab)).Add(a);
+//	if (collinear(a,b,so)) return so;
+//	Vect2 v = a.Sub(b).PerpL().Hat(); // perpendicular vector to line
+//	Vect2 s2 = so.AddScal(100, v);
+//	Vect2 cp = intersection(so,s2,100,a,b).first;
+//	return cp;
 }
 
 

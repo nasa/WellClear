@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2016 United States Government as represented by
+ * Copyright (c) 2012-2017 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -34,7 +34,7 @@ bool TCAS2D::horizontal_RA_at(double DMOD, double Tau, const Vect2& s, const Vec
 double TCAS2D::nominal_tau(double B, double T, const Vect2& s, const Vect2& v, double rr) {
   if (v.isZero())
     return B;
-  return std::max(B,std::min(T,-s.dot(v) / v.sqv()-rr/2));
+  return Util::max(B,Util::min(T,-s.dot(v) / v.sqv()-rr/2));
 }
 
 double TCAS2D::time_of_min_tau(double DMOD, double B, double T, const Vect2& s, const Vect2& v) {

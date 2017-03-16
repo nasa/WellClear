@@ -7,7 +7,7 @@
  *           Anthony Narkawicz         NASA Langley Research Center
  *           Aaron Dutle               NASA Langley Research Center
  * 
- * Copyright (c) 2011-2016 United States Government as represented by
+ * Copyright (c) 2011-2017 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
@@ -227,16 +227,17 @@ Vect2 Kinematics::center(const Vect3& s0, const Velocity& v0, double omega) {
  * @param gsAt_d
  * @return Position/Velocity after t time
  */
-std::pair<Vect3,Velocity> Kinematics::turnByDist(const Vect3& so, const Vect3& center, int dir, double d, double gsAt_d) {
+std::pair<Vect3,Velocity> Kinematics::turnByDist2D(const Vect3& so, const Vect3& center, int dir, double d, double gsAt_d) {
 	//f.pln(" $$$$ turnByDist: so = "+so+" center = "+center);
     //double R = GreatCircle.distance(so, center);
     double R = so.distanceH(center);
+    if (R==0.0) return std::pair<Vect3,Velocity>(so,Velocity::INVALID());
 	double alpha = dir*d/R;
 	//double vFinalTrk = GreatCircle.initial_course(center,so);
 	double trkFromCenter = Velocity::mkVel(center, so, 100.0).trk();
 	double nTrk = trkFromCenter + alpha;
 	//Vect3 sn = GreatCircle.linear_initial(center, nTrk, R);
-	Vect3 sn = center.linearByDist(nTrk, R);
+	Vect3 sn = center.linearByDist2D(nTrk, R);
 	//f.pln(" $$$$ turnByDist: sn = "+sn);
 	sn = sn.mkZ(0.0);
 	//double final_course = GreatCircle.final_course(center,sn);
@@ -729,14 +730,12 @@ std::pair<Vect3,Velocity> Kinematics::vsAccel(const std::pair<Vect3,Velocity>& s
 
 
 double Kinematics::vsAccelTime(const Velocity& vo,double goalVs, double vsAccel) {
-	double deltaVs = std::abs(vo.vs() - goalVs);
-	double rtn = deltaVs/vsAccel;
-	return rtn;
+	return vsAccelTime(vo.vs(),goalVs, vsAccel);;
 }
 
 double Kinematics::vsAccelTime(double vs, double goalVs, double vsAccel) {
-	double deltaVs = std::abs(vs - goalVs);
-	double rtn = deltaVs/vsAccel;
+	double deltaVs = vs - goalVs;
+	double rtn = std::abs(deltaVs/vsAccel);
 	//f.pln("#### vsAccelTime: vs() = "+Units.str("fpm",vs)+" deltaVs = "+Units.str("fpm",deltaVs)+" rtn = "+rtn);
 	return rtn;
 }
@@ -1095,7 +1094,7 @@ Tuple5<double,double,double,double,double> Kinematics::vsLevelOutTimesBase(doubl
 	int altDir = -1;
 	if (targetAlt >= s0z) altDir = 1;
 	climbRate = altDir*std::abs(climbRate);
-	if (allowClimbRateChange) climbRate = altDir*(std::max(std::abs(climbRate), std::abs(v0z)));
+	if (allowClimbRateChange) climbRate = altDir*(Util::max(std::abs(climbRate), std::abs(v0z)));
 	double S = targetAlt-s0z;
 	double a1 = acceldown;
 	if (climbRate>=v0z) a1 = accelup;
@@ -1117,7 +1116,7 @@ Tuple5<double,double,double,double,double> Kinematics::vsLevelOutTimesBase(doubl
 		if (root1<0)  T1 = root2;
 		else if (root2<0) T1 = root1;
 		else
-			T1= std::min(root1, root2);
+			T1= Util::min(root1, root2);
 		//fpln("times1 case2");
 		return Tuple5<double, double,double,double,double>(T1, T1, T1+T3(V1(v0z, a1, T1), a2),a1,a2);
 	}

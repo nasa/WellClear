@@ -6,13 +6,14 @@
  * NASA LaRC
  * http://shemesh.larc.nasa.gov/people/cam/ACCoRD
  *
- * Copyright (c) 2011-2016 United States Government as represented by
+ * Copyright (c) 2011-2017 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
  */
 
 #include "CriticalVectors.h"
+#include "Util.h"
 #include <cmath>
 
 namespace larcfm {
@@ -26,8 +27,8 @@ namespace larcfm {
     if (Util::almost_equals(vo.z,vi.z) && std::abs(s.z) < H) {
       return CriticalVectors2D::tracks(s2,vo2,vi2,D,B,T);
     } else if (!Util::almost_equals(vo.z,vi.z)) {
-      double b = std::max(Vertical::Theta_H(s.z,vo.z-vi.z,larcfm::Entry,H),B);
-      double t = std::min(Vertical::Theta_H(s.z,vo.z-vi.z,larcfm::Exit,H),T);
+      double b = Util::max(Vertical::Theta_H(s.z,vo.z-vi.z,larcfm::Entry,H),B);
+      double t = Util::min(Vertical::Theta_H(s.z,vo.z-vi.z,larcfm::Exit,H),T);
       if (b < t) {
         return CriticalVectors2D::tracks(s2,vo2,vi2,D,b,t);
       }
@@ -49,8 +50,8 @@ namespace larcfm {
     if (Util::almost_equals(vo.z,vi.z) && std::abs(s.z) < H) {
       return CriticalVectors2D::groundSpeeds(s2,vo2,vi2,D,B,T);
     } else if (!Util::almost_equals(vo.z,vi.z)) {
-      double b = std::max(Vertical::Theta_H(s.z,vo.z-vi.z,larcfm::Entry,H),B);
-      double t = std::min(Vertical::Theta_H(s.z,vo.z-vi.z,larcfm::Exit,H),T);
+      double b = Util::max(Vertical::Theta_H(s.z,vo.z-vi.z,larcfm::Entry,H),B);
+      double t = Util::min(Vertical::Theta_H(s.z,vo.z-vi.z,larcfm::Exit,H),T);
       if (b < t) {
         return CriticalVectors2D::groundSpeeds(s2,vo2,vi2,D,b,t);
       }
@@ -98,8 +99,8 @@ namespace larcfm {
     } else {
       Vect2 v2 = vo2 - vi2;
       if (Horizontal::Delta(s2,v2,D) > 0) {
-        double b = std::max(Horizontal::Theta_D(s2,v2,larcfm::Entry,D),B);
-        double t = std::min(Horizontal::Theta_D(s2,v2,larcfm::Exit,D),T);
+        double b = Util::max(Horizontal::Theta_D(s2,v2,larcfm::Entry,D),B);
+        double t = Util::min(Horizontal::Theta_D(s2,v2,larcfm::Exit,D),T);
         if (b < t) {
           return verticalSpeeds1D(s.z,vi.z,H,b,t); 
         }

@@ -17,7 +17,7 @@ example:
 	test -f lib/DAIDALUS.jar || make lib
 	@echo 
 	@echo "** Building DaidalusExample application"
-	$(JAVAC) -cp lib/DAIDALUS.jar DaidalusExample.java
+	$(JAVAC) -cp lib/DAIDALUS.jar src/DaidalusExample.java
 	@echo 
 	@echo "** To run DaidalusExample type:"
 	@echo "./DaidalusExample"

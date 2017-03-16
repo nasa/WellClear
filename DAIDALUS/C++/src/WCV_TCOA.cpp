@@ -1,11 +1,12 @@
 /*
- * Copyright (c) 2012-2016 United States Government as represented by
+ * Copyright (c) 2012-2017 United States Government as represented by
  * the National Aeronautics and Space Administration.  No copyright
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
  */
 #include "WCV_TCOA.h"
 #include "Vertical.h"
+#include "Util.h"
 
 namespace larcfm {
 
@@ -26,7 +27,7 @@ Interval WCV_TCOA::vertical_WCV_interval(double ZTHR, double TCOA, double B, dou
     time_out = B;
     return Interval(time_in,time_out);
   }
-  double act_H = std::max(ZTHR,std::abs(vz)*TCOA);
+  double act_H = Util::max(ZTHR,std::abs(vz)*TCOA);
   double tentry = Vertical::Theta_H(sz,vz,-1,act_H);
   double texit = Vertical::Theta_H(sz,vz,1,ZTHR);
   if (T < tentry || texit < B) {
@@ -34,8 +35,8 @@ Interval WCV_TCOA::vertical_WCV_interval(double ZTHR, double TCOA, double B, dou
     time_out = B;
     return Interval(time_in,time_out);
   }
-  time_in = std::max(B,tentry);
-  time_out = std::min(T,texit);
+  time_in = Util::max(B,tentry);
+  time_out = Util::min(T,texit);
   return Interval(time_in,time_out);
 }
 
