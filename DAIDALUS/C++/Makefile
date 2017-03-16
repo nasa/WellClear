@@ -1,6 +1,7 @@
 # Simple Makefile to build DAIDALUS library and example application
 
-SRCS   = $(wildcard src/*.cpp)
+SRC0   = $(wildcard src/*.cpp)
+SRCS   = $(SRC0:src/DaidalusExample.cpp=)
 OBJS   = $(SRCS:.cpp=.o)
 INCLUDEFLAGS = -Iinclude 
 CXXFLAGS = $(INCLUDEFLAGS) -Wall -O 
