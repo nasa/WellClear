@@ -1,16 +1,22 @@
 ![](../logo/DAIDALUS.jpeg)
 
-DAIDALUS API - V-1.0.1
+DAIDALUS API - V-1.0.1 (Work in Progress)
 ===
 
 Table of Contents
 =================
 
-  * [Abstract](#abstract)
-  * [Introduction](#introduction)
-  * [Compilation of the Library](#compilation-of-the-library)
-  * [Pre-Defined Configurations](#pre-defined-configurations)
-  * [Contact](#contact)
+   * [DAIDALUS API - V-1.0.1](#daidalus-api---v-101)
+      * [Abstract](#abstract)
+      * [Introduction](#introduction)
+      * [Compilation of the Library](#compilation-of-the-library)
+      * [Preliminaries](#preliminaries)
+         * [Packages and Name Space](#packages-and-name-space)
+      * [Simple DAIDALUS Application](#simple-daidalus-application)
+      * [Pre-Defined Configurations](#pre-defined-configurations)
+      * [Contact](#contact)
+
+Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
 
 ## Abstract
 
@@ -39,25 +45,27 @@ Alert and Collision Avoidance System Version II (TCAS II).
 DAIDALUS includes algorithms for determining the current well-clear
 status between two aircraft and for predicting a well-clear violation
 within a lookahead time, assuming non-maneuvering trajectories. In the
-case of a predicted well-clear violation, DAIDALUS also provides an
+case of a predicted well-clear violation, DAIDALUS also includes an
 algorithm that computes the time interval of well-clear
-violation. DAIDALUS implements algorithms for computing
-maneuver guidance, assuming a simple kinematic trajectory model for
-the ownship. Manuever guidance is provided in the form of range of
-track, ground speed, vertical speed, and altitude values called
-*bands*. These bands provide awareness information to remote pilots
-and assist them in avoiding certain areas in the airspace. When
-aircraft are not well clear, or when a well-clear violation is
-unavoidable, DAIDALUS maneuver guidance algorithms provided
-well-clear recovery bands. Recovery bands are ranges of horizontal and
-vertical maneuvers that assist pilots in regaining well-clear status in a timely manner according to
-ownship performance limits. Recovery bands are designed so that they also protect
-against a user-specified minimum horizontal and vertical separation.
-DAIDALUS  also implements a pair-wise alerting logic that is based on a set
-set of increasingly conservative alert levels called *preventive*, *corrective*, and *warning*. 
+violation. DAIDALUS implements algorithms for computing maneuver
+guidance, assuming a simple kinematic trajectory model for the
+ownship. Manuever guidance is computed in the form of range of track,
+ground speed, vertical speed, and altitude values called
+*bands*. These bands represent areas in the airspace the ownship has
+to avoid in order to maintain well-clear with respect to traffic
+aircraft. In the case of a loss of well-clear, or when a well-clear
+violation is unavoidable, the maneuver guidance algorithms provide
+well-clear recovery bands. Recovery bands represents areas in the
+airspace that allow the ownship to to regain well-clear status in a
+timely manner according to its performance limits. Recovery bands are
+designed so that they also protect against a user-specified minimum
+horizontal and vertical separation.  DAIDALUS also implements a
+pair-wise alerting logic that is based on a set set of increasingly
+conservative alert levels called *preventive*, *corrective*, and
+*warning*.
 
 DAIDALUS is implemented in C++ and Java and the code is available
-under [NASA's Open Source Agreement](LICENSES/).  The
+under [NASA's Open Source Agreement](../LICENSES/).  The
 implementations are modular and highly configurable. The DAIDALUS core
 algorithms have been [formally specified and verified](../PVS) in the Prototype
 Verification System ([PVS](http://pvs.csl.sri.com)).  The examples
@@ -81,10 +89,86 @@ $ make lib
 In C++, the `make` command will generate the static library
 `lib/DAIDALUS.a`.
 
- An example a simple application that uses the DAIDALUS library is available in
+## Preliminaries
+
+### Packages and Name Space
+In Java, DAIDALUS consists of three packages in the hierarchy
+`gov.nasa.larcfm`: `IO`, `Util`, and `ACCoRD`. In C++, the DAIDALUS
+code uses the name space `larcfm`. This API
+will refer to classes in these packages and name space through unqualified
+names.  The following table lists the Java packages for the main
+DAIDALUS classes and interfaces.
+
+Class/Interface |   Package 
+--|--
+`Interval` | `Util`
+`Position` |  `Util`
+`Units` |  `Util`
+`Velocity` |  `Util`
+|--|
+`AlertLevels` | `ACCoRD`
+`AlertThresholds` | `ACCoRD`
+`BandsRegion` | `ACCoRD`
+`CD3DTable` |  `ACCoRD`
+`CDCylinder` |  `ACCoRD`
+`ConflictData` |  `ACCoRD`
+`Daidalus` |  `ACCoRD`
+`DaidalusFileWalker` |  `ACCoRD`
+`Detection3D` |  `ACCoRD`
+`Horizontal` |  `ACCoRD`
+`KinematicBandsParameters` |  `ACCoRD`
+`KinematicMultiBands` |  `ACCoRD`
+`TCASTable` |  `ACCoRD`
+`TCAS3D` |  `ACCoRD`
+`TrafficState` | `ACCoRD`
+`Vertical` |  `ACCoRD`
+`WCVTable` |  `ACCoRD`
+`WCV_TAUMOD` |  `ACCoRD`
+`WCV_TCPA` |  `ACCoRD`
+`WCV_TEP` |  `ACCoRD`
+
+### Units
+DAIDALUS core algorithms use as internal units meters, seconds, and
+radians. However,  interface methods that set or get a value have a String argument, where the units are
+explicitly specified. Strings representing standard symbols for SI units are
+accepted. Furthermore, northern latitudes and eastern longitudes are positive. Angles
+representing aircraft track or heading are specified in true north
+clockwise convention. Wind velocities are specified using the *TO*
+convention, i.e., the direction the wind blows, as
+opposed to *FROM* convention, i.e., the direction the wind originates.
+
+The following table provides a list of symbols and the corresponding
+string representation supported by DAIDALUS.
+
+Units  | String
+--|--
+milliseconds | `"ms"` 
+seconds | `"s"`
+minutes | `"min"`
+hours | `"h"` | `"hr"`
+meters | `"m"`   
+kilometers | `"km"`
+nautical miles | `"nmi"`, `"NM"`  
+feet | `"ft"` 
+ knots | `"knot"`, `"kn"`, `"kts"` 
+ meters per second | `"m/s"`
+ kilometers per hour | `"kph"`  `"km/h"`
+feet per minute | `"fpm"`, `"ft/min"` 
+ meters per second$^2$|`"m/s^2"` 
+9.80665 m/s$^2$ | `"G"`
+ degrees | `"deg"`
+radians | `"rad"`
+degrees per second | `"deg/s"`
+radians per second | `"rad/s"`
+
+## Simple DAIDALUS Application
+The sample application `DaidalusExample`, which is available in
 [Java](Java/src/DaidalusExample.java) and
-[C++](C++/src/DaidalusExample.pp). This application can be compiled using
-the provided `Makefile`. In Java:
+[C++](C++/src/DaidalusExample.cpp), illustrates the main
+functionalities provided by DAIDALUS including reading/writing
+configuration files, detection logic, alerting logic, maneuver
+guidance logic, and computation of loss of well-clear contours.  This
+application can be compiled using the provided `Makefile`. In Java:
 
 ```
 $ make example
@@ -94,10 +178,48 @@ $ make example
 ./DaidalusExample
 ```
 
-The `DaidalusExample` application illustrates the main DAIDALUS
-functionalities provided by DAIDALUS including reading/writing
-configuration files, detection logic, alerting logic, maneuver
-guidance logic, and computation of loss of well-clear contours.
+DAIDALUS main functional features are provided through the class
+`Daidalus`. The DAIDALUS software library is ownship
+centric. Hence, a `Daidalus` object maintains and computes information from
+the point of view of the ownship. In a multi-threaded application, a
+Daidalus object should not be shared by different threads.
+
+In Java, a `Daidalus` object is created through the invokation
+```java
+Daidalus daa = new Daidalus();
+```
+The variable `daa` is initialized to default values, which corresponds
+to an unbuffered well-clear, i.e., DMOD=HMD=0.66 nmi, TAUMOD=35 s,
+ZTHR=450 ft, with instantaneous bands.  The default configuration can
+be change either programmatically or via a configuration file. For
+instance,
+
+```java
+daa.set_Buffered_WC_SC_228_MOPS(nom);
+```
+changes the configuration of the `daa` object to a buffered well-clear
+volume, i.e.,  DMOD=HMD=1.0 nmi, TAUMOD=35 s,
+ZTHR=450 ft, and TCOA=20 s, with kinematic bands. The parameter `nom`
+represents a boolean value. When this value is `false` the configuration
+is called *Nominal A* and assumes a maximum turn rate of 1.5 deg/s.
+The configuration *Nominal B* is obtained by
+setting the parameter `nom` to `true`. This configuration is exactly as
+Nominal A, but assumes a maximum turn rate of 3.0 deg/s.
+
+DAIDALUS supports a large set of configurable parameters that 
+parameters govern the behavior of the detection, alerting, and
+maneuver guidance logics. These parameters are described in the Section
+[Parameters](#parameters). The simplest way to configure a `Daidalus`
+object is through a configuration file. Examples of configuration
+files are provided in the directory
+[`Configurations`](Configurations/). These configurations are
+explained in the Section [Pre-Defined Configurations](#pre-defined-configurations).
+A configuration file does not need to define every parameter, only the
+parameters that change. The method invokation `daa.loadFromFile(filename)`
+loads a configuration file, whose name is provided in the parameter
+`filename`, into the `Daidalus` object `daa`. The method
+`loadFromFile` returns a boolean value, which is `false` when an error
+occurred, e.g., when a file with that name is not found. 
 
 ## Pre-Defined Configurations
 The directory [`Configurations`](Configurations/) includes the following configurations files

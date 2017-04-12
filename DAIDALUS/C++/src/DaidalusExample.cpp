@@ -180,18 +180,17 @@ int main(int argc, char* argv[]) {
 	std::cout << "## " << Daidalus::release() << std::endl;
 	std::cout << "##\n" << std::endl;
 
-	// Create an object of type Daidalus for a well-clear volume based on TAUMOD
+	// Create a Daidalus object for an unbuffered well-clear volume and instantaneous bands
 	Daidalus daa;
 
-	// By default, DAIDALUS is configured to unbuffered WC, instantaneous bands.
-	// A Daidulos object can be configure either programatically or by using a configuration file.
+	// A Daidalus object can be configured either programatically or by using a configuration file.
 	for (int a=1;a < argc; ++a) {
 		std::string arga = argv[a];
 		if (arga == "--noma") {
 			// Configure DAIDALUS to nominal A parameters: Kinematic Bands, Turn Rate 1.5 [deg/s])
 			daa.set_Buffered_WC_SC_228_MOPS(false);
 		} else if (arga == "--nomb") {
-			// Configure DAIDALUS to nominal A parameters: Kinematic Bands, Turn Rate 3.0 [deg/s])
+			// Configure DAIDALUS to nominal B parameters: Kinematic Bands, Turn Rate 3.0 [deg/s])
 			daa.set_Buffered_WC_SC_228_MOPS(true);
 		} else if (arga == "--conf" && a+1 < argc) {
 			// Load configuration file
