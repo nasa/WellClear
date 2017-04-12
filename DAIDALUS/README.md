@@ -1,4 +1,4 @@
-![](DAIDALUS.jpeg)
+![](../logo/DAIDALUS.jpeg)
 
 DAIDALUS API - V-1.0.1
 ===
@@ -57,10 +57,10 @@ DAIDALUS  also implements a pair-wise alerting logic that is based on a set
 set of increasingly conservative alert levels called *preventive*, *corrective*, and *warning*. 
 
 DAIDALUS is implemented in C++ and Java and the code is available
-under NASA's Open Source Agreement (see directory LICENSES).  The
+under [NASA's Open Source Agreement](LICENSES/).  The
 implementations are modular and highly configurable. The DAIDALUS core
 algorithms have been [formally specified and verified](../PVS) in the Prototype
-Verification System [PVS](http://pvs.csl.sri.com) (see directory PVS).  The examples
+Verification System ([PVS](http://pvs.csl.sri.com)).  The examples
 provided in this document are written in Java.  Except for language
 idiosyncrasies, both Java and C++ interfaces are identical.
 
@@ -81,9 +81,9 @@ $ make lib
 In C++, the `make` command will generate the static library
 `lib/DAIDALUS.a`.
 
- An example a simple application that uses the DAIDALUS library is avaiable in
-[Java](src/DaidalusExample.java) and
-[C++](src/DaidalusExample.pp). This application can be compiled using
+ An example a simple application that uses the DAIDALUS library is available in
+[Java](Java/src/DaidalusExample.java) and
+[C++](C++/src/DaidalusExample.pp). This application can be compiled using
 the provided `Makefile`. In Java:
 
 ```
@@ -100,9 +100,8 @@ configuration files, detection logic, alerting logic, maneuver
 guidance logic, and computation of loss of well-clear contours.
 
 ## Pre-Defined Configurations
-The directory [`Configurations`](Configurations) includes the following DAIDALUS' configurations files
-that are used in the current draft of RTCA SC-228 MOPS V3.8
-(2016-11-10):
+The directory [`Configurations`](Configurations/) includes the following configurations files
+that are related to RTCA SC-228 MOPS Phase I.
 
 * [`WC_SC_228_std.txt`](Configurations/WC_SC_228_std.txt):
   This configuration implements the alerting and maneuvering guidance
@@ -116,9 +115,7 @@ that are used in the current draft of RTCA SC-228 MOPS V3.8
   default when a `Daidalus` object is created. However, this
   configuration should only be used as reference to an ideal algorithm
   with perfect information.
-
   This configuration can be obtained with the following code:
-  
   ```java
   Daidalus daa  = new Daidalus();
   ```
@@ -135,9 +132,7 @@ that are used in the current draft of RTCA SC-228 MOPS V3.8
   maneuvers. Furthermore, recovery bands are computed until NMAC.
   The only difference between configurations `WC_SC_228_nom_a.txt` and
   `WC_SC_228_nom_b.txt` is the turn rate.
-
-   This configuration can be obtained with the following code:
-  
+  This configuration can be obtained with the following code:
   ```java
   Daidalus daa  = new Daidalus();
   daa.set_Buffered_WC_SC_228_MOPS(false);
@@ -155,9 +150,7 @@ that are used in the current draft of RTCA SC-228 MOPS V3.8
   maneuvers. Furthermore, recovery bands are computed until NMAC.
   The only difference between configurations `WC_SC_228_nom_a.txt` and
   `WC_SC_228_nom_b.txt` is the turn rate.
-
- This configuration can be obtained with the following code:
-
+  This configuration can be obtained with the following code:
   ```java
   Daidalus daa  = new Daidalus();
   daa.set_Buffered_WC_SC_228_MOPS(true);
