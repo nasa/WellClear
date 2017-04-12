@@ -8,16 +8,12 @@ CXXFLAGS = $(INCLUDEFLAGS) -Wall -O
 all: lib example
 
 lib: $(OBJS)
-	@echo 
-	@echo "** Building DAIDALUS binary library"
-	ar -cr lib/DAIDALUS.a $(OBJS) && ranlib lib/DAIDALUS.a #&& rm *.o
-	@echo 
+	@echo "** Building library lib/DAIDALUS.a"
+	ar -cr lib/DAIDALUS.a $(OBJS) && ranlib lib/DAIDALUS.a && echo "** Library lib/DAIDALUS.a built"
 
 example:
-	@echo
-	@echo "** Building DaidalusExample application"
+	@echo "** Building application DaidalusExample"
 	$(CXX) -o DaidalusExample $(CXXFLAGS) src/DaidalusExample.cpp lib/DAIDALUS.a
-	@echo 
 	@echo "** To run DaidalusExample type:"
 	@echo "./DaidalusExample"
 
