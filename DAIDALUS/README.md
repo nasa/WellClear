@@ -6,12 +6,14 @@ DAIDALUS API - V-1.0.1 (Work in Progress)
 Table of Contents
 =================
 
-   * [DAIDALUS API - V-1.0.1](#daidalus-api---v-101)
+   * [DAIDALUS API - V-1.0.1 (Work in Progress)](#daidalus-api---v-101-work-in-progress)
+   * [Table of Contents](#table-of-contents)
       * [Abstract](#abstract)
       * [Introduction](#introduction)
       * [Compilation of the Library](#compilation-of-the-library)
       * [Preliminaries](#preliminaries)
          * [Packages and Name Space](#packages-and-name-space)
+         * [Units](#units)
       * [Simple DAIDALUS Application](#simple-daidalus-application)
       * [Pre-Defined Configurations](#pre-defined-configurations)
       * [Contact](#contact)
@@ -101,11 +103,6 @@ DAIDALUS classes and interfaces.
 
 Class/Interface |   Package 
 --|--
-`Interval` | `Util`
-`Position` |  `Util`
-`Units` |  `Util`
-`Velocity` |  `Util`
-|--|
 `AlertLevels` | `ACCoRD`
 `AlertThresholds` | `ACCoRD`
 `BandsRegion` | `ACCoRD`
@@ -126,6 +123,10 @@ Class/Interface |   Package
 `WCV_TAUMOD` |  `ACCoRD`
 `WCV_TCPA` |  `ACCoRD`
 `WCV_TEP` |  `ACCoRD`
+`Interval` | `Util`
+`Position` |  `Util`
+`Units` |  `Util`
+`Velocity` |  `Util`
 
 ### Units
 DAIDALUS core algorithms use as internal units meters, seconds, and
@@ -152,10 +153,10 @@ nautical miles | `"nmi"`, `"NM"`
 feet | `"ft"` 
  knots | `"knot"`, `"kn"`, `"kts"` 
  meters per second | `"m/s"`
- kilometers per hour | `"kph"`  `"km/h"`
+ kilometers per hour | `"kph"`, `"km/h"`
 feet per minute | `"fpm"`, `"ft/min"` 
- meters per second$^2$|`"m/s^2"` 
-9.80665 m/s$^2$ | `"G"`
+ meters per second<sup>2</sup>|`"m/s^2"` 
+9.80665 m/s<sup>2</sup> | `"G"`
  degrees | `"deg"`
 radians | `"rad"`
 degrees per second | `"deg/s"`
