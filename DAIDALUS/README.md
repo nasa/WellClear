@@ -516,9 +516,8 @@ well-clear status in a timely manner and without violating
 configurable separation minima. By definition of the maneuver guidance logic, intervals of type
 `RECOVERY` are computed only when there are no intervals of type
 `NONE`.
-*  `UNKNOWN`: This type of intervals is returned when
-the inputs to the maneuver guidance logic are 
-not valid. 
+*  `UNKNOWN`: This type of intervals is returned for maneuvers that
+are  unassessed, i.e., values that are outside the configured minimum/maximum values.
 
  Ownship performance limits and other parameters that govern the
  maneuver guidance logic can be configured  in either the
