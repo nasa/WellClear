@@ -1,6 +1,6 @@
 ![](../logo/DAIDALUS.jpeg)
 
-DAIDALUS Reference Manual - V-1.0.1 (Work in Progress)
+Reference Manual - V-1.0.1 (Work in Progress)
 ===
 
 Table of Contents
@@ -12,15 +12,25 @@ Table of Contents
       * [Packages and Name Space](#packages-and-name-space)
       * [Units](#units)
       * [Earth Projection and Aircraft States](#earth-projection-and-aircraft-states)
+      * [Conventions, Misnomers, and Gotchas](#conventions-misnomers-and-gotchas)
    * [The Class Daidalus](#the-class-daidalus)
       * [Creating and Configuring a Daidalus Object](#creating-and-configuring-a-daidalus-object)
       * [Adding Ownship and Traffic States](#adding-ownship-and-traffic-states)
       * [Providing Wind Information](#providing-wind-information)
-      * [Getting Detection, Alerting, and Guidance Information](#getting-detection-alerting-and-guidance-information)
+      * [Conflict Detection Logic](#conflict-detection-logic)
+      * [Alerting Logic](#alerting-logic)
+      * [Maneuver Guidance Logic](#maneuver-guidance-logic)
+   * [The Class KinematicMultiBands](#the-class-kinematicmultibands)
+      * [Track (or Heading) Bands](#track-or-heading-bands)
+      * [Ground Speed (or Air Speed) Bands](#ground-speed-or-air-speed-bands)
+      * [Vertical Speed Bands](#vertical-speed-bands)
+      * [Altitude Bands](#altitude-bands)
+   * [Parameters](#parameters)
    * [Pre-Defined Configurations](#pre-defined-configurations)
+   * [Advanced Features](#advanced-features)
    * [Contact](#contact)
 
-## Introduction
+# Introduction
 
 DAIDALUS (Detect and AvoID Alerting Logic for Unmanned Systems) is a
 reference implementation of the detect and avoid (DAA) functional
@@ -67,7 +77,7 @@ Verification System ([PVS](http://pvs.csl.sri.com)).  The examples
 provided in this document are written in Java.  Except for language
 idiosyncrasies, both Java and C++ interfaces are identical.
 
-##  Software Library
+#  Software Library
 DAIDALUS is available as a software library. After getting the source
 code from [GitHub/WellClear](https://github.com/nasa/WellClear), the
 library can be compiled using the Unix utility `make` with the
@@ -99,9 +109,9 @@ $ make example
 ** To run DaidalusExample type:
 ./DaidalusExample
 ```
-## Preliminaries
+# Preliminaries
 
-### Packages and Name Space
+## Packages and Name Space
 In Java, DAIDALUS consists of three packages in the hierarchy
 `gov.nasa.larcfm`: `IO`, `Util`, and `ACCoRD`. In C++, the DAIDALUS
 code uses the name space `larcfm`. This document
@@ -138,7 +148,7 @@ Class/Interface |   Package
 `Vect3` | `Util`
 `Velocity` |  `Util`
 
-### Units
+## Units
 DAIDALUS core algorithms use as internal units meters, seconds, and
 radians. However,  interface methods that set or get a value have a String argument, where the units are
 explicitly specified. The following table provides a list of symbols and the corresponding
@@ -176,7 +186,7 @@ to and from internal units and  from one unit into another one.
 value)`: Converts `value` from the units indicated by the parameter `fromUnit` to the units indicated by the parameter
 `toUnit`.
   
-### Earth Projection and Aircraft States
+## Earth Projection and Aircraft States
 DAIDALUS core algorithms use a Euclidean a local East, North, Up (ENU)
 Cartesian coordinate system.  However, aircraft sates can be
 provided in geodesic coordinates. In this case, DAIDALUS uses an
@@ -214,7 +224,61 @@ methods.
       with Euclidean coordinates (`vx`,`vy`,`vz`) given in `vxy_unit`,
       `vxy_unit`, and `vz_unit` units respectively.
 
-## The Class `Daidalus`
+## Conventions, Misnomers, and Gotchas
+The following conventions are used through the code.
+
+* Northern latitudes and eastern longitudes are positive.
+* Angles representing aircraft direction are specified in true north clockwise convention.
+* Wind velocities are specified  using the *TO* direction, i.e., the
+direction the wind blows, as opposed to the *FROM* direction, i.e., the direction the wind originates. Furthermore, the
+vertical component of a wind velocity is assumed to be `0`. 
+* Aircraft positions can be specified in geodesic or ENU
+  coordinates. However, one of the two systems has to be used
+  consistently for all aircraft.
+* DAIDALUS input states are assumed to be ground-based. DAIDALUS
+  outputs are ground-based except when a wind vector is provided, in
+  which case outputs are air-based.
+
+DAIDALUS uses a simple wind model. When a wind vector is provided,
+DAIDALUS uniformly applies the wind vector to all aircraft states.  An
+important consequence of setting a wind vector is that all
+computations and outputs become relative to the wind. In this case,
+methods whose names use the word *Track* and *GroundSpeed* become
+misnomers. These methods will indeed provide heading and airspeed
+information, respectively.
+
+DAIDALUS provides methods to retrieve aircraft states as they are
+passed to its core logics. However, these states are not necessarily
+the same states provided as inputs. In particular, before any
+computation, aircraft states may be projected in time to synchronize
+them in time to the applicability time. Furthermore, if wind vector is
+provided, ground-based input velocities are transformed relative to the
+wind.
+
+Methods in DAIDALUS fail silently and return invalid values when
+called with invalid parameters. The following tables list methods that
+check the validity of values in DAIDALUS classes.
+
+Class/Type | Validity Check - Java
+--+--
+`double d;` | `Double.isFinite(d)`
+`BandsRegion r;` | `r.isValidBand()`
+`Interval i;` | `i.isEmpty()`
+`Velocity v;` | `!v.isInvalid()`
+`Position p;` | `!p.isInvalid()`
+`TrafficState s;` | `s.isValid()` 
+
+In C++, the methods are the same except in the following cases.
+
+Class/Type | Validity Check - C++ 
+--+--
+`double d;` | `ISFINITE(d)` 
+`BandsRegion r;` | `BandsRegion::isValidBand(r)`
+
+Furthermore, negative integer values are returned as invalid values
+in methods that under normal conditions return a natural number. 
+
+# The Class `Daidalus`
 
 The DAIDALUS software library is ownship
 centric. Its main functional features are provided through the class
@@ -246,7 +310,7 @@ display or post-process its outputs. If needed, any
 post-processing has to be implemented outside DAIDALUS.
 1. Repeat from 2.
 
-### Creating and Configuring a `Daidalus` Object
+## Creating and Configuring a `Daidalus` Object
 In Java, a `Daidalus` object is created through the invokation
 ```java
 Daidalus daa = new Daidalus();
@@ -296,7 +360,7 @@ The methods
 cannot be read because it does not exist or a file cannot be written because
 insufficient permissions.
 
-### Adding Ownship and Traffic States
+## Adding Ownship and Traffic States
 A `Daidalus` object `daa` maintains a list of aircraft states at a
 given time of applicability. The ownship state
 can be added into a `Daidalus` object `daa`  through the method invokation
@@ -333,47 +397,215 @@ returns the index of an aircraft after it has been added to the list
 of aircraft. The following methods are provided by the class
 `Daidalus`.
 
-* `int aircraftIndex(id)`: Returns the index of the aircraft identified by `id`.
+* `int aircraftIndex(String id)`: Returns the index of the aircraft
+identified by the string value of `id`.
 The returned value is negative if the list of aircraft does not
-include an aircraft identified by `id`.
+include an aircraft identified by the string value of `id`.
 * `int numberOfAircraft()`: Returns the number of aircraft in the list
 of aircraft, including the ownship.
 * `int lastTrafficIndex()`: Returns the index of the last
 aircraft added to the list of aircraft.
+* `double getCurrentTime()`: Returns the time of applicability in seconds.
+* `void setCurrentTime(double time)`: Projects aircraft states to time
+  `time`, which is specified in seconds, and sets that time as the time
+  of applicability.
 
-### Providing Wind Information
+## Providing Wind Information
 If available, a wind vector can be provided to a `Daidalus` object
 `daa` using the method call
 ```java
 daa.setWindField(wind);
 ```
 where `wind` is a `Velocity` object, whose vertical component
-is assumed to be `0`.  It should be noted that the wind velocity is specified using the *TO*
-direction, i.e., the direction the wind blows, as opposed to the *FROM*
-direction, i.e., the direction the wind originates.
+is assumed to be `0`.  The wind velocity is specified in the direction
+the wind blows. The specified wind vector is uniformity applied to all
+traffic states before any computation. Therefore, after this method call, all
+computations become relative to the wind.
 
-When a wind vector is set, DAIDALUS uses a very simple wind model. It
-uniformly applies the wind vector to all aircraft states.  An
-important consequence of setting a wind vector is that all
-computations and DAIDALUS outputs become relative to the wind.
+## Conflict Detection Logic
+The time to loss of well-clear, in seconds, between the ownship and the traffic aircraft at index `idx` for
+the corrective alert level and lookahead time
+configured in the `Daidalus` object `daa` can be 
+computed as follows.
+```java
+double t2v = daa.timeToViolation(idx);
+```
+If `t2v` is zero, the aircraft are in violation at current time. The
+method `timeToViolation` returns positive infinity when the
+aircraft are not in conflict within the lookahead time. It returns
+Not-A-Number when `idx` is not a valid aircraft index.
 
-In DAIDALUS, inputs are **always** ground-based. On the other hand,
-outputs are ground-based except when a wind vector is provided. If
-that is the case, outputs are air-based and methods named *Track* and
-*GroundSpeed* are misnomers. These methods will indeed compute heading
-and airspeed information, respectively.
+To compute time to loss of well-clear with respect to
+any alert level, see Section [Advanced Features](#advanced-features).
 
-### Getting Detection, Alerting, and Guidance Information
+## Alerting Logic
+Given a `Daidalus` object `daa` of type `Daidalus`, 
+the alert level between the ownship and the traffic aircraft at
+index `idx` can be computed as follows
+```java
+int alert_level = daa.alerting(idx);
+```
+The value of `alert_level` is negative when `idx` is not a valid
+aircraft index in `daa`. If `alert_level` is zero, no alert is issued
+for the ownship and the traffic aircraft at index `idx` at
+time of applicability. Otherwise, `alert_level` is a positive
+numerical value that indicates the alert level, which by default are
+configured as follows.
 
+`alert_level` | RTCA SC-228 Alert Level
+--+--
+`1` | Preventive
+`2` | Corrective
+`3` | Warning
 
-## Pre-Defined Configurations
+The `Daidalus` object `daa` can be configured to an arbitrary number
+of alert levels and each alert level is highly configurable
+(see Section [Advanced Features](#advanced-features)). The only
+restriction is that alert levels are ordered by increased level of
+severity.
+
+## Maneuver Guidance Logic
+In DAIDALUS, maneuver guidance is provided by the class `KinematicMultiBands`.
+The following code creates an object `bands` of type `KinematicMultiBands` for the
+aircraft in the `Daidalus` object `daa`.
+```java  
+KinematicMultiBands bands = daa.getMultiKinematicBands();  
+``` 
+The previous code is written in Java. The corresponding code in C++ is
+as follows.
+```c++
+KinematicMultiBands bands;
+daa.multiKinematicBands(bands); 
+```
+For efficiency reasons, bands are computed in a lazy way, i.e., the
+methods `getKinematicMutliBands` (in Java) and `kinematicMultiBands` (in
+C++) do not actually compute the bands. Section [The Class `KinematicMultiBands`](#the-class-kinematicmultibands),
+bands are computed when the object `bands` is used. 
+
+# The Class `KinematicMultiBands`
+DAIDALUS provides maneuver guidance in the form of ranges of ownship
+maneuvers called *bands*.
+Four dimensions of bands are computed by DAIDALUS:
+
+1. Horizontal maneuver ranges. These maneuvers indicate true track ranges,
+except when wind information is provided. If that is the case, these
+maneuvers indicate true heading ranges.
+1. Horizontal speed ranges. These maneuvers indicate ground speed ranges,
+except when wind information is provided. If that is the case, these
+maneuvers indicate  air speed ranges.
+1. Vertical speed ranges.
+1. Altitude ranges.
+
+In each dimension, bands are represented by an ordered list of
+intervals that are disjoint except at the boundaries. These intervals
+completely partition a range of values from a configurable minimum
+value to a configurable maximum value. Each interval is associated
+with a `BandsRegion`, which is defined as an enumerated type
+consisting of the following values.
+
+* `NONE`: Maneuvers indicated by intervals of this type are conflict free.
+* `FAR`: This type of intervals is not configured by default in the
+  maneuver guidance logic. However, it could be configured to indicate
+  maneuvers that lead to a preventive alert.
+* `MID`: The maneuvers indicated by intervals of this type lead to a corrective
+alert.
+* ` NEAR`: The maneuvers indicated by intervals of this type lead to a warning
+alert.
+* ` RECOVERY`: The maneuvers indicated by intervals of this type regain
+well-clear status in a timely manner and without violating
+configurable separation minima. By definition of the maneuver guidance logic, intervals of type
+`RECOVERY` are computed only when there are no intervals of type
+`NONE`.
+*  `UNKNOWN`: This type of intervals is returned when
+the inputs to the maneuver guidance logic are 
+not valid. 
+
+ Ownship performance limits and other parameters that govern the
+ maneuver guidance logic can be configured  in either the
+ `Daidalus` object from which the `bands` object
+is constructed or in the `bands` object directly. The methods to set
+and get these configuration parameters are described in 
+ Section [Parameters](#parameters).  
+
+## Track (or Heading) Bands
+The computation of track bands (heading bands, when wind information is
+provided) requires either a turn rate or a bank angle. If both the turn rate
+and the bank angle are zero, track/heading bands are computed assuming
+instantaneous track/heading manevuers.  The following loop iterates the list of
+intervals in the track/heading  bands and for each interval gets its upper and
+lower bounds and its type.
+```java
+  for (int i = 0; i < bands.trackLength(); i++ ) {  
+    Interval iv = bands.track(i,"deg"); //i-th band region
+    double lower_trk = iv.low; //[deg]
+    double upper_trk = iv.up;  //[deg]
+    BandsRegion regionType = bands.trackRegion(i);
+	...
+  } 
+```
+
+## Ground Speed (or Air Speed) Bands
+The computation of ground speed bands (air speed bands, when wind
+information is provided) requires a horizontal acceleration. If this
+acceleration is zero, ground speed/ air speed bands are computed
+assuming instantaneous ground speed/air speed manevuers.  The following loop iterates the list of
+intervals in the ground speed/air speed  bands and for each interval gets its upper and
+lower bounds and its type.
+```java
+  for (int i = 0; i < bands.groundSpeedLength(); i++ ) {  
+    Interval iv = bands.groundSpeed(i,"knot"); //i-th band region
+    double lower_gs = iv.low; //[knot]
+    double upper_gs = iv.up;  //[knot]
+    BandsRegion regionType = bands.groundSpeedRegion(i);
+    ... 
+  } 
+```
+
+## Vertical Speed Bands
+The computation of vertical speed bands requires a vertical acceleration. If this
+acceleration is zero, vertical speed bands are computed
+assuming instantaneous vertical speed manevuers.  The following loop iterates the list of
+intervals in the vertical speed  bands and for each interval gets its upper and
+lower bounds and its type.
+```java
+  for (int i = 0; i < bands.verticalSpeedLength(); i++ ) {  
+    Interval iv = bands.verticalSpeed(i,"fpm"); //i-th band region
+    double lower_vs = iv.low; //[fpm]
+    double upper_vs = iv.up;  //[fpm]
+    BandsRegion regionType = bands.verticalSpeedRegion(i);
+    ... 
+  } 
+```
+
+## Altitude Bands
+The computation of altitude bands requires a vertical acceleration and
+a vertical rate. If both the vertical acceleration and the vertical
+rate are zero, altitude bands are computed
+assuming instantaneous altitude manevuers.  The following loop iterates the list of
+intervals in the altitude bands and for each interval gets its upper and
+lower bounds and its type.
+
+```java
+  for (int i = 0; i < bands.altitudeLength(); i++ ) {  
+    Interval iv = bands.altitude(i,"ft"); //i-th band region
+    double lower_alt = iv.low; //[ft]
+    double upper_alt = iv.up;  //[ft]
+    BandsRegion regionType = bands.altitudeRegion(i);
+    ... 
+  } 
+```
+
+# Parameters
+(Work in Progress)
+
+# Pre-Defined Configurations
 The directory [`Configurations`](Configurations/) includes the following configurations files
 that are related to RTCA SC-228 MOPS Phase I.
 
 * [`WC_SC_228_std.txt`](Configurations/WC_SC_228_std.txt):
   This configuration implements the alerting and maneuvering guidance
-  logics for a the standard definiton of DAA Well-Clear provided in
-  Section 2.2.4.3.1 (also see Appendix C). The configuration uses
+  logics for a the standard definiton of DAA Well-Clear provided in 
+  MOPS  Section 2.2.4.3.1 (also see Appendix C). The configuration uses
   minimum average alerting time and hazard thresholds for computing
   preventive, corrective, and warning alerts and guidance. The
   maneuver guidance logic assumes instantaneous
@@ -382,7 +614,7 @@ that are related to RTCA SC-228 MOPS Phase I.
   default when a `Daidalus` object is created. However, this
   configuration should only be used as reference to an ideal algorithm
   with perfect information.
-  This configuration can be obtained with the following code:
+  This configuration can be obtained as follows.
   ```java
   Daidalus daa  = new Daidalus();
   ```
@@ -391,7 +623,7 @@ that are related to RTCA SC-228 MOPS Phase I.
   configuration corresponds to a nominal instantiation of DAIDALUS for
   the class of aircraft that are able to perform a turn rate of 1.5
   deg/s and meet the performance maneuverability listed in
-  Section 1.2.3 System Limitations.
+  MOPS Section 1.2.3 System Limitations.
   In this configuration, the alerting and maneuvering guidance logics
   use buffered definitions of preventive, corrective, and warning
   volumes to accommodate for certain types of sensor uncertainty.
@@ -399,7 +631,7 @@ that are related to RTCA SC-228 MOPS Phase I.
   maneuvers. Furthermore, recovery bands are computed until NMAC.
   The only difference between configurations `WC_SC_228_nom_a.txt` and
   `WC_SC_228_nom_b.txt` is the turn rate.
-  This configuration can be obtained with the following code:
+  This configuration can be obtained as follows. 
   ```java
   Daidalus daa  = new Daidalus();
   daa.set_Buffered_WC_SC_228_MOPS(false);
@@ -409,7 +641,7 @@ that are related to RTCA SC-228 MOPS Phase I.
   configuration corresponds to a nominal instantiation of DAIDALUS for
   the class of aircraft that are able to perform a turn rate of 3.0
   deg/s and meet the performance maneuverability listed in
-  Section 1.2.3 System Limitations.
+  MOPS Section 1.2.3 System Limitations.
   In this configuration, the alerting and maneuvering guidance logics
   use buffered definitions of preventive, corrective, and warning
   volumes to accommodate for certain types of sensor uncertainty.
@@ -417,7 +649,7 @@ that are related to RTCA SC-228 MOPS Phase I.
   maneuvers. Furthermore, recovery bands are computed until NMAC.
   The only difference between configurations `WC_SC_228_nom_a.txt` and
   `WC_SC_228_nom_b.txt` is the turn rate.
-  This configuration can be obtained with the following code:
+  This configuration can be obtained as follows. 
   ```java
   Daidalus daa  = new Daidalus();
   daa.set_Buffered_WC_SC_228_MOPS(true);
@@ -446,8 +678,11 @@ that are related to RTCA SC-228 MOPS Phase I.
   This configuration should only be used to check the performance of an actual
   implementation against the maximum values in the
   encounter characterization files in Appendix P.
-   
-## Contact
+
+# Advanced Features
+(Work in progress)
+
+# Contact
 
 [Cesar A. Munoz](http://shemesh.larc.nasa.gov/people/cam) (cesar.a.munoz@nasa.gov)
 
