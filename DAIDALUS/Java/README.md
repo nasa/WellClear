@@ -15,7 +15,9 @@ Description of Files
 * [`src`](src): Directory of Java code.
 * [`lib`](lib): Directory containing jar file.
 * [`doc`](doc): Directory of documentation.
-* [`DaidalusExample.java`](src/DaidalusExample.java): Example application.
+* [`DaidalusExample.java`](src/DaidalusExample.java): Example
+application.
+* [`DaidalusAlerting.java`](src/DaidalusAlerting.java): Example batch application.
 * [`Makefile`](Makefile): Unix make file to compile example application.
 
 Compiling example application
