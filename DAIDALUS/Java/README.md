@@ -45,7 +45,7 @@ To run the example batch application in a Unix environment, type, for example,
 ```
 
 In this case, DAIDAILUS will compute alerting information for [Nominal
-B](./Configurations/WC_SC_228_nom_b.txt) configuration with batch scenario [H1.daa](../Scenarios/H1.daa).
+B](../Configurations/WC_SC_228_nom_b.txt) configuration with batch scenario [H1.daa](../Scenarios/H1.daa).
 
 ### Contact
 
