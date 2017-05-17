@@ -38,6 +38,15 @@ To run the example application in a Unix environment, type
 $ ./DaidalusExample
 ```
 
+To run the example batch application in a Unix environment, type, for example,
+
+```
+./DaidalusAlerting --nomb -out H1.csv ../Scenarios/H1.daa
+```
+
+In this case, DAIDAILUS will compute alerting information for [Nominal
+B](./Configurations/WC_SC_228_nom_b.txt) configuration with batch scenario [H1.daa](../Scenarios/H1.daa).
+
 ### Contact
 
 [Cesar A. Munoz](http://shemesh.larc.nasa.gov/people/cam) (cesar.a.munoz@nasa.gov)
