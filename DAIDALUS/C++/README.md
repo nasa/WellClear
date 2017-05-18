@@ -16,20 +16,21 @@ Description of Files
 * [`include`](include): Directory of C++ headers.
 * [`doc`](doc): Directory of documentation.
 * [`DaidalusExample.cpp`](src/DaidalusExample.cpp): Example application.
+* [`DaidalusAlerting.java`](src/DaidalusAlerting.cpp): Example batch application.
 * [`Makefile`](Makefile): Unix make file to produce binary files and compile example
-application.
+applications.
 
-Compiling example application
+Compiling example applications
 --------------------------
 
-To produce binary files and compile example application
+To produce binary files and compile example applications
 in a Unix environment, type
 
 ```
 $ make 
 ```
 
-Running example application
+Running example applications
 -------------------------
 
 To run the example application in a Unix environment, type
@@ -37,6 +38,15 @@ To run the example application in a Unix environment, type
 ```
 $ ./DaidalusExample
 ```
+
+To run the example batch application in a Unix environment, type, for example,
+
+```
+./DaidalusAlerting --nomb --out H1.csv ../Scenarios/H1.daa
+```
+
+In this case, DAIDAILUS will compute alerting information for [Nominal
+B](../Configurations/WC_SC_228_nom_b.txt) configuration with batch scenario [H1.daa](../Scenarios/H1.daa).
 
 ### Contact
 

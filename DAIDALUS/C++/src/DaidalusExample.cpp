@@ -35,7 +35,7 @@ STATES GOVERNMENT, ITS CONTRACTORS AND SUBCONTRACTORS, AS WELL AS ANY
 PRIOR RECIPIENT, TO THE EXTENT PERMITTED BY LAW.  RECIPIENT'S SOLE
 REMEDY FOR ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL
 TERMINATION OF THIS AGREEMENT.
-**/
+ **/
 
 #include "Daidalus.h"
 
@@ -225,13 +225,13 @@ int main(int argc, char* argv[]) {
 	// A Daidalus object can be configured either programatically or by using a configuration file.
 	for (int a=1;a < argc; ++a) {
 		std::string arga = argv[a];
-		if (arga == "--noma") {
+		if (arga == "--noma" || arga == "-noma") {
 			// Configure DAIDALUS to nominal A parameters: Kinematic Bands, Turn Rate 1.5 [deg/s])
 			daa.set_Buffered_WC_SC_228_MOPS(false);
-		} else if (arga == "--nomb") {
+		} else if (arga == "--nomb" || arga == "-nomb") {
 			// Configure DAIDALUS to nominal B parameters: Kinematic Bands, Turn Rate 3.0 [deg/s])
 			daa.set_Buffered_WC_SC_228_MOPS(true);
-		} else if (arga == "--conf" && a+1 < argc) {
+		} else if ((startsWith(arga,"--c") || startsWith(arga,"-c")) && a+1 < argc) {
 			// Load configuration file
 			arga = argv[++a];
 			if (!daa.parameters.loadFromFile(arga)) {
@@ -240,6 +240,9 @@ int main(int argc, char* argv[]) {
 			} else {
 				std::cout << "Loading configuration file " << arga << std::endl;
 			}
+		} else if (startsWith(arga,"--h") || startsWith(arga,"-h")) {
+			std::cerr << "Options: [--noma | --nomb | --conf <configuration file> | --help]" << std::endl;
+			exit(0);
 		} else {
 			std::cerr << "Unknown option " << arga << std::endl;
 			exit(0);

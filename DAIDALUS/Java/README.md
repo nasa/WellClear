@@ -15,15 +15,14 @@ Description of Files
 * [`src`](src): Directory of Java code.
 * [`lib`](lib): Directory containing jar file.
 * [`doc`](doc): Directory of documentation.
-* [`DaidalusExample.java`](src/DaidalusExample.java): Example
-application.
+* [`DaidalusExample.java`](src/DaidalusExample.java): Example application.
 * [`DaidalusAlerting.java`](src/DaidalusAlerting.java): Example batch application.
-* [`Makefile`](Makefile): Unix make file to compile example application.
+* [`Makefile`](Makefile): Unix make file to compile example applications.
 
-Compiling example application
+Compiling example applications
 --------------------------
 
-To compile example application in a Unix environment, type
+To compile example applications in a Unix environment, type
 
 ```
 $ make 
@@ -31,7 +30,7 @@ $ make
 
 The code is compatible with Java development kit version 1.8.0_45.
 
-Running example application
+Running example applications
 -------------------------
 
 To run the example application in a Unix environment, type
@@ -43,7 +42,7 @@ $ ./DaidalusExample
 To run the example batch application in a Unix environment, type, for example,
 
 ```
-./DaidalusAlerting --nomb -out H1.csv ../Scenarios/H1.daa
+./DaidalusAlerting --nomb --out H1.csv ../Scenarios/H1.daa
 ```
 
 In this case, DAIDAILUS will compute alerting information for [Nominal

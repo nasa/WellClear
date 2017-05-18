@@ -57,13 +57,13 @@ class DaidalusExample {
 		// A Daidalus object can be configured either programatically or by using a configuration file.
 		for (int a=0;a < argv.length; ++a) {
 			String arga = argv[a];
-			if (arga.equals("--noma")) {
+			if (arga.equals("--noma") || arga.equals("-noma")) {
 				// Configure DAIDALUS to nominal A parameters: Kinematic Bands, Turn Rate 1.5 [deg/s])
 				daa.set_Buffered_WC_SC_228_MOPS(false);
-			} else if (arga.equals("--nomb")) {
+			} else if (arga.equals("--nomb") || arga.equals("-nomb")) {
 				// Configure DAIDALUS to nominal B parameters: Kinematic Bands, Turn Rate 3.0 [deg/s])
 				daa.set_Buffered_WC_SC_228_MOPS(true);
-			} else if (arga.equals("--conf") && a+1 < argv.length) {
+			} else if ((arga.startsWith("--c") || arga.startsWith("-c")) && a+1 < argv.length) {
 				// Load configuration file
 				arga = argv[++a];
 				if (!daa.parameters.loadFromFile(arga)) {
@@ -72,6 +72,9 @@ class DaidalusExample {
 				} else {
 					System.out.println("Loading configuration file "+arga);
 				}
+			} else if (arga.startsWith("--h") || arga.startsWith("-h")) {
+				System.err.println("Options: [--noma | --nomb | --conf <configuration file> | --help]");
+				System.exit(0);
 			} else {
 				System.err.println("Unknown option "+arga);
 				System.exit(0);

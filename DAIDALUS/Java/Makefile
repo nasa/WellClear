@@ -1,4 +1,4 @@
-# Simple Makefile to build DAIDALUS library and example application
+# Simple Makefile to build DAIDALUS library and example applications
 
 SRCS  = $(wildcard src/gov/nasa/larcfm/IO/*.java src/gov/nasa/larcfm/Util/*.java src/gov/nasa/larcfm/ACCoRD/*.java)
 OBJS  = $(SRCS:.java=.class)
@@ -14,12 +14,12 @@ lib: $(SRCS)
 
 examples:
 	@test -f lib/DAIDALUS.jar || make lib
-	@echo "** Building application DaidalusExample"
+	@echo "** Building example applications"
 	$(JAVAC) -cp lib/DAIDALUS.jar src/DaidalusExample.java  src/DaidalusAlerting.java
 	@echo "** To run DaidalusExample type:"
 	@echo "./DaidalusExample"
 	@echo "** To run DaidalusAlerting type, e.g.,"
-	@echo "./DaidalusAlerting --nomb -out H1.csv ../Scenarios/H1.daa"
+	@echo "./DaidalusAlerting --nomb --out H1.csv ../Scenarios/H1.daa"
 
 clean:
 	rm -f DaidalusExample.class $(OBJS) lib/DAIDALUS.jar

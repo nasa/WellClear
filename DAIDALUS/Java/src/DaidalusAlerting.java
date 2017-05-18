@@ -63,7 +63,7 @@ public class DaidalusAlerting {
 			} else if (arga.equals("--nomb") || arga.equals("-nomb")) {
 				// Configure DAIDALUS to nominal B parameters: Kinematic Bands, Turn Rate 3.0 [deg/s])
 				daa.set_Buffered_WC_SC_228_MOPS(true);
-			} else if ((arga.startsWith("--conf") || arga.startsWith("-conf")) && a+1 < args.length) {
+			} else if ((arga.startsWith("--c") || arga.startsWith("-c")) && a+1 < args.length) {
 				// Load configuration file
 				arga = args[++a];
 				if (!daa.parameters.loadFromFile(arga)) {
@@ -92,12 +92,13 @@ public class DaidalusAlerting {
 			System.exit(0);
 		}
 
-		// Here, have a way to read configuration file and an input file using the graphical interface
+		System.out.println("Processing file "+input_file);
 		DaidalusFileWalker walker = new DaidalusFileWalker(input_file);
 
 		try {
 			if (!output_file.equals("")) {
 				out = new PrintWriter(new BufferedWriter(new FileWriter(output_file)),true);
+				System.out.println("Output file: "+output_file);
 			}
 		} catch (Exception e) {
 			System.out.println("ERROR: "+e);
@@ -107,7 +108,7 @@ public class DaidalusAlerting {
 
 		while (!walker.atEnd()) {
 			walker.readState(daa);
-
+			// At this point, daa has the state information of ownhsip and traffic for a given time
 			int alerting = -1;
 			for (int i=1; i <= daa.lastTrafficIndex(); ++i) {
 				alerting = Math.max(alerting,daa.alerting(i));
