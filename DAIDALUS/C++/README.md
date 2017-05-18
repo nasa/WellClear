@@ -16,7 +16,7 @@ Description of Files
 * [`include`](include): Directory of C++ headers.
 * [`doc`](doc): Directory of documentation.
 * [`DaidalusExample.cpp`](src/DaidalusExample.cpp): Example application.
-* [`DaidalusAlerting.java`](src/DaidalusAlerting.cpp): Example batch application.
+* [`DaidalusAlerting.cpp`](src/DaidalusAlerting.cpp): Example batch application.
 * [`Makefile`](Makefile): Unix make file to produce binary files and compile example
 applications.
 
