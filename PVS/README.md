@@ -23,7 +23,7 @@ export PVS_LIBRARY_PATH="<wellclearpvsdir>/nasalib:$PVS_LIBRARY_PATH"
 To proof-check the PVS DAIDALUS development, type the following command in a Unix shell.
 
 ```
-$ provethem all-theories
+$ provethem 
 ```
 
 The output of that command is
