@@ -1,0 +1,19 @@
+Processing TCASII/top.pvs. Writing output to file summaries/TCASII.summary
+Logging PVS information in summaries/TCASII.log
+Grand Totals: 142 proofs, 142 attempted, 142 succeeded (278.34 s)
+
+Processing WellClear/top.pvs. Writing output to file summaries/WellClear.summary
+Logging PVS information in summaries/WellClear.log
+Grand Totals: 243 proofs, 243 attempted, 243 succeeded (177.27 s)
+
+Processing DAIDALUS/top.pvs. Writing output to file summaries/DAIDALUS.summary
+Logging PVS information in summaries/DAIDALUS.log
+Grand Totals: 588 proofs, 588 attempted, 588 succeeded (401.98 s)
+
+PVS_LIBRARY_PATH=/Users/cmunoz/src/PRECiSA/PRECiSA.git/PVS:/Users/cmunoz/src/DAIDALUS/RELEASE/WellClear.git/PVS:/Users/cmunoz/local/PVS/nasalib
+TCASII                   [OK: 142 proofs]
+WellClear                [OK: 243 proofs]
+DAIDALUS                 [OK: 588 proofs]
+
+*** Grand Totals: 973 proofs / 973 formulas. Missed: 0 formulas.
+*** Number of libraries: 3

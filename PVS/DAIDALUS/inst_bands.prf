@@ -55,22 +55,13 @@
     (sqv const-decl "nnreal" vectors_2D "vectors/")
     (norm const-decl "nnreal" vectors_2D "vectors/")
     (gs const-decl "nnreal" util "kinematics/")
-    (Integral const-decl "real" integral_def "analysis/")
-    (atan_value const-decl "real" atan "trig_fnd/")
-    (pi const-decl "posreal" atan "trig_fnd/")
-    (sin const-decl "real" sincos_def "trig_fnd/")
-    (cos const-decl "real" sincos_def "trig_fnd/")
     (* const-decl "Vector" vectors_2D "vectors/")
     (trkgs2vect const-decl "Vect2" track "kinematics/")
-    (real_minus_real_is_real application-judgement "real" reals nil)
-    (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
-     real_types nil)
-    (posreal_times_posreal_is_posreal application-judgement "posreal"
-     real_types nil)
-    (real_plus_real_is_real application-judgement "real" reals nil)
-    (pi_bound name-judgement "{r: posreal | pi_lb < r AND r < pi_ub}"
-     atan_approx "trig_fnd/")
-    (nil application-judgement "nnreal_lt_2pi" atan2 "trig_fnd/")
+    (cos_range application-judgement "real_abs_le1" sincos "trig/")
+    (sin_range application-judgement "real_abs_le1" sincos "trig/")
+    (pi_bound name-judgement
+     "{r: posreal | pi_lb_new <= r AND r <= pi_ub_new}" pi_def "trig/")
+    (nil application-judgement "nnreal_lt_2pi" atan2 "trig/")
     (real_times_real_is_real application-judgement "real" reals nil))
    nil))
  (track_steps_TCC1 0
@@ -83,33 +74,30 @@
      real_props nil)
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (pi_bnds formula-decl nil atan "trig_fnd/")
-    (pi_bound name-judgement "{r: posreal | pi_lb < r AND r < pi_ub}"
-     atan_approx "trig_fnd/")
+    (pi_bnds formula-decl nil atan "trig/")
+    (pi_bound name-judgement
+     "{r: posreal | pi_lb_new <= r AND r <= pi_ub_new}" pi_def "trig/")
     (posreal_div_posreal_is_posreal application-judgement "posreal"
      real_types nil))
    nil))
  (track_steps_TCC2 0
   (track_steps_TCC2-1 nil 3644745943
    ("" (skeep) (("" (lemma "pi_bnds") (("" (grind) nil nil)) nil)) nil)
-   ((pi_bnds formula-decl nil atan "trig_fnd/")
+   ((pi_bnds formula-decl nil atan "trig/")
+    (round_real const-decl
+     "{j: int | r - 1 / 2 < j AND j <= r + 1 / 2}" inst_bands nil)
     (nonneg_ceiling_is_nat application-judgement "nat" floor_ceil nil)
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (real_plus_real_is_real application-judgement "real" reals nil)
-    (real_div_nzreal_is_real application-judgement "real" reals nil)
-    (real_times_real_is_real application-judgement "real" reals nil)
+    (posreal_plus_nnreal_is_posreal application-judgement "posreal"
+     real_types nil)
+    (nonneg_floor_is_nat application-judgement "nat" floor_ceil nil)
     (posrat_div_posrat_is_posrat application-judgement "posrat"
      rationals nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (Integral const-decl "real" integral_def "analysis/")
-    (atan_value const-decl "real" atan "trig_fnd/")
-    (pi const-decl "posreal" atan "trig_fnd/")
-    (round_real const-decl
-     "{j: int | r - 1 / 2 < j AND j <= r + 1 / 2}" inst_bands nil)
-    (pi_bound name-judgement "{r: posreal | pi_lb < r AND r < pi_ub}"
-     atan_approx "trig_fnd/")
+    (pi_bound name-judgement
+     "{r: posreal | pi_lb_new <= r AND r <= pi_ub_new}" pi_def "trig/")
     (posreal_div_posreal_is_posreal application-judgement "posreal"
      real_types nil))
    nil))
@@ -964,8 +952,8 @@
      "vect_analysis/")
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (pi_bound name-judgement "{r: posreal | pi_lb < r AND r < pi_ub}"
-     atan_approx "trig_fnd/")
+    (pi_bound name-judgement
+     "{r: posreal | pi_lb_new <= r AND r <= pi_ub_new}" pi_def "trig/")
     (minus_nzreal_is_nzreal application-judgement "nzreal" real_types
      nil))
    nil))
@@ -2021,9 +2009,11 @@
     (times_div2 formula-decl nil real_props nil)
     (nonzero_real nonempty-type-eq-decl nil reals nil)
     (minus_nzint_is_nzint application-judgement "nzint" integers nil)
+    (div_mult_pos_lt1 formula-decl nil real_props nil)
+    (nonneg_real nonempty-type-eq-decl nil real_types nil)
+    (posreal nonempty-type-eq-decl nil real_types nil)
     (nzreal_times_nzreal_is_nzreal application-judgement "nzreal"
      real_types nil)
-    (div_mult_pos_lt1 formula-decl nil real_props nil)
     (both_sides_times1_imp formula-decl nil extra_real_props nil)
     (both_sides_times_pos_lt1 formula-decl nil real_props nil)
     (g skolem-const-decl "real" inst_bands nil)
@@ -2044,7 +2034,7 @@
     (strictly_increasing_scal formula-decl nil real_bands nil)
     (zero const-decl "Vector" vectors_2D "vectors/")
     (nzhVect3 nonempty-type-eq-decl nil track_3D "kinematics/")
-    (nnreal_lt_2pi nonempty-type-eq-decl nil atan2 "trig_fnd/")
+    (nnreal_lt_2pi nonempty-type-eq-decl nil atan2 "trig/")
     (track const-decl "nnreal_lt_2pi" track_3D "kinematics/")
     (strictly_increasing_real? const-decl "bool" real_bands nil)
     (RealBand type-eq-decl nil real_bands nil)
@@ -2091,13 +2081,13 @@
     (detector? const-decl "bool" int_bands nil)
     (nznum nonempty-type-eq-decl nil number_fields nil)
     (/ const-decl "[numfield, nznum -> numfield]" number_fields nil)
-    (nonneg_real nonempty-type-eq-decl nil real_types nil)
-    (posreal nonempty-type-eq-decl nil real_types nil)
-    (pi const-decl "posreal" atan "trig_fnd/")
+    (cos const-decl "real" sincos_def "trig/")
+    (pi const-decl "{x: real | x > 2 AND x < 4 AND cos(x / 2) = 0}"
+     pi_def "trig/")
     (nonneg_int nonempty-type-eq-decl nil integers nil)
     (posnat nonempty-type-eq-decl nil integers nil)
-    (pi_bound name-judgement "{r: posreal | pi_lb < r AND r < pi_ub}"
-     atan_approx "trig_fnd/")
+    (pi_bound name-judgement
+     "{r: posreal | pi_lb_new <= r AND r <= pi_ub_new}" pi_def "trig/")
     (minus_nzreal_is_nzreal application-judgement "nzreal" real_types
      nil))
    nil)
@@ -2119,9 +2109,6 @@
     (nonneg_real nonempty-type-eq-decl nil real_types nil)
     (> const-decl "bool" reals nil)
     (posreal nonempty-type-eq-decl nil real_types nil)
-    (Integral const-decl "real" integral_def "analysis/")
-    (atan_value const-decl "real" atan "trig_fnd/")
-    (pi const-decl "posreal" atan "trig_fnd/")
     (* const-decl "Vector" vectors_3D "vectors/")
     (+ const-decl "Vector" vectors_3D "vectors/")
     (detector? const-decl "bool" int_bands nil)
@@ -2135,8 +2122,8 @@
    ("" (skeep*) (("" (replaces -10) (("" (assert) nil nil)) nil)) nil)
    ((real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (pi_bound name-judgement "{r: posreal | pi_lb < r AND r < pi_ub}"
-     atan_approx "trig_fnd/")
+    (pi_bound name-judgement
+     "{r: posreal | pi_lb_new <= r AND r <= pi_ub_new}" pi_def "trig/")
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_gt_is_strict_total_order name-judgement
@@ -2164,8 +2151,9 @@
      real_props nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (pi_bound name-judgement "{r: posreal | pi_lb < r AND r < pi_ub}"
-     atan_approx "trig_fnd/"))
+    (pi_bound name-judgement
+     "{r: posreal | pi_lb_new <= r AND r <= pi_ub_new}" pi_def
+     "trig/"))
    nil))
  (instant_track_bands_def 0
   (instant_track_bands_def-4 nil 3644682076
@@ -4801,7 +4789,11 @@
       nil))
     nil)
    ((instant_track_bands const-decl "list[RealBand]" inst_bands nil)
-    (pi const-decl "posreal" atan "trig_fnd/")
+    (pi const-decl "{x: real | x > 2 AND x < 4 AND cos(x / 2) = 0}"
+     pi_def "trig/")
+    (/ const-decl "[numfield, nznum -> numfield]" number_fields nil)
+    (nznum nonempty-type-eq-decl nil number_fields nil)
+    (cos const-decl "real" sincos_def "trig/")
     (posreal nonempty-type-eq-decl nil real_types nil)
     (nonneg_real nonempty-type-eq-decl nil real_types nil)
     (Sign type-eq-decl nil sign "reals/")
@@ -4871,8 +4863,6 @@
      "listn[RealBand](length[RealBand](FinalRBand))" inst_bands nil)
     (FinalRBand skolem-const-decl
      "listn[RealBand](length[IntBand](FinalIBand))" inst_bands nil)
-    (pi_ub const-decl "posreal" atan_approx "trig_fnd/")
-    (pi_lb const-decl "posreal" atan_approx "trig_fnd/")
     (both_sides_times1 formula-decl nil real_props nil)
     (both_sides_times_pos_le1_imp formula-decl nil extra_real_props
      nil)
@@ -4882,6 +4872,7 @@
     (int_plus_int_is_int application-judgement "int" integers nil)
     (both_sides_times_pos_ge1_imp formula-decl nil extra_real_props
      nil)
+    (minus_real_is_real application-judgement "real" reals nil)
     (nonzero_real nonempty-type-eq-decl nil reals nil)
     (abs_div formula-decl nil real_props nil)
     (nnreal_div_posreal_is_nnreal application-judgement "nnreal"
@@ -4895,9 +4886,6 @@
     (real_div_nzreal_is_real application-judgement "real" reals nil)
     (int_abs_is_nonneg application-judgement "{j: nonneg_int | j >= i}"
      real_defs nil)
-    (Integral const-decl "real" integral_def "analysis/")
-    (atan_value const-decl "real" atan "trig_fnd/")
-    (minus_real_is_real application-judgement "real" reals nil)
     (minus_even_is_even application-judgement "even_int" integers nil)
     (abs_mult formula-decl nil real_props nil)
     (nzint_abs_is_pos application-judgement "{j: posint | j >= i}"
@@ -4920,16 +4908,14 @@
     (odd_times_odd_is_odd application-judgement "odd_int" integers nil)
     (nvo3 skolem-const-decl "[# x: real, y: real, z: real #]"
      inst_bands nil)
-    (sin_period formula-decl nil trig_basic "trig_fnd/")
-    (cos_period formula-decl nil trig_basic "trig_fnd/")
-    (sin_range application-judgement "trig_range" sincos_def
-     "trig_fnd/")
+    (sin_period formula-decl nil sincos "trig/")
+    (cos_period formula-decl nil sincos "trig/")
+    (sin_range application-judgement "real_abs_le1" sincos "trig/")
     (posint_times_posint_is_posint application-judgement "posint"
      integers nil)
     (even_times_int_is_even application-judgement "even_int" integers
      nil)
-    (cos_range application-judgement "trig_range" sincos_def
-     "trig_fnd/")
+    (cos_range application-judgement "real_abs_le1" sincos "trig/")
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (integer nonempty-type-from-decl nil integers nil)
     (real_minus_real_is_real application-judgement "real" reals nil)
@@ -4974,14 +4960,14 @@
     (mult_divides1 application-judgement "(divides(n))" divides nil)
     (mult_divides2 application-judgement "(divides(m))" divides nil)
     (+ const-decl "[numfield, numfield -> numfield]" number_fields nil)
-    (to2pi const-decl "nnreal_lt_2pi" to2pi "kinematics/")
+    (to2pi const-decl "nnreal_lt_2pi" to2pi "trig/")
     (real_plus_real_is_real application-judgement "real" reals nil)
     (band_mod_2pi const-decl "(track_band?(RL))" mod_bands nil)
     (band_to_mod? const-decl "bool" mod_bands nil)
     (track_band? const-decl "bool" mod_bands nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
     (track const-decl "nnreal_lt_2pi" track_3D "kinematics/")
-    (nnreal_lt_2pi nonempty-type-eq-decl nil atan2 "trig_fnd/")
+    (nnreal_lt_2pi nonempty-type-eq-decl nil atan2 "trig/")
     (* const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (nzhVect3 nonempty-type-eq-decl nil track_3D "kinematics/")
     (zero const-decl "Vector" vectors_2D "vectors/")
@@ -4997,16 +4983,15 @@
      nil)
     (Bands? const-decl "bool" int_bands nil)
     (IntBand type-eq-decl nil int_bands nil)
-    (/ const-decl "[numfield, nznum -> numfield]" number_fields nil)
-    (nznum nonempty-type-eq-decl nil number_fields nil)
     (conflict_free_track_step const-decl "bool" inst_bands nil)
     (real_times_real_is_real application-judgement "real" reals nil)
     (nzreal_div_nzreal_is_nzreal application-judgement "nzreal"
      real_types nil)
     (nzreal_times_nzreal_is_nzreal application-judgement "nzreal"
      real_types nil)
-    (pi_bound name-judgement "{r: posreal | pi_lb < r AND r < pi_ub}"
-     atan_approx "trig_fnd/"))
+    (pi_bound name-judgement
+     "{r: posreal | pi_lb_new <= r AND r <= pi_ub_new}" pi_def
+     "trig/"))
    nil)
   (instant_track_bands_def-3 nil 3644678952
    ("" (skeep)
@@ -7969,21 +7954,10 @@
     (norm const-decl "nnreal" vectors_2D "vectors/")
     (gs const-decl "nnreal" util "kinematics/")
     (track const-decl "nnreal_lt_2pi" track_3D "kinematics/")
-    (Integral const-decl "real" integral_def "analysis/")
-    (atan_value const-decl "real" atan "trig_fnd/")
-    (pi const-decl "posreal" atan "trig_fnd/")
-    (sin const-decl "real" sincos_def "trig_fnd/")
-    (cos const-decl "real" sincos_def "trig_fnd/")
     (* const-decl "Vector" vectors_2D "vectors/")
     (trkgs2vect const-decl "Vect2" track "kinematics/")
-    (real_minus_real_is_real application-judgement "real" reals nil)
-    (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
-     real_types nil)
-    (posreal_times_posreal_is_posreal application-judgement "posreal"
-     real_types nil)
-    (nil application-judgement "nnreal_lt_2pi" atan2 "trig_fnd/")
-    (pi_bound name-judgement "{r: posreal | pi_lb < r AND r < pi_ub}"
-     atan_approx "trig_fnd/")
+    (cos_range application-judgement "real_abs_le1" sincos "trig/")
+    (sin_range application-judgement "real_abs_le1" sincos "trig/")
     (real_times_real_is_real application-judgement "real" reals nil))
    nil))
  (instant_gs_bands_TCC1 0

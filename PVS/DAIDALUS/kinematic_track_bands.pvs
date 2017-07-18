@@ -100,7 +100,7 @@ BEGIN
       LET ktb = kinematic_track_bands(LOS,CD,LOS2,CD2,UseLOS2,so,vo,AL,most_urgent,epsH,epsV,UseHCrit,UseVCrit,omega)(B,T,B2,T2,MaxNL,MaxNR,step),
 	  timestep:posreal = step/omega
       IN FORALL (j:nat): -MaxNL<j*dir AND j*dir<MaxNR IMPLIES
-        LET newtrk = kinematics@to2pi.to2pi(track(vo)+j*(dir*step)) IN
+        LET newtrk = to2pi(track(vo)+j*(dir*step)) IN
 	  conflict_step(LOS,LOS2,UseLOS2,B,T,B2,T2,so,vo,LAMBDA (tt:nnreal): turnOmega(so,vo,tt,dir*omega),timestep,AL,most_urgent,
 		epsH,epsV,UseHCrit,UseVCrit)(j)
           IMPLIES

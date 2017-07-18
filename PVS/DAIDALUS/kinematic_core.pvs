@@ -4,7 +4,7 @@ kinematic_core : THEORY
 
   IMPORTING structures@listn, 
             vectors@vectors_3D, 
-            kinematics@to2pi, 
+            trig@to2pi, 
 	    kinematic_track_bands,
             los_and_cd,
 	    alertor, 

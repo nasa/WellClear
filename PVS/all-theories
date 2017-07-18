@@ -1,3 +1,4 @@
+: --log --dir summaries
 # A simplified version of the TCAS II Traffic Alert (TA) and Resolution Advisory (RA) logics
 TCASII  
 # Well-Clear concept

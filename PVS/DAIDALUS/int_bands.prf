@@ -355,9 +355,9 @@
      real_defs nil)
     (rat_max application-judgement "{s: rat | s >= q AND s >= r}"
      real_defs nil)
-    (real_le_is_total_order name-judgement "(total_order?[real])"
-     real_props nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
@@ -715,9 +715,9 @@
     (rat_max application-judgement "{s: rat | s >= q AND s >= r}"
      real_defs nil)
     (int_plus_int_is_int application-judgement "int" integers nil)
-    (real_le_is_total_order name-judgement "(total_order?[real])"
-     real_props nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
@@ -1533,9 +1533,9 @@
      real_defs nil)
     (rat_max application-judgement "{s: rat | s >= q AND s >= r}"
      real_defs nil)
-    (real_le_is_total_order name-judgement "(total_order?[real])"
-     real_props nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
@@ -4036,8 +4036,6 @@
    ((max_nnreal_0 formula-decl nil min_max "reals/")
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
-    (real_le_is_total_order name-judgement "(total_order?[real])"
-     real_props nil)
     (nnint_plus_posint_is_posint application-judgement "posint"
      integers nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
@@ -4147,9 +4145,9 @@
     (rat_max application-judgement "{s: rat | s >= q AND s >= r}"
      real_defs nil)
     (int_plus_int_is_int application-judgement "int" integers nil)
-    (real_le_is_total_order name-judgement "(total_order?[real])"
-     real_props nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
@@ -4879,9 +4877,9 @@
     (rat_max application-judgement "{s: rat | s >= q AND s >= r}"
      real_defs nil)
     (int_plus_int_is_int application-judgement "int" integers nil)
-    (real_le_is_total_order name-judgement "(total_order?[real])"
-     real_props nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
@@ -5647,8 +5645,6 @@
      nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
-    (real_le_is_total_order name-judgement "(total_order?[real])"
-     real_props nil)
     (rat_max application-judgement "{s: rat | s >= q AND s >= r}"
      real_defs nil)
     (int_max application-judgement "{k: int | i <= k AND j <= k}"
@@ -5665,9 +5661,9 @@
     (int nonempty-type-eq-decl nil integers nil)
     (IntBand type-eq-decl nil int_bands nil)
     (list type-decl nil list_adt nil)
-    (real_ge_is_total_order name-judgement "(total_order?[real])"
-     real_props nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
     (rat_max application-judgement "{s: rat | s >= q AND s >= r}"

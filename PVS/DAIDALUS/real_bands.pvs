@@ -2,7 +2,7 @@ real_bands: THEORY
 BEGIN
 
   IMPORTING int_bands,
-  	    kinematics@to2pi
+  	    trig@to2pi
 
   s,v  : VAR Vect3  
   B    : VAR nnreal

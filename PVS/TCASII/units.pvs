@@ -1,7 +1,6 @@
 units : THEORY
 BEGIN
-  IMPORTING trig_fnd@sincos,
-            trig_fnd@trig_basic,
+  IMPORTING trig@trig_basic,
             vectors@vectors_3D
 
   internal : posreal = 1

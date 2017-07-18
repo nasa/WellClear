@@ -5864,9 +5864,9 @@
      real_defs nil)
     (rat_max application-judgement "{s: rat | s >= q AND s >= r}"
      real_defs nil)
-    (real_le_is_total_order name-judgement "(total_order?[real])"
-     real_props nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
@@ -6102,9 +6102,9 @@
      real_defs nil)
     (rat_max application-judgement "{s: rat | s >= q AND s >= r}"
      real_defs nil)
-    (real_le_is_total_order name-judgement "(total_order?[real])"
-     real_props nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)

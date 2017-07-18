@@ -2,38 +2,37 @@
  (defparam_TCC1 0
   (defparam_TCC1-1 nil 3647955324
    ("" (lemma "trig@atan.pi_bnds")
-    (("" (lemma "trig_fnd@atan.pi_bnds") (("" (ground) nil nil)) nil))
-    nil)
-   ((real_gt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil)
-    (real_lt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil)
+    (("" (lemma "trig@atan.pi_bnds") (("" (ground) nil nil)) nil)) nil)
+   ((real_le_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (pi_bound name-judgement
+     "{r: posreal | pi_lb_new <= r AND r <= pi_ub_new}" pi_def "trig/")
     (posrat_div_posrat_is_posrat application-judgement "posrat"
      rationals nil)
-    (pi_bound name-judgement "{r: posreal | pi_lb < r AND r < pi_ub}"
-     atan_approx "trig_fnd/")
-    (real_le_is_total_order name-judgement "(total_order?[real])"
-     real_props nil)
-    (pi_bnds formula-decl nil atan "trig_fnd/"))
+    (real_lt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
+    (real_gt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
+    (pi_bnds formula-decl nil atan "trig/"))
    nil))
  (defparam_TCC2 0
   (defparam_TCC2-1 nil 3647955324
-   ("" (lemma "trig_fnd@atan.pi_bnds") (("" (ground) nil nil)) nil)
+   ("" (lemma "trig@atan.pi_bnds") (("" (ground) nil nil)) nil)
    ((posreal_div_posreal_is_posreal application-judgement "posreal"
      real_types nil)
-    (pi_bound name-judgement "{r: posreal | pi_lb < r AND r < pi_ub}"
-     atan_approx "trig_fnd/")
+    (pi_bound name-judgement
+     "{r: posreal | pi_lb_new <= r AND r <= pi_ub_new}" pi_def "trig/")
     (posrat_div_posrat_is_posrat application-judgement "posrat"
      rationals nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (pi_bnds formula-decl nil atan "trig_fnd/"))
+    (pi_bnds formula-decl nil atan "trig/"))
    nil))
  (defparam_TCC3 0
   (defparam_TCC3-1 nil 3683562991
    ("" (expand "deg") (("" (assert) nil nil)) nil)
-   ((pi_bound name-judgement "{r: posreal | pi_lb < r AND r < pi_ub}"
-     atan_approx "trig_fnd/")
+   ((pi_bound name-judgement
+     "{r: posreal | pi_lb_new <= r AND r <= pi_ub_new}" pi_def "trig/")
     (posreal_div_posreal_is_posreal application-judgement "posreal"
      real_types nil)
     (real_lt_is_strict_total_order name-judgement
@@ -323,7 +322,7 @@
         (("" (inst?) (("" (assert) nil nil)) nil)) nil))
       nil))
     nil)
-   ((Tan? const-decl "bool" sincos_def "trig_fnd/")
+   ((Tan? const-decl "bool" trig_basic "trig/")
     (number nonempty-type-decl nil numbers nil)
     (boolean nonempty-type-decl nil booleans nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
@@ -341,7 +340,11 @@
     (/= const-decl "boolean" notequal nil)
     (nznum nonempty-type-eq-decl nil number_fields nil)
     (/ const-decl "[numfield, nznum -> numfield]" number_fields nil)
-    (pi const-decl "posreal" atan "trig_fnd/")
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (cos const-decl "real" sincos_def "trig/")
+    (pi const-decl "{x: real | x > 2 AND x < 4 AND cos(x / 2) = 0}"
+     pi_def "trig/")
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_gt_is_strict_total_order name-judgement
@@ -350,15 +353,15 @@
      "(strict_total_order?[real])" real_props nil)
     (posreal_div_posreal_is_posreal application-judgement "posreal"
      real_types nil)
-    (cos_range application-judgement "trig_range" sincos_def
-     "trig_fnd/")
+    (cos_range application-judgement "real_abs_le1" sincos "trig/")
     (nzreal_div_nzreal_is_nzreal application-judgement "nzreal"
      real_types nil)
     (minus_nzreal_is_nzreal application-judgement "nzreal" real_types
      nil)
-    (cos_gt_0 formula-decl nil trig_ineq "trig_fnd/")
-    (pi_bound name-judgement "{r: posreal | pi_lb < r AND r < pi_ub}"
-     atan_approx "trig_fnd/"))
+    (cos_gt_0 formula-decl nil trig_basic "trig/")
+    (pi_bound name-judgement
+     "{r: posreal | pi_lb_new <= r AND r <= pi_ub_new}" pi_def
+     "trig/"))
    nil))
  (update_omega_in_place_TCC2 0
   (update_omega_in_place_TCC2-1 nil 3658577771
@@ -377,13 +380,17 @@
      real_props nil)
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
-    (pi const-decl "posreal" atan "trig_fnd/")
+    (pi const-decl "{x: real | x > 2 AND x < 4 AND cos(x / 2) = 0}"
+     pi_def "trig/")
+    (cos const-decl "real" sincos_def "trig/")
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
     (/ const-decl "[numfield, nznum -> numfield]" number_fields nil)
     (nznum nonempty-type-eq-decl nil number_fields nil)
     (/= const-decl "boolean" notequal nil)
     (< const-decl "bool" reals nil)
-    (tan const-decl "real" sincos_def "trig_fnd/")
-    (Tan? const-decl "bool" sincos_def "trig_fnd/")
+    (tan const-decl "real" trig_basic "trig/")
+    (Tan? const-decl "bool" trig_basic "trig/")
     (g const-decl "posreal" units "TCASII/")
     (* const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (numfield nonempty-type-eq-decl nil number_fields nil)
@@ -406,7 +413,6 @@
     (nonneg_rat nonempty-type-eq-decl nil rationals nil)
     (rational nonempty-type-from-decl nil rationals nil)
     (rational_pred const-decl "[real -> boolean]" rationals nil)
-    (= const-decl "[T, T -> boolean]" equalities nil)
     (posrat_div_posrat_is_posrat application-judgement "posrat"
      rationals nil)
     (real_gt_is_strict_total_order name-judgement
@@ -419,9 +425,10 @@
      "(strict_total_order?[real])" real_props nil)
     (posreal_div_posreal_is_posreal application-judgement "posreal"
      real_types nil)
-    (tan_gt_0 formula-decl nil trig_ineq "trig_fnd/")
-    (pi_bound name-judgement "{r: posreal | pi_lb < r AND r < pi_ub}"
-     atan_approx "trig_fnd/"))
+    (tan_gt_0 formula-decl nil trig_ineq "trig/")
+    (pi_bound name-judgement
+     "{r: posreal | pi_lb_new <= r AND r <= pi_ub_new}" pi_def
+     "trig/"))
    nil))
  (most_urgent_function_TCC1 0
   (most_urgent_function_TCC1-1 nil 3658577771

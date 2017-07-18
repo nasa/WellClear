@@ -784,6 +784,7 @@
     (neg_times_lt formula-decl nil real_props nil)
     (neg_times_le formula-decl nil real_props nil)
     (both_sides_times_pos_ge2 formula-decl nil real_props nil)
+    (expt_x0 formula-decl nil exponentiation nil)
     (both_sides_expt_lt1_le formula-decl nil exponentiation nil)
     (IFF const-decl "[bool, bool -> bool]" booleans nil)
     (nzreal_expt application-judgement "nzreal" exponentiation nil)

@@ -3143,8 +3143,7 @@
     (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
     (Sign type-eq-decl nil sign "reals/")
     (zero const-decl "Vector" vectors_2D "vectors/")
-    (to2pi const-decl "nnreal_lt_2pi" to2pi "kinematics/")
-    (nnreal_lt_2pi nonempty-type-eq-decl nil atan2 "trig_fnd/")
+    (nnreal_lt_2pi nonempty-type-eq-decl nil atan2 "trig/")
     (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
      "vect_analysis/")
     (kinematic_bands const-decl "(proper?(MaxN))" kinematic_bands nil)
@@ -4979,8 +4978,7 @@
     (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
     (Sign type-eq-decl nil sign "reals/")
     (zero const-decl "Vector" vectors_2D "vectors/")
-    (to2pi const-decl "nnreal_lt_2pi" to2pi "kinematics/")
-    (nnreal_lt_2pi nonempty-type-eq-decl nil atan2 "trig_fnd/")
+    (nnreal_lt_2pi nonempty-type-eq-decl nil atan2 "trig/")
     (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
      "vect_analysis/")
     (kinematic_bands const-decl "(proper?(MaxN))" kinematic_bands nil)

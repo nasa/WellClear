@@ -86,7 +86,11 @@
     (/= const-decl "boolean" notequal nil)
     (nznum nonempty-type-eq-decl nil number_fields nil)
     (/ const-decl "[numfield, nznum -> numfield]" number_fields nil)
-    (pi const-decl "posreal" atan "trig_fnd/")
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (cos const-decl "real" sincos_def "trig/")
+    (pi const-decl "{x: real | x > 2 AND x < 4 AND cos(x / 2) = 0}"
+     pi_def "trig/")
     (Parameters type-eq-decl nil kinematic_core nil)
     (pc_comp const-decl "bool" kinematic_core nil)
     (minus_odd_is_odd application-judgement "odd_int" integers nil)
@@ -96,8 +100,6 @@
      real_types nil)
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (atan_value const-decl "real" atan "trig_fnd/")
-    (Integral const-decl "real" integral_def "analysis/")
     (round const-decl "{j: int | r - 1 / 2 < j AND j <= r + 1 / 2}"
            kinematic_track_bands nil)
     (nnreal_div_posreal_is_nnreal application-judgement "nnreal"
@@ -109,8 +111,8 @@
      real_types nil)
     (posrat_div_posrat_is_posrat application-judgement "posrat"
      rationals nil)
-    (pi_bound name-judgement "{r: posreal | pi_lb < r AND r < pi_ub}"
-     atan_approx "trig_fnd/")
+    (pi_bound name-judgement
+     "{r: posreal | pi_lb_new <= r AND r <= pi_ub_new}" pi_def "trig/")
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
@@ -154,7 +156,11 @@
     nil)
    ((pc_comp const-decl "bool" kinematic_core nil)
     (Parameters type-eq-decl nil kinematic_core nil)
-    (pi const-decl "posreal" atan "trig_fnd/")
+    (pi const-decl "{x: real | x > 2 AND x < 4 AND cos(x / 2) = 0}"
+     pi_def "trig/")
+    (cos const-decl "real" sincos_def "trig/")
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
     (/ const-decl "[numfield, nznum -> numfield]" number_fields nil)
     (nznum nonempty-type-eq-decl nil number_fields nil)
     (/= const-decl "boolean" notequal nil)
@@ -227,7 +233,11 @@
     nil)
    ((pc_comp const-decl "bool" kinematic_core nil)
     (Parameters type-eq-decl nil kinematic_core nil)
-    (pi const-decl "posreal" atan "trig_fnd/")
+    (pi const-decl "{x: real | x > 2 AND x < 4 AND cos(x / 2) = 0}"
+     pi_def "trig/")
+    (cos const-decl "real" sincos_def "trig/")
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
     (/ const-decl "[numfield, nznum -> numfield]" number_fields nil)
     (nznum nonempty-type-eq-decl nil number_fields nil)
     (/= const-decl "boolean" notequal nil)
@@ -416,7 +426,11 @@
     nil)
    ((pc_comp const-decl "bool" kinematic_core nil)
     (Parameters type-eq-decl nil kinematic_core nil)
-    (pi const-decl "posreal" atan "trig_fnd/")
+    (pi const-decl "{x: real | x > 2 AND x < 4 AND cos(x / 2) = 0}"
+     pi_def "trig/")
+    (cos const-decl "real" sincos_def "trig/")
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
     (/ const-decl "[numfield, nznum -> numfield]" number_fields nil)
     (nznum nonempty-type-eq-decl nil number_fields nil)
     (/= const-decl "boolean" notequal nil)
@@ -453,8 +467,8 @@
     (NOT const-decl "[bool -> bool]" booleans nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (boolean nonempty-type-decl nil booleans nil)
-    (pi_bound name-judgement "{r: posreal | pi_lb < r AND r < pi_ub}"
-     atan_approx "trig_fnd/")
+    (pi_bound name-judgement
+     "{r: posreal | pi_lb_new <= r AND r <= pi_ub_new}" pi_def "trig/")
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (bands_param_from_table const-decl
@@ -497,9 +511,7 @@
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (both_sides_div_pos_le1 formula-decl nil real_props nil)
-    (= const-decl "[T, T -> boolean]" equalities nil)
     (<= const-decl "bool" reals nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil)
     (nnreal_div_posreal_is_nnreal application-judgement "nnreal"
      real_types nil))
    nil))
@@ -528,7 +540,11 @@
     nil)
    ((pc_comp const-decl "bool" kinematic_core nil)
     (Parameters type-eq-decl nil kinematic_core nil)
-    (pi const-decl "posreal" atan "trig_fnd/")
+    (pi const-decl "{x: real | x > 2 AND x < 4 AND cos(x / 2) = 0}"
+     pi_def "trig/")
+    (cos const-decl "real" sincos_def "trig/")
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
     (/ const-decl "[numfield, nznum -> numfield]" number_fields nil)
     (nznum nonempty-type-eq-decl nil number_fields nil)
     (/= const-decl "boolean" notequal nil)
@@ -639,7 +655,11 @@
     nil)
    ((pc_comp const-decl "bool" kinematic_core nil)
     (Parameters type-eq-decl nil kinematic_core nil)
-    (pi const-decl "posreal" atan "trig_fnd/")
+    (pi const-decl "{x: real | x > 2 AND x < 4 AND cos(x / 2) = 0}"
+     pi_def "trig/")
+    (cos const-decl "real" sincos_def "trig/")
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
     (/ const-decl "[numfield, nznum -> numfield]" number_fields nil)
     (nznum nonempty-type-eq-decl nil number_fields nil)
     (/= const-decl "boolean" notequal nil)
@@ -774,7 +794,11 @@
     nil)
    ((pc_comp const-decl "bool" kinematic_core nil)
     (Parameters type-eq-decl nil kinematic_core nil)
-    (pi const-decl "posreal" atan "trig_fnd/")
+    (pi const-decl "{x: real | x > 2 AND x < 4 AND cos(x / 2) = 0}"
+     pi_def "trig/")
+    (cos const-decl "real" sincos_def "trig/")
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
     (/ const-decl "[numfield, nznum -> numfield]" number_fields nil)
     (nznum nonempty-type-eq-decl nil number_fields nil)
     (/= const-decl "boolean" notequal nil)
@@ -852,7 +876,11 @@
     (/= const-decl "boolean" notequal nil)
     (nznum nonempty-type-eq-decl nil number_fields nil)
     (/ const-decl "[numfield, nznum -> numfield]" number_fields nil)
-    (pi const-decl "posreal" atan "trig_fnd/")
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (cos const-decl "real" sincos_def "trig/")
+    (pi const-decl "{x: real | x > 2 AND x < 4 AND cos(x / 2) = 0}"
+     pi_def "trig/")
     (Parameters type-eq-decl nil kinematic_core nil)
     (pc_comp const-decl "bool" kinematic_core nil)
     (Vector type-eq-decl nil vectors_2D "vectors/")
@@ -861,8 +889,6 @@
     (vect2 const-decl "Vect2" vect_3D_2D "vectors/")
     (round const-decl "{j: int | r - 1 / 2 < j AND j <= r + 1 / 2}"
            kinematic_track_bands nil)
-    (Integral const-decl "real" integral_def "analysis/")
-    (atan_value const-decl "real" atan "trig_fnd/")
     (* const-decl "real" vectors_2D "vectors/")
     (posint_plus_nnint_is_posint application-judgement "posint"
      integers nil)
@@ -873,8 +899,8 @@
      "(strict_total_order?[real])" real_props nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (pi_bound name-judgement "{r: posreal | pi_lb < r AND r < pi_ub}"
-     atan_approx "trig_fnd/")
+    (pi_bound name-judgement
+     "{r: posreal | pi_lb_new <= r AND r <= pi_ub_new}" pi_def "trig/")
     (posrat_div_posrat_is_posrat application-judgement "posrat"
      rationals nil)
     (nnreal_plus_posreal_is_posreal application-judgement "posreal"
@@ -924,7 +950,11 @@
     (/= const-decl "boolean" notequal nil)
     (nznum nonempty-type-eq-decl nil number_fields nil)
     (/ const-decl "[numfield, nznum -> numfield]" number_fields nil)
-    (pi const-decl "posreal" atan "trig_fnd/")
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (cos const-decl "real" sincos_def "trig/")
+    (pi const-decl "{x: real | x > 2 AND x < 4 AND cos(x / 2) = 0}"
+     pi_def "trig/")
     (Parameters type-eq-decl nil kinematic_core nil)
     (pc_comp const-decl "bool" kinematic_core nil)
     (Vector type-eq-decl nil vectors_2D "vectors/")
@@ -941,8 +971,8 @@
      real_types nil)
     (posrat_div_posrat_is_posrat application-judgement "posrat"
      rationals nil)
-    (pi_bound name-judgement "{r: posreal | pi_lb < r AND r < pi_ub}"
-     atan_approx "trig_fnd/")
+    (pi_bound name-judgement
+     "{r: posreal | pi_lb_new <= r AND r <= pi_ub_new}" pi_def "trig/")
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (real_gt_is_strict_total_order name-judgement
@@ -951,8 +981,6 @@
      "vect_analysis/")
     (real_plus_real_is_real application-judgement "real" reals nil)
     (* const-decl "real" vectors_2D "vectors/")
-    (atan_value const-decl "real" atan "trig_fnd/")
-    (Integral const-decl "real" integral_def "analysis/")
     (round const-decl "{j: int | r - 1 / 2 < j AND j <= r + 1 / 2}"
            kinematic_track_bands nil))
    nil))
@@ -1003,7 +1031,11 @@
     (Spread type-eq-decl nil alertor nil)
     (Region type-decl nil alertor nil)
     (pc_comp const-decl "bool" kinematic_core nil)
-    (pi const-decl "posreal" atan "trig_fnd/")
+    (pi const-decl "{x: real | x > 2 AND x < 4 AND cos(x / 2) = 0}"
+     pi_def "trig/")
+    (cos const-decl "real" sincos_def "trig/")
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
     (/ const-decl "[numfield, nznum -> numfield]" number_fields nil)
     (nznum nonempty-type-eq-decl nil number_fields nil)
     (/= const-decl "boolean" notequal nil)
@@ -1069,7 +1101,11 @@
     nil)
    ((pc_comp const-decl "bool" kinematic_core nil)
     (Parameters type-eq-decl nil kinematic_core nil)
-    (pi const-decl "posreal" atan "trig_fnd/")
+    (pi const-decl "{x: real | x > 2 AND x < 4 AND cos(x / 2) = 0}"
+     pi_def "trig/")
+    (cos const-decl "real" sincos_def "trig/")
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
     (/ const-decl "[numfield, nznum -> numfield]" number_fields nil)
     (nznum nonempty-type-eq-decl nil number_fields nil)
     (/= const-decl "boolean" notequal nil)
@@ -1146,7 +1182,11 @@
     (Spread type-eq-decl nil alertor nil)
     (Region type-decl nil alertor nil)
     (pc_comp const-decl "bool" kinematic_core nil)
-    (pi const-decl "posreal" atan "trig_fnd/")
+    (pi const-decl "{x: real | x > 2 AND x < 4 AND cos(x / 2) = 0}"
+     pi_def "trig/")
+    (cos const-decl "real" sincos_def "trig/")
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
     (/ const-decl "[numfield, nznum -> numfield]" number_fields nil)
     (nznum nonempty-type-eq-decl nil number_fields nil)
     (/= const-decl "boolean" notequal nil)

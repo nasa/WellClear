@@ -414,13 +414,15 @@
     (Vect2 type-eq-decl nil vectors_2D_def "vectors/")
     (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
     (safe_tau_pre_timevar name-judgement "(pre_timevar?)" WCV_tau nil)
-    (cos_pi2 formula-decl nil trig_basic "trig_fnd/")
-    (sin_range application-judgement "trig_range" sincos_def
-     "trig_fnd/")
-    (cos_range application-judgement "trig_range" sincos_def
-     "trig_fnd/")
+    (cos_pi2 formula-decl nil sincos "trig/")
+    (sin_range application-judgement "real_abs_le1" sincos "trig/")
+    (cos_range application-judgement "real_abs_le1" sincos "trig/")
     (vel_from_TrkGsVs const-decl "Vect3" units "TCASII/")
-    (pi const-decl "posreal" atan "trig_fnd/")
+    (pi const-decl "{x: real | x > 2 AND x < 4 AND cos(x / 2) = 0}"
+     pi_def "trig/")
+    (cos const-decl "real" sincos_def "trig/")
+    (< const-decl "bool" reals nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
     (/ const-decl "[numfield, nznum -> numfield]" number_fields nil)
     (nznum nonempty-type-eq-decl nil number_fields nil)
     (/= const-decl "boolean" notequal nil)
@@ -432,7 +434,9 @@
      real_types nil)
     (real_times_real_is_real application-judgement "real" reals nil)
     (pi_bound name-judgement "{r: posreal | pi_lb < r AND r < pi_ub}"
-     atan_approx "trig_fnd/")
+     atan_approx "trig/")
+    (pi_bound name-judgement
+     "{r: posreal | pi_lb_new <= r AND r <= pi_ub_new}" pi_def "trig/")
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
     (int_abs_is_nonneg application-judgement "{j: nonneg_int | j >= i}"
@@ -516,7 +520,6 @@
     (horizontal_tca const-decl "real" definitions "ACCoRD/")
     (minus_real_is_real application-judgement "real" reals nil)
     (sqv_eq_0 formula-decl nil vectors_2D "vectors/")
-    (< const-decl "bool" reals nil)
     ([\|\|] const-decl "Interval" interval "interval_arith/")
     (|##| const-decl "bool" interval "interval_arith/")
     (minus_nzrat_is_nzrat application-judgement "nzrat" rationals nil)
@@ -524,14 +527,19 @@
     (ub_interval formula-decl nil interval "interval_arith/")
     (real_div_nzreal_is_real application-judgement "real" reals nil)
     (hour const-decl "posreal" units "TCASII/")
+    (pi_safe const-decl "[Unit -> real]" interval_expr_trig
+     "interval_arith/")
     (nml_87 skolem-const-decl "(add?)" WCV_tau nil)
+    (sin const-decl "real" sincos_def "trig/")
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (+ const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (eval def-decl "real" interval_expr "interval_arith/")
+    (real_plus_real_is_real application-judgement "real" reals nil)
     (listn_0 name-judgement "listn[real](0)" simple_bandb
      "interval_arith/")
     (Env type-eq-decl nil box "interval_arith/")
     (vars_in_box? const-decl "bool" box "interval_arith/")
+    (PRED type-eq-decl nil defined_types nil)
     (every adt-def-decl "boolean" list_adt nil)
     (list2array def-decl "T" array2list "structures/")
     (kts const-decl "posreal" units "TCASII/")
@@ -540,8 +548,12 @@
     (sound? const-decl "bool" numerical_bandb "interval_arith/")
     (numerical_soundness formula-decl nil numerical_bandb
      "interval_arith/")
+    (TRUE const-decl "bool" booleans nil)
+    (id const-decl "(bijective?[T, T])" identity nil)
+    (bijective? const-decl "bool" functions nil)
     (nzrat_div_nzrat_is_nzrat application-judgement "nzrat" rationals
      nil)
+    (Interval type-eq-decl nil interval "interval_arith/")
     (list type-decl nil list_adt nil)
     (Box type-eq-decl nil box "interval_arith/")
     (ProperBox type-eq-decl nil box "interval_arith/")
@@ -559,26 +571,12 @@
     (null? adt-recognizer-decl "[list -> boolean]" list_adt nil)
     (null adt-constructor-decl "(null?)" list_adt nil)
     (FALSE const-decl "bool" booleans nil)
-    (Pi const-decl "(Pos?)" interval_trig "interval_arith/")
-    (Pos? const-decl "bool" interval "interval_arith/")
-    (pi_safe const-decl "[Unit -> real]" interval_expr_trig
-     "interval_arith/")
-    (CONST adt-constructor-decl
-     "[[opc: [Unit -> real], (Includes?(opc(unit)))] -> (const?)]"
-     IntervalExpr_adt "interval_arith/")
-    (unit adt-constructor-decl "(unit?)" Unit_adt "structures/")
-    (unit? adt-recognizer-decl "[Unit -> boolean]" Unit_adt
-           "structures/")
-    (Includes? const-decl "bool" interval "interval_arith/")
-    (Unit type-decl nil Unit_adt "structures/")
+    (COS_n const-decl "RealExpr" interval_expr_trig "interval_arith/")
+    (PI_n const-decl "RealExpr" interval_expr_trig "interval_arith/")
     (DIV adt-constructor-decl "[[RealExpr, RealExpr] -> (div?)]"
      IntervalExpr_adt "interval_arith/")
-    (FUN adt-constructor-decl
-     "[[pre: (Precondition?), opf: [real -> real],
-  {F: [Interval -> Interval] |
-           Inclusion?(pre, opf)(F) AND Fundamental?(pre)(F)},
-  RealExpr] ->
-   (fun?)]" IntervalExpr_adt "interval_arith/")
+    (SIN_n const-decl "RealExpr" interval_expr_trig "interval_arith/")
+    (nat nonempty-type-eq-decl nil naturalnumbers nil)
     (- const-decl "[numfield -> numfield]" number_fields nil)
     (r2E const-decl "RealExpr" interval_expr "interval_arith/")
     (MULT adt-constructor-decl "[[RealExpr, RealExpr] -> (mult?)]"
@@ -618,37 +616,10 @@
      IntervalExpr_adt "interval_arith/")
     (OR const-decl "[bool, bool -> bool]" booleans nil)
     (IntervalExpr type-decl nil IntervalExpr_adt "interval_arith/")
-    (TRUE const-decl "bool" booleans nil)
-    (id const-decl "(bijective?[T, T])" identity nil)
-    (bijective? const-decl "bool" functions nil)
-    (Cos_Inclusion application-judgement "(Inclusion?(PreTrue, cos))"
-     interval_expr_trig "interval_arith/")
-    (Cos_Fundamental application-judgement "(Fundamental?(PreTrue))"
-     interval_expr_trig "interval_arith/")
     (posrat_div_posrat_is_posrat application-judgement "posrat"
      rationals nil)
-    (Pi_Inclusion application-judgement "(Includes?(pi_safe(unit)))"
-     interval_expr_trig "interval_arith/")
-    (Sin_Inclusion application-judgement "(Inclusion?(PreTrue, sin))"
-     interval_expr_trig "interval_arith/")
-    (Sin_Fundamental application-judgement "(Fundamental?(PreTrue))"
-     interval_expr_trig "interval_arith/")
     (minus_even_is_even application-judgement "even_int" integers nil)
     (minus_nzint_is_nzint application-judgement "nzint" integers nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil)
-    (Interval type-eq-decl nil interval "interval_arith/")
-    (PRED type-eq-decl nil defined_types nil)
-    (Inclusion? const-decl "bool" interval "interval_arith/")
-    (Precondition? const-decl "bool" interval "interval_arith/")
-    (PreTrue const-decl "(Precondition?)" interval_expr
-     "interval_arith/")
-    (sin const-decl "real" sincos_def "trig_fnd/")
-    (nat nonempty-type-eq-decl nil naturalnumbers nil)
-    (Sin const-decl "Interval" interval_trig "interval_arith/")
-    (Fundamental? const-decl "bool" interval "interval_arith/")
-    (cos const-decl "real" sincos_def "trig_fnd/")
-    (Cos const-decl "Interval" interval_trig "interval_arith/")
-    (real_plus_real_is_real application-judgement "real" reals nil)
     (real_minus_real_is_real application-judgement "real" reals nil)
     (* const-decl "real" vectors_2D "vectors/")
     (Vector type-eq-decl nil vectors_2D "vectors/")
@@ -661,7 +632,7 @@
     (sq_nz_pos application-judgement "posreal" sq "reals/")
     (vect2 const-decl "Vect2" vect_3D_2D "vectors/")
     (deg const-decl "posreal" units "TCASII/")
-    (sin_pi2 formula-decl nil trig_basic "trig_fnd/"))
+    (sin_pi2 formula-decl nil sincos "trig/"))
    nil))
  (WCV_tau_cex_98 0
   (WCV_tau_cex_98-2 nil 3606592550
@@ -983,13 +954,15 @@
     (NOT const-decl "[bool -> bool]" booleans nil)
     (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
     (safe_tau_pre_timevar name-judgement "(pre_timevar?)" WCV_tau nil)
-    (cos_pi2 formula-decl nil trig_basic "trig_fnd/")
-    (sin_range application-judgement "trig_range" sincos_def
-     "trig_fnd/")
-    (cos_range application-judgement "trig_range" sincos_def
-     "trig_fnd/")
+    (cos_pi2 formula-decl nil sincos "trig/")
+    (sin_range application-judgement "real_abs_le1" sincos "trig/")
+    (cos_range application-judgement "real_abs_le1" sincos "trig/")
     (vel_from_TrkGsVs const-decl "Vect3" units "TCASII/")
-    (pi const-decl "posreal" atan "trig_fnd/")
+    (pi const-decl "{x: real | x > 2 AND x < 4 AND cos(x / 2) = 0}"
+     pi_def "trig/")
+    (cos const-decl "real" sincos_def "trig/")
+    (< const-decl "bool" reals nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
     (/ const-decl "[numfield, nznum -> numfield]" number_fields nil)
     (nznum nonempty-type-eq-decl nil number_fields nil)
     (/= const-decl "boolean" notequal nil)
@@ -1000,7 +973,9 @@
      real_types nil)
     (real_times_real_is_real application-judgement "real" reals nil)
     (pi_bound name-judgement "{r: posreal | pi_lb < r AND r < pi_ub}"
-     atan_approx "trig_fnd/")
+     atan_approx "trig/")
+    (pi_bound name-judgement
+     "{r: posreal | pi_lb_new <= r AND r <= pi_ub_new}" pi_def "trig/")
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
     (vect2 const-decl "Vect2" vect_3D_2D "vectors/")
@@ -1014,37 +989,10 @@
     (real_minus_real_is_real application-judgement "real" reals nil)
     (Vector type-eq-decl nil vectors_2D "vectors/")
     (* const-decl "real" vectors_2D "vectors/")
-    (real_plus_real_is_real application-judgement "real" reals nil)
-    (Cos const-decl "Interval" interval_trig "interval_arith/")
-    (cos const-decl "real" sincos_def "trig_fnd/")
-    (Fundamental? const-decl "bool" interval "interval_arith/")
-    (Sin const-decl "Interval" interval_trig "interval_arith/")
-    (nat nonempty-type-eq-decl nil naturalnumbers nil)
-    (sin const-decl "real" sincos_def "trig_fnd/")
-    (PreTrue const-decl "(Precondition?)" interval_expr
-     "interval_arith/")
-    (Precondition? const-decl "bool" interval "interval_arith/")
-    (Inclusion? const-decl "bool" interval "interval_arith/")
-    (PRED type-eq-decl nil defined_types nil)
-    (Interval type-eq-decl nil interval "interval_arith/")
-    (AND const-decl "[bool, bool -> bool]" booleans nil)
     (minus_nzint_is_nzint application-judgement "nzint" integers nil)
     (minus_even_is_even application-judgement "even_int" integers nil)
-    (Sin_Fundamental application-judgement "(Fundamental?(PreTrue))"
-     interval_expr_trig "interval_arith/")
-    (Sin_Inclusion application-judgement "(Inclusion?(PreTrue, sin))"
-     interval_expr_trig "interval_arith/")
-    (Pi_Inclusion application-judgement "(Includes?(pi_safe(unit)))"
-     interval_expr_trig "interval_arith/")
     (posrat_div_posrat_is_posrat application-judgement "posrat"
      rationals nil)
-    (Cos_Fundamental application-judgement "(Fundamental?(PreTrue))"
-     interval_expr_trig "interval_arith/")
-    (Cos_Inclusion application-judgement "(Inclusion?(PreTrue, cos))"
-     interval_expr_trig "interval_arith/")
-    (bijective? const-decl "bool" functions nil)
-    (id const-decl "(bijective?[T, T])" identity nil)
-    (TRUE const-decl "bool" booleans nil)
     (IntervalExpr type-decl nil IntervalExpr_adt "interval_arith/")
     (OR const-decl "[bool, bool -> bool]" booleans nil)
     (const? adt-recognizer-decl "[IntervalExpr -> boolean]"
@@ -1084,26 +1032,12 @@
      IntervalExpr_adt "interval_arith/")
     (r2E const-decl "RealExpr" interval_expr "interval_arith/")
     (- const-decl "[numfield -> numfield]" number_fields nil)
-    (FUN adt-constructor-decl
-     "[[pre: (Precondition?), opf: [real -> real],
-  {F: [Interval -> Interval] |
-           Inclusion?(pre, opf)(F) AND Fundamental?(pre)(F)},
-  RealExpr] ->
-   (fun?)]" IntervalExpr_adt "interval_arith/")
+    (nat nonempty-type-eq-decl nil naturalnumbers nil)
+    (SIN_n const-decl "RealExpr" interval_expr_trig "interval_arith/")
     (DIV adt-constructor-decl "[[RealExpr, RealExpr] -> (div?)]"
      IntervalExpr_adt "interval_arith/")
-    (Unit type-decl nil Unit_adt "structures/")
-    (Includes? const-decl "bool" interval "interval_arith/")
-    (unit? adt-recognizer-decl "[Unit -> boolean]" Unit_adt
-           "structures/")
-    (unit adt-constructor-decl "(unit?)" Unit_adt "structures/")
-    (CONST adt-constructor-decl
-     "[[opc: [Unit -> real], (Includes?(opc(unit)))] -> (const?)]"
-     IntervalExpr_adt "interval_arith/")
-    (pi_safe const-decl "[Unit -> real]" interval_expr_trig
-     "interval_arith/")
-    (Pos? const-decl "bool" interval "interval_arith/")
-    (Pi const-decl "(Pos?)" interval_trig "interval_arith/")
+    (PI_n const-decl "RealExpr" interval_expr_trig "interval_arith/")
+    (COS_n const-decl "RealExpr" interval_expr_trig "interval_arith/")
     (FALSE const-decl "bool" booleans nil)
     (null adt-constructor-decl "(null?)" list_adt nil)
     (null? adt-recognizer-decl "[list -> boolean]" list_adt nil)
@@ -1121,8 +1055,12 @@
     (ProperBox type-eq-decl nil box "interval_arith/")
     (Box type-eq-decl nil box "interval_arith/")
     (list type-decl nil list_adt nil)
+    (Interval type-eq-decl nil interval "interval_arith/")
     (nzrat_div_nzrat_is_nzrat application-judgement "nzrat" rationals
      nil)
+    (bijective? const-decl "bool" functions nil)
+    (id const-decl "(bijective?[T, T])" identity nil)
+    (TRUE const-decl "bool" booleans nil)
     (numerical_soundness formula-decl nil numerical_bandb
      "interval_arith/")
     (sound? const-decl "bool" numerical_bandb "interval_arith/")
@@ -1131,13 +1069,18 @@
     (kts const-decl "posreal" units "TCASII/")
     (list2array def-decl "T" array2list "structures/")
     (every adt-def-decl "boolean" list_adt nil)
+    (PRED type-eq-decl nil defined_types nil)
     (vars_in_box? const-decl "bool" box "interval_arith/")
     (Env type-eq-decl nil box "interval_arith/")
     (listn_0 name-judgement "listn[real](0)" simple_bandb
      "interval_arith/")
+    (real_plus_real_is_real application-judgement "real" reals nil)
     (eval def-decl "real" interval_expr "interval_arith/")
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
+    (sin const-decl "real" sincos_def "trig/")
     (nml_92 skolem-const-decl "(add?)" WCV_tau nil)
+    (pi_safe const-decl "[Unit -> real]" interval_expr_trig
+     "interval_arith/")
     (hour const-decl "posreal" units "TCASII/")
     (real_div_nzreal_is_real application-judgement "real" reals nil)
     (ub_interval formula-decl nil interval "interval_arith/")
@@ -1145,7 +1088,6 @@
     (minus_nzrat_is_nzrat application-judgement "nzrat" rationals nil)
     (|##| const-decl "bool" interval "interval_arith/")
     ([\|\|] const-decl "Interval" interval "interval_arith/")
-    (< const-decl "bool" reals nil)
     (sqv_eq_0 formula-decl nil vectors_2D "vectors/")
     (sqv const-decl "nnreal" vectors_2D "vectors/")
     (tau const-decl "real" timevars nil)
@@ -1171,7 +1113,7 @@
     (zero const-decl "Vector" vectors_2D "vectors/")
     (horizontal_WCV const-decl "bool" horizontal_WCV nil)
     (deg const-decl "posreal" units "TCASII/")
-    (sin_pi2 formula-decl nil trig_basic "trig_fnd/"))
+    (sin_pi2 formula-decl nil sincos "trig/"))
    nil)
   (WCV_tau_cex_98-1 nil 3606592531 ("" (postpone) nil nil) nil
    shostak))
@@ -1312,13 +1254,15 @@
     (Vect2 type-eq-decl nil vectors_2D_def "vectors/")
     (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
     (safe_tau_pre_timevar name-judgement "(pre_timevar?)" WCV_tau nil)
-    (cos_pi2 formula-decl nil trig_basic "trig_fnd/")
-    (sin_range application-judgement "trig_range" sincos_def
-     "trig_fnd/")
-    (cos_range application-judgement "trig_range" sincos_def
-     "trig_fnd/")
+    (cos_pi2 formula-decl nil sincos "trig/")
+    (sin_range application-judgement "real_abs_le1" sincos "trig/")
+    (cos_range application-judgement "real_abs_le1" sincos "trig/")
     (vel_from_TrkGsVs const-decl "Vect3" units "TCASII/")
-    (pi const-decl "posreal" atan "trig_fnd/")
+    (pi const-decl "{x: real | x > 2 AND x < 4 AND cos(x / 2) = 0}"
+     pi_def "trig/")
+    (cos const-decl "real" sincos_def "trig/")
+    (< const-decl "bool" reals nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
     (/ const-decl "[numfield, nznum -> numfield]" number_fields nil)
     (nznum nonempty-type-eq-decl nil number_fields nil)
     (/= const-decl "boolean" notequal nil)
@@ -1329,7 +1273,9 @@
      real_types nil)
     (real_times_real_is_real application-judgement "real" reals nil)
     (pi_bound name-judgement "{r: posreal | pi_lb < r AND r < pi_ub}"
-     atan_approx "trig_fnd/")
+     atan_approx "trig/")
+    (pi_bound name-judgement
+     "{r: posreal | pi_lb_new <= r AND r <= pi_ub_new}" pi_def "trig/")
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
     (int_abs_is_nonneg application-judgement "{j: nonneg_int | j >= i}"
@@ -1341,34 +1287,19 @@
     (posrat_div_posrat_is_posrat application-judgement "posrat"
      rationals nil)
     (real_minus_real_is_real application-judgement "real" reals nil)
-    (cos const-decl "real" sincos_def "trig_fnd/")
     (nmi const-decl "posreal" units "TCASII/")
     (kts const-decl "posreal" units "TCASII/")
-    (sin const-decl "real" sincos_def "trig_fnd/")
+    (sin const-decl "real" sincos_def "trig/")
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (Vector type-eq-decl nil vectors_2D "vectors/")
     (sqv_sos formula-decl nil vectors_2D "vectors/")
     (real_plus_real_is_real application-judgement "real" reals nil)
-    (Pi const-decl "(Pos?)" interval_trig "interval_arith/")
-    (Pos? const-decl "bool" interval "interval_arith/")
-    (pi_safe const-decl "[Unit -> real]" interval_expr_trig
-     "interval_arith/")
-    (CONST adt-constructor-decl
-     "[[opc: [Unit -> real], (Includes?(opc(unit)))] -> (const?)]"
-     IntervalExpr_adt "interval_arith/")
-    (unit adt-constructor-decl "(unit?)" Unit_adt "structures/")
-    (unit? adt-recognizer-decl "[Unit -> boolean]" Unit_adt
-           "structures/")
-    (Includes? const-decl "bool" interval "interval_arith/")
-    (Unit type-decl nil Unit_adt "structures/")
+    (SIN_n const-decl "RealExpr" interval_expr_trig "interval_arith/")
+    (PI_n const-decl "RealExpr" interval_expr_trig "interval_arith/")
     (DIV adt-constructor-decl "[[RealExpr, RealExpr] -> (div?)]"
      IntervalExpr_adt "interval_arith/")
-    (FUN adt-constructor-decl
-     "[[pre: (Precondition?), opf: [real -> real],
-  {F: [Interval -> Interval] |
-           Inclusion?(pre, opf)(F) AND Fundamental?(pre)(F)},
-  RealExpr] ->
-   (fun?)]" IntervalExpr_adt "interval_arith/")
+    (COS_n const-decl "RealExpr" interval_expr_trig "interval_arith/")
+    (nat nonempty-type-eq-decl nil naturalnumbers nil)
     (r2E const-decl "RealExpr" interval_expr "interval_arith/")
     (MULT adt-constructor-decl "[[RealExpr, RealExpr] -> (mult?)]"
      IntervalExpr_adt "interval_arith/")
@@ -1417,30 +1348,6 @@
     (RealOrder type-eq-decl nil real_orders "reals/")
     (realorder? const-decl "bool" real_orders "reals/")
     (IntervalExpr type-decl nil IntervalExpr_adt "interval_arith/")
-    (TRUE const-decl "bool" booleans nil)
-    (id const-decl "(bijective?[T, T])" identity nil)
-    (bijective? const-decl "bool" functions nil)
-    (Sin_Inclusion application-judgement "(Inclusion?(PreTrue, sin))"
-     interval_expr_trig "interval_arith/")
-    (Sin_Fundamental application-judgement "(Fundamental?(PreTrue))"
-     interval_expr_trig "interval_arith/")
-    (Pi_Inclusion application-judgement "(Includes?(pi_safe(unit)))"
-     interval_expr_trig "interval_arith/")
-    (Cos_Inclusion application-judgement "(Inclusion?(PreTrue, cos))"
-     interval_expr_trig "interval_arith/")
-    (Cos_Fundamental application-judgement "(Fundamental?(PreTrue))"
-     interval_expr_trig "interval_arith/")
-    (AND const-decl "[bool, bool -> bool]" booleans nil)
-    (Interval type-eq-decl nil interval "interval_arith/")
-    (PRED type-eq-decl nil defined_types nil)
-    (Inclusion? const-decl "bool" interval "interval_arith/")
-    (Precondition? const-decl "bool" interval "interval_arith/")
-    (PreTrue const-decl "(Precondition?)" interval_expr
-     "interval_arith/")
-    (nat nonempty-type-eq-decl nil naturalnumbers nil)
-    (Cos const-decl "Interval" interval_trig "interval_arith/")
-    (Fundamental? const-decl "bool" interval "interval_arith/")
-    (Sin const-decl "Interval" interval_trig "interval_arith/")
     (le_realorder name-judgement "RealOrder" real_orders "reals/")
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
@@ -1454,6 +1361,8 @@
      real_types nil)
     (posrat_times_posrat_is_posrat application-judgement "posrat"
      rationals nil)
+    (pi_safe const-decl "[Unit -> real]" interval_expr_trig
+     "interval_arith/")
     (real_div_nzreal_is_real application-judgement "real" reals nil)
     (eval def-decl "real" interval_expr "interval_arith/")
     (beval def-decl "bool" interval_bexpr "interval_arith/")
@@ -1477,6 +1386,7 @@
     (ProperBox type-eq-decl nil box "interval_arith/")
     (ProperBox? const-decl "bool" box "interval_arith/")
     (Box type-eq-decl nil box "interval_arith/")
+    (Interval type-eq-decl nil interval "interval_arith/")
     (IntervalOutput type-eq-decl nil gbandb_boolexpr "interval_arith/")
     (val adt-accessor-decl "[(some?) -> T]" Maybe "structures/")
     (NOT const-decl "[bool -> bool]" booleans nil)
@@ -1502,14 +1412,18 @@
     (bconst? adt-recognizer-decl "[IntervalExpr -> boolean]"
      IntervalExpr_adt "interval_arith/")
     (every adt-def-decl "boolean" list_adt nil)
+    (PRED type-eq-decl nil defined_types nil)
     (list type-decl nil list_adt nil)
     (Maybe type-decl nil Maybe "structures/")
     (listn_0 name-judgement "listn[real](0)" simple_bandb
      "interval_arith/")
+    (bijective? const-decl "bool" functions nil)
+    (id const-decl "(bijective?[T, T])" identity nil)
+    (TRUE const-decl "bool" booleans nil)
     (sos const-decl "nnreal" vectors_2D "vectors/")
     (vect2 const-decl "Vect2" vect_3D_2D "vectors/")
     (deg const-decl "posreal" units "TCASII/")
-    (sin_pi2 formula-decl nil trig_basic "trig_fnd/"))
+    (sin_pi2 formula-decl nil sincos "trig/"))
    nil))
  (WCV_tau_non_symmetric 0
   (WCV_tau_non_symmetric-1 nil 3606597194
