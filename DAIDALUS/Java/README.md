@@ -48,6 +48,20 @@ To run the example batch application in a Unix environment, type, for example,
 In this case, DAIDAILUS will compute alerting information for [Nominal
 B](../Configurations/WC_SC_228_nom_b.txt) configuration with batch scenario [H1.daa](../Scenarios/H1.daa).
 
+Scripts are provided to produce graphs containting guidance and alerting
+information. For example, 
+
+```
+./DrawMultiBands --conf ../Configurations/WC_SC_228_std.txt ../Scenarios/H1.daa
+```
+
+produces a file `H1.draww`, which can be processed with the Python
+script `drawmultibands.py` to produe a PDF file, e.g.,
+
+```
+../Scripts/drawmultibands.py H1.draw
+```
+
 ### Contact
 
 [Cesar A. Munoz](http://shemesh.larc.nasa.gov/people/cam) (cesar.a.munoz@nasa.gov)

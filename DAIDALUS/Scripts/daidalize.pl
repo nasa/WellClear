@@ -20,7 +20,7 @@ GetOptions(
 
 my $infile = shift;
 
-die "Transforms a file iteratively produced the method Daidalus.toString into a file that can be processed by the DaidalusFileWalker class.\n".
+die "Transforms a file iteratively produced by the method Daidalus.toString into a file that can be processed by the DaidalusFileWalker class.\n".
   "Usage: daidalize [--only <ac1>,..,<acn>] [--but <ac1>,..,<acn>] [--labels <lab1>,..,<labn>] [--out <filename>] [--fixtimes] <file>\n" if !$infile;
 
 open(INFILE,$infile) || die "** Error: Cannot open file $infile\n";
