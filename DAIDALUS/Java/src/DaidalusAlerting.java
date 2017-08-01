@@ -38,11 +38,20 @@ TERMINATION OF THIS AGREEMENT.
  **/
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.util.Optional;
 
+import gov.nasa.larcfm.ACCoRD.ConflictData;
 import gov.nasa.larcfm.ACCoRD.Daidalus;
 import gov.nasa.larcfm.ACCoRD.DaidalusFileWalker;
+import gov.nasa.larcfm.ACCoRD.Detection3D;
+import gov.nasa.larcfm.ACCoRD.Horizontal;
+import gov.nasa.larcfm.ACCoRD.Vertical;
+import gov.nasa.larcfm.ACCoRD.WCV_tvar;
+import gov.nasa.larcfm.Util.Util;
+import gov.nasa.larcfm.Util.Units;
 
 public class DaidalusAlerting {
 
@@ -68,54 +77,110 @@ public class DaidalusAlerting {
 				arga = args[++a];
 				if (!daa.parameters.loadFromFile(arga)) {
 					System.err.println("File "+arga+" not found");
-					System.exit(0);
+					System.exit(1);
 				} else {
-					System.out.println("Loading configuration file "+arga);
+					System.out.println("** Error: Loading configuration file "+arga);
 				}
 			} else if ((arga.startsWith("--o") || arga.startsWith("-o")) && a+1 < args.length) {
 				output_file = args[++a];
 			} else if (arga.startsWith("--h") || arga.startsWith("-h")) {
-				System.err.println("Options: [--noma | --nomb | --conf <configuration file> | --output <output file> | --help] <input file>");
-				System.exit(0);
+				System.err.println("** Error: Options: [--noma | --nomb | --conf <configuration file> | --output <output file> | --help] <input file>");
+				System.exit(1);
 			} else if (arga.startsWith("-")){
-				System.err.println("Unknown option "+arga);
-				System.exit(0);
+				System.err.println("** Error: Unknown option "+arga);
+				System.exit(1);
 			} else if (input_file.equals("")) {
 				input_file = args[a];
 			} else {
-				System.err.println("Only one input file can be provided ("+a+")");
-				System.exit(0);
+				System.err.println("** Error: Only one input file can be provided ("+a+")");
+				System.exit(1);
 			}				
 		}
 		if (input_file.equals("")) {
-			System.err.println("One input file must be provided");
-			System.exit(0);
+			System.err.println("** Error: One input file must be provided");
+			System.exit(1);
+		}
+		File file = new File(input_file);
+		if (!file.exists() || !file.canRead()) {
+			System.err.println("** Error: File "+input_file+" cannot be read");
+			System.exit(1);
+		}
+		try {
+			String name = file.getName();
+			String scenario = name.contains(".") ? name.substring(0, name.lastIndexOf('.')):name;
+			if (output_file.equals("")) {
+				output_file = scenario+".csv";
+			} 
+			out = new PrintWriter(new BufferedWriter(new FileWriter(output_file)),true);
+		} catch (Exception e) {
+			System.err.println("** Error: "+e);
+			System.exit(1);
 		}
 
-		System.out.println("Processing file "+input_file);
+		System.out.println("Processing DAIDALUS file "+input_file);
+		System.out.println("Generating CSV file "+output_file);
 		DaidalusFileWalker walker = new DaidalusFileWalker(input_file);
+		Optional<Detection3D> detector = daa.parameters.alertor.conflictDetector();
+		String uhor = daa.parameters.getUnits("min_horizontal_recovery");
+		String uver = daa.parameters.getUnits("min_vertical_recovery");
+		String ugs = daa.parameters.getUnits("gs_step");
+		String uvs = daa.parameters.getUnits("vs_step");
 
-		try {
-			if (!output_file.equals("")) {
-				out = new PrintWriter(new BufferedWriter(new FileWriter(output_file)),true);
-				System.out.println("Output file: "+output_file);
-			}
-		} catch (Exception e) {
-			System.out.println("ERROR: "+e);
-		}    
-
-		out.println("Time, Alerting");
+		out.print(" Time, Ownship, Traffic, Alert Level");
+		String line_units = "[s],,,";
+		for (int i=1; i <= daa.parameters.alertor.mostSevereAlertLevel();++i) {
+			out.print(", Time to Volume of Alert("+i+")");
+			line_units += ", [s]";
+		}
+		out.print(", Horizontal Separation, Vertical Separation, Horizontal Closure Rate, Vertical Closure Rate, Projected HMD, Projected VMD, Projected TCPA, Projected DCPA, Projected TCOA");
+		line_units += ", ["+uhor+"], ["+uver+"], ["+ugs+"], ["+uvs+"], ["+uhor+"], ["+uver+"], [s], ["+uhor+"], [s]";
+		if (detector.isPresent() && detector.get() instanceof WCV_tvar) {
+			out.print(", Projected TAUMOD (WCV*)");
+			line_units += ", [s]";
+		}
+		out.println();
+		out.println(line_units);
 
 		while (!walker.atEnd()) {
 			walker.readState(daa);
 			// At this point, daa has the state information of ownhsip and traffic for a given time
-			int alerting = -1;
-			for (int i=1; i <= daa.lastTrafficIndex(); ++i) {
-				alerting = Math.max(alerting,daa.alerting(i));
-			}
-
-			if (alerting > 0) {
-				out.println(daa.getCurrentTime()+","+alerting);
+			for (int ac=1; ac <= daa.lastTrafficIndex(); ++ac) {
+				out.print(daa.getCurrentTime());
+				out.print(", "+daa.getOwnshipState().getId());
+				out.print(", "+daa.getAircraftState(ac).getId());
+				int alert = daa.alerting(ac);
+				out.print(", "+alert);
+				ConflictData det=null;
+				for (int l=1; l <= daa.parameters.alertor.mostSevereAlertLevel(); ++l) {
+					det = daa.detection(ac,l);
+					out.print(", ");
+					out.print(det.getTimeIn());
+				}
+				if (det != null) {
+					out.print(", "+Units.to(uhor,det.get_s().norm2D()));
+					out.print(", "+Units.to(uver,det.get_s().z));
+					out.print(", "+Units.to(ugs,det.get_v().norm2D()));
+					out.print(", "+Units.to(uvs,det.get_v().z));
+					out.print(", "+Units.to(uhor,det.HMD(daa.parameters.getLookaheadTime())));
+					out.print(", "+Units.to(uver,det.VMD(daa.parameters.getLookaheadTime())));
+					double tcpa  = Horizontal.tcpa(det.get_s().vect2(),det.get_v().vect2());
+					out.print(", "+tcpa);
+					double dcpa =  Horizontal.dcpa(det.get_s().vect2(),det.get_v().vect2());
+					out.print(", "+Units.to(uhor,dcpa));
+					double tcoa = Vertical.time_coalt(det.get_s().z,det.get_v().z);
+					out.print(", ");
+					if (tcoa >= 0) {
+						out.print(tcoa);
+					}
+					out.print(", ");
+					if (detector.isPresent() && detector.get() instanceof WCV_tvar) {
+						double tau_mod  = ((WCV_tvar)detector.get()).horizontal_tvar(det.get_s().vect2(),det.get_v().vect2());
+						if (tau_mod > 0) {
+							out.print(tau_mod);
+						}						
+					}
+				}
+				out.println();
 			}
 		}
 		out.close();
