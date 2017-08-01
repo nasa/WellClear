@@ -19,7 +19,7 @@ import argparse
 parser = argparse.ArgumentParser(description='Draw multi-level bands')
 parser.add_argument('filename',metavar='FILENAME')
 parser.add_argument('-o','--output',dest="outfile",metavar='OUTFILE',help='Write data to OUTFILE')
-parser.add_argument('--far',metavar='COLOR',help='Set COLOR of <FAR> regions',default='white')
+parser.add_argument('--far',metavar='COLOR',help='Set COLOR of <FAR> regions',default=None)
 parser.add_argument('--mid',metavar='COLOR',help='Set COLOR of <MID> regions',default='yellow')
 parser.add_argument('--near',metavar='COLOR',help='Set COLOR of <NEAR> regions',default='red')
 parser.add_argument('--recovery',metavar='COLOR',help='Set COLOR of <RECOVERY> regions',default='green')
@@ -69,7 +69,7 @@ def figmaker(bounds,tick, bandl, trajl, dimension, pdffile, scene):
         tm = tmband[0]
         for bnd in tmband[1]:
             if bnd[2] > 0:
-                plt.plot([tm,tm],[bnd[0], bnd[1]],color=bands_colors[bnd[2]],linestyle=bands_styles[bnd[2]],linewidth=2,label=bands_types[bnd[2]],alpha=1)
+                plt.plot([tm,tm],[bnd[0], bnd[1]],color=bands_color(bnd[2]),linestyle=bands_styles[bnd[2]],linewidth=2,label=bands_types[bnd[2]],alpha=1)
    
     if len(trajl) > 0:
         plt.plot(xtime,trajl,color=traj_color,marker=traj_style,linewidth=0.5,label=ownship, markersize = 3)
@@ -89,7 +89,7 @@ def figmaker(bounds,tick, bandl, trajl, dimension, pdffile, scene):
                 None
             t += 1
         if len(x_level) > 0:
-            plt.plot(x_level,y_level,color=bands_colors[level],linestyle='None',marker='o',label='Alert('+str(level)+')',markersize = 2*level+1)
+            plt.plot(x_level,y_level,color=alert_color(level),linestyle='None',marker='o',label='Alert('+str(level)+')',markersize = 2*level+1)
         level += 1
            
     plt.ylim([bounds[0], bounds[1]])
@@ -103,13 +103,30 @@ def figmaker(bounds,tick, bandl, trajl, dimension, pdffile, scene):
     #ax.autoscale(enable=True,axis='both',tight=None)
     pdffile.savefig(transparent=True)
     plt.clf()
-    
+
+# Return a color for guidance bands
+def bands_color(code):
+    color = bands_colors[code]
+    if color == None:
+        return 'white'
+    return color
+
+# Return a color for alerting that is compatible with the color of guidance bands
+def alert_color(alert):
+    color = bands_colors[alert]
+    i=alert
+    while i < 4 and color == None:
+        i += 1
+    if i==4:
+        color = 'red'
+    return color
+
 ##
 ownship = ''
 scenario = ''
 traj_color = 'blue'
 traj_style = '+'
-bands_colors = ['white', far_color, mid_color, near_color, rec_color ]
+bands_colors = [None, far_color, mid_color, near_color, rec_color ]
 bands_styles = ['-', '-', '-', '-', '--']
 bands_types  = ["NONE", "FAR", "MID", "NEAR", "RECOVERY"]
 trkband = []
@@ -130,7 +147,7 @@ most_severe_alert_level =0
 for line in infile:
     linestr = line.strip()
     if linestr != "" and not re.match('#',linestr):
-        lstln = linestr.split(":")
+        lstln = [y.strip() for y in linestr.split(":")]
         if lstln[0] == "Ownship":
             ownship = lstln[1]
         elif lstln[0] == "Scenario":
