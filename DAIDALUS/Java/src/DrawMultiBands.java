@@ -50,7 +50,6 @@ import gov.nasa.larcfm.ACCoRD.KinematicBandsParameters;
 import gov.nasa.larcfm.ACCoRD.KinematicMultiBands;
 import gov.nasa.larcfm.Util.Units;
 import gov.nasa.larcfm.Util.Util;
-import gov.nasa.larcfm.Util.f;
 
 public class DrawMultiBands {
 
@@ -156,16 +155,16 @@ public class DrawMultiBands {
 			str_to += daa.getCurrentTime()+" ";
 
 			double trko = Util.to_pi(daa.getOwnshipState().track());
-			str_trko += f.Fm2(Units.to("deg",trko))+" ";
+			str_trko += Units.to("deg",trko)+" ";
 
 			double gso = daa.getOwnshipState().groundSpeed();
-			str_gso += f.Fm2(Units.to(gs_units,gso))+" ";
+			str_gso += Units.to(gs_units,gso)+" ";
 
 			double vso = daa.getOwnshipState().verticalSpeed();
-			str_vso += f.Fm2(Units.to(vs_units,vso))+" ";
+			str_vso += Units.to(vs_units,vso)+" ";
 
 			double alto = daa.getOwnshipState().altitude();
-			str_alto += f.Fm2(Units.to(alt_units,alto))+" ";
+			str_alto += Units.to(alt_units,alto)+" ";
 
 			KinematicMultiBands kb = daa.getKinematicMultiBands();
 
