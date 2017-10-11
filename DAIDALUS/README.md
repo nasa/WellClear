@@ -103,12 +103,44 @@ guidance logic, and computation of loss of well-clear contours.  This
 application can be compiled using the provided `Makefile`. In Java:
 
 ```
-$ make example
-** Building application DaidalusExample
-...
+** Building example applications
+/usr/bin/c++ -o DaidalusExample -Iinclude  -Wall -O  src/DaidalusExample.cpp lib/DAIDALUS.a
+/usr/bin/c++ -o DaidalusAlerting -Iinclude  -Wall -O
+src/DaidalusAlerting.cpp lib/DAIDALUS.a
 ** To run DaidalusExample type:
 ./DaidalusExample
+** To run DaidalusAlerting type, e.g.,
+./DaidalusAlerting --nomb --out H1.csv ../Scenarios/H1.daa
 ```
+To run the example application in a Unix environment, type
+
+```
+$ ./DaidalusExample
+```
+
+To run the example batch application in a Unix environment, type, for example,
+
+```
+./DaidalusAlerting --nomb --out H1.csv ../Scenarios/H1.daa
+```
+
+In this case, DAIDAILUS will compute alerting information for [Nominal
+B](../Configurations/WC_SC_228_nom_b.txt) configuration with batch scenario [H1.daa](../Scenarios/H1.daa).
+
+Scripts are provided to produce graphs containing guidance and alerting
+information. For example, 
+
+```
+./DrawMultiBands --conf ../Configurations/WC_SC_228_std.txt ../Scenarios/H1.daa
+```
+
+produces a file `H1.draw`, which can be processed with the Python
+script `drawmultibands.py` to produce a PDF file, e.g.,
+
+```
+../Scripts/drawmultibands.py H1.draw
+```
+
 # Preliminaries
 
 ## Packages and Name Space
