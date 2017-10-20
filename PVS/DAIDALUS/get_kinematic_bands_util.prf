@@ -44,7 +44,7 @@
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (+ const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (round const-decl "{j: int | r - 1 / 2 < j AND j <= r + 1 / 2}"
-           kinematic_track_bands nil)
+           kinematic_trk_bands nil)
     (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
     (detector? const-decl "bool" int_bands nil)
     (CDfun_0 type-eq-decl nil los_and_cd nil)
@@ -180,7 +180,7 @@
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (round const-decl "{j: int | r - 1 / 2 < j AND j <= r + 1 / 2}"
-           kinematic_track_bands nil)
+           kinematic_trk_bands nil)
     (nnreal_div_posreal_is_nnreal application-judgement "nnreal"
      real_types nil))
    nil))
@@ -256,7 +256,7 @@
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (round const-decl "{j: int | r - 1 / 2 < j AND j <= r + 1 / 2}"
-           kinematic_track_bands nil)
+           kinematic_trk_bands nil)
     (nnreal_div_posreal_is_nnreal application-judgement "nnreal"
      real_types nil))
    nil))
@@ -333,7 +333,7 @@
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (round const-decl "{j: int | r - 1 / 2 < j AND j <= r + 1 / 2}"
-           kinematic_track_bands nil)
+           kinematic_trk_bands nil)
     (nnreal_div_posreal_is_nnreal application-judgement "nnreal"
      real_types nil)
     (nonneg_floor_is_nat application-judgement "nat" floor_ceil nil))
@@ -383,7 +383,7 @@
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (+ const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (round const-decl "{j: int | r - 1 / 2 < j AND j <= r + 1 / 2}"
-           kinematic_track_bands nil)
+           kinematic_trk_bands nil)
     (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
     (detector? const-decl "bool" int_bands nil)
     (CDfun_0 type-eq-decl nil los_and_cd nil)
@@ -472,7 +472,7 @@
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (+ const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (round const-decl "{j: int | r - 1 / 2 < j AND j <= r + 1 / 2}"
-           kinematic_track_bands nil)
+           kinematic_trk_bands nil)
     (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
     (detector? const-decl "bool" int_bands nil)
     (CDfun_0 type-eq-decl nil los_and_cd nil)

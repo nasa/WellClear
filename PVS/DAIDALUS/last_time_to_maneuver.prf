@@ -414,7 +414,7 @@
     (Parameters type-eq-decl nil kinematic_core nil)
     (pc_comp const-decl "bool" kinematic_core nil)
     (round const-decl "{j: int | r - 1 / 2 < j AND j <= r + 1 / 2}"
-           kinematic_track_bands nil)
+           kinematic_trk_bands nil)
     (nnreal_div_posreal_is_nnreal application-judgement "nnreal"
      real_types nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"

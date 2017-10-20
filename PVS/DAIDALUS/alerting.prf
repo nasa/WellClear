@@ -101,7 +101,7 @@
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (round const-decl "{j: int | r - 1 / 2 < j AND j <= r + 1 / 2}"
-           kinematic_track_bands nil)
+           kinematic_trk_bands nil)
     (nnreal_div_posreal_is_nnreal application-judgement "nnreal"
      real_types nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
@@ -478,7 +478,7 @@
     (both_sides_times_pos_le1 formula-decl nil real_props nil)
     (* const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (round const-decl "{j: int | r - 1 / 2 < j AND j <= r + 1 / 2}"
-           kinematic_track_bands nil)
+           kinematic_trk_bands nil)
     (nonneg_floor_is_nat application-judgement "nat" floor_ceil nil)
     (TRUE const-decl "bool" booleans nil)
     (id const-decl "(bijective?[T, T])" identity nil)
@@ -888,7 +888,7 @@
     (Vect2 type-eq-decl nil vectors_2D_def "vectors/")
     (vect2 const-decl "Vect2" vect_3D_2D "vectors/")
     (round const-decl "{j: int | r - 1 / 2 < j AND j <= r + 1 / 2}"
-           kinematic_track_bands nil)
+           kinematic_trk_bands nil)
     (* const-decl "real" vectors_2D "vectors/")
     (posint_plus_nnint_is_posint application-judgement "posint"
      integers nil)
@@ -982,7 +982,7 @@
     (real_plus_real_is_real application-judgement "real" reals nil)
     (* const-decl "real" vectors_2D "vectors/")
     (round const-decl "{j: int | r - 1 / 2 < j AND j <= r + 1 / 2}"
-           kinematic_track_bands nil))
+           kinematic_trk_bands nil))
    nil))
  (alert_from_at_list_TCC3 0
   (alert_from_at_list_TCC3-1 nil 3683562999 ("" (subtype-tcc) nil nil)

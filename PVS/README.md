@@ -31,7 +31,8 @@ The output of that command is
 ```
 TCASII                   [OK: 142 proofs]
 WellClear                [OK: 243 proofs]
-DAIDALUS                 [OK: 588 proofs]
+DAIDALUS                 [OK: 604 proofs]
 
-*** Grand Total: 973 proofs / 973 formulas. Missed: 0 formulas.
+*** Grand Totals: 989 proofs / 989 formulas. Missed: 0 formulas.
+*** Number of libraries: 3
 ```
