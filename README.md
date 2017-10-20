@@ -4,7 +4,7 @@ Detect and AvoID Alerting Logic for Unmanned Systems
 ========
 
 This repository includes a prototype implementation written in Java and
-C++ of DAIDALUS (Detect and Aovid Alerting Logic for Unmanned Systems).
+C++ of DAIDALUS (Detect and Avoid Alerting Logic for Unmanned Systems).
 DAIDALUS is a reference implementation of a detect and avoid concept
 intended to support the integration of Unmanned Aircraft Systems into
 civil airspace.
