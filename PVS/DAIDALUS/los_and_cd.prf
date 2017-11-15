@@ -837,6 +837,7 @@
      "(strict_total_order?[real])" real_props nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
+    (TRUE const-decl "bool" booleans nil)
     (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
     (<= const-decl "bool" reals nil)
     (nonneg_real nonempty-type-eq-decl nil real_types nil)
@@ -1187,6 +1188,7 @@
      "(strict_total_order?[real])" real_props nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
+    (TRUE const-decl "bool" booleans nil)
     (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
     (<= const-decl "bool" reals nil)
     (nonneg_real nonempty-type-eq-decl nil real_types nil)

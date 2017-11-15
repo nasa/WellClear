@@ -39,7 +39,7 @@ alt_bands: THEORY
 BEGIN
 
   IMPORTING real_bands,
-  	    kinematics@vsLevelOut
+  	    aviation@vsLevelOut
 
 
   AL   : VAR AircraftList

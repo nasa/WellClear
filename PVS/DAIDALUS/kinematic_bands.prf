@@ -32,13 +32,11 @@
     (list type-decl nil list_adt nil)
     (AircraftList type-eq-decl nil int_bands nil)
     (number nonempty-type-decl nil numbers nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
     (number_field nonempty-type-from-decl nil number_fields nil)
     (real_pred const-decl "[number_field -> boolean]" reals nil)
     (real nonempty-type-from-decl nil reals nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (> const-decl "bool" reals nil)
     (rational_pred const-decl "[real -> boolean]" rationals nil)
     (rational nonempty-type-from-decl nil rationals nil)
@@ -67,6 +65,9 @@
      real_props nil)
     (min const-decl "{p: real | p <= m AND p <= n}" real_defs nil)
     (first_los_step_range formula-decl nil int_bands nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil)
     (nnreal_div_posreal_is_nnreal application-judgement "nnreal"
      real_types nil))
    nil))
@@ -780,11 +781,9 @@
     nil)
    ((IFF const-decl "[bool, bool -> bool]" booleans nil)
     (number nonempty-type-decl nil numbers nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
     (real nonempty-type-from-decl nil reals nil)
     (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
-    (bool nonempty-type-eq-decl nil booleans nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
     (number_field nonempty-type-from-decl nil number_fields nil)
@@ -866,7 +865,6 @@
      real_defs nil)
     (IF const-decl "[boolean, T, T -> T]" if_def nil)
     (- const-decl "[numfield -> numfield]" number_fields nil)
-    (TRUE const-decl "bool" booleans nil)
     (id const-decl "(bijective?[T, T])" identity nil)
     (bijective? const-decl "bool" functions nil)
     (posint_plus_nnint_is_posint application-judgement "posint"
@@ -880,6 +878,9 @@
      "(strict_total_order?[real])" real_props nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil)
     (nnreal_div_posreal_is_nnreal application-judgement "nnreal"
      real_types nil))
    shostak))
@@ -891,7 +892,10 @@
    ("" (skeep*) (("" (assert) nil nil)) nil)
    ((int_minus_int_is_int application-judgement "int" integers nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
-     real_props nil))
+     real_props nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (bands_search_index_TCC3 0
   (bands_search_index_TCC3-1 nil 3633705670 ("" (subtype-tcc) nil nil)
@@ -962,7 +966,10 @@
      real_props nil)
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (min const-decl "{p: real | p <= m AND p <= n}" real_defs nil))
+    (min const-decl "{p: real | p <= m AND p <= n}" real_defs nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (bands_search_index_TCC5 0
   (bands_search_index_TCC5-1 nil 3633705670
@@ -971,7 +978,10 @@
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (int_min application-judgement "{k: int | k <= i AND k <= j}"
-     real_defs nil))
+     real_defs nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (bands_search_index_TCC6 0
   (bands_search_index_TCC6-1 nil 3633705670 ("" (subtype-tcc) nil nil)
@@ -1053,7 +1063,10 @@
     (nat_min application-judgement "{k: nat | k <= i AND k <= j}"
      real_defs nil)
     (int_min application-judgement "{k: int | k <= i AND k <= j}"
-     real_defs nil))
+     real_defs nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (bands_search_index_def_TCC1 0
   (bands_search_index_def_TCC1-1 nil 3633705670
@@ -2399,13 +2412,14 @@
     (number_field nonempty-type-from-decl nil number_fields nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
     (real nonempty-type-from-decl nil reals nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (number nonempty-type-decl nil numbers nil)
     (IFF const-decl "[bool, bool -> bool]" booleans nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil)
     (nnreal_div_posreal_is_nnreal application-judgement "nnreal"
      real_types nil))
    nil)
@@ -2415,9 +2429,7 @@
  (kinematic_bands_TCC1 0
   (kinematic_bands_TCC1-1 nil 3631294873
    ("" (skeep*) (("" (hide -) (("" (grind) nil nil)) nil)) nil)
-   ((boolean nonempty-type-decl nil booleans nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
-    (NOT const-decl "[bool -> bool]" booleans nil)
+   ((NOT const-decl "[bool -> bool]" booleans nil)
     (number nonempty-type-decl nil numbers nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
@@ -2439,7 +2451,10 @@
     (below type-eq-decl nil naturalnumbers nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (proper? const-decl "bool" int_bands nil))
+    (proper? const-decl "bool" int_bands nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (kinematic_bands_TCC2 0
   (kinematic_bands_TCC2-1 nil 3631294873
@@ -2448,7 +2463,10 @@
      real_props nil)
     (posint_plus_nnint_is_posint application-judgement "posint"
      integers nil)
-    (int_minus_int_is_int application-judgement "int" integers nil))
+    (int_minus_int_is_int application-judgement "int" integers nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (kinematic_bands_TCC3 0
   (kinematic_bands_TCC3-1 nil 3631294873
@@ -2535,7 +2553,6 @@
     (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
     (nnreal type-eq-decl nil real_types nil)
     (>= const-decl "bool" reals nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (real nonempty-type-from-decl nil reals nil)
     (real_pred const-decl "[number_field -> boolean]" reals nil)
     (number_field nonempty-type-from-decl nil number_fields nil)
@@ -2543,7 +2560,6 @@
      nil)
     (number nonempty-type-decl nil numbers nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (list type-decl nil list_adt nil)
     (IntBand type-eq-decl nil int_bands nil)
     (int nonempty-type-eq-decl nil integers nil)
@@ -2555,7 +2571,10 @@
     (proper? const-decl "bool" int_bands nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
-    (below type-eq-decl nil naturalnumbers nil))
+    (below type-eq-decl nil naturalnumbers nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (kinematic_bands_def_TCC1 0
   (kinematic_bands_def_TCC1-1 nil 3633711380 ("" (subtype-tcc) nil nil)
@@ -3065,15 +3084,16 @@
         nil))
       nil))
     nil)
-   ((IFF const-decl "[bool, bool -> bool]" booleans nil)
+   ((TRUE const-decl "bool" booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (IFF const-decl "[bool, bool -> bool]" booleans nil)
     (int nonempty-type-eq-decl nil integers nil)
     (IntBand type-eq-decl nil int_bands nil)
     (list type-decl nil list_adt nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
     (real nonempty-type-from-decl nil reals nil)
     (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
-    (bool nonempty-type-eq-decl nil booleans nil)
     (number nonempty-type-decl nil numbers nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
@@ -4638,15 +4658,16 @@
         nil))
       nil))
     nil)
-   ((IFF const-decl "[bool, bool -> bool]" booleans nil)
+   ((TRUE const-decl "bool" booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (IFF const-decl "[bool, bool -> bool]" booleans nil)
     (int nonempty-type-eq-decl nil integers nil)
     (IntBand type-eq-decl nil int_bands nil)
     (list type-decl nil list_adt nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
     (real nonempty-type-from-decl nil reals nil)
     (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
-    (bool nonempty-type-eq-decl nil booleans nil)
     (number nonempty-type-decl nil numbers nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)

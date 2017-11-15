@@ -374,9 +374,11 @@
         nil))
       nil))
     nil)
-   ((IFF const-decl "[bool, bool -> bool]" booleans nil)
-    (number nonempty-type-decl nil numbers nil)
+   ((TRUE const-decl "bool" booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
     (boolean nonempty-type-decl nil booleans nil)
+    (IFF const-decl "[bool, bool -> bool]" booleans nil)
+    (number nonempty-type-decl nil numbers nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
@@ -387,7 +389,6 @@
     (rational nonempty-type-from-decl nil rationals nil)
     (integer_pred const-decl "[rational -> boolean]" integers nil)
     (int nonempty-type-eq-decl nil integers nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (>= const-decl "bool" reals nil)
     (nonneg_int nonempty-type-eq-decl nil integers nil)
     (> const-decl "bool" reals nil)
@@ -457,8 +458,12 @@
     (nnreal_plus_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
     (dot_scal_canon formula-decl nil vectors_2D "vectors/")
-    (nml_89 skolem-const-decl "(add?)" WCV_tau nil)
     (tau const-decl "real" timevars nil)
+    (sq const-decl "nonneg_real" sq "reals/")
+    (<= const-decl "bool" reals nil)
+    (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
+    (nml_89 skolem-const-decl "(add?)" WCV_tau nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
     (NEG adt-constructor-decl "[RealExpr -> (neg?)]" IntervalExpr_adt
      "interval_arith/")
     (X const-decl "RealExpr" interval_expr "interval_arith/")
@@ -471,10 +476,8 @@
      "{b: bool | b = (FORALL (k: subrange(i, n - 1)): vs(k) ## nth(box, k - i))}"
      box "interval_arith/")
     (nml_90 skolem-const-decl "(div?)" WCV_tau nil)
-    (NOT const-decl "[bool -> bool]" booleans nil)
     (SQ adt-constructor-decl "[RealExpr -> (sq?)]" IntervalExpr_adt
      "interval_arith/")
-    (<= const-decl "bool" reals nil)
     (BREL adt-constructor-decl
      "[[RealOrder, RealExpr, RealExpr] -> (brel?)]" IntervalExpr_adt
      "interval_arith/")
@@ -485,7 +488,6 @@
     (interval_soundness formula-decl nil interval_bandb
      "interval_arith/")
     (sound? const-decl "bool" interval_bandb "interval_arith/")
-    (sq const-decl "nonneg_real" sq "reals/")
     (iar_91 skolem-const-decl "(brel?)" WCV_tau nil)
     (beval def-decl "bool" interval_bexpr "interval_arith/")
     (sq_v2 skolem-const-decl "nnreal" WCV_tau nil)
@@ -496,7 +498,6 @@
     (val adt-accessor-decl "[(some?) -> T]" Maybe "structures/")
     (some? adt-recognizer-decl "[Maybe -> boolean]" Maybe
      "structures/")
-    (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
     (BoolExpr type-eq-decl nil IntervalExpr_adt "interval_arith/")
     (bletin? adt-recognizer-decl "[IntervalExpr -> boolean]"
      IntervalExpr_adt "interval_arith/")
@@ -526,9 +527,9 @@
     (lb_interval formula-decl nil interval "interval_arith/")
     (ub_interval formula-decl nil interval "interval_arith/")
     (real_div_nzreal_is_real application-judgement "real" reals nil)
-    (hour const-decl "posreal" units "TCASII/")
     (pi_safe const-decl "[Unit -> real]" interval_expr_trig
      "interval_arith/")
+    (hour const-decl "posreal" units "TCASII/")
     (nml_87 skolem-const-decl "(add?)" WCV_tau nil)
     (sin const-decl "real" sincos_def "trig/")
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
@@ -548,7 +549,6 @@
     (sound? const-decl "bool" numerical_bandb "interval_arith/")
     (numerical_soundness formula-decl nil numerical_bandb
      "interval_arith/")
-    (TRUE const-decl "bool" booleans nil)
     (id const-decl "(bijective?[T, T])" identity nil)
     (bijective? const-decl "bool" functions nil)
     (nzrat_div_nzrat_is_nzrat application-judgement "nzrat" rationals
@@ -616,11 +616,11 @@
      IntervalExpr_adt "interval_arith/")
     (OR const-decl "[bool, bool -> bool]" booleans nil)
     (IntervalExpr type-decl nil IntervalExpr_adt "interval_arith/")
+    (minus_nzint_is_nzint application-judgement "nzint" integers nil)
+    (minus_even_is_even application-judgement "even_int" integers nil)
+    (real_minus_real_is_real application-judgement "real" reals nil)
     (posrat_div_posrat_is_posrat application-judgement "posrat"
      rationals nil)
-    (minus_even_is_even application-judgement "even_int" integers nil)
-    (minus_nzint_is_nzint application-judgement "nzint" integers nil)
-    (real_minus_real_is_real application-judgement "real" reals nil)
     (* const-decl "real" vectors_2D "vectors/")
     (Vector type-eq-decl nil vectors_2D "vectors/")
     (le_realorder name-judgement "RealOrder" real_orders "reals/")
@@ -907,9 +907,11 @@
         nil))
       nil))
     nil)
-   ((IFF const-decl "[bool, bool -> bool]" booleans nil)
-    (number nonempty-type-decl nil numbers nil)
+   ((TRUE const-decl "bool" booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
     (boolean nonempty-type-decl nil booleans nil)
+    (IFF const-decl "[bool, bool -> bool]" booleans nil)
+    (number nonempty-type-decl nil numbers nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
@@ -922,15 +924,14 @@
     (rational nonempty-type-from-decl nil rationals nil)
     (integer_pred const-decl "[rational -> boolean]" integers nil)
     (int nonempty-type-eq-decl nil integers nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (>= const-decl "bool" reals nil)
     (nonneg_int nonempty-type-eq-decl nil integers nil)
     (> const-decl "bool" reals nil)
     (posint nonempty-type-eq-decl nil integers nil)
-    (posint_plus_nnint_is_posint application-judgement "posint"
-     integers nil)
     (odd_plus_odd_is_even application-judgement "even_int" integers
      nil)
+    (posint_plus_nnint_is_posint application-judgement "posint"
+     integers nil)
     (Si const-decl "Vect3" WCV_tau nil)
     (So const-decl "Vect3" WCV_tau nil)
     (Vi const-decl "Vect3" WCV_tau nil)
@@ -986,13 +987,13 @@
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (le_realorder name-judgement "RealOrder" real_orders "reals/")
+    (posrat_div_posrat_is_posrat application-judgement "posrat"
+     rationals nil)
     (real_minus_real_is_real application-judgement "real" reals nil)
     (Vector type-eq-decl nil vectors_2D "vectors/")
     (* const-decl "real" vectors_2D "vectors/")
-    (minus_nzint_is_nzint application-judgement "nzint" integers nil)
     (minus_even_is_even application-judgement "even_int" integers nil)
-    (posrat_div_posrat_is_posrat application-judgement "posrat"
-     rationals nil)
+    (minus_nzint_is_nzint application-judgement "nzint" integers nil)
     (IntervalExpr type-decl nil IntervalExpr_adt "interval_arith/")
     (OR const-decl "[bool, bool -> bool]" booleans nil)
     (const? adt-recognizer-decl "[IntervalExpr -> boolean]"
@@ -1060,7 +1061,6 @@
      nil)
     (bijective? const-decl "bool" functions nil)
     (id const-decl "(bijective?[T, T])" identity nil)
-    (TRUE const-decl "bool" booleans nil)
     (numerical_soundness formula-decl nil numerical_bandb
      "interval_arith/")
     (sound? const-decl "bool" numerical_bandb "interval_arith/")
@@ -1079,9 +1079,9 @@
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (sin const-decl "real" sincos_def "trig/")
     (nml_92 skolem-const-decl "(add?)" WCV_tau nil)
+    (hour const-decl "posreal" units "TCASII/")
     (pi_safe const-decl "[Unit -> real]" interval_expr_trig
      "interval_arith/")
-    (hour const-decl "posreal" units "TCASII/")
     (real_div_nzreal_is_real application-judgement "real" reals nil)
     (ub_interval formula-decl nil interval "interval_arith/")
     (lb_interval formula-decl nil interval "interval_arith/")
@@ -1089,8 +1089,14 @@
     (|##| const-decl "bool" interval "interval_arith/")
     ([\|\|] const-decl "Interval" interval "interval_arith/")
     (sqv_eq_0 formula-decl nil vectors_2D "vectors/")
-    (sqv const-decl "nnreal" vectors_2D "vectors/")
     (tau const-decl "real" timevars nil)
+    (tcpa const-decl "real" timevars nil)
+    (* const-decl "Vector" vectors_2D "vectors/")
+    (+ const-decl "Vector" vectors_2D "vectors/")
+    (sq const-decl "nonneg_real" sq "reals/")
+    (sqv const-decl "nnreal" vectors_2D "vectors/")
+    (<= const-decl "bool" reals nil)
+    (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
     (minus_real_is_real application-judgement "real" reals nil)
     (nml_94 skolem-const-decl "(div?)" WCV_tau nil)
     (vars_in_box_rec def-decl
@@ -1104,7 +1110,6 @@
     (X const-decl "RealExpr" interval_expr "interval_arith/")
     (NEG adt-constructor-decl "[RealExpr -> (neg?)]" IntervalExpr_adt
      "interval_arith/")
-    (sq const-decl "nonneg_real" sq "reals/")
     (nml_93 skolem-const-decl "(add?)" WCV_tau nil)
     (dot_zero_right formula-decl nil vectors_2D "vectors/")
     (real_lt_is_strict_total_order name-judgement
@@ -1207,11 +1212,13 @@
         nil))
       nil))
     nil)
-   ((IFF const-decl "[bool, bool -> bool]" booleans nil)
+   ((TRUE const-decl "bool" booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (IFF const-decl "[bool, bool -> bool]" booleans nil)
     (odd_plus_odd_is_even application-judgement "even_int" integers
      nil)
     (number nonempty-type-decl nil numbers nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
@@ -1224,14 +1231,13 @@
     (rational nonempty-type-from-decl nil rationals nil)
     (integer_pred const-decl "[rational -> boolean]" integers nil)
     (int nonempty-type-eq-decl nil integers nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (>= const-decl "bool" reals nil)
     (nonneg_int nonempty-type-eq-decl nil integers nil)
     (> const-decl "bool" reals nil)
     (posint nonempty-type-eq-decl nil integers nil)
+    (even_plus_odd_is_odd application-judgement "odd_int" integers nil)
     (posint_plus_nnint_is_posint application-judgement "posint"
      integers nil)
-    (even_plus_odd_is_odd application-judgement "odd_int" integers nil)
     (Si const-decl "Vect3" WCV_tau nil)
     (So const-decl "Vect3" WCV_tau nil)
     (Vi const-decl "Vect3" WCV_tau nil)
@@ -1419,7 +1425,6 @@
      "interval_arith/")
     (bijective? const-decl "bool" functions nil)
     (id const-decl "(bijective?[T, T])" identity nil)
-    (TRUE const-decl "bool" booleans nil)
     (sos const-decl "nnreal" vectors_2D "vectors/")
     (vect2 const-decl "Vect2" vect_3D_2D "vectors/")
     (deg const-decl "posreal" units "TCASII/")

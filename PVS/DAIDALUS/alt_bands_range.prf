@@ -12,7 +12,10 @@
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_gt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil))
+     "(strict_total_order?[real])" real_props nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (conflict_free_traj_step_TCC4 0
   (conflict_free_traj_step_TCC4-1 nil 3661105070
@@ -22,7 +25,10 @@
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_gt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil))
+     "(strict_total_order?[real])" real_props nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (conflict_free_traj_step_TCC5 0
   (conflict_free_traj_step_TCC5-1 nil 3661192908
@@ -50,13 +56,11 @@
     (> const-decl "bool" reals nil)
     (nonneg_real nonempty-type-eq-decl nil real_types nil)
     (>= const-decl "bool" reals nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (real nonempty-type-from-decl nil reals nil)
     (real_pred const-decl "[number_field -> boolean]" reals nil)
     (number_field nonempty-type-from-decl nil number_fields nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (number nonempty-type-decl nil numbers nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
@@ -65,6 +69,9 @@
      real_props nil)
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil)
     (real_div_nzreal_is_real application-judgement "real" reals nil))
    nil))
  (conflict_free_traj_step_TCC6 0
@@ -93,13 +100,11 @@
     (> const-decl "bool" reals nil)
     (nonneg_real nonempty-type-eq-decl nil real_types nil)
     (>= const-decl "bool" reals nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (real nonempty-type-from-decl nil reals nil)
     (real_pred const-decl "[number_field -> boolean]" reals nil)
     (number_field nonempty-type-from-decl nil number_fields nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (number nonempty-type-decl nil numbers nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
@@ -108,6 +113,9 @@
      real_props nil)
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil)
     (real_div_nzreal_is_real application-judgement "real" reals nil))
    nil))
  (inside_realband_list_TCC1 0
@@ -158,8 +166,6 @@
      nil)
     (number nonempty-type-decl nil numbers nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (div_mult_pos_gt1 formula-decl nil extra_real_props nil)
     (div_mult_pos_ge1 formula-decl nil real_props nil)
     (nnint_times_nnint_is_nnint application-judgement "nonneg_int"
@@ -192,7 +198,10 @@
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (both_sides_times_pos_lt1 formula-decl nil real_props nil)
-    (rat_div_nzrat_is_rat application-judgement "rat" rationals nil))
+    (rat_div_nzrat_is_rat application-judgement "rat" rationals nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil)
   (conflict_free_alt_TCC2-1 nil 3710792110 ("" (subtype-tcc) nil nil)
    nil nil))
@@ -250,18 +259,16 @@
         nil))
       nil))
     nil)
-   ((times_increase formula-decl nil vsLevelOut "kinematics/")
+   ((times_increase formula-decl nil vsLevelOut "aviation/")
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (vs skolem-const-decl "real" alt_bands_range nil)
     (>= const-decl "bool" reals nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (real nonempty-type-from-decl nil reals nil)
     (real_pred const-decl "[number_field -> boolean]" reals nil)
     (number_field nonempty-type-from-decl nil number_fields nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (number nonempty-type-decl nil numbers nil)
     (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
     (> const-decl "bool" reals nil)
@@ -304,7 +311,7 @@
     (mult_divides1 application-judgement "(divides(n))" divides nil)
     (mult_divides2 application-judgement "(divides(m))" divides nil)
     (vsLevelOutTimes const-decl "[real, real, real, real, real, real]"
-     vsLevelOut "kinematics/")
+     vsLevelOut "aviation/")
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
@@ -314,7 +321,10 @@
     (rat_div_nzrat_is_rat application-judgement "rat" rationals nil)
     (real_minus_real_is_real application-judgement "real" reals nil)
     (kinematic_alt_times const-decl "[real, real, real]"
-     alt_bands_range nil))
+     alt_bands_range nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (alt_bands_generic_TCC1 0
   (alt_bands_generic_TCC1-1 nil 3644254181
@@ -333,13 +343,11 @@
     (/= const-decl "boolean" notequal nil)
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (>= const-decl "bool" reals nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (real nonempty-type-from-decl nil reals nil)
     (real_pred const-decl "[number_field -> boolean]" reals nil)
     (number_field nonempty-type-from-decl nil number_fields nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (number nonempty-type-decl nil numbers nil)
     (real_div_nzreal_is_real application-judgement "real" reals nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
@@ -348,6 +356,9 @@
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
     (div_mult_pos_ge1 formula-decl nil real_props nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil)
     (real_minus_real_is_real application-judgement "real" reals nil))
    nil))
  (alt_bands_generic_TCC2 0
@@ -377,19 +388,20 @@
         nil))
       nil))
     nil)
-   ((times_increase formula-decl nil vsLevelOut "kinematics/")
+   ((times_increase formula-decl nil vsLevelOut "aviation/")
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (nnreal type-eq-decl nil real_types nil)
     (>= const-decl "bool" reals nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (real nonempty-type-from-decl nil reals nil)
     (real_pred const-decl "[number_field -> boolean]" reals nil)
     (number_field nonempty-type-from-decl nil number_fields nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
+    (number nonempty-type-decl nil numbers nil)
     (boolean nonempty-type-decl nil booleans nil)
-    (number nonempty-type-decl nil numbers nil))
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (kinematic_alt_bands_correct?_TCC1 0
   (kinematic_alt_bands_correct?_TCC1-1 nil 3713090322
@@ -416,8 +428,6 @@
      nil)
     (number nonempty-type-decl nil numbers nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (mult_divides2 application-judgement "(divides(m))" divides nil)
     (mult_divides1 application-judgement "(divides(n))" divides nil)
     (even_times_int_is_even application-judgement "even_int" integers
@@ -452,7 +462,10 @@
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (both_sides_times_pos_lt1 formula-decl nil real_props nil)
-    (rat_div_nzrat_is_rat application-judgement "rat" rationals nil))
+    (rat_div_nzrat_is_rat application-judgement "rat" rationals nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (kinematic_alt_bands_def 0
   (kinematic_alt_bands_def-1 nil 3710803956
@@ -2828,18 +2841,16 @@
    ((kinematic_alt_bands_correct? const-decl "bool" alt_bands_range
      nil)
     (> const-decl "bool" reals nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (real nonempty-type-from-decl nil reals nil)
     (real_pred const-decl "[number_field -> boolean]" reals nil)
     (number_field nonempty-type-from-decl nil number_fields nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (number nonempty-type-decl nil numbers nil)
     (* const-decl "Vector" vectors_3D "vectors/")
     (+ const-decl "Vector" vectors_3D "vectors/")
     (Vector type-eq-decl nil vectors_3D "vectors/")
-    (vsLevelOut const-decl "[Vect3, Vect3]" vsLevelOut "kinematics/")
+    (vsLevelOut const-decl "[Vect3, Vect3]" vsLevelOut "aviation/")
     (+ const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (IF const-decl "[boolean, T, T -> T]" if_def nil)
@@ -2970,16 +2981,16 @@
     (mult_divides1 application-judgement "(divides(n))" divides nil)
     (mult_divides2 application-judgement "(divides(m))" divides nil)
     (max_npreal_0 formula-decl nil min_max "reals/")
-    (times_increase formula-decl nil vsLevelOut "kinematics/")
+    (times_increase formula-decl nil vsLevelOut "aviation/")
     (max_nnreal_0 formula-decl nil min_max "reals/")
     (vsLevelOutCalculation const-decl "[Vect3, Vect3]" vsLevelOut
-     "kinematics/")
+     "aviation/")
     (expt def-decl "real" exponentiation nil)
     (^ const-decl "real" exponentiation nil)
-    (linear_pos const-decl "Vect3" util "kinematics/")
+    (linear_pos const-decl "Vect3" util "aviation/")
     (nzreal nonempty-type-eq-decl nil reals nil)
-    (S1 const-decl "real" vsLevelOut "kinematics/")
-    (V1 const-decl "real" vsLevelOut "kinematics/")
+    (S1 const-decl "real" vsLevelOut "aviation/")
+    (V1 const-decl "real" vsLevelOut "aviation/")
     (CD_future_traj_def formula-decl nil int_bands nil)
     (i skolem-const-decl "nat" alt_bands_range nil)
     (vlt skolem-const-decl "[real, real, real, real, real, real]"
@@ -3048,7 +3059,7 @@
     (< const-decl "bool" reals nil)
     (negreal nonempty-type-eq-decl nil real_types nil)
     (vsLevelOutTimes const-decl "[real, real, real, real, real, real]"
-     vsLevelOut "kinematics/")
+     vsLevelOut "aviation/")
     (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
     (Vector type-eq-decl nil vectors_2D "vectors/")
     (sqv const-decl "nnreal" vectors_2D "vectors/")
@@ -3059,6 +3070,9 @@
     (div_mult_pos_ge1 formula-decl nil real_props nil)
     (div_mult_pos_gt1 formula-decl nil extra_real_props nil)
     (j skolem-const-decl "nat" alt_bands_range nil)
-    (both_sides_times_pos_lt1 formula-decl nil real_props nil))
+    (both_sides_times_pos_lt1 formula-decl nil real_props nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    shostak)))
 

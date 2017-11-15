@@ -757,7 +757,6 @@
     (NOT const-decl "[bool -> bool]" booleans nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (boolean nonempty-type-decl nil booleans nil)
-    (TRUE const-decl "bool" booleans nil)
     (id const-decl "(bijective?[T, T])" identity nil)
     (bijective? const-decl "bool" functions nil)
     (/ const-decl "[numfield, nznum -> numfield]" number_fields nil)
@@ -780,6 +779,7 @@
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (expt def-decl "real" exponentiation nil)
+    (TRUE const-decl "bool" booleans nil)
     (both_sides_times_pos_ge1 formula-decl nil real_props nil)
     (neg_times_lt formula-decl nil real_props nil)
     (neg_times_le formula-decl nil real_props nil)

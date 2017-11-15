@@ -27,7 +27,10 @@
    ((real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_lt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil))
+     "(strict_total_order?[real])" real_props nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (kinematic_bands_combine_connected 0
   (kinematic_bands_combine_connected-2 nil 3633785872
@@ -285,10 +288,7 @@
     (number nonempty-type-decl nil numbers nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
-    (TRUE const-decl "bool" booleans nil)
     (id const-decl "(bijective?[T, T])" identity nil)
     (bijective? const-decl "bool" functions nil)
     (IntBand type-eq-decl nil int_bands nil)
@@ -334,7 +334,10 @@
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_lt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil))
+     "(strict_total_order?[real])" real_props nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil)
   (kinematic_bands_combine_connected-1 nil 3633785766
    ("" (skeep) (("" (skoletin 1) (("" (postpone) nil nil)) nil)) nil)
@@ -530,8 +533,6 @@
     (number nonempty-type-decl nil numbers nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (IFF const-decl "[bool, bool -> bool]" booleans nil)
     (IntBand type-eq-decl nil int_bands nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
@@ -568,7 +569,10 @@
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_lt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil))
+     "(strict_total_order?[real])" real_props nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil)
   (kinematic_bands_combine_increasing-1 nil 3633440916
    ("" (skeep*)
@@ -1035,7 +1039,10 @@
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_lt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil))
+     "(strict_total_order?[real])" real_props nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (kinematic_bands_combine_def 0
   (kinematic_bands_combine_def-3 nil 3636301300
@@ -1715,10 +1722,7 @@
     (number nonempty-type-decl nil numbers nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (minus_int_is_int application-judgement "int" integers nil)
-    (TRUE const-decl "bool" booleans nil)
     (id const-decl "(bijective?[T, T])" identity nil)
     (bijective? const-decl "bool" functions nil)
     (IntBand type-eq-decl nil int_bands nil)
@@ -1761,14 +1765,14 @@
     (MaxL skolem-const-decl "nat" combine_bands nil)
     (LeftB skolem-const-decl "(proper?(MaxL))" combine_bands nil)
     (negib const-decl "IntBand" int_bands nil)
-    (minus_odd_is_odd application-judgement "odd_int" integers nil)
-    (both_sides_times_neg_le1 formula-decl nil real_props nil)
-    (nonpos_real nonempty-type-eq-decl nil real_types nil)
-    (negreal nonempty-type-eq-decl nil real_types nil)
-    (mult_divides1 application-judgement "(divides(n))" divides nil)
-    (mult_divides2 application-judgement "(divides(m))" divides nil)
-    (mult_neg formula-decl nil extra_tegies nil)
     (neg_neg formula-decl nil extra_tegies nil)
+    (mult_neg formula-decl nil extra_tegies nil)
+    (mult_divides2 application-judgement "(divides(m))" divides nil)
+    (mult_divides1 application-judgement "(divides(n))" divides nil)
+    (negreal nonempty-type-eq-decl nil real_types nil)
+    (nonpos_real nonempty-type-eq-decl nil real_types nil)
+    (both_sides_times_neg_le1 formula-decl nil real_props nil)
+    (minus_odd_is_odd application-judgement "odd_int" integers nil)
     (neg_intband_def2 formula-decl nil int_bands nil)
     (in? const-decl "bool" real_bands nil)
     (RealBand type-eq-decl nil real_bands nil)
@@ -1810,7 +1814,10 @@
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_lt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil))
+     "(strict_total_order?[real])" real_props nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil)
   (kinematic_bands_combine_def-2 nil 3633794695
    ("" (skeep*)
@@ -3595,8 +3602,6 @@
     (number nonempty-type-decl nil numbers nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (minus_int_is_int application-judgement "int" integers nil)
     (IFF const-decl "[bool, bool -> bool]" booleans nil)
     (IntBand type-eq-decl nil int_bands nil)
@@ -3641,7 +3646,10 @@
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
     (strictly_increasing_int? const-decl "bool" int_bands nil)
-    (int_minus_int_is_int application-judgement "int" integers nil))
+    (int_minus_int_is_int application-judgement "int" integers nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil)
   (kinematic_bands_combine_range-1 nil 3633884054
    ("" (skeep*)
@@ -4117,19 +4125,20 @@
     (rational nonempty-type-from-decl nil rationals nil)
     (rational_pred const-decl "[real -> boolean]" rationals nil)
     (> const-decl "bool" reals nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (real nonempty-type-from-decl nil reals nil)
     (real_pred const-decl "[number_field -> boolean]" reals nil)
     (number_field nonempty-type-from-decl nil number_fields nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (number nonempty-type-decl nil numbers nil)
     (AircraftList type-eq-decl nil int_bands nil)
     (list type-decl nil list_adt nil)
     (Aircraft type-eq-decl nil int_bands nil)
     (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
-    (string type-eq-decl nil strings nil))
+    (string type-eq-decl nil strings nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (first_green_dir_TCC2 0
   (first_green_dir_TCC2-1 nil 3633860818
@@ -4179,19 +4188,20 @@
     (rational nonempty-type-from-decl nil rationals nil)
     (rational_pred const-decl "[real -> boolean]" rationals nil)
     (> const-decl "bool" reals nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (real nonempty-type-from-decl nil reals nil)
     (real_pred const-decl "[number_field -> boolean]" reals nil)
     (number_field nonempty-type-from-decl nil number_fields nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (number nonempty-type-decl nil numbers nil)
     (AircraftList type-eq-decl nil int_bands nil)
     (list type-decl nil list_adt nil)
     (Aircraft type-eq-decl nil int_bands nil)
     (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
-    (string type-eq-decl nil strings nil))
+    (string type-eq-decl nil strings nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (conflict_steps_eq 0
   (conflict_steps_eq-1 nil 3633865099
@@ -4638,7 +4648,6 @@
     (<= const-decl "bool" reals nil)
     (nat nonempty-type-eq-decl nil naturalnumbers nil)
     (>= const-decl "bool" reals nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (int nonempty-type-eq-decl nil integers nil)
     (integer_pred const-decl "[rational -> boolean]" integers nil)
     (rational nonempty-type-from-decl nil rationals nil)
@@ -4648,7 +4657,6 @@
     (number_field nonempty-type-from-decl nil number_fields nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (number nonempty-type-decl nil numbers nil)
     (repulsive_at const-decl "bool" int_bands nil)
     (vert_repul_at const-decl "bool" int_bands nil)
@@ -4658,7 +4666,10 @@
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_lt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil))
+     "(strict_total_order?[real])" real_props nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    shostak))
  (all_red_def_TCC1 0
   (all_red_def_TCC1-1 nil 3642428958 ("" (subtype-tcc) nil nil)
@@ -5501,11 +5512,8 @@
     (number nonempty-type-decl nil numbers nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (minus_odd_is_odd application-judgement "odd_int" integers nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
-    (TRUE const-decl "bool" booleans nil)
     (id const-decl "(bijective?[T, T])" identity nil)
     (bijective? const-decl "bool" functions nil)
     (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
@@ -5525,10 +5533,10 @@
     (nth def-decl "T" list_props nil)
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (IFF const-decl "[bool, bool -> bool]" booleans nil)
-    (real_lt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
+    (real_lt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (kinematic_bands_combine_def formula-decl nil combine_bands nil)
@@ -5552,7 +5560,10 @@
               (IF dir > 0 THEN trajr ELSE trajl ENDIF),
               (IF dir > 0 THEN MaxR ELSE MaxL ENDIF),
               (IF dir > 0 THEN tsr ELSE tsl ENDIF), AL, most_urgent, epsH,
-              epsV, UseHCrit, UseVCrit, 0))" combine_bands nil))
+              epsV, UseHCrit, UseVCrit, 0))" combine_bands nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    shostak))
  (any_red_def 0
   (any_red_def-1 nil 3633882203
@@ -9061,8 +9072,6 @@
     (number nonempty-type-decl nil numbers nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (minus_odd_is_odd application-judgement "odd_int" integers nil)
     (IFF const-decl "[bool, bool -> bool]" booleans nil)
     (nonneg_real nonempty-type-eq-decl nil real_types nil)
@@ -9163,6 +9172,9 @@
      "(strict_total_order?[real])" real_props nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
-    (red_exist_dir const-decl "bool" combine_bands nil))
+    (red_exist_dir const-decl "bool" combine_bands nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    shostak)))
 

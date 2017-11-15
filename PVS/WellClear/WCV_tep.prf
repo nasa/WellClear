@@ -26,8 +26,7 @@
     (timevar? const-decl "bool" timevars nil)
     (Vect2 type-eq-decl nil vectors_2D_def "vectors/")
     (WCV_symmetric formula-decl nil WCV nil)
-    (tep_pre_timevar name-judgement "(pre_timevar?)" WCV_tep
-     nil))
+    (tep_pre_timevar name-judgement "(pre_timevar?)" WCV_tep nil))
    shostak))
  (WCV_tep_local_convexity 0
   (WCV_tep_local_convexity-1 nil 3606146717
@@ -66,8 +65,7 @@
     (timevar? const-decl "bool" timevars nil)
     (Vect2 type-eq-decl nil vectors_2D_def "vectors/")
     (WCV_locally_convex formula-decl nil WCV nil)
-    (tep_pre_timevar name-judgement "(pre_timevar?)" WCV_tep
-     nil))
+    (tep_pre_timevar name-judgement "(pre_timevar?)" WCV_tep nil))
    shostak))
  (WCV_tep_interval_TCC1 0
   (WCV_tep_interval_TCC1-1 nil 3592566133 ("" (subtype-tcc) nil nil)
@@ -114,13 +112,11 @@
     (EntryExit type-eq-decl nil EntryExit_interval nil)
     (WCV_interval_correct formula-decl nil WCV nil)
     (number nonempty-type-decl nil numbers nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
     (number_field nonempty-type-from-decl nil number_fields nil)
     (real_pred const-decl "[number_field -> boolean]" reals nil)
     (real nonempty-type-from-decl nil reals nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (>= const-decl "bool" reals nil)
     (nnreal type-eq-decl nil real_types nil)
     (TEP formal-const-decl "nnreal" WCV_tep nil)
@@ -129,7 +125,10 @@
     (> const-decl "bool" reals nil)
     (posreal nonempty-type-eq-decl nil real_types nil)
     (DTHR formal-const-decl "posreal" WCV_tep nil)
-    (ZTHR formal-const-decl "posreal" WCV_tep nil))
+    (ZTHR formal-const-decl "posreal" WCV_tep nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    shostak))
  (WCV_tep_detection_correct 0
   (WCV_tep_detection_correct-1 nil 3625245863

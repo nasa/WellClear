@@ -349,8 +349,8 @@
     (negreal nonempty-type-eq-decl nil real_types nil)
     (nonpos_real nonempty-type-eq-decl nil real_types nil)
     (< const-decl "bool" reals nil) (<= const-decl "bool" reals nil)
-    (div_mult_neg_le1 formula-decl nil real_props nil)
     (div_mult_neg_lt1 formula-decl nil real_props nil)
+    (div_mult_neg_le1 formula-decl nil real_props nil)
     (both_sides_times_neg_ge1 formula-decl nil real_props nil)
     (CBD_3 skolem-const-decl "nzreal" vertical_WCV_props nil)
     (real_div_nzreal_is_real application-judgement "real" reals nil)
@@ -390,10 +390,10 @@
     (neg_one_times formula-decl nil extra_tegies nil)
     (minus_nzreal_is_nzreal application-judgement "nzreal" real_types
      nil)
-    (zero_times1 formula-decl nil real_props nil)
+    (pos_div_gt formula-decl nil real_props nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (pos_div_gt formula-decl nil real_props nil)
+    (zero_times1 formula-decl nil real_props nil)
     (nzreal_div_nzreal_is_nzreal application-judgement "nzreal"
      real_types nil)
     (both_sides_times_pos_ge1 formula-decl nil real_props nil)

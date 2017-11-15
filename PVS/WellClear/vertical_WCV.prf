@@ -79,8 +79,8 @@
     (= const-decl "[T, T -> boolean]" equalities nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
     (/= const-decl "boolean" notequal nil)
-    (nznum nonempty-type-eq-decl nil number_fields nil)
-    (/ const-decl "[numfield, nznum -> numfield]" number_fields nil)
+    (TRUE const-decl "bool" booleans nil)
+    (div_mult_neg_le1 formula-decl nil real_props nil)
     (abs_nat formula-decl nil abs_lems "reals/")
     (neg_le formula-decl nil real_props nil)
     (div_mult_pos_le1 formula-decl nil real_props nil)
@@ -88,7 +88,8 @@
     (neg_times_lt formula-decl nil real_props nil)
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (div_mult_neg_le1 formula-decl nil real_props nil)
+    (/ const-decl "[numfield, nznum -> numfield]" number_fields nil)
+    (nznum nonempty-type-eq-decl nil number_fields nil)
     (minus_odd_is_odd application-judgement "odd_int" integers nil)
     (tcoa const-decl "real" timevars nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
@@ -237,6 +238,7 @@
     (real_times_real_is_real application-judgement "real" reals nil)
     (real_plus_real_is_real application-judgement "real" reals nil)
     (minus_odd_is_odd application-judgement "odd_int" integers nil)
+    (TRUE const-decl "bool" booleans nil)
     (nonzero_abs_is_pos application-judgement "{y: posreal | y >= x}"
      real_defs nil))
    nil))
@@ -989,9 +991,11 @@
         nil))
       nil))
     nil)
-   ((IFF const-decl "[bool, bool -> bool]" booleans nil)
-    (number nonempty-type-decl nil numbers nil)
+   ((TRUE const-decl "bool" booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
     (boolean nonempty-type-decl nil booleans nil)
+    (IFF const-decl "[bool, bool -> bool]" booleans nil)
+    (number nonempty-type-decl nil numbers nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
@@ -1000,14 +1004,13 @@
     (real nonempty-type-from-decl nil reals nil)
     (/= const-decl "boolean" notequal nil)
     (nzreal nonempty-type-eq-decl nil reals nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (< const-decl "bool" reals nil)
     (coalt_entry_exit const-decl
      "{r12: [real, real] | LET (r1, r2) = r12 IN r1 < r2}" vertical_WCV
      nil)
-    (<= const-decl "bool" reals nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil)
     (vertical_WCV_at const-decl "bool" vertical_WCV nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (<= const-decl "bool" reals nil)
     (real_times_real_is_real application-judgement "real" reals nil)
     (minus_real_is_real application-judgement "real" reals nil)
     (IF const-decl "[boolean, T, T -> T]" if_def nil)
@@ -1115,7 +1118,10 @@
    ((real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_lt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil))
+     "(strict_total_order?[real])" real_props nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (vertical_WCV_interval_TCC4 0
   (vertical_WCV_interval_TCC4-1 nil 3592556636
@@ -1123,7 +1129,10 @@
    ((real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_lt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil))
+     "(strict_total_order?[real])" real_props nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (vertical_WCV_interval_TCC5 0
   (vertical_WCV_interval_TCC5-1 nil 3592566203
@@ -1134,13 +1143,11 @@
      real_props nil)
     (max_le formula-decl nil real_defs nil)
     (number nonempty-type-decl nil numbers nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
     (number_field nonempty-type-from-decl nil number_fields nil)
     (real_pred const-decl "[number_field -> boolean]" reals nil)
     (real nonempty-type-from-decl nil reals nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (>= const-decl "bool" reals nil)
     (nnreal type-eq-decl nil real_types nil)
     (nonneg_real nonempty-type-eq-decl nil real_types nil)
@@ -1150,7 +1157,10 @@
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_lt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil))
+     "(strict_total_order?[real])" real_props nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (vertical_WCV_interval_TCC6 0
   (vertical_WCV_interval_TCC6-1 nil 3592566308
@@ -1161,13 +1171,11 @@
      real_props nil)
     (min_le formula-decl nil real_defs nil)
     (number nonempty-type-decl nil numbers nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
     (number_field nonempty-type-from-decl nil number_fields nil)
     (real_pred const-decl "[number_field -> boolean]" reals nil)
     (real nonempty-type-from-decl nil reals nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (>= const-decl "bool" reals nil)
     (nonneg_real nonempty-type-eq-decl nil real_types nil)
     (> const-decl "bool" reals nil)
@@ -1177,7 +1185,10 @@
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_lt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil))
+     "(strict_total_order?[real])" real_props nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (vertical_WCV_interval_def 0
   (vertical_WCV_interval_def-1 nil 3592555671
@@ -1271,7 +1282,6 @@
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (number nonempty-type-decl nil numbers nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
@@ -1283,7 +1293,6 @@
     (tcoa const-decl "real" timevars nil)
     (vertical_WCV_at const-decl "bool" vertical_WCV nil)
     (IFF const-decl "[bool, bool -> bool]" booleans nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (>= const-decl "bool" reals nil)
     (nnreal type-eq-decl nil real_types nil)
     (nonneg_real nonempty-type-eq-decl nil real_types nil)
@@ -1291,8 +1300,9 @@
     (posreal nonempty-type-eq-decl nil real_types nil)
     (Lookahead type-eq-decl nil Lookahead "ACCoRD/")
     (EntryExit type-eq-decl nil EntryExit_interval nil)
-    (< const-decl "bool" reals nil) (<= const-decl "bool" reals nil)
+    (< const-decl "bool" reals nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (<= const-decl "bool" reals nil)
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (coalt_entry_exit_def formula-decl nil vertical_WCV nil)
@@ -1300,6 +1310,9 @@
     (max const-decl "{p: real | p >= m AND p >= n}" real_defs nil)
     (nzreal nonempty-type-eq-decl nil reals nil)
     (vz skolem-const-decl "real" vertical_WCV nil)
-    (/= const-decl "boolean" notequal nil))
+    (/= const-decl "boolean" notequal nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    shostak)))
 

@@ -109,7 +109,7 @@
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (* const-decl "real" vectors_2D "vectors/")
-    (vs const-decl "real" util "kinematics/")
+    (vs const-decl "real" Velocity "aviation/")
     (real_minus_real_is_real application-judgement "real" reals nil))
    nil))
  (kinematic_vs_bands_init_TCC3 0
@@ -126,14 +126,12 @@
          vect2(w`1) = vect2(so) + t * vect2(vo) AND
           w`1`z = so`z + vo`z * t + 0.5 * a * t * t AND
            vect2(w`2) = vect2(vo) AND w`2`z = vo`z + a * t}"
-     kinematics_vs_accel "kinematics/")
-    (MkVxyz const-decl "{w: Vect3 | w`x = x AND w`y = y AND w`z = z}"
-     util "kinematics/")
+     kinematics_vs_accel "aviation/")
     (vsAccelPos const-decl "{w: Vect3 |
          vect2(w) = vect2(so3) + t * vect2(vo3) AND
           w`z = so3`z + vo3`z * t + 0.5 * a * t * t}"
-     kinematics_vs_accel "kinematics/")
-    (vs const-decl "real" util "kinematics/"))
+     kinematics_vs_accel "aviation/")
+    (vs const-decl "real" Velocity "aviation/"))
    nil))
  (kinematic_vs_bands_init_increasing_TCC1 0
   (kinematic_vs_bands_init_increasing_TCC1-1 nil 3634315170
@@ -154,14 +152,12 @@
     (vsAccelPos const-decl "{w: Vect3 |
          vect2(w) = vect2(so3) + t * vect2(vo3) AND
           w`z = so3`z + vo3`z * t + 0.5 * a * t * t}"
-     kinematics_vs_accel "kinematics/")
-    (MkVxyz const-decl "{w: Vect3 | w`x = x AND w`y = y AND w`z = z}"
-     util "kinematics/")
+     kinematics_vs_accel "aviation/")
     (vsAccel const-decl "{w: [Vect3, Vect3] |
          vect2(w`1) = vect2(so) + t * vect2(vo) AND
           w`1`z = so`z + vo`z * t + 0.5 * a * t * t AND
            vect2(w`2) = vect2(vo) AND w`2`z = vo`z + a * t}"
-     kinematics_vs_accel "kinematics/")
+     kinematics_vs_accel "aviation/")
     (* const-decl "Vector" vectors_3D "vectors/")
     (+ const-decl "Vector" vectors_3D "vectors/")
     (detector? const-decl "bool" int_bands nil)
@@ -405,8 +401,6 @@
     (number nonempty-type-decl nil numbers nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (IFF const-decl "[bool, bool -> bool]" booleans nil)
     (RealBand type-eq-decl nil real_bands nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
@@ -427,19 +421,19 @@
      real_defs nil)
     (int_max application-judgement "{k: int | i <= k AND j <= k}"
      real_defs nil)
-    (TRUE const-decl "bool" booleans nil)
     (id const-decl "(bijective?[T, T])" identity nil)
     (bijective? const-decl "bool" functions nil)
     (vsAccel const-decl "{w: [Vect3, Vect3] |
          vect2(w`1) = vect2(so) + t * vect2(vo) AND
           w`1`z = so`z + vo`z * t + 0.5 * a * t * t AND
            vect2(w`2) = vect2(vo) AND w`2`z = vo`z + a * t}"
-     kinematics_vs_accel "kinematics/")
+     kinematics_vs_accel "aviation/")
     (* const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (* const-decl "Vector" vectors_2D "vectors/")
     (+ const-decl "Vector" vectors_2D "vectors/")
     (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
-    (vs const-decl "real" util "kinematics/")
+    (vs const-decl "real" Velocity "aviation/")
+    (Velocity type-eq-decl nil Velocity "aviation/")
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (/ const-decl "[numfield, nznum -> numfield]" number_fields nil)
     (nznum nonempty-type-eq-decl nil number_fields nil)
@@ -468,10 +462,10 @@
      nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
-     "vect_analysis/")
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
+    (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
+     "vect_analysis/")
     (real_div_nzreal_is_real application-judgement "real" reals nil)
     (real_minus_real_is_real application-judgement "real" reals nil)
     (real_plus_real_is_real application-judgement "real" reals nil)
@@ -479,7 +473,10 @@
     (minus_nzreal_is_nzreal application-judgement "nzreal" real_types
      nil)
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
-     real_types nil))
+     real_types nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    shostak))
  (kinematic_vs_bands_TCC1 0
   (kinematic_vs_bands_TCC1-1 nil 3632218193
@@ -523,13 +520,12 @@
          vect2(w`1) = vect2(so) + t * vect2(vo) AND
           w`1`z = so`z + vo`z * t + 0.5 * a * t * t AND
            vect2(w`2) = vect2(vo) AND w`2`z = vo`z + a * t}"
-     kinematics_vs_accel "kinematics/")
-    (MkVxyz const-decl "{w: Vect3 | w`x = x AND w`y = y AND w`z = z}"
-     util "kinematics/")
+     kinematics_vs_accel "aviation/")
+    (Velocity type-eq-decl nil Velocity "aviation/")
     (vsAccelPos const-decl "{w: Vect3 |
          vect2(w) = vect2(so3) + t * vect2(vo3) AND
           w`z = so3`z + vo3`z * t + 0.5 * a * t * t}"
-     kinematics_vs_accel "kinematics/")
+     kinematics_vs_accel "aviation/")
     (length def-decl "nat" list_props nil)
     (nat nonempty-type-eq-decl nil naturalnumbers nil)
     (< const-decl "bool" reals nil)
@@ -555,19 +551,20 @@
     (detector? const-decl "bool" int_bands nil)
     (nnreal type-eq-decl nil real_types nil)
     (>= const-decl "bool" reals nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (real nonempty-type-from-decl nil reals nil)
     (real_pred const-decl "[number_field -> boolean]" reals nil)
     (number_field nonempty-type-from-decl nil number_fields nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (number nonempty-type-decl nil numbers nil)
     (AircraftList type-eq-decl nil int_bands nil)
     (list type-decl nil list_adt nil)
     (Aircraft type-eq-decl nil int_bands nil)
     (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
-    (string type-eq-decl nil strings nil))
+    (string type-eq-decl nil strings nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (kinematic_vs_bands_def 0
   (kinematic_vs_bands_def-4 nil 3633951483
@@ -1012,7 +1009,7 @@
                                                                              -2)
                                                                             (("2"
                                                                               (case
-                                                                               "j<=(kinematics@util.vs(vo) - minvs) / step")
+                                                                               "j<=(aviation@Velocity.vs(vo) - minvs) / step")
                                                                               (("1"
                                                                                 (expand
                                                                                  "max"
@@ -1064,7 +1061,7 @@
                                                                                   (assert)
                                                                                   (("2"
                                                                                     (case
-                                                                                     "j<=(maxvs-kinematics@util.vs(vo))/step")
+                                                                                     "j<=(maxvs-aviation@Velocity.vs(vo))/step")
                                                                                     (("1"
                                                                                       (assert)
                                                                                       nil
@@ -1168,11 +1165,9 @@
     (number nonempty-type-decl nil numbers nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
-    (boolean nonempty-type-decl nil booleans nil)
-    (nzreal_times_nzreal_is_nzreal application-judgement "nzreal"
-     real_types nil)
     (posreal_div_posreal_is_posreal application-judgement "posreal"
+     real_types nil)
+    (nzreal_times_nzreal_is_nzreal application-judgement "nzreal"
      real_types nil)
     (IFF const-decl "[bool, bool -> bool]" booleans nil)
     (RealBand type-eq-decl nil real_bands nil)
@@ -1187,7 +1182,8 @@
     (posreal nonempty-type-eq-decl nil real_types nil)
     (kinematic_vs_bands const-decl "list[RealBand]" kinematic_vs_bands
      nil)
-    (vs const-decl "real" util "kinematics/")
+    (vs const-decl "real" Velocity "aviation/")
+    (Velocity type-eq-decl nil Velocity "aviation/")
     (nth def-decl "T" list_props nil)
     (below type-eq-decl nil nat_types nil)
     (in? const-decl "bool" real_bands nil)
@@ -1198,7 +1194,7 @@
          vect2(w`1) = vect2(so) + t * vect2(vo) AND
           w`1`z = so`z + vo`z * t + 0.5 * a * t * t AND
            vect2(w`2) = vect2(vo) AND w`2`z = vo`z + a * t}"
-     kinematics_vs_accel "kinematics/")
+     kinematics_vs_accel "aviation/")
     (* const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (+ const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (* const-decl "Vector" vectors_2D "vectors/")
@@ -1209,7 +1205,6 @@
     (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
     (mult_divides2 application-judgement "(divides(m))" divides nil)
     (mult_divides1 application-judgement "(divides(n))" divides nil)
-    (TRUE const-decl "bool" booleans nil)
     (id const-decl "(bijective?[T, T])" identity nil)
     (bijective? const-decl "bool" functions nil)
     (strictly_increasing_real? const-decl "bool" real_bands nil)
@@ -1228,8 +1223,8 @@
     (real_minus_real_is_real application-judgement "real" reals nil)
     (real_div_nzreal_is_real application-judgement "real" reals nil)
     (kinematic_bands_combine_def formula-decl nil combine_bands nil)
-    (MaxDown skolem-const-decl
-     "{k: int | ceiling((kinematics@util.vs(vo) - minvs) / step) <= k AND 0 <= k}"
+    (MaxDown skolem-const-decl "{k: int |
+         ceiling((aviation@Velocity.vs(vo) - minvs) / step) <= k AND 0 <= k}"
      kinematic_vs_bands nil)
     (div_mult_pos_le2 formula-decl nil real_props nil)
     (minus_odd_is_odd application-judgement "odd_int" integers nil)
@@ -1287,6 +1282,9 @@
      nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil)
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
     (real_times_real_is_real application-judgement "real" reals nil)
@@ -5035,30 +5033,27 @@
    ((vsAccelPos const-decl "{w: Vect3 |
          vect2(w) = vect2(so3) + t * vect2(vo3) AND
           w`z = so3`z + vo3`z * t + 0.5 * a * t * t}"
-     kinematics_vs_accel "kinematics/")
-    (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
-    (real nonempty-type-from-decl nil reals nil)
-    (real_pred const-decl "[number_field -> boolean]" reals nil)
-    (number_field nonempty-type-from-decl nil number_fields nil)
+     kinematics_vs_accel "aviation/")
+    (Velocity type-eq-decl nil Velocity "aviation/")
+    (> const-decl "bool" reals nil)
+    (Vector type-eq-decl nil vectors_2D "vectors/")
+    (>= const-decl "bool" reals nil)
+    (nnreal type-eq-decl nil real_types nil)
+    (sqv const-decl "nnreal" vectors_2D "vectors/")
+    (Vect2 type-eq-decl nil vectors_2D_def "vectors/")
+    (vect2 const-decl "Vect2" vect_3D_2D "vectors/")
+    (number nonempty-type-decl nil numbers nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
-    (boolean nonempty-type-decl nil booleans nil)
-    (number nonempty-type-decl nil numbers nil)
-    (vect2 const-decl "Vect2" vect_3D_2D "vectors/")
-    (Vect2 type-eq-decl nil vectors_2D_def "vectors/")
-    (sqv const-decl "nnreal" vectors_2D "vectors/")
-    (nnreal type-eq-decl nil real_types nil)
-    (>= const-decl "bool" reals nil)
-    (Vector type-eq-decl nil vectors_2D "vectors/")
-    (> const-decl "bool" reals nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
-    (MkVxyz const-decl "{w: Vect3 | w`x = x AND w`y = y AND w`z = z}"
-     util "kinematics/")
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
     (vsAccel const-decl "{w: [Vect3, Vect3] |
          vect2(w`1) = vect2(so) + t * vect2(vo) AND
           w`1`z = so`z + vo`z * t + 0.5 * a * t * t AND
            vect2(w`2) = vect2(vo) AND w`2`z = vo`z + a * t}"
-     kinematics_vs_accel "kinematics/")
+     kinematics_vs_accel "aviation/")
     (int_max application-judgement "{k: int | i <= k AND j <= k}"
      real_defs nil)
     (rat_max application-judgement "{s: rat | s >= q AND s >= r}"
@@ -5067,6 +5062,9 @@
      real_props nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
+    (TRUE const-decl "bool" booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (boolean nonempty-type-decl nil booleans nil)
     (real_minus_real_is_real application-judgement "real" reals nil)
     (real_div_nzreal_is_real application-judgement "real" reals nil)
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
@@ -5103,30 +5101,27 @@
    ((vsAccelPos const-decl "{w: Vect3 |
          vect2(w) = vect2(so3) + t * vect2(vo3) AND
           w`z = so3`z + vo3`z * t + 0.5 * a * t * t}"
-     kinematics_vs_accel "kinematics/")
-    (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
-    (real nonempty-type-from-decl nil reals nil)
-    (real_pred const-decl "[number_field -> boolean]" reals nil)
-    (number_field nonempty-type-from-decl nil number_fields nil)
+     kinematics_vs_accel "aviation/")
+    (Velocity type-eq-decl nil Velocity "aviation/")
+    (> const-decl "bool" reals nil)
+    (Vector type-eq-decl nil vectors_2D "vectors/")
+    (>= const-decl "bool" reals nil)
+    (nnreal type-eq-decl nil real_types nil)
+    (sqv const-decl "nnreal" vectors_2D "vectors/")
+    (Vect2 type-eq-decl nil vectors_2D_def "vectors/")
+    (vect2 const-decl "Vect2" vect_3D_2D "vectors/")
+    (number nonempty-type-decl nil numbers nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
-    (boolean nonempty-type-decl nil booleans nil)
-    (number nonempty-type-decl nil numbers nil)
-    (vect2 const-decl "Vect2" vect_3D_2D "vectors/")
-    (Vect2 type-eq-decl nil vectors_2D_def "vectors/")
-    (sqv const-decl "nnreal" vectors_2D "vectors/")
-    (nnreal type-eq-decl nil real_types nil)
-    (>= const-decl "bool" reals nil)
-    (Vector type-eq-decl nil vectors_2D "vectors/")
-    (> const-decl "bool" reals nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
-    (MkVxyz const-decl "{w: Vect3 | w`x = x AND w`y = y AND w`z = z}"
-     util "kinematics/")
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
     (vsAccel const-decl "{w: [Vect3, Vect3] |
          vect2(w`1) = vect2(so) + t * vect2(vo) AND
           w`1`z = so`z + vo`z * t + 0.5 * a * t * t AND
            vect2(w`2) = vect2(vo) AND w`2`z = vo`z + a * t}"
-     kinematics_vs_accel "kinematics/")
+     kinematics_vs_accel "aviation/")
     (int_max application-judgement "{k: int | i <= k AND j <= k}"
      real_defs nil)
     (rat_max application-judgement "{s: rat | s >= q AND s >= r}"
@@ -5135,6 +5130,9 @@
      real_props nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
+    (TRUE const-decl "bool" booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (boolean nonempty-type-decl nil booleans nil)
     (real_minus_real_is_real application-judgement "real" reals nil)
     (real_div_nzreal_is_real application-judgement "real" reals nil)
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
@@ -5159,6 +5157,9 @@
      real_defs nil)
     (int_max application-judgement "{k: int | i <= k AND j <= k}"
      real_defs nil)
+    (TRUE const-decl "bool" booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (boolean nonempty-type-decl nil booleans nil)
     (real_minus_real_is_real application-judgement "real" reals nil)
     (real_div_nzreal_is_real application-judgement "real" reals nil)
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
@@ -6140,15 +6141,12 @@
     (number nonempty-type-decl nil numbers nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (minus_int_is_int application-judgement "int" integers nil)
     (rat_max application-judgement "{s: rat | s >= q AND s >= r}"
      real_defs nil)
     (int_max application-judgement "{k: int | i <= k AND j <= k}"
      real_defs nil)
     (minus_odd_is_odd application-judgement "odd_int" integers nil)
-    (TRUE const-decl "bool" booleans nil)
     (id const-decl "(bijective?[T, T])" identity nil)
     (bijective? const-decl "bool" functions nil)
     (RealBand type-eq-decl nil real_bands nil)
@@ -6174,7 +6172,8 @@
     (nznum nonempty-type-eq-decl nil number_fields nil)
     (/ const-decl "[numfield, nznum -> numfield]" number_fields nil)
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
-    (vs const-decl "real" util "kinematics/")
+    (Velocity type-eq-decl nil Velocity "aviation/")
+    (vs const-decl "real" Velocity "aviation/")
     (IFF const-decl "[bool, bool -> bool]" booleans nil)
     (+ const-decl "Vector" vectors_2D "vectors/")
     (* const-decl "Vector" vectors_2D "vectors/")
@@ -6188,7 +6187,7 @@
          vect2(w`1) = vect2(so) + t * vect2(vo) AND
           w`1`z = so`z + vo`z * t + 0.5 * a * t * t AND
            vect2(w`2) = vect2(vo) AND w`2`z = vo`z + a * t}"
-     kinematics_vs_accel "kinematics/")
+     kinematics_vs_accel "aviation/")
     (nzreal nonempty-type-eq-decl nil reals nil)
     (listn type-eq-decl nil listn "structures/")
     (scal const-decl "listn[RealBand](length[IntBand](L))" real_bands
@@ -6231,6 +6230,9 @@
      real_props nil)
     (posreal_div_posreal_is_posreal application-judgement "posreal"
      real_types nil)
+    (TRUE const-decl "bool" booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (boolean nonempty-type-decl nil booleans nil)
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
     (minus_nzreal_is_nzreal application-judgement "nzreal" real_types
@@ -6252,7 +6254,10 @@
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (minus_nzreal_is_nzreal application-judgement "nzreal" real_types
-     nil))
+     nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (all_kinematic_vs_red_def_TCC2 0
   (all_kinematic_vs_red_def_TCC2-1 nil 3643385555
@@ -6267,7 +6272,10 @@
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (minus_nzreal_is_nzreal application-judgement "nzreal" real_types
-     nil))
+     nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (all_kinematic_vs_red_def 0
   (all_kinematic_vs_red_def-2 nil 3647952034
@@ -6364,7 +6372,7 @@
                                                                                  +)
                                                                                 (("2"
                                                                                   (typepred
-                                                                                   "add(kinematics@util.vs(vo), UnAdjB)")
+                                                                                   "add(aviation@Velocity.vs(vo), UnAdjB)")
                                                                                   (("2"
                                                                                     (replaces
                                                                                      -1)
@@ -6490,7 +6498,7 @@
                                                                            +)
                                                                           (("2"
                                                                             (typepred
-                                                                             "add(kinematics@util.vs(vo), UnAdjB)")
+                                                                             "add(aviation@Velocity.vs(vo), UnAdjB)")
                                                                             (("2"
                                                                               (replaces
                                                                                -1)
@@ -6659,11 +6667,8 @@
     (number nonempty-type-decl nil numbers nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (minus_odd_is_odd application-judgement "odd_int" integers nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
-    (TRUE const-decl "bool" booleans nil)
     (id const-decl "(bijective?[T, T])" identity nil)
     (bijective? const-decl "bool" functions nil)
     (RealBand type-eq-decl nil real_bands nil)
@@ -6683,19 +6688,20 @@
     (all_kinematic_vs_red const-decl "bool" kinematic_vs_bands nil)
     (below type-eq-decl nil nat_types nil)
     (nth def-decl "T" list_props nil)
-    (vs const-decl "real" util "kinematics/")
+    (Velocity type-eq-decl nil Velocity "aviation/")
+    (vs const-decl "real" Velocity "aviation/")
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (IFF const-decl "[bool, bool -> bool]" booleans nil)
-    (minus_nzreal_is_nzreal application-judgement "nzreal" real_types
-     nil)
-    (real_lt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
-    (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
-     "vect_analysis/")
+    (real_lt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
+    (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
+     "vect_analysis/")
+    (minus_nzreal_is_nzreal application-judgement "nzreal" real_types
+     nil)
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
     (real_times_real_is_real application-judgement "real" reals nil)
@@ -6753,13 +6759,16 @@
          vect2(w`1) = vect2(so) + t * vect2(vo) AND
           w`1`z = so`z + vo`z * t + 0.5 * a * t * t AND
            vect2(w`2) = vect2(vo) AND w`2`z = vo`z + a * t}"
-     kinematics_vs_accel "kinematics/")
+     kinematics_vs_accel "aviation/")
     (int_max application-judgement "{k: int | i <= k AND j <= k}"
      real_defs nil)
     (rat_max application-judgement "{s: rat | s >= q AND s >= r}"
      real_defs nil)
     (posreal_div_posreal_is_posreal application-judgement "posreal"
-     real_types nil))
+     real_types nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil)
   (all_kinematic_vs_red_def-1 nil 3634295354
    ("" (skeep*)
@@ -7153,6 +7162,6 @@
          vect2(w`1) = vect2(so) + t * vect2(vo) AND
           w`1`z = so`z + vo`z * t + 0.5 * a * t * t AND
            vect2(w`2) = vect2(vo) AND w`2`z = vo`z + a * t}"
-     kinematics_vs_accel "kinematics/"))
+     kinematics_vs_accel "aviation/"))
    shostak)))
 

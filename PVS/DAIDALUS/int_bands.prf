@@ -361,6 +361,7 @@
      real_props nil)
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
+    (TRUE const-decl "bool" booleans nil)
     (real_times_real_is_real application-judgement "real" reals nil)
     (real_plus_real_is_real application-judgement "real" reals nil)
     (posint_plus_nnint_is_posint application-judgement "posint"
@@ -419,6 +420,9 @@
      real_defs nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil)
     (posint_plus_nnint_is_posint application-judgement "posint"
      integers nil))
    nil))
@@ -434,7 +438,10 @@
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (real_lt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil))
+     "(strict_total_order?[real])" real_props nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (first_los_step_TCC4 0
   (first_los_step_TCC4-1 nil 3630772320
@@ -700,11 +707,9 @@
     (number_field nonempty-type-from-decl nil number_fields nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
     (real nonempty-type-from-decl nil reals nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (number nonempty-type-decl nil numbers nil)
     (nnint_plus_posint_is_posint application-judgement "posint"
      integers nil)
@@ -742,6 +747,9 @@
                         nth(AL, q)`v)))}" int_bands nil)
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil)
     (posint_plus_nnint_is_posint application-judgement "posint"
      integers nil)
     (int_minus_int_is_int application-judgement "int" integers nil))
@@ -1285,6 +1293,7 @@
     (real_minus_real_is_real application-judgement "real" reals nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
+    (TRUE const-decl "bool" booleans nil)
     (add_zero_right formula-decl nil vectors_3D "vectors/")
     (scal_0 formula-decl nil vectors_3D "vectors/")
     (= const-decl "[T, T -> boolean]" equalities nil)
@@ -1539,6 +1548,7 @@
      real_props nil)
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
+    (TRUE const-decl "bool" booleans nil)
     (posint_plus_nnint_is_posint application-judgement "posint"
      integers nil))
    nil))
@@ -1721,7 +1731,6 @@
     (< const-decl "bool" reals nil)
     (nat nonempty-type-eq-decl nil naturalnumbers nil)
     (>= const-decl "bool" reals nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (integer_pred const-decl "[rational -> boolean]" integers nil)
     (rational nonempty-type-from-decl nil rationals nil)
     (rational_pred const-decl "[real -> boolean]" rationals nil)
@@ -1730,12 +1739,14 @@
     (number_field nonempty-type-from-decl nil number_fields nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (number nonempty-type-decl nil numbers nil)
     (negib const-decl "IntBand" int_bands nil)
     (map adt-def-decl "list[T1]" list_adt_map nil)
     (list type-decl nil list_adt nil)
-    (reverse_def formula-decl nil more_list_props "structures/"))
+    (reverse_def formula-decl nil more_list_props "structures/")
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    shostak))
  (Bands?_TCC1 0
   (Bands?_TCC1-1 nil 3630843161 ("" (subtype-tcc) nil nil)
@@ -2195,6 +2206,7 @@
     (j skolem-const-decl
      "below(length(append[IntBand](L, (: (# lb := d, ub := i - 1 #) :))))"
      int_bands nil)
+    (TRUE const-decl "bool" booleans nil)
     (minus_odd_is_odd application-judgement "odd_int" integers nil)
     (nth def-decl "T" list_props nil)
     (posint_plus_nnint_is_posint application-judgement "posint"
@@ -2251,6 +2263,7 @@
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
+    (TRUE const-decl "bool" booleans nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
     (boolean nonempty-type-decl nil booleans nil)
     (bool nonempty-type-eq-decl nil booleans nil)
@@ -2897,6 +2910,7 @@
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
     (in? const-decl "bool" int_bands nil)
+    (TRUE const-decl "bool" booleans nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
@@ -3255,7 +3269,8 @@
      "(strict_total_order?[real])" real_props nil)
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (int_minus_int_is_int application-judgement "int" integers nil))
+    (int_minus_int_is_int application-judgement "int" integers nil)
+    (TRUE const-decl "bool" booleans nil))
    shostak))
  (linvel_def_vect2_TCC1 0
   (linvel_def_vect2_TCC1-1 nil 3630924368 ("" (subtype-tcc) nil nil)
@@ -3324,6 +3339,7 @@
      real_props nil)
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
+    (TRUE const-decl "bool" booleans nil)
     (min const-decl "{p: real | p <= m AND p <= n}" real_defs nil)
     (man_pos_seq def-decl "Vect2" repulsive_iterative "ACCoRD/")
     (add_zero_right formula-decl nil vectors_2D "vectors/")
@@ -3444,6 +3460,7 @@
      "(strict_total_order?[real])" real_props nil)
     (scal_0 formula-decl nil vectors_3D "vectors/")
     (sub_zero_right formula-decl nil vectors_3D "vectors/")
+    (TRUE const-decl "bool" booleans nil)
     (min const-decl "{p: real | p <= m AND p <= n}" real_defs nil)
     (man_pos_seq def-decl "Vect2" repulsive_iterative "ACCoRD/")
     (add_zero_right formula-decl nil vectors_2D "vectors/")
@@ -3599,6 +3616,7 @@
      real_defs nil)
     (posreal_times_posreal_is_posreal application-judgement "posreal"
      real_types nil)
+    (TRUE const-decl "bool" booleans nil)
     (min const-decl "{p: real | p <= m AND p <= n}" real_defs nil)
     (man_pos_seq def-decl "Vect2" repulsive_iterative "ACCoRD/")
     (add_zero_right formula-decl nil vectors_2D "vectors/")
@@ -3803,6 +3821,7 @@
      real_defs nil)
     (posreal_times_posreal_is_posreal application-judgement "posreal"
      real_types nil)
+    (TRUE const-decl "bool" booleans nil)
     (min const-decl "{p: real | p <= m AND p <= n}" real_defs nil)
     (man_pos_seq_v3 def-decl "Vect3" repulsive_vertical_it "ACCoRD/")
     (add_zero_right formula-decl nil vectors_3D "vectors/")
@@ -4151,6 +4170,7 @@
      real_props nil)
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
+    (TRUE const-decl "bool" booleans nil)
     (posint_plus_nnint_is_posint application-judgement "posint"
      integers nil)
     (int_minus_int_is_int application-judgement "int" integers nil))
@@ -4517,6 +4537,7 @@
      "(strict_total_order?[real])" real_props nil)
     (repulsive_criteria_iterative const-decl "bool" repulsive_iterative
      "ACCoRD/")
+    (TRUE const-decl "bool" booleans nil)
     (manuever_position_at_def formula-decl nil repulsive_iterative
      "ACCoRD/")
     (linvel_def_vect2_3 formula-decl nil int_bands nil)
@@ -4883,6 +4904,7 @@
      real_props nil)
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
+    (TRUE const-decl "bool" booleans nil)
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
     (real_minus_real_is_real application-judgement "real" reals nil)
@@ -5259,6 +5281,7 @@
      "(strict_total_order?[real])" real_props nil)
     (vertical_repulsive_crit_iterative const-decl "bool"
      repulsive_vertical_it "ACCoRD/")
+    (TRUE const-decl "bool" booleans nil)
     (manuever_position_at_def formula-decl nil repulsive_vertical_it
      "ACCoRD/")
     (linvel_def_vect3 formula-decl nil int_bands nil)
@@ -5643,6 +5666,8 @@
      integers nil)
     (even_minus_odd_is_odd application-judgement "odd_int" integers
      nil)
+    (TRUE const-decl "bool" booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (rat_max application-judgement "{s: rat | s >= q AND s >= r}"
@@ -5674,7 +5699,10 @@
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (real_gt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil))
+     "(strict_total_order?[real])" real_props nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (remove_last_int_def_TCC2 0
   (remove_last_int_def_TCC2-1 nil 3637660214 ("" (subtype-tcc) nil nil)
@@ -5945,6 +5973,7 @@
     (int_plus_int_is_int application-judgement "int" integers nil)
     (reverse_def formula-decl nil more_list_props "structures/")
     (length_reverse formula-decl nil list_props nil)
+    (TRUE const-decl "bool" booleans nil)
     (nnint_plus_posint_is_posint application-judgement "posint"
      integers nil)
     (posint_plus_nnint_is_posint application-judgement "posint"
@@ -6001,7 +6030,10 @@
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (nth def-decl "T" list_props nil)
-    (length def-decl "nat" list_props nil))
+    (length def-decl "nat" list_props nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (append_intband_spec_length 0
   (append_intband_spec_length-1 nil 3637663957
@@ -7606,7 +7638,9 @@
         nil))
       nil))
     nil)
-   ((bool nonempty-type-eq-decl nil booleans nil)
+   ((TRUE const-decl "bool" booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (boolean nonempty-type-decl nil booleans nil)
     (IFF const-decl "[bool, bool -> bool]" booleans nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
@@ -7616,7 +7650,6 @@
     (int nonempty-type-eq-decl nil integers nil)
     (IntBand type-eq-decl nil int_bands nil)
     (list type-decl nil list_adt nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
     (append_intband_spec const-decl "list[IntBand]" int_bands nil)
     (OR const-decl "[bool, bool -> bool]" booleans nil)
@@ -8746,7 +8779,10 @@
     (list type-decl nil list_adt nil)
     (IntBand type-eq-decl nil int_bands nil)
     (int nonempty-type-eq-decl nil integers nil)
-    (append_intband_spec_length formula-decl nil int_bands nil))
+    (append_intband_spec_length formula-decl nil int_bands nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (append_intband_spec_nth_TCC2 0
   (append_intband_spec_nth_TCC2-1 nil 3637681336
@@ -8801,7 +8837,10 @@
     (list type-decl nil list_adt nil)
     (IntBand type-eq-decl nil int_bands nil)
     (int nonempty-type-eq-decl nil integers nil)
-    (append_intband_spec_length formula-decl nil int_bands nil))
+    (append_intband_spec_length formula-decl nil int_bands nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (append_intband_spec_nth 0
   (append_intband_spec_nth-1 nil 3637681484
@@ -9025,11 +9064,8 @@
     nil)
    ((int_plus_int_is_int application-judgement "int" integers nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
-    (boolean nonempty-type-decl nil booleans nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (bijective? const-decl "bool" functions nil)
     (id const-decl "(bijective?[T, T])" identity nil)
-    (TRUE const-decl "bool" booleans nil)
     (posint_plus_nnint_is_posint application-judgement "posint"
      integers nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
@@ -9089,7 +9125,10 @@
      real_props nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (append_intband_spec_length formula-decl nil int_bands nil))
+    (append_intband_spec_length formula-decl nil int_bands nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    shostak))
  (conflict_step_rew 0
   (conflict_step_rew-1 nil 3637920967

@@ -28,6 +28,7 @@
     (v skolem-const-decl "Vect2" timevars nil)
     (> const-decl "bool" reals nil)
     (minus_real_is_real application-judgement "real" reals nil)
+    (TRUE const-decl "bool" booleans nil)
     (real_div_nzreal_is_real application-judgement "real" reals nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (NOT const-decl "[bool -> bool]" booleans nil)

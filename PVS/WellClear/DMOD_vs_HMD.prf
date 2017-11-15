@@ -45,8 +45,6 @@
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (negreal nonempty-type-eq-decl nil real_types nil)
     (nonpos_real nonempty-type-eq-decl nil real_types nil)
-    (boolean nonempty-type-decl nil booleans nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (number nonempty-type-decl nil numbers nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
@@ -78,7 +76,10 @@
     (real_times_real_is_real application-judgement "real" reals nil)
     (norm const-decl "nnreal" vectors_2D "vectors/")
     (sq_norm formula-decl nil vectors_2D "vectors/")
-    (sq_ge formula-decl nil sq "reals/"))
+    (sq_ge formula-decl nil sq "reals/")
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (taumod_TCC1 0
   (taumod_TCC1-1 nil 3664625665 ("" (subtype-tcc) nil nil)
@@ -267,7 +268,6 @@
               (sq_nz_pos application-judgement "posreal" sq "reals/")
               (sq_le formula-decl nil sq "reals/")
               (number nonempty-type-decl nil numbers nil)
-              (boolean nonempty-type-decl nil booleans nil)
               (number_field_pred const-decl "[number -> boolean]"
                number_fields nil)
               (number_field nonempty-type-from-decl nil number_fields
@@ -275,7 +275,6 @@
               (real_pred const-decl "[number_field -> boolean]" reals
                          nil)
               (real nonempty-type-from-decl nil reals nil)
-              (bool nonempty-type-eq-decl nil booleans nil)
               (<= const-decl "bool" reals nil)
               (Vector type-eq-decl nil vectors_2D "vectors/")
               (>= const-decl "bool" reals nil)
@@ -287,7 +286,10 @@
               (nonneg_real nonempty-type-eq-decl nil real_types nil)
               (sq const-decl "nonneg_real" sq "reals/")
               (> const-decl "bool" reals nil)
-              (posreal nonempty-type-eq-decl nil real_types nil))
+              (posreal nonempty-type-eq-decl nil real_types nil)
+              (boolean nonempty-type-decl nil booleans nil)
+              (bool nonempty-type-eq-decl nil booleans nil)
+              (TRUE const-decl "bool" booleans nil))
              shostak))
  (taumod_decreasing 0
   (taumod_decreasing-1 nil 3664632254
@@ -890,6 +892,7 @@
     (unbounded_nominal_tau const-decl "real" tcas_tau "TCASII/")
     (nnreal_div_posreal_is_nnreal application-judgement "nnreal"
      real_types nil)
+    (TRUE const-decl "bool" booleans nil)
     (posreal_div_posreal_is_posreal judgement-tcc nil real_types nil)
     (sqrt_pos judgement-tcc nil sqrt "reals/")
     (+ const-decl "[numfield, numfield -> numfield]" number_fields nil)
@@ -2668,7 +2671,6 @@
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (number nonempty-type-decl nil numbers nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
@@ -2683,7 +2685,6 @@
     (Vector type-eq-decl nil vectors_2D "vectors/")
     (zero const-decl "Vector" vectors_2D "vectors/")
     (tcoa const-decl "real" timevars nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (<= const-decl "bool" reals nil)
     (min const-decl "{p: real | p <= m AND p <= n}" real_defs nil)
@@ -2702,12 +2703,11 @@
     (both_sides_times_neg_le1 formula-decl nil real_props nil)
     (div_mult_pos_neg_lt1 formula-decl nil extra_real_props nil)
     (both_sides_times1 formula-decl nil real_props nil)
-    (both_sides_times1_imp formula-decl nil extra_real_props nil)
-    (bijective? const-decl "bool" functions nil)
-    (id const-decl "(bijective?[T, T])" identity nil)
-    (TRUE const-decl "bool" booleans nil)
-    (mult_neg formula-decl nil extra_tegies nil)
     (neg_neg formula-decl nil extra_tegies nil)
+    (mult_neg formula-decl nil extra_tegies nil)
+    (id const-decl "(bijective?[T, T])" identity nil)
+    (bijective? const-decl "bool" functions nil)
+    (both_sides_times1_imp formula-decl nil extra_real_props nil)
     (neg_cont name-judgement "continuous_vv_fun" vect_cont_2D
      "vect_analysis/")
     (div_cancel1 formula-decl nil real_props nil)
@@ -2796,7 +2796,10 @@
     (sqv_decreasing_before_horizontal_tca formula-decl nil definitions
      "ACCoRD/")
     (scal_zero formula-decl nil vectors_2D "vectors/")
-    (tcpa_timevar name-judgement "TimeVar" timevars nil))
+    (tcpa_timevar name-judgement "TimeVar" timevars nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil)
   (convergence-1 nil 3664642412
    ("" (skeep*)
@@ -4042,6 +4045,7 @@
     (minus_real_is_real application-judgement "real" reals nil)
     (real_div_nzreal_is_real application-judgement "real" reals nil)
     (horizontal_tca const-decl "real" definitions "ACCoRD/")
+    (TRUE const-decl "bool" booleans nil)
     (vect2 const-decl "Vect2" vect_3D_2D "vectors/")
     (* const-decl "real" vectors_2D "vectors/")
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
@@ -4108,7 +4112,6 @@
     (dot_zero_right formula-decl nil vectors_2D "vectors/")
     (vect2_scal formula-decl nil vect_3D_2D "vectors/")
     (Nz_vect2 type-eq-decl nil vectors_2D "vectors/")
-    (TRUE const-decl "bool" booleans nil)
     (id const-decl "(bijective?[T, T])" identity nil)
     (bijective? const-decl "bool" functions nil)
     (both_sides_times_neg_ge1 formula-decl nil real_props nil)

@@ -35,7 +35,7 @@
 kinematic_gs_bands: THEORY
 BEGIN
 
-    IMPORTING kinematics@kinematics_gs_accel,
+    IMPORTING aviation@kinematics_gs_accel,
     	      combine_bands,
 	      ACCoRD@cd3d, 
  	      structures@Maybe[real]

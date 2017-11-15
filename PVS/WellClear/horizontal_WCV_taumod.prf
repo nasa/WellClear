@@ -3,7 +3,10 @@
   (taumod_TCC1-1 nil 3598455785
    ("" (skeep*) (("" (assert) nil nil)) nil)
    ((real_lt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil))
+     "(strict_total_order?[real])" real_props nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (taumod_timevar 0
   (taumod_timevar-1 nil 3606394108
@@ -358,7 +361,6 @@
     (scal_0 formula-decl nil vectors_2D "vectors/")
     (bijective? const-decl "bool" functions nil)
     (id const-decl "(bijective?[T, T])" identity nil)
-    (TRUE const-decl "bool" booleans nil)
     (sq_norm formula-decl nil vectors_2D "vectors/")
     (sq_le formula-decl nil sq "reals/")
     (* const-decl "real" vectors_2D "vectors/")
@@ -410,14 +412,18 @@
      nil)
     (number nonempty-type-decl nil numbers nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil)
     (horizontal_WCV const-decl "bool" horizontal_WCV nil))
    nil))
  (horizontal_WCV_taumod_rew_TCC1 0
   (horizontal_WCV_taumod_rew_TCC1-1 nil 3598459630
    ("" (skeep) (("" (replaces -2) (("" (assert) nil nil)) nil)) nil)
-   ((real_le_is_total_order name-judgement "(total_order?[real])"
+   ((TRUE const-decl "bool" booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
      "vect_analysis/")
@@ -492,13 +498,13 @@
      "{rr: real | s * v < 0 AND norm(s) >= DMOD IMPLIES rr >= 0}"
      tcas_tau "TCASII/")
     (tau_mod_eq formula-decl nil tcas_tau "TCASII/")
+    (TRUE const-decl "bool" booleans nil)
     (sqrt const-decl "{nnz: nnreal | nnz * nnz = nnx}" sqrt "reals/")
     (* const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
     (bijective? const-decl "bool" functions nil)
     (id const-decl "(bijective?[T, T])" identity nil)
-    (TRUE const-decl "bool" booleans nil)
     (sqrt_sq formula-decl nil sqrt "reals/")
     (sqrt_le formula-decl nil sqrt "reals/")
     (real_ge_is_total_order name-judgement "(total_order?[real])"
@@ -603,13 +609,19 @@
   (horizontal_WCV_taumod_interval_rew_TCC1-1 nil 3606512552
    ("" (skeep*) (("" (assert) nil nil)) nil)
    ((real_le_is_total_order name-judgement "(total_order?[real])"
-     real_props nil))
+     real_props nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (horizontal_WCV_taumod_interval_rew_TCC2 0
   (horizontal_WCV_taumod_interval_rew_TCC2-1 nil 3606512552
    ("" (skeep*) (("" (assert) nil nil)) nil)
    ((real_le_is_total_order name-judgement "(total_order?[real])"
-     real_props nil))
+     real_props nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (horizontal_WCV_taumod_interval_rew_TCC3 0
   (horizontal_WCV_taumod_interval_rew_TCC3-1 nil 3606512552
@@ -624,17 +636,18 @@
      "(strict_total_order?[real])" real_props nil)
     (max_le formula-decl nil real_defs nil)
     (number nonempty-type-decl nil numbers nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
     (number_field nonempty-type-from-decl nil number_fields nil)
     (real_pred const-decl "[number_field -> boolean]" reals nil)
     (real nonempty-type-from-decl nil reals nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (>= const-decl "bool" reals nil)
     (nonneg_real nonempty-type-eq-decl nil real_types nil)
     (> const-decl "bool" reals nil)
-    (posreal nonempty-type-eq-decl nil real_types nil))
+    (posreal nonempty-type-eq-decl nil real_types nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (horizontal_WCV_taumod_interval_rew_TCC4 0
   (horizontal_WCV_taumod_interval_rew_TCC4-1 nil 3606512552
@@ -647,20 +660,21 @@
      "(strict_total_order?[real])" real_props nil)
     (min_le formula-decl nil real_defs nil)
     (number nonempty-type-decl nil numbers nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
     (number_field nonempty-type-from-decl nil number_fields nil)
     (real_pred const-decl "[number_field -> boolean]" reals nil)
     (real nonempty-type-from-decl nil reals nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (>= const-decl "bool" reals nil)
     (nonneg_real nonempty-type-eq-decl nil real_types nil)
     (> const-decl "bool" reals nil)
     (posreal nonempty-type-eq-decl nil real_types nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
-    (min_ge formula-decl nil real_defs nil))
+    (min_ge formula-decl nil real_defs nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (horizontal_WCV_taumod_interval_rew_def 0
   (horizontal_WCV_taumod_interval_rew_def-1 nil 3606513155
@@ -972,16 +986,17 @@
         nil))
       nil))
     nil)
-   ((IFF const-decl "[bool, bool -> bool]" booleans nil)
-    (number nonempty-type-decl nil numbers nil)
+   ((TRUE const-decl "bool" booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
     (boolean nonempty-type-decl nil booleans nil)
+    (IFF const-decl "[bool, bool -> bool]" booleans nil)
+    (number nonempty-type-decl nil numbers nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
     (number_field nonempty-type-from-decl nil number_fields nil)
     (real_pred const-decl "[number_field -> boolean]" reals nil)
     (real nonempty-type-from-decl nil reals nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (>= const-decl "bool" reals nil)
     (nonneg_real nonempty-type-eq-decl nil real_types nil)
     (> const-decl "bool" reals nil)
@@ -1078,7 +1093,10 @@
     (real_times_real_is_real application-judgement "real" reals nil)
     (real_plus_real_is_real application-judgement "real" reals nil)
     (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
-     "vect_analysis/"))
+     "vect_analysis/")
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (horizontal_WCV_taumod_interval_TCC2 0
   (horizontal_WCV_taumod_interval_TCC2-1 nil 3606513155
@@ -1092,7 +1110,10 @@
     (real_times_real_is_real application-judgement "real" reals nil)
     (real_plus_real_is_real application-judgement "real" reals nil)
     (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
-     "vect_analysis/"))
+     "vect_analysis/")
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (horizontal_WCV_taumod_interval_TCC3 0
   (horizontal_WCV_taumod_interval_TCC3-1 nil 3606513155
@@ -1106,7 +1127,10 @@
     (real_times_real_is_real application-judgement "real" reals nil)
     (real_plus_real_is_real application-judgement "real" reals nil)
     (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
-     "vect_analysis/"))
+     "vect_analysis/")
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (horizontal_WCV_taumod_interval_TCC4 0
   (horizontal_WCV_taumod_interval_TCC4-1 nil 3606513155
@@ -1142,24 +1166,25 @@
     (v skolem-const-decl "Vect2" horizontal_WCV_taumod nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
-    (Delta const-decl "real" horizontal "ACCoRD/")
-    (DTHR formal-const-decl "posreal" horizontal_WCV_taumod nil)
-    (posreal nonempty-type-eq-decl nil real_types nil)
-    (> const-decl "bool" reals nil)
-    (nonneg_real nonempty-type-eq-decl nil real_types nil)
-    (>= const-decl "bool" reals nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
-    (real_pred const-decl "[number_field -> boolean]" reals nil)
-    (number_field nonempty-type-from-decl nil number_fields nil)
+    (number nonempty-type-decl nil numbers nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
-    (number nonempty-type-decl nil numbers nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (>= const-decl "bool" reals nil)
+    (nonneg_real nonempty-type-eq-decl nil real_types nil)
+    (> const-decl "bool" reals nil)
+    (posreal nonempty-type-eq-decl nil real_types nil)
+    (DTHR formal-const-decl "posreal" horizontal_WCV_taumod nil)
+    (Delta const-decl "real" horizontal "ACCoRD/")
     (real nonempty-type-from-decl nil reals nil)
     (Vect2 type-eq-decl nil vectors_2D_def "vectors/")
-    (boolean nonempty-type-decl nil booleans nil)
     (/= const-decl "boolean" notequal nil)
     (Vector type-eq-decl nil vectors_2D "vectors/")
-    (zero const-decl "Vector" vectors_2D "vectors/"))
+    (zero const-decl "Vector" vectors_2D "vectors/")
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (horizontal_WCV_taumod_interval_TCC5 0
   (horizontal_WCV_taumod_interval_TCC5-1 nil 3606513155
@@ -1207,7 +1232,6 @@
      nil)
     (number_field nonempty-type-from-decl nil number_fields nil)
     (real_pred const-decl "[number_field -> boolean]" reals nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (>= const-decl "bool" reals nil)
     (nonneg_real nonempty-type-eq-decl nil real_types nil)
     (> const-decl "bool" reals nil)
@@ -1237,10 +1261,12 @@
     (sqv_zero formula-decl nil vectors_2D "vectors/")
     (real nonempty-type-from-decl nil reals nil)
     (Vect2 type-eq-decl nil vectors_2D_def "vectors/")
-    (boolean nonempty-type-decl nil booleans nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
     (Vector type-eq-decl nil vectors_2D "vectors/")
-    (zero const-decl "Vector" vectors_2D "vectors/"))
+    (zero const-decl "Vector" vectors_2D "vectors/")
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (horizontal_WCV_taumod_interval_TCC6 0
   (horizontal_WCV_taumod_interval_TCC6-1 nil 3606513155
@@ -1267,9 +1293,12 @@
      "vect_analysis/")
     (sqv_zero formula-decl nil vectors_2D "vectors/")
     (dot_zero_right formula-decl nil vectors_2D "vectors/")
-    (Vect2 type-eq-decl nil vectors_2D_def "vectors/")
+    (real nonempty-type-from-decl nil reals nil)
     (Vector type-eq-decl nil vectors_2D "vectors/")
-    (real nonempty-type-from-decl nil reals nil))
+    (Vect2 type-eq-decl nil vectors_2D_def "vectors/")
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (horizontal_WCV_taumod_interval_TCC7 0
   (horizontal_WCV_taumod_interval_TCC7-1 nil 3606513155
@@ -1283,7 +1312,10 @@
     (real_times_real_is_real application-judgement "real" reals nil)
     (real_plus_real_is_real application-judgement "real" reals nil)
     (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
-     "vect_analysis/"))
+     "vect_analysis/")
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (horizontal_WCV_taumod_interval_TCC8 0
   (horizontal_WCV_taumod_interval_TCC8-1 nil 3606513155
@@ -1297,7 +1329,10 @@
     (real_times_real_is_real application-judgement "real" reals nil)
     (real_plus_real_is_real application-judgement "real" reals nil)
     (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
-     "vect_analysis/"))
+     "vect_analysis/")
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (horizontal_WCV_taumod_interval_TCC9 0
   (horizontal_WCV_taumod_interval_TCC9-1 nil 3606513155
@@ -1315,7 +1350,10 @@
     (real_times_real_is_real application-judgement "real" reals nil)
     (real_plus_real_is_real application-judgement "real" reals nil)
     (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
-     "vect_analysis/"))
+     "vect_analysis/")
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (horizontal_WCV_taumod_interval_TCC10 0
   (horizontal_WCV_taumod_interval_TCC10-1 nil 3606513155
@@ -1338,14 +1376,12 @@
     (discr const-decl "real" quadratic "reals/")
     (/= const-decl "boolean" notequal nil)
     (>= const-decl "bool" reals nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (nonzero_real nonempty-type-eq-decl nil reals nil)
     (real nonempty-type-from-decl nil reals nil)
     (real_pred const-decl "[number_field -> boolean]" reals nil)
     (number_field nonempty-type-from-decl nil number_fields nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (number nonempty-type-decl nil numbers nil)
     (max_le formula-decl nil real_defs nil)
     (minus_odd_is_odd application-judgement "odd_int" integers nil)
@@ -1360,7 +1396,10 @@
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
     (real_lt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil))
+     "(strict_total_order?[real])" real_props nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (horizontal_WCV_taumod_interval_TCC11 0
   (horizontal_WCV_taumod_interval_TCC11-1 nil 3606513155
@@ -1377,7 +1416,10 @@
      real_props nil)
     (minus_odd_is_odd application-judgement "odd_int" integers nil)
     (dot_zero_right formula-decl nil vectors_2D "vectors/")
-    (sqv_zero formula-decl nil vectors_2D "vectors/"))
+    (sqv_zero formula-decl nil vectors_2D "vectors/")
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (horizontal_WCV_taumod_interval_TCC12 0
   (horizontal_WCV_taumod_interval_TCC12-1 nil 3606513155
@@ -1514,6 +1556,7 @@
     (nnreal type-eq-decl nil real_types nil)
     (sqv const-decl "nnreal" vectors_2D "vectors/")
     (minus_real_is_real application-judgement "real" reals nil)
+    (TRUE const-decl "bool" booleans nil)
     (dot_zero_right formula-decl nil vectors_2D "vectors/")
     (sqv_zero formula-decl nil vectors_2D "vectors/")
     (sqv_eq_0 formula-decl nil vectors_2D "vectors/")
@@ -1553,7 +1596,10 @@
     (real_times_real_is_real application-judgement "real" reals nil)
     (real_plus_real_is_real application-judgement "real" reals nil)
     (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
-     "vect_analysis/"))
+     "vect_analysis/")
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (horizontal_WCV_taumod_interval_TCC14 0
   (horizontal_WCV_taumod_interval_TCC14-1 nil 3606513155
@@ -1571,7 +1617,10 @@
     (real_times_real_is_real application-judgement "real" reals nil)
     (real_plus_real_is_real application-judgement "real" reals nil)
     (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
-     "vect_analysis/"))
+     "vect_analysis/")
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (horizontal_WCV_taumod_interval_eq 0
   (horizontal_WCV_taumod_interval_eq-1 nil 3606559658
@@ -2154,15 +2203,16 @@
         nil))
       nil))
     nil)
-   ((IFF const-decl "[bool, bool -> bool]" booleans nil)
-    (number nonempty-type-decl nil numbers nil)
+   ((TRUE const-decl "bool" booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
     (boolean nonempty-type-decl nil booleans nil)
+    (IFF const-decl "[bool, bool -> bool]" booleans nil)
+    (number nonempty-type-decl nil numbers nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
     (number_field nonempty-type-from-decl nil number_fields nil)
     (real_pred const-decl "[number_field -> boolean]" reals nil)
     (real nonempty-type-from-decl nil reals nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (>= const-decl "bool" reals nil)
     (nnreal type-eq-decl nil real_types nil)
     (<= const-decl "bool" reals nil)
@@ -2174,9 +2224,9 @@
     (Vect2 type-eq-decl nil vectors_2D_def "vectors/")
     (horizontal_WCV_taumod_interval_rew const-decl
      "[Lookahead[0, T], Lookahead[0, T]]" horizontal_WCV_taumod nil)
+    (EntryExit type-eq-decl nil EntryExit_interval nil)
     (horizontal_WCV_taumod_interval const-decl "EntryExit[0, T]"
      horizontal_WCV_taumod nil)
-    (EntryExit type-eq-decl nil EntryExit_interval nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
@@ -2280,15 +2330,16 @@
         nil))
       nil))
     nil)
-   ((IFF const-decl "[bool, bool -> bool]" booleans nil)
-    (number nonempty-type-decl nil numbers nil)
+   ((TRUE const-decl "bool" booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
     (boolean nonempty-type-decl nil booleans nil)
+    (IFF const-decl "[bool, bool -> bool]" booleans nil)
+    (number nonempty-type-decl nil numbers nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
     (number_field nonempty-type-from-decl nil number_fields nil)
     (real_pred const-decl "[number_field -> boolean]" reals nil)
     (real nonempty-type-from-decl nil reals nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (>= const-decl "bool" reals nil)
     (nonneg_real nonempty-type-eq-decl nil real_types nil)
     (> const-decl "bool" reals nil)
@@ -2376,15 +2427,16 @@
     (> const-decl "bool" reals nil)
     (nonneg_real nonempty-type-eq-decl nil real_types nil)
     (>= const-decl "bool" reals nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (real nonempty-type-from-decl nil reals nil)
     (real_pred const-decl "[number_field -> boolean]" reals nil)
     (number_field nonempty-type-from-decl nil number_fields nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (number nonempty-type-decl nil numbers nil)
     (IFF const-decl "[bool, bool -> bool]" booleans nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil)
     (horizontal_interval_correct? const-decl "bool" horizontal_WCV
      nil))
    nil))

@@ -35,7 +35,7 @@
 kinematic_trk_bands: THEORY
 BEGIN
 
-    IMPORTING kinematics@kinematics_turn,
+    IMPORTING aviation@kinematics_turn,
     	      combine_bands,
 	      ACCoRD@cd3d
 

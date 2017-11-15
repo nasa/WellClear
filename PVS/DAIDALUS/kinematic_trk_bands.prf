@@ -101,7 +101,10 @@
         nil))
       nil))
     nil)
-   ((posreal_div_posreal_is_posreal application-judgement "posreal"
+   ((TRUE const-decl "bool" booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (posreal_div_posreal_is_posreal application-judgement "posreal"
      real_types nil)
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil))
@@ -129,21 +132,21 @@
      nil)
     (number nonempty-type-decl nil numbers nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
      "vect_analysis/")
     (posreal_div_posreal_is_posreal application-judgement "posreal"
      real_types nil)
-    (sqv_eq_0 formula-decl nil vectors_2D "vectors/"))
+    (sqv_eq_0 formula-decl nil vectors_2D "vectors/")
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil)
   (kinematic_track_bands_init_TCC2-1 nil 3631963199
    ("" (subtype-tcc) nil nil)
-   ((turnOmega const-decl "[Vect3, Vect3]" kinematics_turn
-     "kinematics/")
-    (ground_speed const-decl "nnreal" track_3D "kinematics/")
+   ((turnOmega const-decl "[Vect3, Vect3]" kinematics_turn "aviation/")
+    (ground_speed const-decl "nnreal" track_3D "aviation/")
     (norm const-decl "nnreal" vectors_2D "vectors/")
     (sqv const-decl "nnreal" vectors_2D "vectors/")
     (* const-decl "real" vectors_2D "vectors/")
@@ -174,9 +177,8 @@
     (* const-decl "real" vectors_2D "vectors/")
     (sqv const-decl "nnreal" vectors_2D "vectors/")
     (norm const-decl "nnreal" vectors_2D "vectors/")
-    (ground_speed const-decl "nnreal" track_3D "kinematics/")
-    (turnOmega const-decl "[Vect3, Vect3]" kinematics_turn
-     "kinematics/")
+    (ground_speed const-decl "nnreal" track_3D "aviation/")
+    (turnOmega const-decl "[Vect3, Vect3]" kinematics_turn "aviation/")
     (* const-decl "Vector" vectors_3D "vectors/")
     (+ const-decl "Vector" vectors_3D "vectors/")
     (detector? const-decl "bool" int_bands nil)
@@ -209,9 +211,8 @@
     (* const-decl "real" vectors_2D "vectors/")
     (sqv const-decl "nnreal" vectors_2D "vectors/")
     (norm const-decl "nnreal" vectors_2D "vectors/")
-    (ground_speed const-decl "nnreal" track_3D "kinematics/")
-    (turnOmega const-decl "[Vect3, Vect3]" kinematics_turn
-     "kinematics/")
+    (ground_speed const-decl "nnreal" track_3D "aviation/")
+    (turnOmega const-decl "[Vect3, Vect3]" kinematics_turn "aviation/")
     (* const-decl "Vector" vectors_3D "vectors/")
     (+ const-decl "Vector" vectors_3D "vectors/")
     (detector? const-decl "bool" int_bands nil)
@@ -672,6 +673,7 @@
     (NOT const-decl "[bool -> bool]" booleans nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (boolean nonempty-type-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil)
     (IFF const-decl "[bool, bool -> bool]" booleans nil)
     (RealBand type-eq-decl nil real_bands nil)
     (nzint nonempty-type-eq-decl nil integers nil)
@@ -683,8 +685,7 @@
     (band_to_mod? const-decl "bool" mod_bands nil)
     (minus_nzreal_is_nzreal application-judgement "nzreal" real_types
      nil)
-    (turnOmega const-decl "[Vect3, Vect3]" kinematics_turn
-     "kinematics/")
+    (turnOmega const-decl "[Vect3, Vect3]" kinematics_turn "aviation/")
     (posreal_div_posreal_is_posreal application-judgement "posreal"
      real_types nil)
     (IntBand type-eq-decl nil int_bands nil)
@@ -700,9 +701,9 @@
     (add const-decl "listn[RealBand](length[RealBand](RL))" real_bands
      nil)
     (zero const-decl "Vector" vectors_2D "vectors/")
-    (nzhVect3 nonempty-type-eq-decl nil track_3D "kinematics/")
+    (nzhVect3 nonempty-type-eq-decl nil track_3D "aviation/")
     (nnreal_lt_2pi nonempty-type-eq-decl nil atan2 "trig/")
-    (track const-decl "nnreal_lt_2pi" track_3D "kinematics/")
+    (track const-decl "nnreal_lt_2pi" track_3D "aviation/")
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
@@ -1458,8 +1459,7 @@
     (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
     (RealBand type-eq-decl nil real_bands nil)
     (Sign type-eq-decl nil sign "reals/")
-    (turnOmega const-decl "[Vect3, Vect3]" kinematics_turn
-     "kinematics/")
+    (turnOmega const-decl "[Vect3, Vect3]" kinematics_turn "aviation/")
     (IntBand type-eq-decl nil int_bands nil)
     (Traj type-eq-decl nil int_bands nil)
     (kinematic_bands_combine const-decl "list[IntBand]" combine_bands
@@ -1467,9 +1467,9 @@
     (add const-decl "listn[RealBand](length[RealBand](RL))" real_bands
      nil)
     (zero const-decl "Vector" vectors_2D "vectors/")
-    (nzhVect3 nonempty-type-eq-decl nil track_3D "kinematics/")
+    (nzhVect3 nonempty-type-eq-decl nil track_3D "aviation/")
     (nnreal_lt_2pi nonempty-type-eq-decl nil atan2 "trig/")
-    (track const-decl "nnreal_lt_2pi" track_3D "kinematics/")
+    (track const-decl "nnreal_lt_2pi" track_3D "aviation/")
     (kinematic_bands_combine_range formula-decl nil combine_bands nil)
     (kinematic_bands_combine_increasing formula-decl nil combine_bands
      nil)
@@ -1672,26 +1672,25 @@
      "vect_analysis/")
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (trkgs2vect_id formula-decl nil track "kinematics/")
-    (ground_speed const-decl "nnreal" track_3D "kinematics/")
-    (trk const-decl "nnreal_lt_2pi" track "kinematics/")
+    (trkgs2vect_id formula-decl nil track "aviation/")
+    (ground_speed const-decl "nnreal" track_3D "aviation/")
+    (trk const-decl "nnreal_lt_2pi" track "aviation/")
     (sqv_eq_0 formula-decl nil vectors_2D "vectors/")
     (real_times_real_is_real application-judgement "real" reals nil)
     (comp_zero_x formula-decl nil vectors_2D "vectors/")
     (comp_zero_y formula-decl nil vectors_2D "vectors/")
-    (track const-decl "nnreal_lt_2pi" track "kinematics/")
+    (track const-decl "nnreal_lt_2pi" track "aviation/")
     (nnreal_lt_2pi nonempty-type-eq-decl nil atan2 "trig/")
     (sin const-decl "real" sincos_def "trig/")
     (norm const-decl "nnreal" vectors_2D "vectors/")
     (* const-decl "Vector" vectors_2D "vectors/")
     (NOT const-decl "[bool -> bool]" booleans nil)
-    (trkgs2vect const-decl "Vect2" track "kinematics/")
+    (trkgs2vect const-decl "Vect2" track "aviation/")
     (Nz_vect2 type-eq-decl nil vectors_2D "vectors/")
     (zero const-decl "Vector" vectors_2D "vectors/")
     (vo skolem-const-decl "{vo | sqv(vect2(vo)) > 0}"
      kinematic_trk_bands nil)
-    (turnOmega const-decl "[Vect3, Vect3]" kinematics_turn
-     "kinematics/")
+    (turnOmega const-decl "[Vect3, Vect3]" kinematics_turn "aviation/")
     (cos_range application-judgement "real_abs_le1" sincos "trig/")
     (sin_range application-judgement "real_abs_le1" sincos "trig/")
     (* const-decl "[numfield, numfield -> numfield]" number_fields nil)
@@ -1756,8 +1755,6 @@
     (Vect2 type-eq-decl nil vectors_2D_def "vectors/")
     (real nonempty-type-from-decl nil reals nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (sqv_zero formula-decl nil vectors_2D "vectors/")
     (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
      "vect_analysis/")
@@ -1774,7 +1771,10 @@
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
-     real_props nil))
+     real_props nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (kinematic_track_bands_def 0
   (kinematic_track_bands_def-6 nil 3709343634
@@ -2743,16 +2743,15 @@
     (nnreal_lt_2pi nonempty-type-eq-decl nil atan2 "trig/")
     (Traj type-eq-decl nil int_bands nil)
     (conflict_step const-decl "bool" int_bands nil)
-    (turnOmega const-decl "[Vect3, Vect3]" kinematics_turn
-     "kinematics/")
+    (turnOmega const-decl "[Vect3, Vect3]" kinematics_turn "aviation/")
     (below type-eq-decl nil naturalnumbers nil)
     (in? const-decl "bool" real_bands nil)
     (below type-eq-decl nil nat_types nil)
     (nth def-decl "T" list_props nil)
     (to2pi const-decl "nnreal_lt_2pi" to2pi "trig/")
     (+ const-decl "[numfield, numfield -> numfield]" number_fields nil)
-    (nzhVect3 nonempty-type-eq-decl nil track_3D "kinematics/")
-    (track const-decl "nnreal_lt_2pi" track_3D "kinematics/")
+    (nzhVect3 nonempty-type-eq-decl nil track_3D "aviation/")
+    (track const-decl "nnreal_lt_2pi" track_3D "aviation/")
     (nzreal nonempty-type-eq-decl nil reals nil)
     (listn type-eq-decl nil listn "structures/")
     (scal const-decl "listn[RealBand](length[IntBand](L))" real_bands
@@ -2768,7 +2767,7 @@
      nil)
     (strictly_increasing_add_real formula-decl nil real_bands nil)
     (conflict_steps_eq formula-decl nil combine_bands nil)
-    (turnOmega_start formula-decl nil kinematics_turn "kinematics/")
+    (turnOmega_start formula-decl nil kinematics_turn "aviation/")
     (even_times_int_is_even application-judgement "even_int" integers
      nil)
     (int_times_even_is_even application-judgement "even_int" integers
@@ -3746,11 +3745,10 @@
     (nnreal_lt_2pi nonempty-type-eq-decl nil atan2 "trig/")
     (Traj type-eq-decl nil int_bands nil)
     (conflict_step const-decl "bool" int_bands nil)
-    (turnOmega const-decl "[Vect3, Vect3]" kinematics_turn
-     "kinematics/")
+    (turnOmega const-decl "[Vect3, Vect3]" kinematics_turn "aviation/")
     (in? const-decl "bool" real_bands nil)
-    (nzhVect3 nonempty-type-eq-decl nil track_3D "kinematics/")
-    (track const-decl "nnreal_lt_2pi" track_3D "kinematics/")
+    (nzhVect3 nonempty-type-eq-decl nil track_3D "aviation/")
+    (track const-decl "nnreal_lt_2pi" track_3D "aviation/")
     (listn type-eq-decl nil listn "structures/")
     (scal const-decl "listn[RealBand](length[IntBand](L))" real_bands
      nil)
@@ -3758,7 +3756,7 @@
     (addrb const-decl "RealBand" real_bands nil)
     (strictly_increasing_add_real formula-decl nil real_bands nil)
     (conflict_steps_eq formula-decl nil combine_bands nil)
-    (turnOmega_start formula-decl nil kinematics_turn "kinematics/")
+    (turnOmega_start formula-decl nil kinematics_turn "aviation/")
     (Integral const-decl "real" integral_def "analysis/")
     (kinematic_bands_combine_range formula-decl nil combine_bands nil)
     (in? const-decl "bool" int_bands nil)
@@ -4697,11 +4695,10 @@ AND j * dir < MaxNR)")
     (nnreal_lt_2pi nonempty-type-eq-decl nil atan2 "trig/")
     (Traj type-eq-decl nil int_bands nil)
     (conflict_step const-decl "bool" int_bands nil)
-    (turnOmega const-decl "[Vect3, Vect3]" kinematics_turn
-     "kinematics/")
+    (turnOmega const-decl "[Vect3, Vect3]" kinematics_turn "aviation/")
     (in? const-decl "bool" real_bands nil)
-    (nzhVect3 nonempty-type-eq-decl nil track_3D "kinematics/")
-    (track const-decl "nnreal_lt_2pi" track_3D "kinematics/")
+    (nzhVect3 nonempty-type-eq-decl nil track_3D "aviation/")
+    (track const-decl "nnreal_lt_2pi" track_3D "aviation/")
     (listn type-eq-decl nil listn "structures/")
     (scal const-decl "listn[RealBand](length[IntBand](L))" real_bands
      nil)
@@ -4709,7 +4706,7 @@ AND j * dir < MaxNR)")
     (addrb const-decl "RealBand" real_bands nil)
     (strictly_increasing_add_real formula-decl nil real_bands nil)
     (conflict_steps_eq formula-decl nil combine_bands nil)
-    (turnOmega_start formula-decl nil kinematics_turn "kinematics/")
+    (turnOmega_start formula-decl nil kinematics_turn "aviation/")
     (kinematic_bands_combine_range formula-decl nil combine_bands nil)
     (Integral const-decl "real" integral_def "analysis/")
     (in? const-decl "bool" int_bands nil)
@@ -6581,10 +6578,9 @@ AND j * dir < MaxNR)")
     (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
     (Sign type-eq-decl nil sign "reals/")
     (zero const-decl "Vector" vectors_2D "vectors/")
-    (track const-decl "nnreal_lt_2pi" track_3D "kinematics/")
-    (nzhVect3 nonempty-type-eq-decl nil track_3D "kinematics/")
-    (turnOmega const-decl "[Vect3, Vect3]" kinematics_turn
-     "kinematics/")
+    (track const-decl "nnreal_lt_2pi" track_3D "aviation/")
+    (nzhVect3 nonempty-type-eq-decl nil track_3D "aviation/")
+    (turnOmega const-decl "[Vect3, Vect3]" kinematics_turn "aviation/")
     (nnreal_lt_2pi nonempty-type-eq-decl nil atan2 "trig/")
     (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
      "vect_analysis/")
@@ -8421,10 +8417,9 @@ AND j * dir < MaxNR)")
     (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
     (Sign type-eq-decl nil sign "reals/")
     (zero const-decl "Vector" vectors_2D "vectors/")
-    (track const-decl "nnreal_lt_2pi" track_3D "kinematics/")
-    (nzhVect3 nonempty-type-eq-decl nil track_3D "kinematics/")
-    (turnOmega const-decl "[Vect3, Vect3]" kinematics_turn
-     "kinematics/")
+    (track const-decl "nnreal_lt_2pi" track_3D "aviation/")
+    (nzhVect3 nonempty-type-eq-decl nil track_3D "aviation/")
+    (turnOmega const-decl "[Vect3, Vect3]" kinematics_turn "aviation/")
     (nnreal_lt_2pi nonempty-type-eq-decl nil atan2 "trig/")
     (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
      "vect_analysis/")
@@ -8597,6 +8592,7 @@ AND j * dir < MaxNR)")
     (NOT const-decl "[bool -> bool]" booleans nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (boolean nonempty-type-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil)
     (IFF const-decl "[bool, bool -> bool]" booleans nil)
     (RealBand type-eq-decl nil real_bands nil)
     (nzint nonempty-type-eq-decl nil integers nil)
@@ -8606,7 +8602,6 @@ AND j * dir < MaxNR)")
     (kinematic_track_bands const-decl "list[RealBand]"
      kinematic_trk_bands nil)
     (strictly_increasing_real? const-decl "bool" real_bands nil)
-    (TRUE const-decl "bool" booleans nil)
     (id const-decl "(bijective?[T, T])" identity nil)
     (bijective? const-decl "bool" functions nil)
     (band_to_mod? const-decl "bool" mod_bands nil)
@@ -8623,13 +8618,12 @@ AND j * dir < MaxNR)")
      kinematic_trk_bands nil)
     (Lfun skolem-const-decl "[nnreal -> [Vect3, Vect3]]"
      kinematic_trk_bands nil)
-    (track const-decl "nnreal_lt_2pi" track_3D "kinematics/")
+    (track const-decl "nnreal_lt_2pi" track_3D "aviation/")
     (nnreal_lt_2pi nonempty-type-eq-decl nil atan2 "trig/")
-    (nzhVect3 nonempty-type-eq-decl nil track_3D "kinematics/")
+    (nzhVect3 nonempty-type-eq-decl nil track_3D "aviation/")
     (add const-decl "listn[RealBand](length[RealBand](RL))" real_bands
      nil)
-    (turnOmega const-decl "[Vect3, Vect3]" kinematics_turn
-     "kinematics/")
+    (turnOmega const-decl "[Vect3, Vect3]" kinematics_turn "aviation/")
     (IntBand type-eq-decl nil int_bands nil)
     (Traj type-eq-decl nil int_bands nil)
     (kinematic_bands_combine const-decl "list[IntBand]" combine_bands
@@ -8680,7 +8674,7 @@ AND j * dir < MaxNR)")
      real_types nil)
     (minus_nzreal_is_nzreal application-judgement "nzreal" real_types
      nil)
-    (turnOmega_start formula-decl nil kinematics_turn "kinematics/")
+    (turnOmega_start formula-decl nil kinematics_turn "aviation/")
     (/= const-decl "boolean" notequal nil)
     (zero const-decl "Vector" vectors_2D "vectors/")
     (numfield nonempty-type-eq-decl nil number_fields nil)
@@ -8692,8 +8686,6 @@ AND j * dir < MaxNR)")
     (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
      "vect_analysis/")
     (sqv_zero formula-decl nil vectors_2D "vectors/")
-    (boolean nonempty-type-decl nil booleans nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
     (number nonempty-type-decl nil numbers nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
@@ -8708,7 +8700,10 @@ AND j * dir < MaxNR)")
     (sqv const-decl "nnreal" vectors_2D "vectors/")
     (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
     (Vect2 type-eq-decl nil vectors_2D_def "vectors/")
-    (vect2 const-decl "Vect2" vect_3D_2D "vectors/"))
+    (vect2 const-decl "Vect2" vect_3D_2D "vectors/")
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (any_kinematic_track_red_TCC2 0
   (any_kinematic_track_red_TCC2-1 nil 3639907378
@@ -8724,11 +8719,10 @@ AND j * dir < MaxNR)")
         nil))
       nil))
     nil)
-   ((turnOmega_start formula-decl nil kinematics_turn "kinematics/")
+   ((turnOmega_start formula-decl nil kinematics_turn "aviation/")
     (real nonempty-type-from-decl nil reals nil)
     (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
     (Vect2 type-eq-decl nil vectors_2D_def "vectors/")
-    (boolean nonempty-type-decl nil booleans nil)
     (/= const-decl "boolean" notequal nil)
     (vect2 const-decl "Vect2" vect_3D_2D "vectors/")
     (Vector type-eq-decl nil vectors_2D "vectors/")
@@ -8738,7 +8732,6 @@ AND j * dir < MaxNR)")
      nil)
     (number_field nonempty-type-from-decl nil number_fields nil)
     (real_pred const-decl "[number_field -> boolean]" reals nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
     (> const-decl "bool" reals nil) (>= const-decl "bool" reals nil)
     (nnreal type-eq-decl nil real_types nil)
     (sqv const-decl "nnreal" vectors_2D "vectors/")
@@ -8751,7 +8744,10 @@ AND j * dir < MaxNR)")
      "(strict_total_order?[real])" real_props nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
     (posreal_div_posreal_is_posreal application-judgement "posreal"
-     real_types nil))
+     real_types nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (any_kinematic_track_red_def_TCC1 0
   (any_kinematic_track_red_def_TCC1-1 nil 3633968286
@@ -8769,8 +8765,6 @@ AND j * dir < MaxNR)")
     (Vect2 type-eq-decl nil vectors_2D_def "vectors/")
     (real nonempty-type-from-decl nil reals nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (sqv_zero formula-decl nil vectors_2D "vectors/")
     (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
      "vect_analysis/")
@@ -8787,7 +8781,10 @@ AND j * dir < MaxNR)")
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
-     real_props nil))
+     real_props nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (any_kinematic_track_red_def_TCC2 0
   (any_kinematic_track_red_def_TCC2-1 nil 3633968286
@@ -8805,8 +8802,6 @@ AND j * dir < MaxNR)")
     (Vect2 type-eq-decl nil vectors_2D_def "vectors/")
     (real nonempty-type-from-decl nil reals nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (sqv_zero formula-decl nil vectors_2D "vectors/")
     (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
      "vect_analysis/")
@@ -8823,7 +8818,10 @@ AND j * dir < MaxNR)")
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
-     real_props nil))
+     real_props nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (any_kinematic_track_red_def 0
   (any_kinematic_track_red_def-1 nil 3633968537
@@ -9732,9 +9730,9 @@ AND j * dir < MaxNR)")
     (below type-eq-decl nil nat_types nil)
     (nth def-decl "T" list_props nil)
     (+ const-decl "[numfield, numfield -> numfield]" number_fields nil)
-    (nzhVect3 nonempty-type-eq-decl nil track_3D "kinematics/")
+    (nzhVect3 nonempty-type-eq-decl nil track_3D "aviation/")
     (nnreal_lt_2pi nonempty-type-eq-decl nil atan2 "trig/")
-    (track const-decl "nnreal_lt_2pi" track_3D "kinematics/")
+    (track const-decl "nnreal_lt_2pi" track_3D "aviation/")
     (IFF const-decl "[bool, bool -> bool]" booleans nil)
     (real_times_real_is_real application-judgement "real" reals nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
@@ -9769,8 +9767,7 @@ AND j * dir < MaxNR)")
      real_types nil)
     (any_red const-decl "bool" combine_bands nil)
     (Traj type-eq-decl nil int_bands nil)
-    (turnOmega const-decl "[Vect3, Vect3]" kinematics_turn
-     "kinematics/")
+    (turnOmega const-decl "[Vect3, Vect3]" kinematics_turn "aviation/")
     (minus_nzreal_is_nzreal application-judgement "nzreal" real_types
      nil))
    shostak))
@@ -9794,7 +9791,10 @@ AND j * dir < MaxNR)")
     (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
      "vect_analysis/")
     (posreal_div_posreal_is_posreal application-judgement "posreal"
-     real_types nil))
+     real_types nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (all_kinematic_track_red_def_TCC2 0
   (all_kinematic_track_red_def_TCC2-1 nil 3634295003
@@ -9815,7 +9815,10 @@ AND j * dir < MaxNR)")
      "(strict_total_order?[real])" real_props nil)
     (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
      "vect_analysis/")
-    (sqv_zero formula-decl nil vectors_2D "vectors/"))
+    (sqv_zero formula-decl nil vectors_2D "vectors/")
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (all_kinematic_track_red_def_TCC3 0
   (all_kinematic_track_red_def_TCC3-1 nil 3634296187
@@ -9838,7 +9841,10 @@ AND j * dir < MaxNR)")
      "vect_analysis/")
     (posreal_div_posreal_is_posreal application-judgement "posreal"
      real_types nil)
-    (int_minus_int_is_int application-judgement "int" integers nil))
+    (int_minus_int_is_int application-judgement "int" integers nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    nil))
  (all_kinematic_track_red_def 0
   (all_kinematic_track_red_def-1 nil 3634295354
@@ -10640,13 +10646,10 @@ AND j * dir < MaxNR)")
     (number nonempty-type-decl nil numbers nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
-    (boolean nonempty-type-decl nil booleans nil)
     (posreal_div_posreal_is_posreal application-judgement "posreal"
      real_types nil)
     (minus_odd_is_odd application-judgement "odd_int" integers nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
-    (TRUE const-decl "bool" booleans nil)
     (id const-decl "(bijective?[T, T])" identity nil)
     (bijective? const-decl "bool" functions nil)
     (RealBand type-eq-decl nil real_bands nil)
@@ -10662,27 +10665,27 @@ AND j * dir < MaxNR)")
     (zero const-decl "Vector" vectors_2D "vectors/")
     (below type-eq-decl nil nat_types nil)
     (nth def-decl "T" list_props nil)
-    (nzhVect3 nonempty-type-eq-decl nil track_3D "kinematics/")
+    (nzhVect3 nonempty-type-eq-decl nil track_3D "aviation/")
     (nnreal_lt_2pi nonempty-type-eq-decl nil atan2 "trig/")
-    (track const-decl "nnreal_lt_2pi" track_3D "kinematics/")
+    (track const-decl "nnreal_lt_2pi" track_3D "aviation/")
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (IFF const-decl "[bool, bool -> bool]" booleans nil)
-    (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
-     real_types nil)
-    (real_le_is_total_order name-judgement "(total_order?[real])"
-     real_props nil)
-    (pi_bound name-judgement
-     "{r: posreal | pi_lb_new <= r AND r <= pi_ub_new}" pi_def "trig/")
-    (minus_nzreal_is_nzreal application-judgement "nzreal" real_types
-     nil)
-    (real_lt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
-    (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
-     "vect_analysis/")
+    (real_lt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
+    (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
+     "vect_analysis/")
+    (pi_bound name-judgement
+     "{r: posreal | pi_lb_new <= r AND r <= pi_ub_new}" pi_def "trig/")
+    (real_le_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
+     real_types nil)
+    (minus_nzreal_is_nzreal application-judgement "nzreal" real_types
+     nil)
     (IntBand type-eq-decl nil int_bands nil)
     (Traj type-eq-decl nil int_bands nil)
     (kinematic_bands_combine const-decl "list[IntBand]" combine_bands
@@ -10714,8 +10717,10 @@ AND j * dir < MaxNR)")
      nil)
     (listn type-eq-decl nil listn "structures/")
     (nzreal nonempty-type-eq-decl nil reals nil)
-    (turnOmega const-decl "[Vect3, Vect3]" kinematics_turn
-     "kinematics/"))
+    (turnOmega const-decl "[Vect3, Vect3]" kinematics_turn "aviation/")
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
    shostak))
  (kinematic_track_first_green_TCC1 0
   (kinematic_track_first_green_TCC1-1 nil 3683562970
