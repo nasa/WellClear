@@ -151,34 +151,34 @@ will refer to classes in these packages and name space through unqualified
 names.  The following table lists the Java packages for the main
 DAIDALUS classes and interfaces.
 
-Class/Interface |   Package 
---|--
-`AlertLevels` | `ACCoRD`
-`AlertThresholds` | `ACCoRD`
-`BandsRegion` | `ACCoRD`
-`CD3DTable` |  `ACCoRD`
-`CDCylinder` |  `ACCoRD`
-`ConflictData` |  `ACCoRD`
-`Daidalus` |  `ACCoRD`
-`DaidalusFileWalker` |  `ACCoRD`
-`Detection3D` |  `ACCoRD`
-`Horizontal` |  `ACCoRD`
-`KinematicBandsParameters` |  `ACCoRD`
-`KinematicMultiBands` |  `ACCoRD`
-`TCASTable` |  `ACCoRD`
-`TCAS3D` |  `ACCoRD`
-`TrafficState` | `ACCoRD`
-`Vertical` |  `ACCoRD`
-`WCVTable` |  `ACCoRD`
-`WCV_TAUMOD` |  `ACCoRD`
-`WCV_TCPA` |  `ACCoRD`
-`WCV_TEP` |  `ACCoRD`
-`Interval` | `Util`
-`Position` |  `Util`
-`Units` |  `Util`
-`Vect2` | `Util`
-`Vect3` | `Util`
-`Velocity` |  `Util`
+| Class/Interface | Package |
+| --|--|
+| `AlertLevels` | `ACCoRD` |
+| `AlertThresholds` | `ACCoRD` |
+| `BandsRegion` | `ACCoRD` |
+| `CD3DTable` |  `ACCoRD` |
+| `CDCylinder` |  `ACCoRD` |
+| `ConflictData` |  `ACCoRD` |
+| `Daidalus` |  `ACCoRD` |
+| `DaidalusFileWalker` |  `ACCoRD` |
+| `Detection3D` |  `ACCoRD` |
+| `Horizontal` |  `ACCoRD` |
+| `KinematicBandsParameters` |  `ACCoRD` |
+| `KinematicMultiBands` |  `ACCoRD` |
+| `TCASTable` |  `ACCoRD` |
+| `TCAS3D` |  `ACCoRD` |
+| `TrafficState` | `ACCoRD` |
+| `Vertical` |  `ACCoRD` |
+| `WCVTable` |  `ACCoRD` |
+| `WCV_TAUMOD` |  `ACCoRD` |
+| `WCV_TCPA` |  `ACCoRD` |
+| `WCV_TEP` |  `ACCoRD` |
+| `Interval` | `Util` |
+| `Position` |  `Util` |
+| `Units` |  `Util` |
+| `Vect2` | `Util` |
+| `Vect3` | `Util` |
+| `Velocity` |  `Util` |
 
 ## Units
 DAIDALUS core algorithms use as internal units meters, seconds, and
@@ -186,26 +186,26 @@ radians. However,  interface methods that set or get a value have a String argum
 explicitly specified. The following table provides a list of symbols and the corresponding
 string representation supported by DAIDALUS.
 
-Units  | String
---|--
-milliseconds | `"ms"` 
-seconds | `"s"`
-minutes | `"min"`
-hours | `"h"` | `"hr"`
-meters | `"m"`   
-kilometers | `"km"`
-nautical miles | `"nmi"`, `"NM"`  
-feet | `"ft"` 
- knots | `"knot"`, `"kn"`, `"kts"` 
- meters per second | `"m/s"`
- kilometers per hour | `"kph"`, `"km/h"`
-feet per minute | `"fpm"`, `"ft/min"` 
- meters per second<sup>2</sup>|`"m/s^2"` 
-9.80665 m/s<sup>2</sup> | `"G"`
- degrees | `"deg"`
-radians | `"rad"`
-degrees per second | `"deg/s"`
-radians per second | `"rad/s"`
+| Units  | String |
+| --|-- |
+| milliseconds | `"ms"` |
+| seconds | `"s"` |
+| minutes | `"min"` |
+| hours | `"h"` | `"hr"` |
+| meters | `"m"` |
+| kilometers | `"km"` |
+| nautical miles | `"nmi"`, `"NM"`  |
+| feet | `"ft"` |
+|  knots | `"knot"`, `"kn"`, `"kts"` |
+|  meters per second | `"m/s"` |
+|  kilometers per hour | `"kph"`, `"km/h"` |
+| feet per minute | `"fpm"`, `"ft/min"` |
+|  meters per second<sup>2</sup>|`"m/s^2"` |
+| 9.80665 m/s<sup>2</sup> | `"G"` |
+|  degrees | `"deg"` |
+| radians | `"rad"` |
+| degrees per second | `"deg/s"` |
+| radians per second | `"rad/s"` |
 
 The class `Units` provides the following static methods for converting
 to and from internal units and  from one unit into another one.
@@ -291,21 +291,21 @@ Methods in DAIDALUS fail silently and return invalid values when
 called with invalid parameters. The following tables list methods that
 check the validity of values in DAIDALUS classes.
 
-Class/Type | Validity Check - Java
---+--
-`double d;` | `Double.isFinite(d)`
-`BandsRegion r;` | `r.isValidBand()`
-`Interval i;` | `i.isEmpty()`
-`Velocity v;` | `!v.isInvalid()`
-`Position p;` | `!p.isInvalid()`
-`TrafficState s;` | `s.isValid()` 
+| Class/Type | Validity Check - Java |
+| --+--|
+| `double d;` | `Double.isFinite(d)` |
+| `BandsRegion r;` | `r.isValidBand()` |
+| `Interval i;` | `i.isEmpty()` |
+| `Velocity v;` | `!v.isInvalid()` |
+| `Position p;` | `!p.isInvalid()` |
+| `TrafficState s;` | `s.isValid()` |
 
 In C++, the methods are the same except in the following cases.
 
-Class/Type | Validity Check - C++ 
---+--
-`double d;` | `ISFINITE(d)` 
-`BandsRegion r;` | `BandsRegion::isValidBand(r)`
+| Class/Type | Validity Check - C++ |
+| --+-- |
+| `double d;` | `ISFINITE(d)` |
+| `BandsRegion r;` | `BandsRegion::isValidBand(r)` |
 
 Furthermore, negative integer values are returned as invalid values
 in methods that under normal conditions return a natural number. 
