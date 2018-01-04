@@ -76,10 +76,10 @@ public class DaidalusAlerting {
 				// Load configuration file
 				arga = args[++a];
 				if (!daa.parameters.loadFromFile(arga)) {
-					System.err.println("File "+arga+" not found");
+					System.err.println("** Error: File "+arga+" not found");
 					System.exit(1);
 				} else {
-					System.out.println("** Error: Loading configuration file "+arga);
+					System.out.println("Loading configuration file "+arga);
 				}
 			} else if ((arga.startsWith("--o") || arga.startsWith("-o")) && a+1 < args.length) {
 				output_file = args[++a];
