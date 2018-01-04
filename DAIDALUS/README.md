@@ -291,8 +291,8 @@ Methods in DAIDALUS fail silently and return invalid values when
 called with invalid parameters. The following tables list methods that
 check the validity of values in DAIDALUS classes.
 
-| Class/Type | Validity Check - Java |
-| --+--|
+| Class/Type | Validity Check (Java) |
+| --+-- |
 | `double d;` | `Double.isFinite(d)` |
 | `BandsRegion r;` | `r.isValidBand()` |
 | `Interval i;` | `i.isEmpty()` |
@@ -302,7 +302,7 @@ check the validity of values in DAIDALUS classes.
 
 In C++, the methods are the same except in the following cases.
 
-| Class/Type | Validity Check - C++ |
+| Class/Type | Validity Check (C++) |
 | --+-- |
 | `double d;` | `ISFINITE(d)` |
 | `BandsRegion r;` | `BandsRegion::isValidBand(r)` |
