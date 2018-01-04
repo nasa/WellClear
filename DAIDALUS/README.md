@@ -484,10 +484,11 @@ time of applicability. Otherwise, `alert_level` is a positive
 numerical value that indicates the alert level, which by default are
 configured as follows.
 
-`alert_level` | RTCA SC-228 Alert Level
-`1` | Preventive
-`2` | Corrective
-`3` | Warning
+| `alert_level` | RTCA SC-228 Alert Level |
+| -- | -- |
+| `1` | Preventive |
+| `2` | Corrective |
+| `3` | Warning |
 
 The `Daidalus` object `daa` can be configured to an arbitrary number
 of alert levels and each alert level is highly configurable
