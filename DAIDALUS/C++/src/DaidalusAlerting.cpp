@@ -48,7 +48,6 @@ int main(int argc, char* argv[]) {
 	Daidalus daa;
 	std::string input_file = "";
 	std::string output_file = "";
-	std::ostream* out = &std::cout;
 
 	// A Daidalus object can be configured either programatically or by using a configuration file.
 	for (int a=1;a < argc; ++a) {
@@ -63,7 +62,7 @@ int main(int argc, char* argv[]) {
 			// Load configuration file
 			arga = argv[++a];
 			if (!daa.parameters.loadFromFile(arga)) {
-				std::cerr << "File " << arga << "not found" << std::endl;
+				std::cerr << "** Error: File " << arga << "not found" << std::endl;
 				exit(0);
 			} else {
 				std::cout << "Loading configuration file " << arga << std::endl;
@@ -71,54 +70,110 @@ int main(int argc, char* argv[]) {
 		} else if ((startsWith(arga,"--o") || startsWith(arga,"-o")) && a+1 < argc) {
 			output_file = argv[++a];
 		} else if (startsWith(arga,"--h") || startsWith(arga,"-h")) {
-			std::cerr << "Options: [--noma | --nomb | --conf <configuration file> | --output <output file> | --help] <input file>"
+			std::cerr << "** Error: Options: [--noma | --nomb | --conf <configuration file> | --output <output file> | --help] <input file>"
 					<< std::endl;
 			exit(0);
 		} else if (startsWith(arga,"-")){
-			std::cerr << "Unknown option " << arga << std::endl;
+			std::cerr << "** Error: Unknown option " << arga << std::endl;
 			exit(0);
 		} else if (input_file == "") {
 			input_file = argv[a];
 		} else {
-			std::cerr << "Only one input file can be provided (" << a << ")" << std::endl;
+			std::cerr << "** Error: Only one input file can be provided (" << a << ")" << std::endl;
 			exit(0);
 		}
 	}
 	if (input_file == "") {
-		std::cerr << "One input file must be provided" << std::endl;
+		std::cerr << "** Error: One input file must be provided" << std::endl;
 		exit(0);
 	}
 
-	std::cout << "Processing file " << input_file << std::endl;
-	DaidalusFileWalker walker(input_file);
-
-	std::ofstream fout;
-
-	if (output_file != "") {
-		fout.open(output_file.c_str());
-		out = &fout;
-		std::cout << "Output file: " << output_file << std::endl;
+	std::ifstream file(input_file);
+	if (!file.good()) {
+		std::cerr << "** Error: File " << input_file << " cannot be read" << std::endl;
+		exit(0);
+	}
+	file.close();
+	std::string name;
+	std::string::size_type idx = input_file.find_last_of(".");
+	if (idx != std::string::npos) {
+		name = input_file.substr(0,idx);
+	} else {
+		name = input_file;
+	}
+	if (output_file == "") {
+		output_file = name+".csv";
 	}
 
-	(*out) << "Time, Alerting" << std::endl;
+	std::cout << "Processing DAIDALUS file " << input_file << std::endl;
+	std::cout << "Generating CSV file " << output_file << std::endl;
+	DaidalusFileWalker walker(input_file);
+	Detection3D* detector = daa.parameters.alertor.conflictDetectorRef();
+	std::string uhor = daa.parameters.getUnits("min_horizontal_recovery");
+	std::string uver = daa.parameters.getUnits("min_vertical_recovery");
+	std::string ugs = daa.parameters.getUnits("gs_step");
+	std::string uvs = daa.parameters.getUnits("vs_step");
+
+	std::ofstream out(output_file);
+
+	out << " Time, Ownship, Traffic, Alert Level";
+	std::string line_units = "[s],,,";
+	for (int i=1; i <= daa.parameters.alertor.mostSevereAlertLevel();++i) {
+		out << ", Time to Volume of Alert(" << i << ")";
+		line_units += ", [s]";
+	}
+	out << ", Horizontal Separation, Vertical Separation, Horizontal Closure Rate, Vertical Closure Rate, Projected HMD, Projected VMD, Projected TCPA, Projected DCPA, Projected TCOA";
+	line_units += ", ["+uhor+"], ["+uver+"], ["+ugs+"], ["+uvs+"], ["+uhor+"], ["+uver+"], [s], ["+uhor+"], [s]";
+	if (detector != NULL && detector->getSimpleSuperClassName() == "WCV_tvar") {
+		out << ", Projected TAUMOD (WCV*)";
+		line_units += ", [s]";
+	}
+	out << std::endl;
+	out << line_units << std::endl;
 
 	while (!walker.atEnd()) {
 		walker.readState(daa);
 		// At this point, daa has the state information of ownhsip and traffic for a given time
-		int alerting = -1;
-		for (int i=1; i <= daa.lastTrafficIndex(); ++i) {
-			alerting = std::max(alerting,daa.alerting(i));
-		}
-
-		if (alerting > 0) {
-			(*out) << daa.getCurrentTime() << "," << alerting << std::endl;
+		for (int ac=1; ac <= daa.lastTrafficIndex(); ++ac) {
+			out << daa.getCurrentTime();
+			out << ", " << daa.getOwnshipState().getId();
+			out << ", " << daa.getAircraftState(ac).getId();
+			int alert = daa.alerting(ac);
+			out << ", " << alert;
+			ConflictData det;
+			bool one=false;
+			for (int l=1; l <= daa.parameters.alertor.mostSevereAlertLevel(); ++l) {
+				det = daa.detection(ac,l);
+				out << ", ";
+				out << det.getTimeIn();
+				one = true;
+			}
+			if (one) {
+			        out << ", " << Units::to(uhor,det.get_s().vect2().norm());
+				out << ", " << Units::to(uver,det.get_s().z);
+				out << ", " << Units::to(ugs,det.get_v().vect2().norm());
+				out << ", " << Units::to(uvs,det.get_v().z);
+				out << ", " << Units::to(uhor,det.HMD(daa.parameters.getLookaheadTime()));
+				out << ", " << Units::to(uver,det.VMD(daa.parameters.getLookaheadTime()));
+				double tcpa  = Horizontal::tcpa(det.get_s().vect2(),det.get_v().vect2());
+				out << ", " << tcpa;
+				double dcpa =  Horizontal::dcpa(det.get_s().vect2(),det.get_v().vect2());
+				out << ", " << Units::to(uhor,dcpa);
+				double tcoa = Vertical::time_coalt(det.get_s().z,det.get_v().z);
+				out << ", ";
+				if (tcoa >= 0) {
+					out << tcoa;
+				}
+				out << ", ";
+				if (detector != NULL && detector->getSimpleSuperClassName() == "WCV_tvar") {
+					double tau_mod  = ((WCV_tvar*)detector)->horizontal_tvar(det.get_s().vect2(),det.get_v().vect2());
+					if (tau_mod > 0) {
+						out << tau_mod;
+					}
+				}
+			}
+			out << std::endl;
 		}
 	}
-	if (output_file != "") {
-		fout.close();
-	}
-
+	out.close();
 }
-
-
-
