@@ -485,7 +485,6 @@ numerical value that indicates the alert level, which by default are
 configured as follows.
 
 `alert_level` | RTCA SC-228 Alert Level
---+--
 `1` | Preventive
 `2` | Corrective
 `3` | Warning
