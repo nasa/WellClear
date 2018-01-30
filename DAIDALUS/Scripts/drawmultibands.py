@@ -68,7 +68,7 @@ def figmaker(bounds,tick, bandl, trajl, dimension, pdffile, scene):
     fig, ax = plt.subplots()
     plt.grid()
     plt.yticks(np.arange(bounds[0],bounds[1],tick))
-    time_ticks = (xtime[-1]-xtime[0])/xticks
+    time_ticks = math.floor((xtime[-1]-xtime[0])/xticks)
     plt.xticks(np.arange(xtime[0],xtime[-1],time_ticks))
         
     for tmband in bandl:
