@@ -27,7 +27,8 @@ parser.add_argument('--preventive',metavar='COLOR',help='Set COLOR of Preventive
 parser.add_argument('--corrective',metavar='COLOR',help='Set COLOR of Corrective alerts',default='yellow')
 parser.add_argument('--warning',metavar='COLOR',help='Set COLOR of Warning alerts',default='red')
 parser.add_argument('--xticks',type=int,default=10,help='Number of ticks in x-axis') 
-parser.add_argument('--yticks',type=int,default=10,help='Number of ticks in y-axis') 
+parser.add_argument('--yticks',type=int,default=10,help='Number of ticks in y-axis')
+parser.add_argument('--tticks',type=int,default=None,help='Size of time ticks in seconds')
 parser.add_argument('--to360',help='Set degrees to the range [0,360]',action='store_true')
 args = parser.parse_args()
 
@@ -48,6 +49,7 @@ rec_color = args.recovery
 prev_color = args.preventive
 corr_color = args.corrective
 warn_color = args.warning
+time_ticks = args.tticks
 
 ###
 
@@ -63,12 +65,13 @@ def to_180(L):
             LL.append([l[0]-360.0, l[1]-360.0, l[2]])
     return LL
 
-def figmaker(bounds,tick, bandl, trajl, dimension, pdffile, scene):
+def figmaker(bounds,tick,bandl, trajl, dimension, pdffile, scene, time_ticks):
     plt.rc('grid', linestyle="-", color='0.7')
     fig, ax = plt.subplots()
     plt.grid()
     plt.yticks(np.arange(bounds[0],bounds[1],tick))
-    time_ticks = math.floor((xtime[-1]-xtime[0])/xticks)
+    if time_ticks == None:
+        time_ticks = math.floor((xtime[-1]-xtime[0])/xticks)
     plt.xticks(np.arange(xtime[0],xtime[-1],time_ticks))
         
     for tmband in bandl:
@@ -237,13 +240,13 @@ with PdfPages(outfile) as pdf:
         degs = [-180,180]
         if args.to360:
             degs = [0,360]
-        figmaker(degs, tick_trk, trkband, ytrk, ['Track', '[deg]'], pdf, scenario)
+        figmaker(degs, tick_trk, trkband, ytrk, ['Track', '[deg]'], pdf, scenario,time_ticks)
     if len(vsband)>0:
         tick_vs = (vs_bounds[1]-vs_bounds[0])/yticks;
-        figmaker(vs_bounds, tick_vs, vsband, yvs, ['Vertical Speed','['+vs_units+']'], pdf, scenario)
+        figmaker(vs_bounds, tick_vs, vsband, yvs, ['Vertical Speed','['+vs_units+']'], pdf, scenario,time_ticks)
     if len(gsband)>0:
         tick_gs = (gs_bounds[1]-gs_bounds[0])/yticks;
-        figmaker(gs_bounds, tick_gs, gsband, ygs, ['Ground Speed','['+gs_units+']'], pdf, scenario)
+        figmaker(gs_bounds, tick_gs, gsband, ygs, ['Ground Speed','['+gs_units+']'], pdf, scenario,time_ticks)
     if len(altband)>0:
         tick_alt = (alt_bounds[1]-alt_bounds[0])/yticks;
-        figmaker(alt_bounds, tick_alt, altband, yalt, ['Altitude','['+alt_units+']'], pdf, scenario)
+        figmaker(alt_bounds, tick_alt, altband, yalt, ['Altitude','['+alt_units+']'], pdf, scenario,time_ticks)
