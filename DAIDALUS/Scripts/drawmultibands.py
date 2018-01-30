@@ -23,6 +23,9 @@ parser.add_argument('--far',metavar='COLOR',help='Set COLOR of <FAR> regions',de
 parser.add_argument('--mid',metavar='COLOR',help='Set COLOR of <MID> regions',default='yellow')
 parser.add_argument('--near',metavar='COLOR',help='Set COLOR of <NEAR> regions',default='red')
 parser.add_argument('--recovery',metavar='COLOR',help='Set COLOR of <RECOVERY> regions',default='green')
+parser.add_argument('--preventive',metavar='COLOR',help='Set COLOR of Preventive alerts',default='gold')
+parser.add_argument('--corrective',metavar='COLOR',help='Set COLOR of Corrective alerts',default='yellow')
+parser.add_argument('--warning',metavar='COLOR',help='Set COLOR of Warning alerts',default='red')
 parser.add_argument('--xticks',type=int,default=10,help='Number of ticks in x-axis') 
 parser.add_argument('--yticks',type=int,default=10,help='Number of ticks in y-axis') 
 parser.add_argument('--to360',help='Set degrees to the range [0,360]',action='store_true')
@@ -42,6 +45,9 @@ far_color = args.far
 mid_color = args.mid
 near_color = args.near
 rec_color = args.recovery
+prev_color = args.preventive
+corr_color = args.corrective
+warn_color = args.warning
 
 ###
 
@@ -111,14 +117,11 @@ def bands_color(code):
         return 'white'
     return color
 
-# Return a color for alerting that is compatible with the color of guidance bands
-def alert_color(alert):
-    color = bands_colors[alert]
-    i=alert
-    while i < 4 and color == None:
-        i += 1
-    if i==4:
-        color = 'red'
+# Return a color for guidance bands
+def alert_color(code):
+    color = alert_colors[code]
+    if color == None:
+        return 'white'
     return color
 
 ##
@@ -127,6 +130,7 @@ scenario = ''
 traj_color = 'blue'
 traj_style = '+'
 bands_colors = [None, far_color, mid_color, near_color, rec_color ]
+alert_colors = [None, prev_color, corr_color, warn_color ]
 bands_styles = ['-', '-', '-', '-', '--']
 bands_types  = ["NONE", "FAR", "MID", "NEAR", "RECOVERY"]
 trkband = []
