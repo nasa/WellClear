@@ -15,6 +15,9 @@ import math
 import random
 import argparse
 
+def is_none(color):
+    return color == '' or color == None 
+
 ## Parsing arguments
 parser = argparse.ArgumentParser(description='Draw multi-level bands')
 parser.add_argument('filename',metavar='FILENAME')
@@ -28,8 +31,16 @@ parser.add_argument('--corrective',metavar='COLOR',help='Set COLOR of Corrective
 parser.add_argument('--warning',metavar='COLOR',help='Set COLOR of Warning alerts',default='red')
 parser.add_argument('--xticks',type=int,default=10,help='Number of ticks in x-axis') 
 parser.add_argument('--yticks',type=int,default=10,help='Number of ticks in y-axis')
-parser.add_argument('--tticks',type=int,default=None,help='Size of time ticks in seconds')
+parser.add_argument('--timetick',metavar='TICK',type=int,default=None,help='Size of time ticks in seconds')
+parser.add_argument('--trktick',metavar='TICK',type=int,default=None,help='Size of track ticks in degrees')
+parser.add_argument('--gstick',metavar='TICK',type=int,default=None,help='Size of ground speed ticks in bands units')
+parser.add_argument('--vstick',metavar='TICK',type=int,default=None,help='Size of vertical speed ticks in bands units')
+parser.add_argument('--alttick',metavar='TICK',type=int,default=None,help='Size of altitude ticks in bands units')
 parser.add_argument('--to360',help='Set degrees to the range [0,360]',action='store_true')
+parser.add_argument('--notrk',help='Do not output track information',action='store_true')
+parser.add_argument('--nogs',help='Do not output ground speed information',action='store_true')
+parser.add_argument('--novs',help='Do not output vertical speed information',action='store_true')
+parser.add_argument('--noalt',help='Do not output altitude information',action='store_true')
 args = parser.parse_args()
 
 try:
@@ -49,7 +60,11 @@ rec_color = args.recovery
 prev_color = args.preventive
 corr_color = args.corrective
 warn_color = args.warning
-time_ticks = args.tticks
+tick_time = args.timetick
+tick_trk = args.trktick
+tick_gs = args.gstick
+tick_vs = args.vstick
+tick_alt = args.alttick
 
 ###
 
@@ -65,20 +80,18 @@ def to_180(L):
             LL.append([l[0]-360.0, l[1]-360.0, l[2]])
     return LL
 
-def figmaker(bounds,tick,bandl, trajl, dimension, pdffile, scene, time_ticks):
+def figmaker(bounds,xtick,ytick,bandl, trajl, dimension, pdffile, scene):
     plt.rc('grid', linestyle="-", color='0.7')
     fig, ax = plt.subplots()
     plt.grid()
-    plt.yticks(np.arange(bounds[0],bounds[1],tick))
-    if time_ticks == None:
-        time_ticks = math.floor((xtime[-1]-xtime[0])/xticks)
-    plt.xticks(np.arange(xtime[0],xtime[-1],time_ticks))
+    plt.yticks(np.arange(bounds[0],bounds[1],ytick))
+    plt.xticks(np.arange(xtime[0],xtime[-1],xtick))
         
     for tmband in bandl:
         tm = tmband[0]
         for bnd in tmband[1]:
-            if bnd[2] > 0:
-                plt.plot([tm,tm],[bnd[0], bnd[1]],color=bands_color(bnd[2]),linestyle=bands_styles[bnd[2]],linewidth=2,label=bands_types[bnd[2]],alpha=1)
+            if bnd[2] > 0 and not is_none(bands_colors[bnd[2]]):
+                plt.plot([tm,tm],[bnd[0], bnd[1]],color=bands_colors[bnd[2]],linestyle=bands_styles[bnd[2]],linewidth=2,label=bands_types[bnd[2]],alpha=1)
    
     if len(trajl) > 0:
         plt.plot(xtime,trajl,color=traj_color,marker=traj_style,linewidth=0.5,label=ownship, markersize = 3)
@@ -97,8 +110,8 @@ def figmaker(bounds,tick,bandl, trajl, dimension, pdffile, scene, time_ticks):
             except KeyError:
                 None
             t += 1
-        if len(x_level) > 0:
-            plt.plot(x_level,y_level,color=alert_color(level),linestyle='None',marker='o',label='Alert('+str(level)+')',markersize = 2*level+1)
+        if len(x_level) > 0 and not is_none(alert_colors[level]):
+            plt.plot(x_level,y_level,color=alert_colors[level],linestyle='None',marker='o',label='Alert('+str(level)+')',markersize = 2*level+1)
         level += 1
            
     plt.ylim([bounds[0], bounds[1]])
@@ -112,20 +125,6 @@ def figmaker(bounds,tick,bandl, trajl, dimension, pdffile, scene, time_ticks):
     #ax.autoscale(enable=True,axis='both',tight=None)
     pdffile.savefig(transparent=True)
     plt.clf()
-
-# Return a color for guidance bands
-def bands_color(code):
-    color = bands_colors[code]
-    if color == None:
-        return 'white'
-    return color
-
-# Return a color for guidance bands
-def alert_color(code):
-    color = alert_colors[code]
-    if color == None:
-        return 'white'
-    return color
 
 ##
 ownship = ''
@@ -145,6 +144,9 @@ ytrk = []
 yvs = []
 yalt = []
 ygs = []
+vs_bounds = [0,0]
+gs_bounds = [0,0]
+alt_bounds = [0,0]
 gs_units = 'knot'
 vs_units = 'fpm'
 alt_units = 'ft'
@@ -234,19 +236,30 @@ for key in alerting_times:
             alert_levels_per_time[times[i]] = int(times[i+1])
         i += 2
 
+if tick_time == None:
+    tick_time = math.floor((xtime[-1]-xtime[0])/xticks)
+
+if tick_trk == None:
+    tick_trk = 360/yticks
+
+if tick_vs == None:
+    tick_vs = (vs_bounds[1]-vs_bounds[0])/yticks;
+
+if tick_gs == None:
+    tick_gs = (gs_bounds[1]-gs_bounds[0])/yticks;
+
+if tick_alt == None:
+    tick_alt = (alt_bounds[1]-alt_bounds[0])/yticks;
+ 
 with PdfPages(outfile) as pdf:
-    if len(trkband)>0:
-        tick_trk = 360/yticks
+    if len(trkband)>0 and not args.notrk:
         degs = [-180,180]
         if args.to360:
             degs = [0,360]
-        figmaker(degs, tick_trk, trkband, ytrk, ['Track', '[deg]'], pdf, scenario,time_ticks)
-    if len(vsband)>0:
-        tick_vs = (vs_bounds[1]-vs_bounds[0])/yticks;
-        figmaker(vs_bounds, tick_vs, vsband, yvs, ['Vertical Speed','['+vs_units+']'], pdf, scenario,time_ticks)
-    if len(gsband)>0:
-        tick_gs = (gs_bounds[1]-gs_bounds[0])/yticks;
-        figmaker(gs_bounds, tick_gs, gsband, ygs, ['Ground Speed','['+gs_units+']'], pdf, scenario,time_ticks)
-    if len(altband)>0:
-        tick_alt = (alt_bounds[1]-alt_bounds[0])/yticks;
-        figmaker(alt_bounds, tick_alt, altband, yalt, ['Altitude','['+alt_units+']'], pdf, scenario,time_ticks)
+        figmaker(degs, tick_time, tick_trk, trkband, ytrk, ['Track', '[deg]'], pdf, scenario)
+    if len(vsband)>0 and not args.novs:
+        figmaker(vs_bounds, tick_time, tick_vs, vsband, yvs, ['Vertical Speed','['+vs_units+']'], pdf, scenario)
+    if len(gsband)>0 and not args.nogs:
+       figmaker(gs_bounds, tick_time, tick_gs, gsband, ygs, ['Ground Speed','['+gs_units+']'], pdf, scenario)
+    if len(altband)>0 and not args.noalt:
+        figmaker(alt_bounds, tick_time, tick_alt, altband, yalt, ['Altitude','['+alt_units+']'], pdf, scenario)
