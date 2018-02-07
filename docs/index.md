@@ -70,9 +70,9 @@ conservative alert levels called *preventive*, *corrective*, and
 *warning*.
 
 DAIDALUS is implemented in C++ and Java and the code is available
-under [NASA's Open Source Agreement](../LICENSES/).  The
+under [NASA's Open Source Agreement](https://github.com/nasa/WellClear/tree/master/LICENSES/).  The
 implementations are modular and highly configurable. The DAIDALUS core
-algorithms have been [formally specified and verified](../PVS) in the Prototype
+algorithms have been [formally specified and verified](https://github.com/nasa/WellClear/tree/master/PVS) in the Prototype
 Verification System ([PVS](http://pvs.csl.sri.com)).  The examples
 provided in this document are written in Java.  Except for language
 idiosyncrasies, both Java and C++ interfaces are identical.
@@ -125,7 +125,7 @@ To run the example batch application in a Unix environment, type, for example,
 ```
 
 In this case, DAIDAILUS will compute alerting information for [Nominal
-B](../Configurations/WC_SC_228_nom_b.txt) configuration with batch scenario [H1.daa](../Scenarios/H1.daa).
+B](https://github.com/nasa/WellClear/tree/master/Configurations/WC_SC_228_nom_b.txt) configuration with batch scenario [H1.daa](https://github.com/nasa/WellClear/tree/master/Scenarios/H1.daa).
 
 Scripts are provided to produce graphs containing guidance and alerting
 information. For example, 

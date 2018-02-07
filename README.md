@@ -1,4 +1,4 @@
-![](logo/DAIDALUS.jpeg "")
+![](docs/DAIDALUS.jpeg "")
 
 Detect and AvoID Alerting Logic for Unmanned Systems
 ========
