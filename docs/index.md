@@ -1,6 +1,6 @@
 ![](DAIDALUS.jpeg)
 
-Reference Manual - V-1.0.1 (Work in Progress)
+DAIDALUS Reference Manual - V-1.0.1 (Work in Progress)
 ===
 
 Table of Contents
