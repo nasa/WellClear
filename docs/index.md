@@ -1,4 +1,4 @@
-![](../logo/DAIDALUS.jpeg)
+![](DAIDALUS.jpeg)
 
 Reference Manual - V-1.0.1 (Work in Progress)
 ===
