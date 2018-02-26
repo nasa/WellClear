@@ -9,7 +9,7 @@ Special Committee 228 (SC-228).
 DAIDALUS is implemented in C++ and Java and the code is available
 under [NASA's Open Source Agreement](../LICENSES/).  
 
-#  Software Library
+# Software Library
 DAIDALUS is available as a software library. After getting the source
 code from [GitHub/WellClear](https://github.com/nasa/WellClear), the
 library can be compiled using the Unix utility `make` with the
