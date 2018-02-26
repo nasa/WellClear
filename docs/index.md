@@ -634,17 +634,17 @@ file using the method `loadFromFile(...)` in the class `KinematicBandsParameters
 The following is a list of parameters that can be configured
 in DAIDALUS.
 
-| Configuration Parameter | Getter/Setter | Type | Description |
-| -- | -- | -- | -- |
-| `lookahead_time` | `get/setLookaheadTime(...)` | Time | Time horizon of all DAIDALUS functions |
-| `left_trk` | `get/setLeftTrack(...)` | Angle | Relative maximum horizontal direction maneuver to the left of current ownship direction |
-| `right_trk` | `get/setRightTrack(...)` | Angle |Relative maximum horizontal direction maneuver to the right of current ownship direction |
-| `min_gs` | `get/setMinVerticalSpeed(...)` | Speed | Absolute minimum horizontal speed maneuver |
-| `max_gs` | `get/setMaxGroundSpeed(...)` | Speed | Absolute maximum horizontal speed maneuver |
-| `min_vs` | `get/setMinVerticalSpeed(...)` | Speed | Absolute minimum vertical speed maneuver |
-| `max_vs` | `get/setMaxVerticalSpeed(...)` | Speed | Absolute maximum vertical speed maneuver |
-| `min_alt` | `get/setMinAltitude(...)` | Altitude | Absolute minimum altitude maneuver |
-| `max_alt` | `get/setMaxAltitude(...)` | Altitude | Absolute maximum altitude maneuver |
+| Configuration Parameter | Getter/Setter | Description (Type) |
+| -- | -- | -- |
+| `lookahead_time` | `get/setLookaheadTime(...)` | Time horizon of all DAIDALUS functions (Time) |
+| `left_trk` | `get/setLeftTrack(...)` | Relative maximum horizontal direction maneuver to the left of current ownship direction (Angle) |
+| `right_trk` | `get/setRightTrack(...)` | Relative maximum horizontal direction maneuver to the right of current ownship direction (Angle)|
+| `min_gs` | `get/setMinVerticalSpeed(...)` |Absolute minimum horizontal speed maneuver  (Speed)|
+| `max_gs` | `get/setMaxGroundSpeed(...)` |Absolute maximum horizontal speed maneuver (Speed) |
+| `min_vs` | `get/setMinVerticalSpeed(...)` | Absolute minimum vertical speed maneuver (Speed)|
+| `max_vs` | `get/setMaxVerticalSpeed(...)` | Absolute maximum vertical speed maneuver (Speed)|
+| `min_alt` | `get/setMinAltitude(...)` | Absolute minimum altitude maneuver (Altitude)|
+| `max_alt` | `get/setMaxAltitude(...)` | Absolute maximum altitude maneuver (Altitude) |
 | `trk_step` | `get/setTrackStep(...)` | Angle | Granularity of horizontal direction maneuvers |
 | `gs_step` | `get/setGroundSpeedStep(...)` | Speed | Granularity of horizontal speed maneuvers |
 | `vs_step` | `get/setVerticalSpeedStep(...)` | Speed | Granularity of vertical speed maneuvers |
