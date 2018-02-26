@@ -125,7 +125,7 @@ To run the example batch application in a Unix environment, type, for example,
 ```
 
 In this case, DAIDAILUS will compute alerting information for [Nominal
-B](https://github.com/nasa/WellClear/tree/master/Configurations/WC_SC_228_nom_b.txt) configuration with batch scenario [H1.daa](https://github.com/nasa/WellClear/tree/master/Scenarios/H1.daa).
+B](https://github.com/nasa/WellClear/blob/master/DAIDALUS/Configurations/WC_SC_228_nom_b.txt) configuration with batch scenario [H1.daa](https://github.com/nasa/WellClear/tree/master/Scenarios/H1.daa).
 
 Scripts are provided to produce graphs containing guidance and alerting
 information. For example, 
