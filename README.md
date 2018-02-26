@@ -29,12 +29,15 @@ accommodate the evolution of the computational requirement in the
 MOPS.
 
 ### Documentation
-The API document for the current version is still work in progress. In the meantime,
-please refer to the release notes and the examples files
-`DaidalusExample.java` and `DaidalusExample.cpp`.
+
+A draft of user guide is available at https://nasa.github.io/WellClear. 
+
+Example programs [`DaidalusExample.java`](DAIDALUS/Java/src/DaidalusExample.java) and 
+[`DaidalusExample.cpp`](DAIDALUS/C++/src/DaidalusExample.cpp) illustrate the main 
+functional capabilities of DAIDALUS in Java and C++, respectively.
 
 For technical information about the definitions and algorithms in this
-repository, visit [http://shemesh.larc.nasa.gov/fm/DAIDALUS](http://shemesh.larc.nasa.gov/fm/DAIDALUS).
+repository, visit https://shemesh.larc.nasa.gov/fm/DAIDALUS.
 
 ### Current Release
 
