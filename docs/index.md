@@ -633,7 +633,7 @@ file. The following is a list of parameters that can be configured
 in DAIDALUS.
 
 | Parameter Name | Type | Description |
-| -- | -- |
+| -- | -- | -- |
 | `lookahead_time` | Time | Time horizon of all DAIDALUS functions |
 | `left_trk` | Angle | Relative maximum horizontal direction resolution to the left of current ownship direction |
 | `right_trk` | Angle |Relative maximum horizontal direction resolution to the right of current ownship direction |
