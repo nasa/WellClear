@@ -628,42 +628,44 @@ lower bounds and its type.
 
 # Parameters
 DAIDALUS parameters can be configured either programmatically, throug
-the class `KinematicBandsParameters`, or loading a configuration
-file. The following is a list of parameters that can be configured
+getter/setter methods in the class `KinematicBandsParameters`, or throug a configuration
+file using the method `loadFromFile(...)` in the class `KinematicBandsParameters`. 
+
+The following is a list of parameters that can be configured
 in DAIDALUS.
 
-| Parameter Name | Type | Description |
-| -- | -- | -- |
-| `lookahead_time` | Time | Time horizon of all DAIDALUS functions |
-| `left_trk` | Angle | Relative maximum horizontal direction maneuver to the left of current ownship direction |
-| `right_trk` | Angle |Relative maximum horizontal direction maneuver to the right of current ownship direction |
-| `min_gs` | Speed | Absolute minimum horizontal speed maneuver |
-| `max_gs` | Speed | Absolute maximum horizontal speed maneuver |
-| `min_vs` | Speed | Absolute minimum vertical speed maneuver |
-| `max_vs` | Speed | Absolute maximum vertical speed maneuver |
-| `min_alt` | Altitude | Absolute minimum altitude maneuver |
-| `max_alt` | Altitude | Absolute maximum altitude maneuver |
-| `trk_step` | Angle | Granularity of horizontal direction maneuvers |
-| `gs_step` | Speed | Granularity of horizontal speed maneuvers |
-| `vs_step` | Speed | Granularity of vertical speed maneuvers |
-| `alt_step` | Speed | Granularity of altitude maneuvers |
-| `horizontal_accel` | Acceleration| Horizontal acceleration used in the computation of horizontal speed maneuvers |
-| `vertical_accel` | Acceleration| Vertical acceleration used in the computation of horizontal speed maneuvers |
-| `turn_rate` | Angle/Time | Turn rate used in the computation of horizontal direction manevuers |
-| `bank_angle` | Angle|Bank angle used in the computation of horizontal direction manevuers|
-| `vertical_rate` | Speed | Vertical rate used in the computation of altitude maneuvers |
-| `recovery_stability_time` | Time |Time delay to stabilize recovery manevuers |
-| `min_horizontal_recovery` | Distance | Minimum horizontal separation used in the computation of recovery maneuvers |
-| `min_vertical_recovery` | Distance|Minimum vertical separation used in the computation of recovery maneuvers |
-| `recovery_trk` | Boolean | Enable computation of horizontal direction recovery maneuvers |
-| `recovery_gs` | Boolean | Enable computation of horizontal speed recovery maneuvers |
-| `recovery_vs` | Boolean | Enable computation of vertical speed recovery maneuvers |
-| `recovery_alt` | Boolean | Enable computation of altitude recovery maneuvers |
-| `ca_bands` | Boolean | Enable computation of collision avoidance maneuvers |
-| `ca_factor` | Scalar in (0,1] | Factor to reduce min horizontal/vertical recovery separation when computing recovery maneuvers|
-| `horizontal_nmac` | Distance | Horizontal NMAC |
-| `vertical_nmac` | Distance | Vertical NMAC |
-| `contour_thr` | Angle | Threshold relative to ownship horizontal direction for the computation of horizontal contours ("blobs") |
+| Configuration Parameter | Getter/Setter | Type | Description |
+| -- | -- | -- | -- |
+| `lookahead_time` | `get/setLookaheadTime(...)` | Time | Time horizon of all DAIDALUS functions |
+| `left_trk` | `get/setLeftTrack(...)` | Angle | Relative maximum horizontal direction maneuver to the left of current ownship direction |
+| `right_trk` | `get/setRightTrack(...)` | Angle |Relative maximum horizontal direction maneuver to the right of current ownship direction |
+| `min_gs` | `get/setMinVerticalSpeed(...)` | Speed | Absolute minimum horizontal speed maneuver |
+| `max_gs` | `get/setMaxGroundSpeed(...)` | Speed | Absolute maximum horizontal speed maneuver |
+| `min_vs` | `get/setMinVerticalSpeed(...)` | Speed | Absolute minimum vertical speed maneuver |
+| `max_vs` | `get/setMaxVerticalSpeed(...)` | Speed | Absolute maximum vertical speed maneuver |
+| `min_alt` | `get/setMinAltitude(...)` | Altitude | Absolute minimum altitude maneuver |
+| `max_alt` | `get/setMaxAltitude(...)` | Altitude | Absolute maximum altitude maneuver |
+| `trk_step` | `get/setTrackStep(...)` | Angle | Granularity of horizontal direction maneuvers |
+| `gs_step` | `get/setGroundSpeedStep(...)` | Speed | Granularity of horizontal speed maneuvers |
+| `vs_step` | `get/setVerticalSpeedStep(...)` | Speed | Granularity of vertical speed maneuvers |
+| `alt_step` | `get/setAltitudeStep(...)` | Speed | Granularity of altitude maneuvers |
+| `horizontal_accel` | `get/setHorizontalAcceleration(...)` | Acceleration | Horizontal acceleration used in the computation of horizontal speed maneuvers |
+| `vertical_accel` | `get/setVerticalAcceleration(...)` | Acceleration | Vertical acceleration used in the computation of horizontal speed maneuvers |
+| `turn_rate` | `get/setTurnRate(...)` | Angle/Time | Turn rate used in the computation of horizontal direction manevuers |
+| `bank_angle` | `get/setBankAngle(...)` | Angle | Bank angle used in the computation of horizontal direction manevuers|
+| `vertical_rate` | `get/setVerticalRate(...)` | Speed | Vertical rate used in the computation of altitude maneuvers |
+| `recovery_stability_time` | `get/setRecoveryStabilityTime(...)` | Time |Time delay to stabilize recovery manevuers |
+| `min_horizontal_recovery` | `get/setMinHorizontalRecovery(...)` | Distance | Minimum horizontal separation used in the computation of recovery maneuvers |
+| `min_vertical_recovery` | `get/setMinVerticalRecovery(...)` | Distance|Minimum vertical separation used in the computation of recovery maneuvers |
+| `recovery_trk` | `isEnabled/setRecoveryTrackBands(...)` | Boolean | Enable computation of horizontal direction recovery maneuvers |
+| `recovery_gs` | `isEnabled/setRecoveryGroundSpeedBands(...)` | Boolean | Enable computation of horizontal speed recovery maneuvers |
+| `recovery_vs` | `isEnabled/setRecoveryVerticalSpeedBands(...)` | Boolean | Enable computation of vertical speed recovery maneuvers |
+| `recovery_alt` | `isEnabled/setRecoveryAltitudeBands(...)` | Boolean | Enable computation of altitude recovery maneuvers |
+| `ca_bands` | `isEnabled/setCollisionAvoidanceBands(...)` | Boolean | Enable computation of collision avoidance maneuvers |
+| `ca_factor` | `get/setCollisionAvoidanceBandsFactor(...)` | Scalar in (0,1] | Factor to reduce min horizontal/vertical recovery separation when computing recovery maneuvers|
+| `horizontal_nmac` | `get/setHorizontalNMAC(...)` | Distance | Horizontal NMAC |
+| `vertical_nmac` | `get/setVerticalNMAC(...)` | Distance | Vertical NMAC |
+| `contour_thr` | `get/setHorizontalContourThreshold(...)` | Angle | Threshold relative to ownship horizontal direction for the computation of horizontal contours ("blobs") |
 
 
 
