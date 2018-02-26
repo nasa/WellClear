@@ -636,6 +636,7 @@ in DAIDALUS.
 
 | Configuration Parameter | Getter/Setter | Description (Type) |
 | -- | -- | -- |
+<<<<<<< HEAD
 | `lookahead_time` | `get/setLookaheadTime` | Time horizon of all DAIDALUS functions (Time) |
 | `left_trk` | `get/setLeftTrack` | Relative maximum horizontal direction maneuver to the left of current ownship direction (Angle) |
 | `right_trk` | `get/setRightTrack` | Relative maximum horizontal direction maneuver to the right of current ownship direction (Angle)|
@@ -668,6 +669,38 @@ in DAIDALUS.
 | `contour_thr` | `get/setHorizontalContourThreshold` | Angle | Threshold relative to ownship horizontal direction for the computation of horizontal contours ("blobs") |
 
 
+=======
+| `lookahead_time` | `get/setLookaheadTime(...)` | Time horizon of all DAIDALUS functions (Time) |
+| `left_trk` | `get/setLeftTrack(...)` | Relative maximum horizontal direction maneuver to the left of current ownship direction (Angle) |
+| `right_trk` | `get/setRightTrack(...)` | Relative maximum horizontal direction maneuver to the right of current ownship direction (Angle)|
+| `min_gs` | `get/setMinVerticalSpeed(...)` |Absolute minimum horizontal speed maneuver  (Speed)|
+| `max_gs` | `get/setMaxGroundSpeed(...)` |Absolute maximum horizontal speed maneuver (Speed) |
+| `min_vs` | `get/setMinVerticalSpeed(...)` | Absolute minimum vertical speed maneuver (Speed)|
+| `max_vs` | `get/setMaxVerticalSpeed(...)` | Absolute maximum vertical speed maneuver (Speed)|
+| `min_alt` | `get/setMinAltitude(...)` | Absolute minimum altitude maneuver (Altitude)|
+| `max_alt` | `get/setMaxAltitude(...)` | Absolute maximum altitude maneuver (Altitude) |
+| `trk_step` | `get/setTrackStep(...)` | Granularity of horizontal direction maneuvers (Angle)|
+| `gs_step` | `get/setGroundSpeedStep(...)` | Granularity of horizontal speed maneuvers (Speed)|
+| `vs_step` | `get/setVerticalSpeedStep(...)` | Granularity of vertical speed maneuvers (Speed)|
+| `alt_step` | `get/setAltitudeStep(...)` | Granularity of altitude maneuvers (Altitude)|
+| `horizontal_accel` | `get/setHorizontalAcceleration(...)` | Horizontal acceleration used in the computation of horizontal speed maneuvers (Acceleration)|
+| `vertical_accel` | `get/setVerticalAcceleration(...)` | Vertical acceleration used in the computation of horizontal speed maneuvers (Acceleration)|
+| `turn_rate` | `get/setTurnRate(...)` | Turn rate used in the computation of horizontal direction manevuers (Angle/Time)|
+| `bank_angle` | `get/setBankAngle(...)` | Bank angle used in the computation of horizontal direction manevuers (Angle)|
+| `vertical_rate` | `get/setVerticalRate(...)` | Vertical rate used in the computation of altitude maneuvers (Speed)|
+| `recovery_stability_time` | `get/setRecoveryStabilityTime(...)` | Time |Time delay to stabilize recovery manevuers |
+| `min_horizontal_recovery` | `get/setMinHorizontalRecovery(...)` | Minimum horizontal separation used in the computation of recovery maneuvers (Distance)|
+| `min_vertical_recovery` | `get/setMinVerticalRecovery(...)` | Minimum vertical separation used in the computation of recovery maneuvers (Distance)|
+| `recovery_trk` | `isEnabled/setRecoveryTrackBands(...)` | Enable computation of horizontal direction recovery maneuvers (Boolean)|
+| `recovery_gs` | `isEnabled/setRecoveryGroundSpeedBands(...)` | Enable computation of horizontal speed recovery maneuvers (Boolean)|
+| `recovery_vs` | `isEnabled/setRecoveryVerticalSpeedBands(...)` | Enable computation of vertical speed recovery maneuvers (Boolean)|
+| `recovery_alt` | `isEnabled/setRecoveryAltitudeBands(...)` | Enable computation of altitude recovery maneuvers (Boolean)|
+| `ca_bands` | `isEnabled/setCollisionAvoidanceBands(...)` | Enable computation of collision avoidance maneuvers (Boolean)|
+| `ca_factor` | `get/setCollisionAvoidanceBandsFactor(...)` | Factor to reduce min horizontal/vertical recovery separation when computing recovery maneuvers (Scalar in (0,1])|
+| `horizontal_nmac` | `get/setHorizontalNMAC(...)` | Horizontal NMAC (Distance) |
+| `vertical_nmac` | `get/setVerticalNMAC(...)` | Vertical NMAC (Distance)|
+| `contour_thr` | `get/setHorizontalContourThreshold(...)` | Threshold relative to ownship horizontal direction for the computation of horizontal contours a.k.a. "blobs" (Angle) |
+>>>>>>> aecef9fa0c2244843f6b391a940f7326dfe1fdf3
 
 ## Pre-Defined Configurations
 The directory [`Configurations`](https://github.com/nasa/WellClear/tree/master/DAIDALUS/Configurations) includes the following configurations files
