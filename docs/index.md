@@ -645,29 +645,27 @@ in DAIDALUS.
 | `max_vs` | `get/setMaxVerticalSpeed(...)` | Absolute maximum vertical speed maneuver (Speed)|
 | `min_alt` | `get/setMinAltitude(...)` | Absolute minimum altitude maneuver (Altitude)|
 | `max_alt` | `get/setMaxAltitude(...)` | Absolute maximum altitude maneuver (Altitude) |
-| `trk_step` | `get/setTrackStep(...)` | Angle | Granularity of horizontal direction maneuvers |
-| `gs_step` | `get/setGroundSpeedStep(...)` | Speed | Granularity of horizontal speed maneuvers |
-| `vs_step` | `get/setVerticalSpeedStep(...)` | Speed | Granularity of vertical speed maneuvers |
-| `alt_step` | `get/setAltitudeStep(...)` | Speed | Granularity of altitude maneuvers |
-| `horizontal_accel` | `get/setHorizontalAcceleration(...)` | Acceleration | Horizontal acceleration used in the computation of horizontal speed maneuvers |
-| `vertical_accel` | `get/setVerticalAcceleration(...)` | Acceleration | Vertical acceleration used in the computation of horizontal speed maneuvers |
-| `turn_rate` | `get/setTurnRate(...)` | Angle/Time | Turn rate used in the computation of horizontal direction manevuers |
-| `bank_angle` | `get/setBankAngle(...)` | Angle | Bank angle used in the computation of horizontal direction manevuers|
-| `vertical_rate` | `get/setVerticalRate(...)` | Speed | Vertical rate used in the computation of altitude maneuvers |
+| `trk_step` | `get/setTrackStep(...)` | Granularity of horizontal direction maneuvers (Angle)|
+| `gs_step` | `get/setGroundSpeedStep(...)` | Granularity of horizontal speed maneuvers (Speed)|
+| `vs_step` | `get/setVerticalSpeedStep(...)` | Granularity of vertical speed maneuvers (Speed)|
+| `alt_step` | `get/setAltitudeStep(...)` | Granularity of altitude maneuvers (Altitude)|
+| `horizontal_accel` | `get/setHorizontalAcceleration(...)` | Horizontal acceleration used in the computation of horizontal speed maneuvers (Acceleration)|
+| `vertical_accel` | `get/setVerticalAcceleration(...)` | Vertical acceleration used in the computation of horizontal speed maneuvers (Acceleration)|
+| `turn_rate` | `get/setTurnRate(...)` | Turn rate used in the computation of horizontal direction manevuers (Angle/Time)|
+| `bank_angle` | `get/setBankAngle(...)` | Bank angle used in the computation of horizontal direction manevuers (Angle)|
+| `vertical_rate` | `get/setVerticalRate(...)` | Vertical rate used in the computation of altitude maneuvers (Speed)|
 | `recovery_stability_time` | `get/setRecoveryStabilityTime(...)` | Time |Time delay to stabilize recovery manevuers |
-| `min_horizontal_recovery` | `get/setMinHorizontalRecovery(...)` | Distance | Minimum horizontal separation used in the computation of recovery maneuvers |
-| `min_vertical_recovery` | `get/setMinVerticalRecovery(...)` | Distance|Minimum vertical separation used in the computation of recovery maneuvers |
-| `recovery_trk` | `isEnabled/setRecoveryTrackBands(...)` | Boolean | Enable computation of horizontal direction recovery maneuvers |
-| `recovery_gs` | `isEnabled/setRecoveryGroundSpeedBands(...)` | Boolean | Enable computation of horizontal speed recovery maneuvers |
-| `recovery_vs` | `isEnabled/setRecoveryVerticalSpeedBands(...)` | Boolean | Enable computation of vertical speed recovery maneuvers |
-| `recovery_alt` | `isEnabled/setRecoveryAltitudeBands(...)` | Boolean | Enable computation of altitude recovery maneuvers |
-| `ca_bands` | `isEnabled/setCollisionAvoidanceBands(...)` | Boolean | Enable computation of collision avoidance maneuvers |
-| `ca_factor` | `get/setCollisionAvoidanceBandsFactor(...)` | Scalar in (0,1] | Factor to reduce min horizontal/vertical recovery separation when computing recovery maneuvers|
-| `horizontal_nmac` | `get/setHorizontalNMAC(...)` | Distance | Horizontal NMAC |
-| `vertical_nmac` | `get/setVerticalNMAC(...)` | Distance | Vertical NMAC |
-| `contour_thr` | `get/setHorizontalContourThreshold(...)` | Angle | Threshold relative to ownship horizontal direction for the computation of horizontal contours ("blobs") |
-
-
+| `min_horizontal_recovery` | `get/setMinHorizontalRecovery(...)` | Minimum horizontal separation used in the computation of recovery maneuvers (Distance)|
+| `min_vertical_recovery` | `get/setMinVerticalRecovery(...)` | Minimum vertical separation used in the computation of recovery maneuvers (Distance)|
+| `recovery_trk` | `isEnabled/setRecoveryTrackBands(...)` | Enable computation of horizontal direction recovery maneuvers (Boolean)|
+| `recovery_gs` | `isEnabled/setRecoveryGroundSpeedBands(...)` | Enable computation of horizontal speed recovery maneuvers (Boolean)|
+| `recovery_vs` | `isEnabled/setRecoveryVerticalSpeedBands(...)` | Enable computation of vertical speed recovery maneuvers (Boolean)|
+| `recovery_alt` | `isEnabled/setRecoveryAltitudeBands(...)` | Enable computation of altitude recovery maneuvers (Boolean)|
+| `ca_bands` | `isEnabled/setCollisionAvoidanceBands(...)` | Enable computation of collision avoidance maneuvers (Boolean)|
+| `ca_factor` | `get/setCollisionAvoidanceBandsFactor(...)` | Factor to reduce min horizontal/vertical recovery separation when computing recovery maneuvers (Scalar in (0,1])|
+| `horizontal_nmac` | `get/setHorizontalNMAC(...)` | Horizontal NMAC (Distance) |
+| `vertical_nmac` | `get/setVerticalNMAC(...)` | Vertical NMAC (Distance)|
+| `contour_thr` | `get/setHorizontalContourThreshold(...)` | Threshold relative to ownship horizontal direction for the computation of horizontal contours a.k.a. "blobs" (Angle) |
 
 ## Pre-Defined Configurations
 The directory [`Configurations`](https://github.com/nasa/WellClear/tree/master/DAIDALUS/Configurations) includes the following configurations files
