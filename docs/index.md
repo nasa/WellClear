@@ -81,7 +81,7 @@ idiosyncrasies, both Java and C++ interfaces are identical.
 DAIDALUS is available as a software library. After getting the source
 code from [GitHub/WellClear](https://github.com/nasa/WellClear), the
 library can be compiled using the Unix utility `make` with the
-provided `Makefile` in both the [Java](Java/Makefile) and [C++](C++/Makefile) directories. In Java,
+provided `Makefile` in both the [Java](https://github.com/nasa/WellClear/blob/master/DAIDALUS/Java/Makefile) and [C++](https://github.com/nasa/WellClear/blob/master/DAIDALUS/C%2B%2B/Makefile) directories. In Java,
 the `make` command produces a jar file:
 
 ```
@@ -95,8 +95,8 @@ In C++, the `make` command will generate the static library
 `lib/DAIDALUS.a`.
 
 The sample application `DaidalusExample`, which is available in
-[Java](Java/src/DaidalusExample.java) and
-[C++](C++/src/DaidalusExample.cpp), illustrates the main
+[Java](https://github.com/nasa/WellClear/blob/master/DAIDALUS/Java/src/DaidalusExample.java) and
+[C++](https://github.com/nasa/WellClear/blob/master/DAIDALUS/C%2B%2B/src/DaidalusExample.cpp), illustrates the main
 functionalities provided by DAIDALUS including reading/writing
 configuration files, detection logic, alerting logic, maneuver
 guidance logic, and computation of loss of well-clear contours.  This
@@ -627,13 +627,65 @@ lower bounds and its type.
 ```
 
 # Parameters
-(Work in Progress)
+DAIDALUS parameters can be configured either programmatically, throug
+the class `KinematicBandsParameters`, or loading a configuration
+file. The following is a list of parameters that can be configured
+in DAIDALUS.
 
-# Pre-Defined Configurations
-The directory [`Configurations`](Configurations/) includes the following configurations files
+| Parameter Name | Type | Description |
+| --|--|
+| `lookahead_time` | Time | Time horizon of all DAIDALUS functions |
+|`left_trk` | Angle | Relative maximum horizontal direction
+resolution to the left of current ownship direction|
+|`right_trk` | Angle |Relative maximum horizontal direction
+resolution to the right of current ownship direction|
+|`min_gs` | Speed |Absolute minimum horizontal speed resolution|
+|`max_gs` | Speed|Absolute maximum horizontal speed resolution|
+|`min_vs` |  Speed |Absolute minimum vertical speed resolution|
+|`max_vs` |  Speed|Absolute maximum vertical speed resolution|
+|`min_alt` | Altitude|Absolute minimum altitude resolution|
+|`max_alt` | Altitude|Absolute maximum altitude resolution|
+| `trk_step` | Angle |Granularity of horizontal direction maneuvers|
+|`gs_step` | Speed|Granularity of horizontal speed maneuvers|
+|`vs_step` | Speed|Granularity of vertical speed maneuvers|
+|`alt_step` | Speed|Granularity of altitude maneuvers|
+|`horizontal_accel` | Acceleration| Horizontal acceleration used
+to computed horizontal speed bands|
+|`vertical_accel` | Acceleration| Vertical acceleration used to
+compute vertical speed bands |
+|`turn_rate` | Angle/Time | Turn rate used to compute horizontal
+| direction bands|
+|`bank_angle` | Angle|Bank angle used to compute horizontal
+direction bands|
+|`vertical_rate` | Speed |Vertical rate used to compute altitude bands|
+| `recovery_stability_time` | Time |Time delay to stabilize recovery bands|
+|`min_horizontal_recovery` | Distance|Minimum horizontal
+separation used to compute recovery bands |
+|`min_vertical_recovery` | Distance|Minimum vertical
+separation used to compute recovery bands|
+|`recovery_trk` | Boolean |Enable computation of horizontal direction
+recovery bands |
+|`recovery_gs` | Boolean|Enable computation of horizontal speed
+recovery bands |
+|`recovery_vs` | Boolean|Enable computation of vertical speed
+recovery bands |
+|`recovery_alt` | Boolean|Enable computation of altitude
+recovery bands |
+|`ca_bands` | Boolean | Enable computation of collision avoidance bands |
+|`ca_factor` | Scalar in (0,1] | Factor to reduce min horizontal/vertical recovery
+separation when computing recovery bands|
+|`horizontal_nmac` | Distance |Horizontal NMAC|
+|`vertical_nmac` | Distance | Vertical NMAC||
+|`contour_thr` | Angle | Threshold relative to ownship horizontal
+direction for the computation of horizontal contours ("blobs")|
+
+
+
+## Pre-Defined Configurations
+The directory [`Configurations`](https://github.com/nasa/WellClear/tree/master/DAIDALUS/Configurations) includes the following configurations files
 that are related to RTCA SC-228 MOPS Phase I.
 
-* [`WC_SC_228_std.txt`](Configurations/WC_SC_228_std.txt):
+* [`WC_SC_228_std.txt`](https://github.com/nasa/WellClear/blob/master/DAIDALUS/Configurations/WC_SC_228_std.txt):
   This configuration implements the alerting and maneuvering guidance
   logics for a the standard definiton of DAA Well-Clear provided in 
   MOPS  Section 2.2.4.3.1 (also see Appendix C). The configuration uses
@@ -650,7 +702,7 @@ that are related to RTCA SC-228 MOPS Phase I.
   Daidalus daa  = new Daidalus();
   ```
   
-* [`WC_SC_228_nom_a.txt`](Configurations/WC_SC_228_nom_a.txt): This
+* [`WC_SC_228_nom_a.txt`](https://github.com/nasa/WellClear/blob/master/DAIDALUS/Configurations/WC_SC_228_nom_a.txt): This
   configuration corresponds to a nominal instantiation of DAIDALUS for
   the class of aircraft that are able to perform a turn rate of 1.5
   deg/s and meet the performance maneuverability listed in
@@ -668,7 +720,7 @@ that are related to RTCA SC-228 MOPS Phase I.
   daa.set_Buffered_WC_SC_228_MOPS(false);
   ```
 
-* [`WC_SC_228_nom_b.txt`](Configurations/WC_SC_228_nom_b.txt): This
+* [`WC_SC_228_nom_b.txt`](https://github.com/nasa/WellClear/blob/master/DAIDALUS/Configurations/WC_SC_228_nom_b.txt): This
   configuration corresponds to a nominal instantiation of DAIDALUS for
   the class of aircraft that are able to perform a turn rate of 3.0
   deg/s and meet the performance maneuverability listed in
@@ -686,7 +738,7 @@ that are related to RTCA SC-228 MOPS Phase I.
   daa.set_Buffered_WC_SC_228_MOPS(true);
   ```
 
-* [`WC_SC_228_min.txt`](Configurations/WC_SC_228_min.txt): This
+* [`WC_SC_228_min.txt`](https://github.com/nasa/WellClear/blob/master/DAIDALUS/Configurations/WC_SC_228_min.txt): This
   configuration corresponds to the minimum detect and avoid
   threshold values used for the generation of the encounter
   characterization files in Appendix P.
@@ -698,7 +750,7 @@ that are related to RTCA SC-228 MOPS Phase I.
   implementation against the minimum values in the
   encounter characterization files in Appendix P.
   
-* [`WC_SC_228_max.txt`](Configurations/WC_SC_228_max.txt): This
+* [`WC_SC_228_max.txt`](https://github.com/nasa/WellClear/blob/master/DAIDALUS/Configurations/WC_SC_228_max.txt): This
   configuration corresponds to the maximum detect and avoid
   threshold values used for the generation of the encounter
   characterization files in Appendix P.
