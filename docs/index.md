@@ -125,7 +125,7 @@ To run the example batch application in a Unix environment, type, for example,
 ```
 
 In this case, DAIDAILUS will compute alerting information for [Nominal
-B](https://github.com/nasa/WellClear/blob/master/DAIDALUS/Configurations/WC_SC_228_nom_b.txt) configuration with batch scenario [H1.daa](https://github.com/nasa/WellClear/tree/master/Scenarios/H1.daa).
+B](https://github.com/nasa/WellClear/blob/master/DAIDALUS/Configurations/WC_SC_228_nom_b.txt) configuration with batch scenario [H1.daa](https://github.com/nasa/WellClear/blob/master/DAIDALUS/Scenarios/H1.daa).
 
 Scripts are provided to produce graphs containing guidance and alerting
 information. For example, 
@@ -633,51 +633,37 @@ file. The following is a list of parameters that can be configured
 in DAIDALUS.
 
 | Parameter Name | Type | Description |
-| --|--|
+| -- | -- |
 | `lookahead_time` | Time | Time horizon of all DAIDALUS functions |
-|`left_trk` | Angle | Relative maximum horizontal direction
-resolution to the left of current ownship direction|
-|`right_trk` | Angle |Relative maximum horizontal direction
-resolution to the right of current ownship direction|
-|`min_gs` | Speed |Absolute minimum horizontal speed resolution|
-|`max_gs` | Speed|Absolute maximum horizontal speed resolution|
-|`min_vs` |  Speed |Absolute minimum vertical speed resolution|
-|`max_vs` |  Speed|Absolute maximum vertical speed resolution|
-|`min_alt` | Altitude|Absolute minimum altitude resolution|
-|`max_alt` | Altitude|Absolute maximum altitude resolution|
-| `trk_step` | Angle |Granularity of horizontal direction maneuvers|
-|`gs_step` | Speed|Granularity of horizontal speed maneuvers|
-|`vs_step` | Speed|Granularity of vertical speed maneuvers|
-|`alt_step` | Speed|Granularity of altitude maneuvers|
-|`horizontal_accel` | Acceleration| Horizontal acceleration used
-to computed horizontal speed bands|
-|`vertical_accel` | Acceleration| Vertical acceleration used to
-compute vertical speed bands |
-|`turn_rate` | Angle/Time | Turn rate used to compute horizontal
-| direction bands|
-|`bank_angle` | Angle|Bank angle used to compute horizontal
-direction bands|
-|`vertical_rate` | Speed |Vertical rate used to compute altitude bands|
-| `recovery_stability_time` | Time |Time delay to stabilize recovery bands|
-|`min_horizontal_recovery` | Distance|Minimum horizontal
-separation used to compute recovery bands |
-|`min_vertical_recovery` | Distance|Minimum vertical
-separation used to compute recovery bands|
-|`recovery_trk` | Boolean |Enable computation of horizontal direction
-recovery bands |
-|`recovery_gs` | Boolean|Enable computation of horizontal speed
-recovery bands |
-|`recovery_vs` | Boolean|Enable computation of vertical speed
-recovery bands |
-|`recovery_alt` | Boolean|Enable computation of altitude
-recovery bands |
-|`ca_bands` | Boolean | Enable computation of collision avoidance bands |
-|`ca_factor` | Scalar in (0,1] | Factor to reduce min horizontal/vertical recovery
-separation when computing recovery bands|
-|`horizontal_nmac` | Distance |Horizontal NMAC|
-|`vertical_nmac` | Distance | Vertical NMAC||
-|`contour_thr` | Angle | Threshold relative to ownship horizontal
-direction for the computation of horizontal contours ("blobs")|
+| `left_trk` | Angle | Relative maximum horizontal direction resolution to the left of current ownship direction |
+| `right_trk` | Angle |Relative maximum horizontal direction resolution to the right of current ownship direction |
+| `min_gs` | Speed | Absolute minimum horizontal speed resolution |
+| `max_gs` | Speed | Absolute maximum horizontal speed resolution |
+| `min_vs` | Speed | Absolute minimum vertical speed resolution |
+| `max_vs` | Speed | Absolute maximum vertical speed resolution |
+| `min_alt` | Altitude | Absolute minimum altitude resolution |
+| `max_alt` | Altitude | Absolute maximum altitude resolution |
+| `trk_step` | Angle | Granularity of horizontal direction maneuvers |
+| `gs_step` | Speed | Granularity of horizontal speed maneuvers |
+| `vs_step` | Speed | Granularity of vertical speed maneuvers |
+| `alt_step` | Speed | Granularity of altitude maneuvers |
+| `horizontal_accel` | Acceleration| Horizontal acceleration used to computed horizontal speed bands |
+| `vertical_accel` | Acceleration| Vertical acceleration used to compute vertical speed bands |
+| `turn_rate` | Angle/Time | Turn rate used to compute horizontal direction bands |
+| `bank_angle` | Angle|Bank angle used to compute horizontal direction bands|
+| `vertical_rate` | Speed | Vertical rate used to compute altitude bands |
+| `recovery_stability_time` | Time |Time delay to stabilize recovery bands |
+| `min_horizontal_recovery` | Distance|Minimum horizontal separation used to compute recovery bands |
+| `min_vertical_recovery` | Distance|Minimum vertical separation used to compute recovery bands |
+| `recovery_trk` | Boolean | Enable computation of horizontal direction recovery bands |
+| `recovery_gs` | Boolean | Enable computation of horizontal speed recovery bands |
+| `recovery_vs` | Boolean | Enable computation of vertical speed recovery bands |
+| `recovery_alt` | Boolean | Enable computation of altitude recovery bands |
+| `ca_bands` | Boolean | Enable computation of collision avoidance bands |
+| `ca_factor` | Scalar in (0,1] | Factor to reduce min horizontal/vertical recovery separation when computing recovery bands|
+| `horizontal_nmac` | Distance | Horizontal NMAC |
+| `vertical_nmac` | Distance | Vertical NMAC |
+| `contour_thr` | Angle | Threshold relative to ownship horizontal direction for the computation of horizontal contours ("blobs") |
 
 
 
