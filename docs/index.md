@@ -377,20 +377,20 @@ explained in the Section
 configuration file only needs to provide values to the
 parameters that change. The method call
 ```java
-daa.loadFromFile(filename);
+daa.parameters.loadFromFile(filename);
 ```
-loads a configuration file, whose name is indicated by the parameter
-`filename`, into the `Daidalus` object `daa`.
+loads a configuration file, whose name is indicated by 
+`filename`, into the `parameters` field of the `Daidalus` object `daa`.
 The current configurations of a `Daidalus` object `daa` can be written into a file
 using the method call
 ```java
-daa.saveToFile(filename);
+daa.parameters.saveToFile(filename);
 ```
 The methods
-`loadFromFile` and `saveToFile` return a boolean value. The value
+`loadFromFile` and `saveToFile` of the class `KinematicBandsParameters` return a boolean value. The value
 `false` indicates that an input/output error has occurred, e.g.,a file
 cannot be read because it does not exist or a file cannot be written because
-insufficient permissions.
+of insufficient permissions.
 
 ## Adding Ownship and Traffic States
 A `Daidalus` object `daa` maintains a list of aircraft states at a
