@@ -12,21 +12,16 @@ The repository also includes definitions in Matlab of a family of
 well-clear violation volumes and the formal specification
 of DAIDALUS core algorithms in the Prototype Verification System ([PVS](http://pvs.csl.sri.com)).
 
-DAIDALUS is the Detect and Avoid reference implementation of the RTCA
-SC-228 MOPS. The current software release implements the Detect and
-Avoid functionality
-described in Appendix G of the current draft of SC-228 MOPS V3.8
-(2016-11-10) such as
+DAIDALUS is a
+reference implementation of the detect and avoid (DAA) functional
+requirements  described in
+Appendix G of DO-365, the Minimum Operational Performance Standards (MOPS)
+for Unmanned Aircraft Systems (UAS)  developed by RTCA
+Special Committee 228 (SC-228). The current software release implements
 
 *  detection logic,
 *  alerting logic based on hazard and non-hazard volumes, and
 *  multi-level instantaneous and kinematic maneuver guidance.
-
-Although the core algorithms of DAIDALUS remain the same, the
-application programming interface (API) of v1.* has changed with
-respect to the family of v0.99* releases. These changes were necessary to
-accommodate the evolution of the computational requirement in the
-MOPS.
 
 ### Documentation
 
