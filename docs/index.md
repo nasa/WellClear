@@ -627,8 +627,8 @@ lower bounds and its type.
 ```
 
 ## Aircraft Contributing to Bands
-Bands that are in the current path of the ownship are called {\em
-conflict bands}. Conflict bands simultaneously  appear for all type of
+Bands that are in the current path of the ownship are called 
+conflict bands. Conflict bands simultaneously  appear for all type of
 maneuvers, e.g., horizontal direction, horizontal speed, vertical
 speed, and altitude. The list of aircraft contributing to conflict
 bands for a particular alert level can be obtained as follows:
@@ -638,8 +638,8 @@ List<TrafficState> acs = bands.conflictAircraft(alert_level);
 The variable `alert_level` denotes a level between 1 and the most
 severe alert level that has been configured.
 
-Bands that are not in the current path of the ownship are called {\em
-peripheral bands}. Peripheral bands are different for different type
+Bands that are not in the current path of the ownship are called 
+peripheral bands. Peripheral bands are different for different type
 of maneuvers. The list of aircraft contributing to each type of 
 bands for a particular alert level can be obtained as follows:
 ```java
@@ -659,7 +659,7 @@ List<TrafficState> acs_alt = bands.peripheralAltitudeAircraft(alert_level);
 
 DAIDALUS objects can be configured through the class variable
 `parameters` of type `KinematicBandsParameters`. The configuration can
-be done programmatically using getter/setter methods or via a
+be done either programmatically using getter/setter methods or via a
 configuration file using the method `loadFromFile`.  These methods are
 defined in the class `KinematicBandsParameters`.
 
