@@ -13,20 +13,21 @@ Table of Contents
       * [Units](#units)
       * [Earth Projection and Aircraft States](#earth-projection-and-aircraft-states)
       * [Conventions, Misnomers, and Gotchas](#conventions-misnomers-and-gotchas)
-   * [The Class Daidalus](#the-class-daidalus)
-      * [Creating and Configuring a Daidalus Object](#creating-and-configuring-a-daidalus-object)
+   * [The Class `Daidalus`](#the-class-daidalus)
+      * [Creating a Daidalus Object](#creating-and-configuring-a-daidalus-object)
       * [Adding Ownship and Traffic States](#adding-ownship-and-traffic-states)
       * [Providing Wind Information](#providing-wind-information)
       * [Conflict Detection Logic](#conflict-detection-logic)
       * [Alerting Logic](#alerting-logic)
       * [Maneuver Guidance Logic](#maneuver-guidance-logic)
-   * [The Class KinematicMultiBands](#the-class-kinematicmultibands)
+   * [The Class `KinematicMultiBands`](#the-class-kinematicmultibands)
       * [Track (or Heading) Bands](#track-or-heading-bands)
       * [Ground Speed (or Air Speed) Bands](#ground-speed-or-air-speed-bands)
       * [Vertical Speed Bands](#vertical-speed-bands)
       * [Altitude Bands](#altitude-bands)
-   * [Parameters](#parameters)
-   * [Pre-Defined Configurations](#pre-defined-configurations)
+   * [The Class `KinematicBandsParameters`](#the-class-kinematicbandsparameters)
+     * [Parameters](#parameters)
+     * [Pre-Defined Configurations](#pre-defined-configurations)
    * [Advanced Features](#advanced-features)
    * [Contact](#contact)
 
@@ -548,15 +549,14 @@ well-clear status in a timely manner and without violating
 configurable separation minima. By definition of the maneuver guidance logic, intervals of type
 `RECOVERY` are computed only when there are no intervals of type
 `NONE`.
-*  `UNKNOWN`: This type of intervals is returned for maneuvers that
-are  unassessed, i.e., values that are outside the configured minimum/maximum values.
+*  `UNKNOWN`: This type of intervals signals an unexpected result, i.e., values that are outside the configured minimum/maximum values.
 
  Ownship performance limits and other parameters that govern the
  maneuver guidance logic can be configured  in either the
  `Daidalus` object from which the `bands` object
 is constructed or in the `bands` object directly. The methods to set
 and get these configuration parameters are described in 
- Section [Parameters](#parameters).  
+ Section [Parameters](#parameters).
 
 ## Track (or Heading) Bands
 The computation of track bands (heading bands, when wind information is
@@ -626,11 +626,44 @@ lower bounds and its type.
   } 
 ```
 
-# Parameters
-DAIDALUS parameters can be configured either programmatically, throug
-getter/setter methods in the class `KinematicBandsParameters`, or throug a configuration
-file using the method `loadFromFile(...)` in the class `KinematicBandsParameters`. 
+## Aircraft Contributing to Bands
+Bands that are in the current path of the ownship are called {\em
+conflict bands}. Conflict bands simultaneously  appear for all type of
+maneuvers, e.g., horizontal direction, horizontal speed, vertical
+speed, and altitude. The list of aircraft contributing to conflict
+bands for a particular alert level can be obtained as follows:
+```java
+List<TrafficState> acs = bands.conflictAircraft(alert_level);
+```
+The variable `alert_level` denotes a level between 1 and the most
+severe alert level that has been configured.
 
+Bands that are not in the current path of the ownship are called {\em
+peripheral bands}. Peripheral bands are different for different type
+of maneuvers. The list of aircraft contributing to each type of 
+bands for a particular alert level can be obtained as follows:
+```java
+List<TrafficState> acs_trk = bands.peripheralTrackAircraft(alert_level);
+List<TrafficState> acs_gs = bands.peripheralGroundSpeedAircraft(alert_level);
+List<TrafficState> acs_vs = bands.peripheralVerticalSpeedAircraft(alert_level);
+List<TrafficState> acs_alt = bands.peripheralAltitudeAircraft(alert_level);
+```
+
+## Resolutions
+
+## Time to Recovery
+
+## Last Time to Maneuver
+
+# The Class `KinematicBandsParameters`
+
+DAIDALUS objects can be configured through the class variable
+`parameters` of type `KinematicBandsParameters`. The configuration can
+be done programmatically using getter/setter methods or via a
+configuration file using the method `loadFromFile`.  These methods are
+defined in the class `KinematicBandsParameters`.
+
+## Basic Parameters
 The following is a list of parameters that can be configured
 in DAIDALUS.
 
@@ -662,10 +695,70 @@ in DAIDALUS.
 | `recovery_vs` | `isEnabled/setRecoveryVerticalSpeedBands` | Enable computation of vertical speed recovery maneuvers (Boolean)|
 | `recovery_alt` | `isEnabled/setRecoveryAltitudeBands` | Enable computation of altitude recovery maneuvers (Boolean)|
 | `ca_bands` | `isEnabled/setCollisionAvoidanceBands` | Enable computation of collision avoidance maneuvers (Boolean)|
-| `ca_factor` | `get/setCollisionAvoidanceBandsFactor` | Factor to reduce min horizontal/vertical recovery separation when computing recovery maneuvers (Scalar in (0,1])|
+| `ca_factor` | `get/setCollisionAvoidanceBandsFactor` | Factor to reduce min horizontal/vertical recovery separation when computing collision avoidance maneuvers (Scalar in (0,1])|
 | `horizontal_nmac` | `get/setHorizontalNMAC` | Horizontal NMAC (Distance) |
 | `vertical_nmac` | `get/setVerticalNMAC` | Vertical NMAC (Distance)|
-| `contour_thr` | `get/setHorizontalContourThreshold` | Threshold relative to ownship horizontal direction for the computation of horizontal contours a.k.a. "blobs" (Angle) |
+| `contour_thr` | `get/setHorizontalContourThreshold` | Threshold
+| relative to ownship horizontal direction for the computation of
+| horizontal contours a.k.a. "blobs" (Angle) |
+
+The following restrictions apply to these parameters.
+* `lookahead_time` is positive.
+* `left_trk` and `right_tk` are non-negative and less than 180
+  degrees. 
+* `min_gs` is non-negative and strictly less than `max_gs`.
+* `min_vs` is strictly less than `max_gs`. Typically, `min_vs` is negative and
+`max_vs` is positive.
+* `min_alt` is non-negative and strictly less than `max_alt`.
+* `trk_step`, `gs_step`, `vs_step`, and `alt_step` are strictly
+positive small values.
+*  `horizontal_accel` is non-negative. If zero, horizontal speed maneuvers are computed
+   assuming instantaneous speed changes.
+*  `vertical_accel` is non-negative. If zero, vertical speed maneuvers are computed
+assuming instantaneous speed changes.
+* `turn_rate` and `bank_angle` are non-negative, but only one
+  of them can be non-zero. If both are zero, horizontal direction
+  maneuvers are computed assuming instantaneous direction changes.
+* `vertical_rate` is non-negative. If zero, altitude maneuvers are
+computed assuming instantaneous altitude changes.
+* `recovery_stability_time` is a small non-negative value.
+* `min_horizontal_recovery` is a positive number greater than or
+equal to `horizontal_nmac`.
+* `min_vertical_recovery` is a positive number greater than or
+equal to `vertical_nmac`.
+* `ca_factor` is a positive number less than 1. When computing
+  collision avoidance maneuvers, the volume defined by
+  `min_horizontal_recovery` and `min_vertical_recovery` is iteratively
+  reduced by this factor until either a recovery maneuver that avoid this
+  volume is found or the NMAC volume (as defined by `horizontal_nmac`
+  and `vertical_nmac`) is reached. In the later case, no recovery
+  maneuver exists and recovery bands saturate. 
+* `contour_thr` is a non-negative angle less than or equal to 180
+degrees.  This threshold limits the search of contours relative to
+the ownship current direction.  If zero, only contours that are in the current ownship
+trajectory are computed. If 180, all contours are
+computed. 
+
+When appropriate, explicit units can be provided when configuring these parameters
+either using a file or programmatically.  For example,  in a configuration file,
+units can be provided as follows:
+```java
+max_gs = 700.0 [knot]
+```
+The following configuration can also be achieved using the method
+```java
+daa.parameters.setMaxGroundSpeed(700.0,"knot");
+```
+If no units are provided, internal units are assumed, i.e., meters for
+distance, seconds for time, radians for angles, and so on.
+
+## Alert Thresholds
+
+DAIDALUS also enables the configuration of alert level thresholds.
+The following parameters can be configured per alert level (The
+first level is 1) in a configuration file.
+
+## Detectors
 
 ## Pre-Defined Configurations
 The directory [`Configurations`](https://github.com/nasa/WellClear/tree/master/DAIDALUS/Configurations) includes the following configurations files
@@ -747,6 +840,7 @@ that are related to RTCA SC-228 MOPS Phase I.
   This configuration should only be used to check the performance of an actual
   implementation against the maximum values in the
   encounter characterization files in Appendix P.
+
 
 # Advanced Features
 (Work in progress)
