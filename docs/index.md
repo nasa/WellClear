@@ -119,27 +119,51 @@ To run the example application in a Unix environment, type
 $ ./DaidalusExample
 ```
 
-To run the example batch application in a Unix environment, type, for example,
+Several DAA metrics can be computed in batch mode for a given encounter using the sample
+program `DaidalusAlerting`, which is available in
+[Java](https://github.com/nasa/WellClear/blob/master/DAIDALUS/Java/src/DaidalusAlerting.java) and
+[C++](https://github.com/nasa/WellClear/blob/master/DAIDALUS/C%2B%2B/src/DaidalusAlerting.cpp), e.g.,
 
 ```
-./DaidalusAlerting --nomb --out H1.csv ../Scenarios/H1.daa
+./DaidalusAlerting --conf ../Configurations/WC_SC_228_std.txt ../Scenarios/H1.daa
+Generating CSV file H1.csv
 ```
 
-In this case, DAIDAILUS will compute alerting information for [Nominal
-B](https://github.com/nasa/WellClear/blob/master/DAIDALUS/Configurations/WC_SC_228_nom_b.txt) configuration with batch scenario [H1.daa](https://github.com/nasa/WellClear/blob/master/DAIDALUS/Scenarios/H1.daa).
+The generated file `H1.csv` contains  alerting information computed by DAIDALUS
+for the encounter [H1.daa](https://github.com/nasa/WellClear/blob/master/DAIDALUS/Scenarios/H1.daa) assuming [Nominal
+B](https://github.com/nasa/WellClear/blob/master/DAIDALUS/Configurations/WC_SC_228_nom_b.txt) configuration.
 
 Scripts are provided to produce graphs containing guidance and alerting
 information. For example, 
 
 ```
 ./DrawMultiBands --conf ../Configurations/WC_SC_228_std.txt ../Scenarios/H1.daa
+Writing file H1.draw, which can be processed with the Python script drawmultibands.py
 ```
 
 produces a file `H1.draw`, which can be processed with the Python
-script `drawmultibands.py` to produce a PDF file, e.g.,
+script `drawmultibands.py` to produce a PDF file displaying manuever
+guidance information for the given encounter, e.g.,
 
 ```
 ../Scripts/drawmultibands.py H1.draw
+Writing H1.pdf
+```
+
+The script `drawgraph.py` (thanks to Rachael Shudde, NASA Intern
+2017)  can be used to produce graphs of the information produced by
+`DaidalusAlerting`, e.g.,
+
+```
+../Scripts/drawgraphs.py --conf ../Configurations/WC_SC_228_std.txt --hd H12.daa
+Writing PDF file H12_horizontal_distance.pdf
+
+../Scripts/drawgraphs.py --conf ../Configurations/WC_SC_228_std.txt --taumod H12.daa
+Writing PDF file H12_taumod.pdf
+
+../Scripts/drawgraphs.py --conf ../Configurations/WC_SC_228_std.txt --hmd H12.daa
+Writing PDF file H12_hmd.pdf
+```
 ```
 
 # Preliminaries
