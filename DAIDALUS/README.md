@@ -61,8 +61,8 @@ Generating CSV file H1.csv
 ```
 
 The generated file `H1.csv` contains  alerting information computed by DAIDALUS
-for the encounter [H1.daa](../Scenarios/H1.daa) assuming [Nominal
-B](../Configurations/WC_SC_228_nom_b.txt) configuration.
+for the encounter [H1.daa](Scenarios/H1.daa) assuming [Nominal
+B](Configurations/WC_SC_228_nom_b.txt) configuration.
 
 Scripts are provided to produce graphs containing guidance and alerting
 information. For example, 

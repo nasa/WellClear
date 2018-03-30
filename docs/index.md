@@ -164,7 +164,6 @@ Writing PDF file H12_taumod.pdf
 ../Scripts/drawgraphs.py --conf ../Configurations/WC_SC_228_std.txt --hmd H12.daa
 Writing PDF file H12_hmd.pdf
 ```
-```
 
 # Preliminaries
 
