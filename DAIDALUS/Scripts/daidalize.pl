@@ -116,9 +116,15 @@ while (<INFILE>) {
   } elsif ($do > 0) {
     my @columns = split(/[ ,]+/,$str);
     my $nameidx = $indices{'NAME'};
+    my $timeidx = $indices{'time'};
+    if (!defined $columns[$nameidx] ||
+	!defined $columns[$nameidx] ||
+	!defined $columns[$timeidx]) {
+      $do = -1;
+      next;
+    }
     next if ($but && grep(/$columns[$nameidx]/,@butl)) ||
       ($only && !grep(/$columns[$nameidx]/,@onlyl));
-    my $timeidx = $indices{'time'};
     my $t = $columns[$timeidx];
     if ($current_time == $t) {
       if ($new_time_step) {
@@ -128,7 +134,7 @@ while (<INFILE>) {
 	  $str = join(", ",@columns);
 	  print "** Warning: $t --> $current_time\n";
 	} else {
-	  die "** Error: Time $t is the same a previous time\n";
+	  die "** Error: Time $t is the same a previous time. Try --fixtimes\n";
 	}
       }
     } else {
