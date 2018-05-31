@@ -222,7 +222,7 @@ infile.close()
 if outfile == None:
     outfile = scenario+".pdf"
 
-print("Writing "+outfile)
+print("Writing PDF file "+outfile)
 
 alert_levels_per_time = {}
 

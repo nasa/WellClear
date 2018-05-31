@@ -43,6 +43,7 @@ parser.add_argument('--show', help = 'show figures', action = 'store_true')
 parser.add_argument('--conf', metavar = 'CONFIGURATIONFILE', help = 'load CONFIGURATIONFILE', default = '')
 args = parser.parse_args()
 base = os.path.splitext(args.file)
+basename = os.path.splitext(os.path.basename(args.file))[0]
 config = args.conf
 if not config:
 	config = base[0] + '.conf'
@@ -64,10 +65,14 @@ values['DMOD']   = 0
 values['TAUMOD'] = 0
 values['ZTHR']   = 0
 values['TCOA']   = 0
+values['D']      = 0
+values['H']      = 0
 units['DMOD']    = 'm'
 units['TAUMOD']  = 's'
 units['ZTHR']    = 'm'
 units['TCOA']    = 's'
+units['D']       = 'm'
+units['H']       = 'm'
 
 # read in configuration file
 try:
@@ -92,20 +97,33 @@ except IOError:
 		print('** Error: Configuration file '+args.conf+' not found')
 		sys.exit(1)
 
+# None: undef, 0: CD3D, 1: WCV
+WCV = None        
 # try to read in the conf file
 try:
 	det_var = values['alert_' + str(int(values['conflict_level'])) + '_detector']
-	values['DMOD'] = values[det_var+'_WCV_DTHR']
-	units['DMOD'] = units[det_var+'_WCV_DTHR']
-	values['TAUMOD'] = values[det_var+'_WCV_TTHR']
-	units['TAUMOD'] = units[det_var+'_WCV_TTHR']
-	values['ZTHR'] = values[det_var+'_WCV_ZTHR']
-	units['ZTHR'] = units[det_var+'_WCV_ZTHR']
-	values['TCOA'] = values[det_var+'_WCV_TCOA']
-	units['TCOA'] = units[det_var+'_WCV_TCOA']
+	try:
+		values['DMOD'] = values[det_var+'_WCV_DTHR']
+		values['TAUMOD'] = values[det_var+'_WCV_TTHR']
+		values['ZTHR'] = values[det_var+'_WCV_ZTHR']
+		values['TCOA'] = values[det_var+'_WCV_TCOA']
+		WCV = 1
+		units['DMOD'] = units[det_var+'_WCV_DTHR']
+		units['TAUMOD'] = units[det_var+'_WCV_TTHR']
+		units['ZTHR'] = units[det_var+'_WCV_ZTHR']
+		units['TCOA'] = units[det_var+'_WCV_TCOA']
+	except KeyError:
+		pass
+	try:
+		values['D'] = values[det_var+'_D']
+		values['H'] = values[det_var+'_H']
+		WCV = 0
+		units['D'] = units[det_var+'_D']
+		units['H'] = units[det_var+'_H']
+	except KeyError:
+		pass
 except KeyError:
 	pass
-
 # filename of file to be read in with flight data
 file = r.Info(args.file)
 # store units from data from the masterReadin2.py file
@@ -130,9 +148,14 @@ def plot_fun(x_plot, y_plot, boundaries, add_line, title, labels, from_units, to
 			y_plot[x] = [u.convert_string(from_units, to_units, y) for y in y_plot[x]]
 	else:
 		to_units = from_units
-        
 	y_min = None
 	y_max = None
+
+	# add an extra line for a constant 
+	if add_line != None:
+		plt.axhline(y = values[add_line], color = 'm', linewidth=2.0)
+		y_min = values[add_line]
+		y_max = values[add_line]
 
 	# generate graphs
 	for x in range(0,len(y_plot)):
@@ -149,10 +172,6 @@ def plot_fun(x_plot, y_plot, boundaries, add_line, title, labels, from_units, to
 		else:
 			plt.plot(x_plot[x], y_plot[x])
 
-	# add an extra line for a constant 
-	if add_line != None:
-		plt.axhline(y = values[add_line], color = 'm', linewidth=2.0)
-
 	plt.title(title + ' vs. time', fontsize = 20)
 	plt.ylabel(title +  ' [' + to_units + ']')
 	plt.xlabel('time [' + file.units_list[0][file.times_place] + ']')
@@ -164,13 +183,12 @@ def plot_fun(x_plot, y_plot, boundaries, add_line, title, labels, from_units, to
 		y_max = values['max_' + boundaries]
 	delta = 0.1*(y_max - y_min)
 	plt.ylim([y_min-delta,y_max+delta])
-            
 	# show or save the graph as a pdf 
 	if args.show:
 		plt.show()
 	else:
 		title = title.replace(' ', '_')
-		title = base[0] + '_' + title + '.pdf'
+		title = basename + '_' + title + '.pdf'
 		with PdfPages(title) as pdf:
 			pdf.savefig(transparent = True)
 			plt.clf()
@@ -218,7 +236,10 @@ if args.hmd:
 			if temp > 0:
 				hmd_print[x].append(temp)
 				time_print[x].append(time[y])
-	plot_fun(time_print, hmd_print, None, 'DMOD', 'hmd', labels_graph('hmd', 'DMOD'), 'm', units["DMOD"])
+	if WCV == 0:
+		plot_fun(time_print, hmd_print, None, 'D', 'hmd', labels_graph('hmd', 'D'), 'm', units["D"])
+	else:
+		plot_fun(time_print, hmd_print, None, 'DMOD', 'hmd', labels_graph('hmd', 'DMOD'), 'm', units["DMOD"])
 
 # plot vertical miss distance - from units: altitude units, to units: in ZTHR / add ZTHR line
 if args.vmd:
@@ -228,8 +249,10 @@ if args.vmd:
 		for y in range(0, len(sz[x])):
 			temp = f.vmd(sz[x][y], vz[x][y])
 			vmd[x].append(temp)
-
-	plot_fun([time], vmd, None, 'ZTHR', 'vmd', labels_graph('vmd', 'ZTHR'), file.units_list[0][file.alt_place], units['ZTHR'])
+	if WCV == 0:
+		plot_fun([time], vmd, None, 'H', 'vmd', labels_graph('vmd', 'H'), file.units_list[0][file.alt_place], units['H'])
+	else: 
+		plot_fun([time], vmd, None, 'ZTHR', 'vmd', labels_graph('vmd', 'ZTHR'), file.units_list[0][file.alt_place], units['ZTHR'])
 
 # plot taumod - from units: time in file, to units: in TAUMOD / add TAUMOD line
 if args.taumod:
@@ -262,15 +285,16 @@ if args.tcoa:
 # horizontal distance - from units: meters (norm calculates meters) to units: in DMOD / add DMOD line
 if args.hd:
 	hd = [[] for x in range(len(position))]
-	# print("hello", len(position))
 	# calculate norm of position vector 
 	for x in range(0, len(position)):
 		for y in range(len(position[x])):
 			temp = position[x][y].norm(position[x][y])
 			# print(temp)
 			hd[x].append(temp)
-
-	plot_fun([time], hd, None, 'DMOD', 'horizontal distance', labels_graph('hd', 'DMOD'), 'm', units['DMOD'])
+	if WCV == 0:
+		plot_fun([time], hd, None, 'D', 'horizontal distance', labels_graph('hd', 'D'), 'm', units['D'])
+	else:
+		plot_fun([time], hd, None, 'DMOD', 'horizontal distance', labels_graph('hd', 'DMOD'), 'm', units['DMOD'])
 
 # vertical distance - from units: units of altitude in file read in, to units: in ZTHR / add ZTHR line
 if args.vd:
@@ -280,6 +304,8 @@ if args.vd:
 		for y in range(len(sz[x])):
 			temp = abs(sz[x][y])
 			vd[x].append(temp)
-
-	plot_fun([time], vd, None, 'ZTHR', 'vertical distance', labels_graph('vd', 'ZTHR'), file.units_list[0][file.alt_place], units['ZTHR'])
+	if WCV == 0:
+		plot_fun([time], vd, None, 'H', 'vertical distance', labels_graph('vd', 'H'), file.units_list[0][file.alt_place], units['H'])
+	else:
+		plot_fun([time], vd, None, 'ZTHR', 'vertical distance', labels_graph('vd', 'ZTHR'), file.units_list[0][file.alt_place], units['ZTHR'])
 

@@ -13,7 +13,8 @@ under [NASA's Open Source Agreement](../LICENSES/).
 DAIDALUS is available as a software library. After getting the source
 code from [GitHub/WellClear](https://github.com/nasa/WellClear), the
 library can be compiled using the Unix utility `make` with the
-provided `Makefile` in both the [Java](Java/Makefile) and [C++](C++/Makefile) directories. In Java,
+provided `Makefile` in both the [Java](Java/Makefile) and
+[C++](C++/Makefile) directories. From the directory Java,
 the `make` command produces a jar file:
 
 ```
@@ -23,7 +24,7 @@ $ make lib
 ** Library lib/DAIDALUS.jar built
 ```
 
-In C++, the `make` command will generate the static library
+From the directory C++, the `make` command will generate the static library
 `lib/DAIDALUS.a`.
 
 The sample application `DaidalusExample`, which is available in
@@ -44,7 +45,8 @@ src/DaidalusAlerting.cpp lib/DAIDALUS.a
 ** To run DaidalusAlerting type, e.g.,
 ./DaidalusAlerting --conf ../Configurations/WC_SC_228_std.txt ../Scenarios/H1.daa
 ```
-To run the example application in a Unix environment, type
+To run the example application in a Unix environment, type from the
+directory Java (or C++):
 
 ```
 $ ./DaidalusExample
@@ -78,7 +80,7 @@ guidance information for the given encounter, e.g.,
 
 ```
 ../Scripts/drawmultibands.py H1.draw
-Writing H1.pdf
+Writing PDF file H1.pdf
 ```
 
 The script `drawgraph.py` (thanks to Rachael Shudde, NASA Intern
@@ -86,14 +88,14 @@ The script `drawgraph.py` (thanks to Rachael Shudde, NASA Intern
 `DaidalusAlerting`, e.g.,
 
 ```
-../Scripts/drawgraphs.py --conf ../Configurations/WC_SC_228_std.txt --hd H12.daa
-Writing PDF file H12_horizontal_distance.pdf
+../Scripts/drawgraphs.py --conf ../Configurations/WC_SC_228_std.txt --hd ../Scenarios/H1.daa
+Writing PDF file H1_horizontal_distance.pdf
 
-../Scripts/drawgraphs.py --conf ../Configurations/WC_SC_228_std.txt --taumod H12.daa
-Writing PDF file H12_taumod.pdf
+../Scripts/drawgraphs.py --conf ../Configurations/WC_SC_228_std.txt --taumod ../Scenarios/H1.daa
+Writing PDF file H1_taumod.pdf
 
-../Scripts/drawgraphs.py --conf ../Configurations/WC_SC_228_std.txt --hmd H12.daa
-Writing PDF file H12_hmd.pdf
+../Scripts/drawgraphs.py --conf ../Configurations/WC_SC_228_std.txt --hmd ../Scenarios/H1.daa
+Writing PDF file H1_hmd.pdf
 ```
 
 # Documentation
