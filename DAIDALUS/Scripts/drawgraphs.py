@@ -151,12 +151,6 @@ def plot_fun(x_plot, y_plot, boundaries, add_line, title, labels, from_units, to
 	y_min = None
 	y_max = None
 
-	# add an extra line for a constant 
-	if add_line != None:
-		plt.axhline(y = values[add_line], color = 'm', linewidth=2.0)
-		y_min = values[add_line]
-		y_max = values[add_line]
-
 	# generate graphs
 	for x in range(0,len(y_plot)):
 		if y_min == None:
@@ -171,6 +165,12 @@ def plot_fun(x_plot, y_plot, boundaries, add_line, title, labels, from_units, to
 			plt.plot(x_plot[0], y_plot[x])
 		else:
 			plt.plot(x_plot[x], y_plot[x])
+
+	# add an extra line for a constant 
+	if add_line != None:
+		plt.axhline(y = values[add_line], color = 'm', linewidth=2.0)
+		y_min = min(y_min,values[add_line])
+		y_max = max(y_max,values[add_line])
 
 	plt.title(title + ' vs. time', fontsize = 20)
 	plt.ylabel(title +  ' [' + to_units + ']')
