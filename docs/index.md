@@ -872,12 +872,12 @@ DAIDALUS has some programming utilities for batch simulation and for
 computing detection, alerting, and maneuver guidance from pre-defined
 encounters.
 
-These utilities work with two text files: a DAIDALUS configuration file
-such as [`WC_SC_228_nom_b.txt`] (https://github.com/nasa/WellClear/blob/master/DAIDALUS/Configurations/WC_SC_228_nom_b.txt)
-`name.conf`) and an encounter file such as
+These utilities work with two text files: a DAIDALUS configuration file `name.conf`
+such as [`WC_SC_228_nom_b.txt`](https://github.com/nasa/WellClear/blob/master/DAIDALUS/Configurations/WC_SC_228_nom_b.txt)
+and an encounter file `name.daa` such as
 [`H1.daa`](https://github.com/nasa/WellClear/blob/master/DAIDALUS/Scenarios/H1.daa). The
 encounter file may list multiple aircraft, the first one is considered
-to be the ownship, and the aircraft states can be given geodesic
+to be the ownship. The aircraft states can be given geodesic
 coordinates, e.g.,
 [`MultiAircraft.daa`](https://github.com/nasa/WellClear/blob/master/DAIDALUS/Scenarios/MultiAircraft.daa).
 
@@ -898,7 +898,7 @@ Writing configuration file: name.conf
 The script `daidalize` assumes that the time of the aircraft states
 strictly increases at every time step. If this this is not the case,
 the script fails. The option `--fixtimes` forces the script to fix the
-problem by artificially increasing the time of contagious time steps so
+problem by artificially increasing the time of contiguous time steps so
 that the time column of the generated encounter strictly increases at
 every time step.
 
@@ -911,6 +911,15 @@ Processing DAIDALUS file name.daa
 Generating CSV file name.csv
 ```
 
+The script
+[`drawgraphs`](https://github.com/nasa/WellClear/blob/master/DAIDALUS/Scripts/drawgraphs.py)
+can be used to generate PDFs of the information produced by
+`DaidalusAlerting`, e.g.,
+```
+$ ./drawgraphs.py --conf name.conf --hd name.daa
+Writing PDF file name_horizontal_distance.pdf
+```
+
 To produce maneuver guidance graphs, 
 use the Java program [`DrawMultiBands`](https://github.com/nasa/WellClear/blob/master/DAIDALUS/Java/DrawMultiBands), e.g.,
 ```
@@ -918,23 +927,13 @@ use the Java program [`DrawMultiBands`](https://github.com/nasa/WellClear/blob/m
 Writing file name.draw, which can be processed with the Python script drawmultibands.py
 ```
 
-Then, use the script
+Then, to produce a PDF file use the script
 [`drawmultibands`](https://github.com/nasa/WellClear/blob/master/DAIDALUS/Scripts/drawmultibands.py),
 e.g.,
 ```
 $ ./drawmultibands.py name.draw 
 Reading name.draw
 Writing name.pdf
-```
-
-The script
-[`drawgraphs`](https://github.com/nasa/WellClear/blob/master/DAIDALUS/Scripts/drawgraphs.py)
-can be used to generate PDFs of the information produced by
-`DaidalusAlerting`, e.g.,
-
-```
-$ ./drawgraphs.py --conf name.conf --hd name.daa
-Writing PDF file name_horizontal_distance.pdf
 ```
 
 Finally, DAIDALUS encounter can be simulated in the visualization tool
