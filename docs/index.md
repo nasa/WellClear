@@ -29,7 +29,7 @@ Table of Contents
      * [Parameters](#parameters)
      * [Pre-Defined Configurations](#pre-defined-configurations)
    * [Advanced Features](#advanced-features)
-     * [Batch Simulation](#batch-simulation) 
+     * [Batch Simulation and Analysis Tools](#batch-simulation-and-analysis-tools) 
    * [Contact](#contact)
 
 # Introduction
