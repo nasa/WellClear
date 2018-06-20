@@ -50,6 +50,7 @@ import gov.nasa.larcfm.ACCoRD.KinematicBandsParameters;
 import gov.nasa.larcfm.ACCoRD.KinematicMultiBands;
 import gov.nasa.larcfm.Util.Units;
 import gov.nasa.larcfm.Util.Util;
+import gov.nasa.larcfm.Util.f;
 
 public class DrawMultiBands {
 
@@ -152,19 +153,19 @@ public class DrawMultiBands {
 		while (!walker.atEnd()) {
 			walker.readState(daa);
 
-			str_to += daa.getCurrentTime()+" ";
+			str_to += f.Fm8(daa.getCurrentTime())+" ";
 
 			double trko = Util.to_pi(daa.getOwnshipState().track());
-			str_trko += Units.to("deg",trko)+" ";
+			str_trko += f.Fm8(Units.to("deg",trko))+" ";
 
 			double gso = daa.getOwnshipState().groundSpeed();
-			str_gso += Units.to(gs_units,gso)+" ";
+			str_gso += f.Fm8(Units.to(gs_units,gso))+" ";
 
 			double vso = daa.getOwnshipState().verticalSpeed();
-			str_vso += Units.to(vs_units,vso)+" ";
+			str_vso += f.Fm8(Units.to(vs_units,vso))+" ";
 
 			double alto = daa.getOwnshipState().altitude();
-			str_alto += Units.to(alt_units,alto)+" ";
+			str_alto += f.Fm8(Units.to(alt_units,alto))+" ";
 
 			KinematicMultiBands kb = daa.getKinematicMultiBands();
 
@@ -176,28 +177,28 @@ public class DrawMultiBands {
 					if (times == null) {
 						times = "AlertingTimes:"+ac_name+":";
 					}	
-					times += daa.getCurrentTime()+" "+alert+" ";
+					times += f.Fm8(daa.getCurrentTime())+" "+alert+" ";
 					alerting_times.put(ac_name,times);
 				}
 			}
 
 			double time = daa.getCurrentTime();
-			str_trk += "TrkBands:"+time+":";
+			str_trk += "TrkBands:"+f.Fm8(time)+":";
 			for (int i=0; i < kb.trackLength(); ++i) {
 				str_trk += kb.track(i,"deg")+" "+region2str(kb.trackRegion(i))+" ";
 			}
 			str_trk += "\n";
-			str_gs += "GsBands:"+time+":";
+			str_gs += "GsBands:"+f.Fm8(time)+":";
 			for (int i=0; i < kb.groundSpeedLength(); ++i) {
 				str_gs += kb.groundSpeed(i,gs_units)+" "+region2str(kb.groundSpeedRegion(i))+" ";
 			}
 			str_gs += "\n";
-			str_vs += "VsBands:"+time+":";
+			str_vs += "VsBands:"+f.Fm8(time)+":";
 			for (int i=0; i < kb.verticalSpeedLength(); ++i) {
 				str_vs += kb.verticalSpeed(i,vs_units)+" "+region2str(kb.verticalSpeedRegion(i))+" ";
 			}
 			str_vs += "\n";
-			str_alt += "AltBands:"+time+":";
+			str_alt += "AltBands:"+f.Fm8(time)+":";
 			for (int i=0; i < kb.altitudeLength(); ++i) {
 				str_alt += kb.altitude(i,alt_units)+" "+region2str(kb.altitudeRegion(i))+" ";
 			}
