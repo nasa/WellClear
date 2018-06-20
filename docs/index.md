@@ -29,6 +29,7 @@ Table of Contents
      * [Parameters](#parameters)
      * [Pre-Defined Configurations](#pre-defined-configurations)
    * [Advanced Features](#advanced-features)
+     * [Batch Simulation and Analysis Tools](#batch-simulation-and-analysis-tools) 
    * [Contact](#contact)
 
 # Introduction
@@ -864,9 +865,97 @@ that are related to RTCA SC-228 MOPS Phase I.
   implementation against the maximum values in the
   encounter characterization files in Appendix P.
 
-
 # Advanced Features
-(Work in progress)
+
+## Batch Simulation and Analysis Tools
+DAIDALUS has some programming utilities for batch simulation and for
+computing detection, alerting, and maneuver guidance from pre-defined
+encounters.
+
+These utilities work with two text files: a DAIDALUS configuration file `name.conf`
+such as [`WC_SC_228_nom_b.txt`](https://github.com/nasa/WellClear/blob/master/DAIDALUS/Configurations/WC_SC_228_nom_b.txt)
+and an encounter file `name.daa` such as
+[`H1.daa`](https://github.com/nasa/WellClear/blob/master/DAIDALUS/Scenarios/H1.daa). The
+encounter file may list multiple aircraft, the first one is considered
+to be the ownship. The aircraft states can be given geodesic
+coordinates, e.g.,
+[`MultiAircraft.daa`](https://github.com/nasa/WellClear/blob/master/DAIDALUS/Scenarios/MultiAircraft.daa).
+
+The configuration and encounter files can be generated from a Daidalus
+log file. A Daidalus log file is produced by writing into a text file
+the string `daa.toString()`, where `daa` is a `Daidalus` object.
+To generate the configuration and encounter file from a Daidalus log
+file, i.e., `name.log`, use the script
+[`daidalize`](https://github.com/nasa/WellClear/blob/master/DAIDALUS/Scripts/daidalize.pl),
+e.g.,
+```
+$ ./daidalize.pl name.log 
+Processing name.log
+Writing traffic file: name.daa
+Writing configuration file: name.conf 
+```
+
+The script `daidalize` assumes that the time of the aircraft states
+strictly increases at every time step. If this this is not the case,
+the script fails. The option `--fixtimes` forces the script to fix the
+problem by artificially increasing the time of contiguous time steps so
+that the time column of the generated encounter strictly increases at
+every time step.
+
+To produce alerting and state-based metrics, 
+use the Java program [`DaidalusAlerting`](https://github.com/nasa/WellClear/blob/master/DAIDALUS/Java/DaidalusAlerting), e.g.,
+```
+$ ./DaidalusAlerting --conf name.conf name.daa
+Loading configuration file name.conf
+Processing DAIDALUS file name.daa
+Generating CSV file name.csv
+```
+
+The script
+[`drawgraphs`](https://github.com/nasa/WellClear/blob/master/DAIDALUS/Scripts/drawgraphs.py)
+can be used to generate PDFs of the information produced by
+`DaidalusAlerting`, e.g.,
+```
+$ ./drawgraphs.py --conf name.conf --hd name.daa
+Writing PDF file name_horizontal_distance.pdf
+```
+
+To produce maneuver guidance graphs, 
+use the Java program [`DrawMultiBands`](https://github.com/nasa/WellClear/blob/master/DAIDALUS/Java/DrawMultiBands), e.g.,
+```
+ $ ./DrawMultiBands  --conf name.conf name.daa
+Writing file name.draw, which can be processed with the Python script drawmultibands.py
+```
+
+Then, to produce a PDF file use the script
+[`drawmultibands`](https://github.com/nasa/WellClear/blob/master/DAIDALUS/Scripts/drawmultibands.py),
+e.g.,
+```
+$ ./drawmultibands.py name.draw 
+Reading name.draw
+Writing name.pdf
+```
+
+Finally, DAIDALUS encounter can be simulated in the visualization tool
+[`UASChorus`](https://shemesh.larc.nasa.gov/fm/ACCoRD/UASChorus.jar).
+UASChorus is part of a larger tool called TIGAR. The license of TIGAR is available from: https://shemesh.larc.nasa.gov/fm/ACCoRD/TIGAR-NOSA.pdf.
+ 
+In Windows/MAC OS systems, just download the file and double-click it. It assumes a Java Run Time environment, which is default in most systems.
+ In a Linux box, go to a terminal and type 
+
+```
+$ java jar UASChorus.jar
+```
+
+In UASChorus
+1. Go to `File/Open` in the main menu and open any encounter file, e.g., `name.daa`.
+2. By default, UASChorus is configured with a non-buffered well-clear
+volume (instantaneous bands). To load a different configuration,
+   go to `File/Load Configuration` and load a configuration file,
+   e.g., `name.conf`.
+3. To step through the scenario, go to `Window/Sequence Control Panel`
+   and click either the `execute` button (to reproduce the scenario)
+   or `linear` to generate a 1s linear projection on the current state. 
 
 # Contact
 
