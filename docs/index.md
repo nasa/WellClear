@@ -26,7 +26,7 @@ Table of Contents
       * [Vertical Speed Bands](#vertical-speed-bands)
       * [Altitude Bands](#altitude-bands)
    * [The Class `KinematicBandsParameters`](#the-class-kinematicbandsparameters)
-     * [Parameters](#parameters)
+     * [Basic Parameters](#basic_parameters)
      * [Pre-Defined Configurations](#pre-defined-configurations)
    * [Advanced Features](#advanced-features)
      * [Batch Simulation and Analysis Tools](#batch-simulation-and-analysis-tools) 
