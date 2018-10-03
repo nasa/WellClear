@@ -15,7 +15,7 @@ lib: $(SRCS)
 examples:
 	@test -f lib/DAIDALUS.jar || make lib
 	@echo "** Building example applications"
-	$(JAVAC) -cp lib/DAIDALUS.jar src/DaidalusExample.java src/DaidalusAlerting.java src/DrawMultiBands.java
+	$(JAVAC) -cp lib/DAIDALUS.jar src/*.java
 	@echo "** To run DaidalusExample type:"
 	@echo "./DaidalusExample"
 	@echo "** To run DaidalusAlerting type, e.g.,"
@@ -24,6 +24,6 @@ examples:
 	@echo "./DrawMultiBands ../Scenarios/H1.daa"
 
 clean:
-	rm -f DaidalusExample.class $(OBJS) lib/DAIDALUS.jar
+	rm -f src/*.class $(OBJS) lib/DAIDALUS.jar
 
 .PHONY: all lib example
