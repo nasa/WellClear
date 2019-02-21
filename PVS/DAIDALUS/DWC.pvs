@@ -32,53 +32,35 @@
 % REMEDY FOR ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL
 % TERMINATION OF THIS AGREEMENT.
 
-top: THEORY
+% The function DWC is the definition of the DAA Well-Clear volume in
+% DO-365, with the standard parameters.
+%
+% Given the relative 3-D position vector s and the 3-D velocity vector v,
+% the function DWC(s,v) returns true if there is a loss of DWC for the relative
+% position and velocity of the ownship and intruder aircraft.
+%
+% Given the 3-D position vectors so,si and 3-D velocity vectors vo,vi, the function
+% DWC(so,vo,si,vi) returns true if there is a loss of DWC between the
+% ownship (so,vo) and an intruder aircraft (si,vi).
+
+DWC : THEORY
 BEGIN
 
-IMPORTING
- %%%%%%%%%%%%%%%%%
- % DWC Phase I   %
- %%%%%%%%%%%%%%%%%
-  DWC,
+  IMPORTING aviation@units
 
- %%%%%%%%%%%%%%%%%
- % Generic Bands %
- %%%%%%%%%%%%%%%%%
-  int_bands,
-  real_bands,
-  mod_bands,
-  kinematic_bands,
-  kinematic_bands_exist,
-  combine_bands,
+  DWC_TTHR : real = 35.0     % seconds
+  DWC_TCOA : real = 0.0      % seconds
+  DWC_DTHR : real = 0.66*nmi % 0.66 nmi
+  DWC_ZTHR : real = 450      % 450 ft
 
- %%%%%%%%%%%%%%%%%%%
- %   Band types    %
- %%%%%%%%%%%%%%%%%%%
-  kinematic_vs_bands,
-  kinematic_trk_bands,
-  kinematic_gs_bands,
-  alt_bands,
-  alt_bands_range,
-  inst_bands,
+  IMPORTING WellClear@WCV_taumod[DWC_TTHR,DWC_TCOA,DWC_DTHR,DWC_ZTHR]
 
- %%%%%%%%%%%%%%%%%%%%%%%%%%%
- % Interface and Auxillary %
- %%%%%%%%%%%%%%%%%%%%%%%%%%%
-  ereal,
-  los_and_cd,
-  time_to_violation,
-  kinematic_core,
-  alertor, 
-  get_generic_bands, 
-  format_bands,
-  get_kinematic_bands_util,
+  s,v,
+  so,vo,
+  si,vi  : VAR Vect3
 
- %%%%%%%%%%%%%%%%%%%%%%
- % Daidalus Functions %
- %%%%%%%%%%%%%%%%%%%%%%
-  get_kinematic_bands,
-  alerting, 
-  last_time_to_maneuver,
-  get_resolution
+  DWC(s,v) : bool = WCV_taumod(s,v)
 
-END top
+  DWC(so,vo,si,vi) : bool = DWC(so-si,vo-vi)
+
+END DWC
