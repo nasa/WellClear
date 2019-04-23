@@ -1,1 +1,2 @@
-java -cp lib/DAIDALUS.jar:src DaidalusAlerting "$@"
+DIR=$( cd "$(dirname "$0")" ; pwd -P )
+java -cp $DIR/lib/DAIDALUS.jar:$DIR/src DaidalusAlerting "$@"

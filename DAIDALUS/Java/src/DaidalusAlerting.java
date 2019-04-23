@@ -42,6 +42,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.Optional;
+import java.nio.file.FileSystems;
 
 import gov.nasa.larcfm.ACCoRD.ConflictData;
 import gov.nasa.larcfm.ACCoRD.Daidalus;
@@ -50,7 +51,7 @@ import gov.nasa.larcfm.ACCoRD.Detection3D;
 import gov.nasa.larcfm.ACCoRD.Horizontal;
 import gov.nasa.larcfm.ACCoRD.Vertical;
 import gov.nasa.larcfm.ACCoRD.WCV_tvar;
-import gov.nasa.larcfm.Util.Util;
+import gov.nasa.larcfm.Util.ParameterData;
 import gov.nasa.larcfm.Util.Units;
 
 public class DaidalusAlerting {
@@ -62,6 +63,9 @@ public class DaidalusAlerting {
 		String input_file = "";
 		String output_file = "";
 		PrintWriter out = new PrintWriter(System.out);
+		ParameterData params = new ParameterData();
+		String conf = "";
+		boolean echo = false;
 
 		// A Daidalus object can be configured either programatically or by using a configuration file.
 		for (int a=0;a < args.length; ++a) {
@@ -69,23 +73,44 @@ public class DaidalusAlerting {
 			if (arga.equals("--noma") || arga.equals("-noma")) {
 				// Configure DAIDALUS to nominal A parameters: Kinematic Bands, Turn Rate 1.5 [deg/s])
 				daa.set_Buffered_WC_SC_228_MOPS(false);
+				conf = "noma";
 			} else if (arga.equals("--nomb") || arga.equals("-nomb")) {
 				// Configure DAIDALUS to nominal B parameters: Kinematic Bands, Turn Rate 3.0 [deg/s])
 				daa.set_Buffered_WC_SC_228_MOPS(true);
+				conf = "nomb";
+			} else if (arga.equals("--std") || arga.equals("-std")) {
+				// Configure DAIDALUS to WC standard parameters: Instantaneous Bands
+				daa.set_WC_SC_228_MOPS();
+				conf = "std";
 			} else if ((arga.startsWith("--c") || arga.startsWith("-c")) && a+1 < args.length) {
 				// Load configuration file
 				arga = args[++a];
+				conf = FileSystems.getDefault().getPath(arga).getFileName().toString();				
+				conf = conf.substring(0,conf.lastIndexOf('.'));
 				if (!daa.parameters.loadFromFile(arga)) {
 					System.err.println("** Error: File "+arga+" not found");
 					System.exit(1);
 				} else {
 					System.out.println("Loading configuration file "+arga);
 				}
+			} else if (arga.equals("--echo") || arga.equals("-echo")) {
+				echo = true;
 			} else if ((arga.startsWith("--o") || arga.startsWith("-o")) && a+1 < args.length) {
 				output_file = args[++a];
+			}else if (arga.startsWith("-") && arga.contains("=")) {
+				String keyval = arga.substring(arga.lastIndexOf('-')+1);
+				params.set(keyval);
 			} else if (arga.startsWith("--h") || arga.startsWith("-h")) {
-				System.err.println("** Error: Options: [--noma | --nomb | --conf <configuration file> | --output <output file> | --help] <input file>");
-				System.exit(1);
+				System.err.println("Usage:");
+				System.err.println("  DaidalusAlerting [<option>] <daa_file>");
+				System.err.println("  <option> can be");
+				System.err.println("  --std --noma --nomb");
+				System.err.println("  --config <config_file>\n\tLoad configuration <config_file>");
+				System.err.println("  --<var>=<val>\n\t<key> is any configuration variable and val is its value (including units, if any), e.g., --lookahead_time=5[min]");
+				System.err.println("  --output <output_file>\n\tOutput information to <output_file>");
+				System.err.println("  --echo\n\tEcho configuration and traffic list in standard outoput");
+				System.err.println("  --help\n\tPrint this message");
+				System.exit(0);
 			} else if (arga.startsWith("-")){
 				System.err.println("** Error: Unknown option "+arga);
 				System.exit(1);
@@ -96,9 +121,17 @@ public class DaidalusAlerting {
 				System.exit(1);
 			}				
 		}
+		if (params.size() > 0) {
+			daa.parameters.setParameters(params);
+		}
 		if (input_file.equals("")) {
-			System.err.println("** Error: One input file must be provided");
-			System.exit(1);
+			if (echo) {
+				System.out.println(daa.toString());
+				System.exit(0);
+			} else {
+				System.err.println("** Error: One input file must be provided");
+				System.exit(1);
+			}
 		}
 		File file = new File(input_file);
 		if (!file.exists() || !file.canRead()) {
@@ -107,9 +140,13 @@ public class DaidalusAlerting {
 		}
 		try {
 			String name = file.getName();
-			String scenario = name.contains(".") ? name.substring(0, name.lastIndexOf('.')):name;
+			String scenario = name.substring(0,name.lastIndexOf('.'));
 			if (output_file.equals("")) {
-				output_file = scenario+".csv";
+				output_file = scenario;
+				if (!conf.equals("")) {
+					output_file += "_"+conf;
+				}
+				output_file += ".csv";
 			} 
 			out = new PrintWriter(new BufferedWriter(new FileWriter(output_file)),true);
 		} catch (Exception e) {
@@ -143,6 +180,9 @@ public class DaidalusAlerting {
 
 		while (!walker.atEnd()) {
 			walker.readState(daa);
+			if (echo) {
+				System.out.print(daa.toString());
+			}
 			// At this point, daa has the state information of ownhsip and traffic for a given time
 			for (int ac=1; ac <= daa.lastTrafficIndex(); ++ac) {
 				out.print(daa.getCurrentTime());

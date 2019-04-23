@@ -44,10 +44,13 @@ using namespace larcfm;
 
 int main(int argc, char* argv[]) {
 
-	// Create a Daidalus object for an unbuffered well-clear volume and instantaneous bands
-	Daidalus daa;
+  // Create a Daidalus object for an unbuffered well-clear volume and instantaneous bands
+  Daidalus daa;
 	std::string input_file = "";
 	std::string output_file = "";
+	ParameterData params;
+	std::string conf = "";
+	bool echo = false;
 
 	// A Daidalus object can be configured either programatically or by using a configuration file.
 	for (int a=1;a < argc; ++a) {
@@ -55,37 +58,65 @@ int main(int argc, char* argv[]) {
 		if (arga == "--noma" || arga == "-noma") {
 			// Configure DAIDALUS to nominal A parameters: Kinematic Bands, Turn Rate 1.5 [deg/s])
 			daa.set_Buffered_WC_SC_228_MOPS(false);
+			conf = "noma";
 		} else if (arga == "--nomb" || arga == "-nomb") {
 			// Configure DAIDALUS to nominal B parameters: Kinematic Bands, Turn Rate 3.0 [deg/s])
 			daa.set_Buffered_WC_SC_228_MOPS(true);
+			conf = "nomb";
+		} else if (arga == "--std" || arga == "-std") {
+		        // Configure DAIDALUS to WC standard parameters: Instantaneous Bands
+		        daa.set_WC_SC_228_MOPS();
+		        conf = "std";
 		} else if ((startsWith(arga,"--c") || startsWith(arga,"-c"))  && a+1 < argc) {
 			// Load configuration file
 			arga = argv[++a];
+			std::string base_filename = arga.substr(arga.find_last_of("/\\") + 1);
+			conf = base_filename.substr(0,base_filename.find_last_of('.'));
 			if (!daa.parameters.loadFromFile(arga)) {
 				std::cerr << "** Error: File " << arga << "not found" << std::endl;
-				exit(0);
+				exit(1);
 			} else {
 				std::cout << "Loading configuration file " << arga << std::endl;
 			}
+		} else if (arga == "--echo" || arga == "-echo") {
+		        echo = true;
 		} else if ((startsWith(arga,"--o") || startsWith(arga,"-o")) && a+1 < argc) {
 			output_file = argv[++a];
+		} else if (startsWith(arga,"-") && arga.find('=') != std::string::npos) {
+		        std::string keyval = arga.substr(arga.find_last_of('-')+1);
+			params.set(keyval);
 		} else if (startsWith(arga,"--h") || startsWith(arga,"-h")) {
-			std::cerr << "** Error: Options: [--noma | --nomb | --conf <configuration file> | --output <output file> | --help] <input file>"
-					<< std::endl;
+		        std::cerr << "Usage:" << std::endl;
+			std::cerr << "  DaidalusAlerting [<option>] <daa_file>" << std::endl;
+			std::cerr << "  <option> can be" << std::endl;
+			std::cerr << "  --std --noma --nomb" << std::endl;
+			std::cerr << "  --config <config_file>\n\tLoad configuration <config_file>" << std::endl;
+			std::cerr << "  --<var>=<val>\n\t<key> is any configuration variable and val is its value (including units, if any), e.g., --lookahead_time=5[min]" << std::endl;
+			std::cerr << "  --output <output_file>\n\tOutput information to <output_file>" << std::endl;
+			std::cerr << "  --echo\n\tEcho configuration and traffic list in standard outoput" << std::endl;
+			std::cerr << "  --help\n\tPrint this message" << std::endl;
 			exit(0);
 		} else if (startsWith(arga,"-")){
-			std::cerr << "** Error: Unknown option " << arga << std::endl;
-			exit(0);
+		        std::cerr << "** Error: Unknown option " << arga << std::endl;
+		        exit(1);
 		} else if (input_file == "") {
 			input_file = argv[a];
 		} else {
 			std::cerr << "** Error: Only one input file can be provided (" << a << ")" << std::endl;
-			exit(0);
+			exit(1);
 		}
 	}
+	if (params.size() > 0) {
+	        daa.parameters.setParameters(params);
+	}
 	if (input_file == "") {
-		std::cerr << "** Error: One input file must be provided" << std::endl;
-		exit(0);
+	       if (echo) {
+		 std::cout << daa.toString() << std::endl;
+		 exit(0);
+	       } else {
+		 std::cerr << "** Error: One input file must be provided" << std::endl;
+		 exit(1);
+	       }
 	}
 
 	std::ifstream file(input_file);
@@ -94,15 +125,14 @@ int main(int argc, char* argv[]) {
 		exit(0);
 	}
 	file.close();
-	std::string name;
-	std::string::size_type idx = input_file.find_last_of(".");
-	if (idx != std::string::npos) {
-		name = input_file.substr(0,idx);
-	} else {
-		name = input_file;
-	}
+	std::string name = input_file.substr(input_file.find_last_of("/\\") + 1);
+	std::string scenario = name.substr(0,name.find_last_of("."));
 	if (output_file == "") {
-		output_file = name+".csv";
+	  output_file = scenario;
+	  if (conf != "") {
+	    output_file += "_"+conf;
+	  }
+	  output_file += ".csv";
 	}
 
 	std::cout << "Processing DAIDALUS file " << input_file << std::endl;
@@ -133,6 +163,9 @@ int main(int argc, char* argv[]) {
 
 	while (!walker.atEnd()) {
 		walker.readState(daa);
+		if (echo) {
+		  std::cout << daa.toString() << std::endl;
+		}
 		// At this point, daa has the state information of ownhsip and traffic for a given time
 		for (int ac=1; ac <= daa.lastTrafficIndex(); ++ac) {
 			out << daa.getCurrentTime();

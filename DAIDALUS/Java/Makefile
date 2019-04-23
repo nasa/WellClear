@@ -18,9 +18,11 @@ examples:
 	@echo "** To run DaidalusExample type:"
 	@echo "./DaidalusExample"
 	@echo "** To run DaidalusAlerting type, e.g.,"
-	@echo "./DaidalusAlerting --nomb --out H1.csv ../Scenarios/H1.daa"
+	@echo "./DaidalusAlerting --conf ../Configurations/WC_SC_228_nom_b.txt --out H1.csv ../Scenarios/H1.daa"
+	@echo "** To run DaidalusBatch type, e.g.,"
+	@echo "./DaidalusBatch --conf ../Configurations/WC_SC_228_nom_b.txt --out H1.out ../Scenarios/H1.daa"
 	@echo "** To run DrawMultiBands type, e.g.,"
-	@echo "./DrawMultiBands ../Scenarios/H1.daa"
+	@echo "./DrawMultiBands --conf ../Configurations/WC_SC_228_nom_b.txt ../Scenarios/H1.daa"
 
 clean:
 	rm -f src/*.class src/gov/nasa/larcfm/IO/*.class src/gov/nasa/larcfm/Util/*.class src/gov/nasa/larcfm/ACCoRD/*.class lib/DAIDALUS.jar

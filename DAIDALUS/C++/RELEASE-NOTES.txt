@@ -1,7 +1,6 @@
 DAIDALUS: Detect and Avoid Alerting Logic for Unmanned Systems
 -----------------------------------------------------
-Release: 1.0.1b, October 11, 2017
-Authors: Cesar Munoz, George Hagen, Anthony Narkawicz
+Release: Java 1.0.1, October 11, 2017
 Contact: Cesar A. Munoz (Cesar.A.Munoz@nasa.gov)
 
 Copyright: Copyright (c) 2014 United States Government as represented by 
@@ -9,14 +8,12 @@ the National Aeronautics and Space Administration.  No copyright
 is claimed in the United States under Title 17, U.S.Code. All Other 
 Rights Reserved.
 
-Release DAIDALUS 1.0.1b
+Release DAIDALUS 1.0.1
 ------------------
 October 11, 2017
 * Fixed bug in line 635 and 637 of Units.cpp. This bug only affects
 MSVC++ (Thanks to Randal Guendel for reporting this issue).
 
-Release DAIDALUS 1.0.1
-------------------
 March 18, 2017
 * Added PVS specifications and proofs of core algorithms.
 * Modified algorithm that projects aircraft trajectories. The

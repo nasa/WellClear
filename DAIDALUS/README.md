@@ -15,15 +15,7 @@ code from [GitHub/WellClear](https://github.com/nasa/WellClear), the
 library can be compiled using the Unix utility `make` with the
 provided `Makefile` in both the [Java](Java/Makefile) and
 [C++](C++/Makefile) directories. From the directory Java,
-the `make` command produces a jar file:
-
-```
-$ make lib
-** Building library lib/DAIDALUS.jar
-...
-** Library lib/DAIDALUS.jar built
-```
-
+the `make` command produces a jar file.
 From the directory C++, the `make` command will generate the static library
 `lib/DAIDALUS.a`.
 
@@ -33,18 +25,7 @@ The sample application `DaidalusExample`, which is available in
 functionalities provided by DAIDALUS including reading/writing
 configuration files, detection logic, alerting logic, maneuver
 guidance logic, and computation of loss of well-clear contours.  This
-application can be compiled using the provided `Makefile`. In Java:
-
-```
-** Building example applications
-/usr/bin/c++ -o DaidalusExample -Iinclude  -Wall -O  src/DaidalusExample.cpp lib/DAIDALUS.a
-/usr/bin/c++ -o DaidalusAlerting -Iinclude  -Wall -O
-src/DaidalusAlerting.cpp lib/DAIDALUS.a
-** To run DaidalusExample type:
-./DaidalusExample
-** To run DaidalusAlerting type, e.g.,
-./DaidalusAlerting --conf ../Configurations/WC_SC_228_std.txt ../Scenarios/H1.daa
-```
+application can be compiled using the provided `Makefile`.
 To run the example application in a Unix environment, type from the
 directory Java (or C++):
 
@@ -52,59 +33,13 @@ directory Java (or C++):
 $ ./DaidalusExample
 ```
 
-Several DAA metrics can be computed in batch mode for a given encounter using the sample
-program `DaidalusAlerting`, which is available in
-[Java](Java/src/DaidalusAlerting.java) and
-[C++](C++/src/DaidalusAlerting.cpp), e.g.,
-
-```
-./DaidalusAlerting --conf ../Configurations/WC_SC_228_std.txt ../Scenarios/H1.daa
-Generating CSV file H1.csv
-```
-
-The generated file `H1.csv` contains  alerting information computed by DAIDALUS
-for the encounter [H1.daa](Scenarios/H1.daa) assuming [Nominal
-B](Configurations/WC_SC_228_nom_b.txt) configuration.
-
-Scripts are provided to produce graphs containing guidance and alerting
-information. For example, 
-
-```
-./DrawMultiBands --conf ../Configurations/WC_SC_228_std.txt ../Scenarios/H1.daa
-Writing file H1.draw, which can be processed with the Python script drawmultibands.py
-```
-
-produces a file `H1.draw`, which can be processed with the Python
-script `drawmultibands.py` to produce a PDF file displaying manuever
-guidance information for the given encounter, e.g.,
-
-```
-../Scripts/drawmultibands.py H1.draw
-Writing PDF file H1.pdf
-```
-
-The script `drawgraph.py` (thanks to Rachael Shudde, NASA Intern
-2017)  can be used to produce graphs of the information produced by
-`DaidalusAlerting`, e.g.,
-
-```
-../Scripts/drawgraphs.py --conf ../Configurations/WC_SC_228_std.txt --hd ../Scenarios/H1.daa
-Writing PDF file H1_horizontal_distance.pdf
-
-../Scripts/drawgraphs.py --conf ../Configurations/WC_SC_228_std.txt --taumod ../Scenarios/H1.daa
-Writing PDF file H1_taumod.pdf
-
-../Scripts/drawgraphs.py --conf ../Configurations/WC_SC_228_std.txt --hmd ../Scenarios/H1.daa
-Writing PDF file H1_hmd.pdf
-```
+Other sample applications that illustrate DAIDALUS functionalities on
+encounter files are provided in [Java](Java/README.md) and
+[C++](C++/README.md).
 
 # Documentation
 
 A draft of user guide is available at https://nasa.github.io/WellClear. 
-
-Example programs [`DaidalusExample.java`](DAIDALUS/Java/src/DaidalusExample.java) and 
-[`DaidalusExample.cpp`](DAIDALUS/C++/src/DaidalusExample.cpp) illustrate the main 
-functional capabilities of DAIDALUS in Java and C++, respectively.
 
 For technical information about the definitions and algorithms in this
 repository, visit https://shemesh.larc.nasa.gov/fm/DAIDALUS.
