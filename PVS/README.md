@@ -17,7 +17,7 @@ setenv PVS_LIBRARY_PATH "<wellclearpvsdir>:$PVS_LIBRARY_PATH"
 In Borne shell (bash or sh), put this line in either `~/.bashrc or ~/.profile`:
 
 ~~~
-export PVS_LIBRARY_PATH="<wellclearpvsdir>/nasalib:$PVS_LIBRARY_PATH"
+export PVS_LIBRARY_PATH="<wellclearpvsdir>:$PVS_LIBRARY_PATH"
 ~~~
 
 To proof-check the PVS DAIDALUS development, type the following command in a Unix shell.
