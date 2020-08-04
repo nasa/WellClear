@@ -1,6 +1,6 @@
 ![](docs/DAIDALUS.jpeg "")
 
-**Current version of DAIDALUS v2 is avaialble from [https://github.com/nasa/daidalus](https://github.com/nasa/daidalus)**
+**Current version of DAIDALUS v2 is available from [https://github.com/nasa/daidalus](https://github.com/nasa/daidalus)**
 ========
 
 Detect and AvoID Alerting Logic for Unmanned Systems
@@ -40,7 +40,7 @@ repository, visit https://shemesh.larc.nasa.gov/fm/DAIDALUS.
 ### Current Release
 
 The release in this repository is DAIDALUSv1.0.2.
-**The current version of DAIDALUS v2 is avaialble from [https://github.com/nasa/daidalus](https://github.com/nasa/daidalus).**
+**The current version of DAIDALUS v2 is available from [https://github.com/nasa/daidalus](https://github.com/nasa/daidalus).**
 
 ### License
 
