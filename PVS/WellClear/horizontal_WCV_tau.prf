@@ -3,9 +3,11 @@
   (safe_tau_TCC1-1 nil 3606158272 ("" (subtype-tcc) nil nil)
    ((real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (* const-decl "real" vectors_2D "vectors/")
+    (* const-decl "real" vectors_2D vectors)
     (real_times_real_is_real application-judgement "real" reals nil))
-   nil))
+   nil
+   (safe_tau subtype "horizontal_WCV_tau.v"
+    "{v: vectors_2D_def.Vect2 | (vectors_2D.*(horizontal_WCV_tau.s, v) /= 0)}")))
  (safe_tau_timevar 0
   (safe_tau_timevar-2 nil 3606334112
    ("" (expand "timevar?")
@@ -19,7 +21,8 @@
      "(strict_total_order?[real])" real_props nil)
     (safe_tau const-decl "real" horizontal_WCV_tau nil)
     (timevar? const-decl "bool" timevars nil))
-   nil)
+   nil
+   (safe_tau_timevar subtype "horizontal_WCV_tau.safe_tau" "TimeVar"))
   (safe_tau_timevar-1 nil 3606220497
    ("" (expand "timevar?")
     (("" (skeep)
@@ -44,17 +47,18 @@
         nil))
       nil))
     nil)
-   ((Vect2 type-eq-decl nil vectors_2D_def "vectors/")
-    (Vector type-eq-decl nil vectors_2D "vectors/")
-    (zero const-decl "Vector" vectors_2D "vectors/")
-    (dot_zero_left formula-decl nil vectors_2D "vectors/")
-    (v_neq_zero formula-decl nil vectors_2D "vectors/")
+   ((Vect2 type-eq-decl nil vectors_2D_def vectors)
+    (Vector type-eq-decl nil vectors_2D vectors)
+    (zero const-decl "Vector" vectors_2D vectors)
+    (dot_zero_left formula-decl nil vectors_2D vectors)
+    (v_neq_zero formula-decl nil vectors_2D vectors)
     (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
-     "vect_analysis/")
-    (* const-decl "real" vectors_2D "vectors/")
-    (sqv const-decl "nnreal" vectors_2D "vectors/")
+     vect_analysis)
+    (* const-decl "real" vectors_2D vectors)
+    (sqv const-decl "nnreal" vectors_2D vectors)
     (timevar? const-decl "bool" timevars nil))
-   nil))
+   nil
+   (safe_tau_timevar subtype "horizontal_WCV_tau.safe_tau" "TimeVar")))
  (safe_tau_pre_timevar 0
   (safe_tau_pre_timevar-1 nil 3606398573
    ("" (expand "pre_timevar?")
@@ -74,9 +78,9 @@
     (tcpa_timevar name-judgement "TimeVar" timevars nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
-    (sq_nz_pos application-judgement "posreal" sq "reals/")
+    (sq_nz_pos application-judgement "posreal" sq reals)
     (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
-     "vect_analysis/")
+     vect_analysis)
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (real_lt_is_strict_total_order name-judgement
@@ -84,14 +88,14 @@
     (real_div_nzreal_is_real application-judgement "real" reals nil)
     (div_mult_neg_gt1 formula-decl nil extra_real_props nil)
     (real_times_real_is_real application-judgement "real" reals nil)
-    (sqv const-decl "nnreal" vectors_2D "vectors/")
+    (sqv const-decl "nnreal" vectors_2D vectors)
     (nnreal type-eq-decl nil real_types nil)
     (>= const-decl "bool" reals nil)
     (- const-decl "[numfield -> numfield]" number_fields nil)
     (numfield nonempty-type-eq-decl nil number_fields nil)
-    (Vect2 type-eq-decl nil vectors_2D_def "vectors/")
-    (* const-decl "real" vectors_2D "vectors/")
-    (Vector type-eq-decl nil vectors_2D "vectors/")
+    (Vect2 type-eq-decl nil vectors_2D_def vectors)
+    (* const-decl "real" vectors_2D vectors)
+    (Vector type-eq-decl nil vectors_2D vectors)
     (negreal nonempty-type-eq-decl nil real_types nil)
     (< const-decl "bool" reals nil)
     (nonpos_real nonempty-type-eq-decl nil real_types nil)
@@ -108,17 +112,18 @@
     (tau const-decl "real" timevars nil)
     (pre_le? const-decl "bool" horizontal_WCV nil)
     (pre_timevar? const-decl "bool" horizontal_WCV nil))
-   shostak))
+   shostak
+   (safe_tau_pre_timevar subtype "horizontal_WCV_tau.safe_tau"
+    "(horizontal_WCV[horizontal_WCV_tau.TAU, horizontal_WCV_tau.DTHR].pre_timevar?)")))
  (safe_tau_symm 0
   (safe_tau_symm-1 nil 3606158284 ("" (grind) nil nil)
    ((real_plus_real_is_real application-judgement "real" reals nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (* const-decl "real" vectors_2D "vectors/")
-    (sqv const-decl "nnreal" vectors_2D "vectors/")
+    (* const-decl "real" vectors_2D vectors)
+    (sqv const-decl "nnreal" vectors_2D vectors)
     (tau const-decl "real" timevars nil)
-    (safe_tau const-decl "real" horizontal_WCV_tau nil)
-    (- const-decl "Vector" vectors_2D "vectors/")
+    (safe_tau const-decl "real" horizontal_WCV_tau nil) nil
     (symmetric? const-decl "bool" timevars nil)
     (safe_tau_pre_timevar name-judgement "(pre_timevar?)"
      horizontal_WCV_tau nil)
@@ -134,7 +139,7 @@
    ((safe_tau_pre_timevar name-judgement "(pre_timevar?)"
      horizontal_WCV_tau nil)
     (horizontal_WCV_symm formula-decl nil horizontal_WCV nil)
-    (Vect2 type-eq-decl nil vectors_2D_def "vectors/")
+    (Vect2 type-eq-decl nil vectors_2D_def vectors)
     (timevar? const-decl "bool" timevars nil)
     (TimeVar type-eq-decl nil timevars nil)
     (safe_tau const-decl "real" horizontal_WCV_tau nil)
@@ -154,7 +159,7 @@
     (posreal nonempty-type-eq-decl nil real_types nil)
     (DTHR formal-const-decl "posreal" horizontal_WCV_tau nil)
     (neg_cont name-judgement "continuous_vv_fun" vect_cont_2D
-     "vect_analysis/")
+     vect_analysis)
     (safe_tau_symm formula-decl nil horizontal_WCV_tau nil))
    nil))
  (horizontal_WCV_tau_rew_TCC1 0
@@ -167,14 +172,15 @@
      real_types nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (comp_zero_y formula-decl nil vectors_2D "vectors/")
-    (comp_zero_x formula-decl nil vectors_2D "vectors/")
-    (* const-decl "real" vectors_2D "vectors/")
-    (sqv const-decl "nnreal" vectors_2D "vectors/")
-    (sq const-decl "nonneg_real" sq "reals/")
+    (comp_zero_y formula-decl nil vectors_2D vectors)
+    (comp_zero_x formula-decl nil vectors_2D vectors)
+    (* const-decl "real" vectors_2D vectors)
+    (sqv const-decl "nnreal" vectors_2D vectors)
+    (sq const-decl "nonneg_real" sq reals)
     (/= const-decl "boolean" notequal nil)
     (real_times_real_is_real application-judgement "real" reals nil))
-   nil))
+   nil
+   (horizontal_WCV_tau_rew subtype "horizontal_WCV_tau.v" "Nz_vect2")))
  (horizontal_WCV_tau_rew 0
   (horizontal_WCV_tau_rew-1 nil 3606166366
    ("" (skeep)
@@ -230,12 +236,12 @@
     (- const-decl "[numfield -> numfield]" number_fields nil)
     (>= const-decl "bool" reals nil)
     (nnreal type-eq-decl nil real_types nil)
-    (sqv const-decl "nnreal" vectors_2D "vectors/")
+    (sqv const-decl "nnreal" vectors_2D vectors)
     (real_times_real_is_real application-judgement "real" reals nil)
     (div_mult_neg_le2 formula-decl nil real_props nil)
-    (Vect2 type-eq-decl nil vectors_2D_def "vectors/")
-    (* const-decl "real" vectors_2D "vectors/")
-    (Vector type-eq-decl nil vectors_2D "vectors/")
+    (Vect2 type-eq-decl nil vectors_2D_def vectors)
+    (* const-decl "real" vectors_2D vectors)
+    (Vector type-eq-decl nil vectors_2D vectors)
     (< const-decl "bool" reals nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (real nonempty-type-from-decl nil reals nil)
@@ -246,47 +252,49 @@
     (boolean nonempty-type-decl nil booleans nil)
     (number nonempty-type-decl nil numbers nil)
     (tcpa const-decl "real" timevars nil)
-    (dot_zero_right formula-decl nil vectors_2D "vectors/")
+    (dot_zero_right formula-decl nil vectors_2D vectors)
     (= const-decl "[T, T -> boolean]" equalities nil)
-    (zero const-decl "Vector" vectors_2D "vectors/")
+    (zero const-decl "Vector" vectors_2D vectors)
     (tcpa_timevar name-judgement "TimeVar" timevars nil)
     (minus_odd_is_odd application-judgement "odd_int" integers nil)
     (safe_tau const-decl "real" horizontal_WCV_tau nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
-     "vect_analysis/")
-    (sq_nz_pos application-judgement "posreal" sq "reals/")
+     vect_analysis)
+    (sq_nz_pos application-judgement "posreal" sq reals)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil))
    shostak))
  (horizontal_WCV_tau_interval_TCC1 0
   (horizontal_WCV_tau_interval_TCC1-1 nil 3620471110
    ("" (subtype-tcc) nil nil)
-   ((* const-decl "real" vectors_2D "vectors/")
-    (sqv const-decl "nnreal" vectors_2D "vectors/")
-    (sq const-decl "nonneg_real" sq "reals/")
+   ((* const-decl "real" vectors_2D vectors)
+    (sqv const-decl "nnreal" vectors_2D vectors)
+    (sq const-decl "nonneg_real" sq reals)
     (real_plus_real_is_real application-judgement "real" reals nil)
     (real_times_real_is_real application-judgement "real" reals nil))
-   nil))
+   nil (horizontal_WCV_tau_interval subtype "0" "Lookahead[0, T]")))
  (horizontal_WCV_tau_interval_TCC2 0
   (horizontal_WCV_tau_interval_TCC2-1 nil 3620471110
    ("" (subtype-tcc) nil nil)
-   ((* const-decl "real" vectors_2D "vectors/")
-    (sqv const-decl "nnreal" vectors_2D "vectors/")
-    (sq const-decl "nonneg_real" sq "reals/")
+   ((* const-decl "real" vectors_2D vectors)
+    (sqv const-decl "nnreal" vectors_2D vectors)
+    (sq const-decl "nonneg_real" sq reals)
     (real_plus_real_is_real application-judgement "real" reals nil)
     (real_times_real_is_real application-judgement "real" reals nil))
-   nil))
+   nil
+   (horizontal_WCV_tau_interval subtype "horizontal_WCV_tau.T"
+    "Lookahead[0, T]")))
  (horizontal_WCV_tau_interval_TCC3 0
   (horizontal_WCV_tau_interval_TCC3-1 nil 3620471110
    ("" (subtype-tcc) nil nil)
-   ((* const-decl "real" vectors_2D "vectors/")
-    (sqv const-decl "nnreal" vectors_2D "vectors/")
-    (sq const-decl "nonneg_real" sq "reals/")
+   ((* const-decl "real" vectors_2D vectors)
+    (sqv const-decl "nnreal" vectors_2D vectors)
+    (sq const-decl "nonneg_real" sq reals)
     (real_plus_real_is_real application-judgement "real" reals nil)
     (real_times_real_is_real application-judgement "real" reals nil))
-   nil))
+   nil (horizontal_WCV_tau_interval subtype "0" "Lookahead[0, T]")))
  (horizontal_WCV_tau_interval_TCC4 0
   (horizontal_WCV_tau_interval_TCC4-1 nil 3620471110
    ("" (skeep)
@@ -312,7 +320,7 @@
         nil))
       nil))
     nil)
-   ((sq_nz_pos application-judgement "posreal" sq "reals/")
+   ((sq_nz_pos application-judgement "posreal" sq reals)
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
@@ -320,16 +328,16 @@
     (real_times_real_is_real application-judgement "real" reals nil)
     (real_plus_real_is_real application-judgement "real" reals nil)
     (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
-     "vect_analysis/")
-    (sqv_eq_0 formula-decl nil vectors_2D "vectors/")
-    (Nz_vect2 type-eq-decl nil vectors_2D "vectors/")
-    (zero const-decl "Vector" vectors_2D "vectors/")
+     vect_analysis)
+    (sqv_eq_0 formula-decl nil vectors_2D vectors)
+    (Nz_vect2 type-eq-decl nil vectors_2D vectors)
+    (zero const-decl "Vector" vectors_2D vectors)
     (/= const-decl "boolean" notequal nil)
-    (add_zero_right formula-decl nil vectors_2D "vectors/")
-    (scal_0 formula-decl nil vectors_2D "vectors/")
+    (add_zero_right formula-decl nil vectors_2D vectors)
+    (scal_0 formula-decl nil vectors_2D vectors)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
-    (Delta_ge_0_2 formula-decl nil horizontal "ACCoRD/")
+    (Delta_ge_0_2 formula-decl nil horizontal ACCoRD)
     (number nonempty-type-decl nil numbers nil)
     (boolean nonempty-type-decl nil booleans nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
@@ -343,129 +351,79 @@
     (posreal nonempty-type-eq-decl nil real_types nil)
     (DTHR formal-const-decl "posreal" horizontal_WCV_tau nil)
     (real nonempty-type-from-decl nil reals nil)
-    (Vector type-eq-decl nil vectors_2D "vectors/")
-    (Vect2 type-eq-decl nil vectors_2D_def "vectors/"))
-   nil))
+    (Vector type-eq-decl nil vectors_2D vectors)
+    (Vect2 type-eq-decl nil vectors_2D_def vectors))
+   nil
+   (horizontal_WCV_tau_interval subtype "horizontal_WCV_tau.v"
+    "{nzv | reals.>=(horizontal[horizontal_WCV_tau.DTHR].Delta(horizontal_WCV_tau.s, horizontal.nzv), 0)}")))
  (horizontal_WCV_tau_interval_TCC5 0
   (horizontal_WCV_tau_interval_TCC5-1 nil 3620471110
-   ("" (skeep)
-    (("" (skeep)
-      (("" (skeep)
-        (("" (assert)
-          (("" (typepred (T))
-            (("" (assert)
-              (("" (expand "min")
-                (("" (grind-reals)
-                  (("" (expand "Theta_D[DTHR]" 2)
-                    (("" (expand "root2b")
-                      (("" (expand "discr2b")
-                        (("" (both-sides "*" "sqv(v)" -5)
-                          (("1" (lemma "v_neq_zero")
+   ("" (skeep*)
+    (("" (typepred "T")
+      (("" (assert)
+        (("" (expand "min")
+          (("" (grind-reals)
+            (("" (expand "Theta_D[DTHR]" +)
+              (("" (expand "root2b")
+                (("" (expand "discr2b")
+                  (("" (both-sides "*" "sqv(v)" -6)
+                    (("1" (lemma "v_neq_zero")
+                      (("1" (inst?)
+                        (("1" (assert)
+                          (("1" (lemma "sqv_eq_0")
                             (("1" (inst?)
                               (("1"
-                                (assert)
+                                (replace -1 :hide? t)
                                 (("1"
-                                  (lemma "sqv_eq_0")
+                                  (grind-reals)
                                   (("1"
-                                    (inst?)
+                                    (both-sides "-" "sqv(s)*sqv(v)" -6)
                                     (("1"
-                                      (assert)
+                                      (both-sides "+" "sq(s*v)" -6)
                                       (("1"
                                         (grind-reals)
                                         (("1"
-                                          (hide -1)
+                                          (name-replace
+                                           "Jason"
+                                           "sq(s * v) + sq(DTHR) * sqv(v) - sqv(s) * sqv(v)")
                                           (("1"
-                                            (hide -1)
+                                            (move-terms 2 l (2))
                                             (("1"
-                                              (hide -1)
-                                              (("1"
-                                                (hide -1)
-                                                (("1"
-                                                  (hide -2)
+                                              (both-sides-f 2 "sq")
+                                              (("1" (sq-simp) nil nil)
+                                               ("2"
+                                                (lemma "sq_ge")
+                                                (("2"
+                                                  (inst?)
                                                   (("1"
-                                                    (hide -2)
-                                                    (("1"
-                                                      (hide 1)
-                                                      (("1"
-                                                        (hide 1)
-                                                        (("1"
-                                                          (both-sides
-                                                           "-"
-                                                           "sqv(s)*sqv(v)"
-                                                           -1)
-                                                          (("1"
-                                                            (both-sides
-                                                             "+"
-                                                             "sq(s*v)"
-                                                             -1)
-                                                            (("1"
-                                                              (grind-reals)
-                                                              (("1"
-                                                                (name-replace
-                                                                 "Jason"
-                                                                 "sq(s * v) + sq(DTHR) * sqv(v) - sqv(s) * sqv(v)")
-                                                                (("1"
-                                                                  (move-terms
-                                                                   1
-                                                                   l
-                                                                   (2))
-                                                                  (("1"
-                                                                    (both-sides-f
-                                                                     1
-                                                                     "sq")
-                                                                    (("1"
-                                                                      (sq-simp)
-                                                                      nil
-                                                                      nil)
-                                                                     ("2"
-                                                                      (lemma
-                                                                       "sq_ge")
-                                                                      (("2"
-                                                                        (inst?)
-                                                                        (("1"
-                                                                          (assert)
-                                                                          nil
-                                                                          nil)
-                                                                         ("2"
-                                                                          (grind-reals)
-                                                                          nil
-                                                                          nil))
-                                                                        nil))
-                                                                      nil))
-                                                                    nil)
-                                                                   ("2"
-                                                                    (grind-reals)
-                                                                    nil
-                                                                    nil))
-                                                                  nil))
-                                                                nil))
-                                                              nil)
-                                                             ("2"
-                                                              (grind-reals)
-                                                              nil
-                                                              nil))
-                                                            nil))
-                                                          nil))
-                                                        nil))
-                                                      nil))
+                                                    (assert)
+                                                    nil
+                                                    nil)
+                                                   ("2"
+                                                    (grind-reals)
+                                                    nil
                                                     nil))
                                                   nil))
                                                 nil))
+                                              nil)
+                                             ("2"
+                                              (grind-reals)
+                                              nil
                                               nil))
                                             nil))
                                           nil))
-                                        nil))
+                                        nil)
+                                       ("2" (grind-reals) nil nil))
                                       nil))
                                     nil))
                                   nil))
                                 nil))
                               nil))
-                            nil)
-                           ("2" (assert) (("2" (grind-reals) nil nil))
                             nil))
                           nil))
                         nil))
-                      nil))
+                      nil)
+                     ("2" (assert) (("2" (grind-reals) nil nil)) nil))
                     nil))
                   nil))
                 nil))
@@ -475,83 +433,84 @@
         nil))
       nil))
     nil)
-   ((real_ge_is_total_order name-judgement "(total_order?[real])"
-     real_props nil)
-    (sq_nz_pos application-judgement "posreal" sq "reals/")
-    (real_le_is_total_order name-judgement "(total_order?[real])"
-     real_props nil)
-    (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
+   ((posreal nonempty-type-eq-decl nil real_types nil)
+    (> const-decl "bool" reals nil)
+    (nonneg_real nonempty-type-eq-decl nil real_types nil)
+    (>= const-decl "bool" reals nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (number nonempty-type-decl nil numbers nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (min const-decl "{p: real | p <= m AND p <= n}" real_defs nil)
+    (Theta_D const-decl "real" horizontal ACCoRD)
+    (nnreal_plus_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
-    (real_times_real_is_real application-judgement "real" reals nil)
-    (real_plus_real_is_real application-judgement "real" reals nil)
-    (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
-     "vect_analysis/")
-    (real_gt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil)
-    (TRUE const-decl "bool" booleans nil)
-    (root2b const-decl "real" quadratic_2b "reals/")
-    (= const-decl "[T, T -> boolean]" equalities nil)
-    (<= const-decl "bool" reals nil)
-    (Vector type-eq-decl nil vectors_2D "vectors/")
-    (nnreal type-eq-decl nil real_types nil)
-    (sqv const-decl "nnreal" vectors_2D "vectors/")
-    (Vect2 type-eq-decl nil vectors_2D_def "vectors/")
-    (sq const-decl "nonneg_real" sq "reals/")
-    (DTHR formal-const-decl "posreal" horizontal_WCV_tau nil)
-    (numfield nonempty-type-eq-decl nil number_fields nil)
-    (* const-decl "[numfield, numfield -> numfield]" number_fields nil)
-    (real_lt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil)
-    (sqv_eq_0 formula-decl nil vectors_2D "vectors/")
-    (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
-    (both_sides_minus_le1 formula-decl nil real_props nil)
-    (- const-decl "[numfield -> numfield]" number_fields nil)
-    (sqrt const-decl "{nnz: nnreal | nnz * nnz = nnx}" sqrt "reals/")
-    (IFF const-decl "[bool, bool -> bool]" booleans nil)
-    (sq_ge formula-decl nil sq "reals/")
-    (Jason skolem-const-decl "real" horizontal_WCV_tau nil)
-    (sq_neg formula-decl nil sq "reals/")
-    (sq_sqrt formula-decl nil sqrt "reals/")
-    (sq_minus formula-decl nil sq "reals/")
-    (mult_divides2 application-judgement "(divides(m))" divides nil)
-    (mult_divides1 application-judgement "(divides(n))" divides nil)
-    (even_times_int_is_even application-judgement "even_int" integers
+    (discr2b const-decl "real" quadratic_2b reals)
+    (v_neq_zero formula-decl nil vectors_2D vectors)
+    (minus_real_is_real application-judgement "real" reals nil)
+    (real_minus_real_is_real application-judgement "real" reals nil)
+    (real_div_nzreal_is_real application-judgement "real" reals nil)
+    (le_times_le_pos formula-decl nil real_props nil)
+    (zero_times1 formula-decl nil real_props nil)
+    (div_mult_pos_ge1 formula-decl nil real_props nil)
+    (+ const-decl "[numfield, numfield -> numfield]" number_fields nil)
+    (* const-decl "real" vectors_2D vectors)
+    (both_sides_plus_le1 formula-decl nil real_props nil)
+    (minus_odd_is_odd application-judgement "odd_int" integers nil)
+    (bijective? const-decl "bool" functions nil)
+    (id const-decl "(bijective?[T, T])" identity nil)
+    (sq_0 formula-decl nil sq reals)
+    (int_times_even_is_even application-judgement "even_int" integers
      nil)
     (nnint_times_nnint_is_nnint application-judgement "nonneg_int"
      integers nil)
-    (sq_0 formula-decl nil sq "reals/")
-    (bijective? const-decl "bool" functions nil)
-    (id const-decl "(bijective?[T, T])" identity nil)
-    (minus_odd_is_odd application-judgement "odd_int" integers nil)
-    (both_sides_plus_le1 formula-decl nil real_props nil)
-    (* const-decl "real" vectors_2D "vectors/")
-    (+ const-decl "[numfield, numfield -> numfield]" number_fields nil)
-    (div_mult_pos_ge1 formula-decl nil real_props nil)
-    (zero_times1 formula-decl nil real_props nil)
-    (le_times_le_pos formula-decl nil real_props nil)
-    (real_div_nzreal_is_real application-judgement "real" reals nil)
-    (real_minus_real_is_real application-judgement "real" reals nil)
-    (minus_real_is_real application-judgement "real" reals nil)
-    (v_neq_zero formula-decl nil vectors_2D "vectors/")
-    (discr2b const-decl "real" quadratic_2b "reals/")
-    (nnreal_plus_nnreal_is_nnreal application-judgement "nnreal"
+    (sq_minus formula-decl nil sq reals)
+    (sq_sqrt formula-decl nil sqrt reals)
+    (sq_neg formula-decl nil sq reals)
+    (Jason skolem-const-decl "real" horizontal_WCV_tau nil)
+    (sq_ge formula-decl nil sq reals)
+    (IFF const-decl "[bool, bool -> bool]" booleans nil)
+    (sqrt const-decl "{nnz: nnreal | nnz * nnz = nnx}" sqrt reals)
+    (- const-decl "[numfield -> numfield]" number_fields nil)
+    (both_sides_minus_le1 formula-decl nil real_props nil)
+    (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
+    (sqv_eq_0 formula-decl nil vectors_2D vectors)
+    (real_lt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (<= const-decl "bool" reals nil)
+    (Vector type-eq-decl nil vectors_2D vectors)
+    (nnreal type-eq-decl nil real_types nil)
+    (sqv const-decl "nnreal" vectors_2D vectors)
+    (Vect2 type-eq-decl nil vectors_2D_def vectors)
+    (sq const-decl "nonneg_real" sq reals)
+    (DTHR formal-const-decl "posreal" horizontal_WCV_tau nil)
+    (numfield nonempty-type-eq-decl nil number_fields nil)
+    (* const-decl "[numfield, numfield -> numfield]" number_fields nil)
+    (root2b const-decl "real" quadratic_2b reals)
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (real_gt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
+    (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
+     vect_analysis)
+    (real_plus_real_is_real application-judgement "real" reals nil)
+    (real_times_real_is_real application-judgement "real" reals nil)
+    (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
-    (Theta_D const-decl "real" horizontal "ACCoRD/")
-    (min const-decl "{p: real | p <= m AND p <= n}" real_defs nil)
+    (real_le_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (sq_nz_pos application-judgement "posreal" sq reals)
     (boolean nonempty-type-decl nil booleans nil)
     (bool nonempty-type-eq-decl nil booleans nil)
-    (NOT const-decl "[bool -> bool]" booleans nil)
-    (number nonempty-type-decl nil numbers nil)
-    (number_field_pred const-decl "[number -> boolean]" number_fields
-     nil)
-    (number_field nonempty-type-from-decl nil number_fields nil)
-    (real_pred const-decl "[number_field -> boolean]" reals nil)
-    (real nonempty-type-from-decl nil reals nil)
-    (>= const-decl "bool" reals nil)
-    (nonneg_real nonempty-type-eq-decl nil real_types nil)
-    (> const-decl "bool" reals nil)
-    (posreal nonempty-type-eq-decl nil real_types nil))
-   nil))
+    (TRUE const-decl "bool" booleans nil))
+   nil
+   (horizontal_WCV_tau_interval subtype
+    "real_defs.min(horizontal_WCV_tau.T, horizontal[horizontal_WCV_tau.DTHR].Theta_D(horizontal_WCV_tau.s, horizontal_WCV_tau.v, 1))"
+    "Lookahead[0, T]")))
  (horizontal_WCV_tau_interval_TCC6 0
   (horizontal_WCV_tau_interval_TCC6-1 nil 3620471110
    ("" (skeep)
@@ -577,7 +536,7 @@
         nil))
       nil))
     nil)
-   ((sq_nz_pos application-judgement "posreal" sq "reals/")
+   ((sq_nz_pos application-judgement "posreal" sq reals)
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
@@ -585,20 +544,22 @@
     (real_times_real_is_real application-judgement "real" reals nil)
     (real_plus_real_is_real application-judgement "real" reals nil)
     (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
-     "vect_analysis/"))
-   nil))
+     vect_analysis))
+   nil
+   (horizontal_WCV_tau_interval subtype "horizontal_WCV_tau.T"
+    "Lookahead[0, T]")))
  (horizontal_WCV_tau_interval_TCC7 0
   (horizontal_WCV_tau_interval_TCC7-1 nil 3620471110
    ("" (subtype-tcc) nil nil)
-   ((* const-decl "real" vectors_2D "vectors/")
-    (sqv const-decl "nnreal" vectors_2D "vectors/")
-    (sq const-decl "nonneg_real" sq "reals/")
-    (det const-decl "real" det_2D "vectors/")
-    (Delta const-decl "real" horizontal "ACCoRD/")
+   ((* const-decl "real" vectors_2D vectors)
+    (sqv const-decl "nnreal" vectors_2D vectors)
+    (sq const-decl "nonneg_real" sq reals)
+    (det const-decl "real" det_2D vectors)
+    (Delta const-decl "real" horizontal ACCoRD)
     (real_minus_real_is_real application-judgement "real" reals nil)
     (real_plus_real_is_real application-judgement "real" reals nil)
     (real_times_real_is_real application-judgement "real" reals nil))
-   nil))
+   nil (horizontal_WCV_tau_interval subtype "0" "Lookahead[0, T]")))
  (horizontal_WCV_tau_interval_TCC8 0
   (horizontal_WCV_tau_interval_TCC8-1 nil 3620471110
    ("" (skeep)
@@ -613,8 +574,8 @@
         nil))
       nil))
     nil)
-   ((sqv_eq_0 formula-decl nil vectors_2D "vectors/")
-    (sq_nz_pos application-judgement "posreal" sq "reals/")
+   ((sqv_eq_0 formula-decl nil vectors_2D vectors)
+    (sq_nz_pos application-judgement "posreal" sq reals)
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_lt_is_strict_total_order name-judgement
@@ -626,22 +587,24 @@
     (real_times_real_is_real application-judgement "real" reals nil)
     (real_plus_real_is_real application-judgement "real" reals nil)
     (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
-     "vect_analysis/")
-    (sqv_zero formula-decl nil vectors_2D "vectors/")
-    (dot_zero_right formula-decl nil vectors_2D "vectors/")
+     vect_analysis)
+    (sqv_zero formula-decl nil vectors_2D vectors)
+    (dot_zero_right formula-decl nil vectors_2D vectors)
     (TRUE const-decl "bool" booleans nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (boolean nonempty-type-decl nil booleans nil)
-    (Vect2 type-eq-decl nil vectors_2D_def "vectors/")
-    (Vector type-eq-decl nil vectors_2D "vectors/")
+    (Vect2 type-eq-decl nil vectors_2D_def vectors)
+    (Vector type-eq-decl nil vectors_2D vectors)
     (real nonempty-type-from-decl nil reals nil))
-   nil))
+   nil
+   (horizontal_WCV_tau_interval subtype "horizontal_WCV_tau.a"
+    "nonzero_real")))
  (horizontal_WCV_tau_interval_TCC9 0
   (horizontal_WCV_tau_interval_TCC9-1 nil 3620471110
    ("" (subtype-tcc) nil nil)
-   ((comp_zero_y formula-decl nil vectors_2D "vectors/")
-    (comp_zero_x formula-decl nil vectors_2D "vectors/")
-    (sqrt_0 formula-decl nil sqrt "reals/")
+   ((comp_zero_y formula-decl nil vectors_2D vectors)
+    (comp_zero_x formula-decl nil vectors_2D vectors)
+    (sqrt_0 formula-decl nil sqrt reals)
     (min const-decl "{p: real | p <= m AND p <= n}" real_defs nil)
     (max const-decl "{p: real | p >= m AND p >= n}" real_defs nil)
     (rat_div_nzrat_is_rat application-judgement "rat" rationals nil)
@@ -669,13 +632,13 @@
     (> const-decl "bool" reals nil)
     (posreal nonempty-type-eq-decl nil real_types nil)
     (nnreal type-eq-decl nil real_types nil)
-    (* const-decl "real" vectors_2D "vectors/")
-    (sqv const-decl "nnreal" vectors_2D "vectors/")
-    (sq const-decl "nonneg_real" sq "reals/")
-    (det const-decl "real" det_2D "vectors/")
-    (Delta const-decl "real" horizontal "ACCoRD/")
-    (discr const-decl "real" quadratic "reals/")
-    (root const-decl "real" quadratic "reals/")
+    (* const-decl "real" vectors_2D vectors)
+    (sqv const-decl "nnreal" vectors_2D vectors)
+    (sq const-decl "nonneg_real" sq reals)
+    (det const-decl "real" det_2D vectors)
+    (Delta const-decl "real" horizontal ACCoRD)
+    (discr const-decl "real" quadratic reals)
+    (root const-decl "real" quadratic reals)
     (/= const-decl "boolean" notequal nil)
     (real_times_real_is_real application-judgement "real" reals nil)
     (real_plus_real_is_real application-judgement "real" reals nil)
@@ -685,7 +648,9 @@
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
     (real_div_nzreal_is_real application-judgement "real" reals nil))
-   nil))
+   nil
+   (horizontal_WCV_tau_interval subtype "horizontal_WCV_tau.v"
+    "{nzv | reals.>=(horizontal[horizontal_WCV_tau.DTHR].Delta(horizontal_WCV_tau.s, horizontal.nzv), 0)}")))
  (horizontal_WCV_tau_interval_TCC10 0
   (horizontal_WCV_tau_interval_TCC10-1 nil 3620471110
    ("" (skeep*)
@@ -697,7 +662,7 @@
    ((real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (minus_odd_is_odd application-judgement "odd_int" integers nil)
-    (sq_nz_pos application-judgement "posreal" sq "reals/")
+    (sq_nz_pos application-judgement "posreal" sq reals)
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_lt_is_strict_total_order name-judgement
@@ -709,11 +674,13 @@
     (real_times_real_is_real application-judgement "real" reals nil)
     (real_plus_real_is_real application-judgement "real" reals nil)
     (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
-     "vect_analysis/")
+     vect_analysis)
     (boolean nonempty-type-decl nil booleans nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (TRUE const-decl "bool" booleans nil))
-   nil))
+   nil
+   (horizontal_WCV_tau_interval subtype "horizontal_WCV_tau.T"
+    "Lookahead[0, T]")))
  (horizontal_WCV_tau_interval_TCC11 0
   (horizontal_WCV_tau_interval_TCC11-1 nil 3620471110
    ("" (skeep)
@@ -722,8 +689,8 @@
         (("" (expand "max") (("" (grind-reals) nil nil)) nil)) nil))
       nil))
     nil)
-   ((max const-decl "{p: real | p >= m AND p >= n}" real_defs nil))
-   nil))
+   ((max const-decl "{p: real | p >= m AND p >= n}" real_defs nil)) nil
+   (horizontal_WCV_tau_interval subtype "0" "Lookahead[0, T]")))
  (horizontal_WCV_tau_interval_TCC12 0
   (horizontal_WCV_tau_interval_TCC12-1 nil 3620471110
    ("" (skeep)
@@ -747,12 +714,12 @@
       nil))
     nil)
    ((min const-decl "{p: real | p <= m AND p <= n}" real_defs nil)
-    (sq_nz_pos application-judgement "posreal" sq "reals/")
-    (Theta_D const-decl "real" horizontal "ACCoRD/")
-    (root2b const-decl "real" quadratic_2b "reals/")
+    (sq_nz_pos application-judgement "posreal" sq reals)
+    (Theta_D const-decl "real" horizontal ACCoRD)
+    (root2b const-decl "real" quadratic_2b reals)
     (nnreal_plus_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
-    (discr2b const-decl "real" quadratic_2b "reals/")
+    (discr2b const-decl "real" quadratic_2b reals)
     (real nonempty-type-from-decl nil reals nil)
     (real_pred const-decl "[number_field -> boolean]" reals nil)
     (number_field nonempty-type-from-decl nil number_fields nil)
@@ -764,16 +731,16 @@
     (boolean nonempty-type-decl nil booleans nil)
     (>= const-decl "bool" reals nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
-    (Vect2 type-eq-decl nil vectors_2D_def "vectors/")
-    (Vector type-eq-decl nil vectors_2D "vectors/")
+    (Vect2 type-eq-decl nil vectors_2D_def vectors)
+    (Vector type-eq-decl nil vectors_2D vectors)
     (/= const-decl "boolean" notequal nil)
-    (zero const-decl "Vector" vectors_2D "vectors/")
-    (Nz_vect2 type-eq-decl nil vectors_2D "vectors/")
+    (zero const-decl "Vector" vectors_2D vectors)
+    (Nz_vect2 type-eq-decl nil vectors_2D vectors)
     (nonneg_real nonempty-type-eq-decl nil real_types nil)
     (> const-decl "bool" reals nil)
     (posreal nonempty-type-eq-decl nil real_types nil)
     (DTHR formal-const-decl "posreal" horizontal_WCV_tau nil)
-    (Delta const-decl "real" horizontal "ACCoRD/")
+    (Delta const-decl "real" horizontal ACCoRD)
     (rational_pred const-decl "[real -> boolean]" rationals nil)
     (rational nonempty-type-from-decl nil rationals nil)
     (integer_pred const-decl "[rational -> boolean]" integers nil)
@@ -783,7 +750,7 @@
     (= const-decl "[T, T -> boolean]" equalities nil)
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (- const-decl "[numfield -> numfield]" number_fields nil)
-    (Sign type-eq-decl nil sign "reals/")
+    (Sign type-eq-decl nil sign reals)
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (<= const-decl "bool" reals nil)
@@ -791,16 +758,16 @@
     (pos_times_gt formula-decl nil real_props nil)
     (neg_times_le formula-decl nil real_props nil)
     (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
-     "vect_analysis/")
+     vect_analysis)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
-    (discr const-decl "real" quadratic "reals/")
+    (discr const-decl "real" quadratic reals)
     (real_times_real_is_real application-judgement "real" reals nil)
-    (root const-decl "real" quadratic "reals/")
+    (root const-decl "real" quadratic reals)
     (real_plus_real_is_real application-judgement "real" reals nil)
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
@@ -808,16 +775,18 @@
     (minus_real_is_real application-judgement "real" reals nil)
     (minus_odd_is_odd application-judgement "odd_int" integers nil)
     (max const-decl "{p: real | p >= m AND p >= n}" real_defs nil))
-   nil))
+   nil
+   (horizontal_WCV_tau_interval subtype "horizontal_WCV_tau.Din"
+    "Lookahead[0, T]")))
  (horizontal_WCV_tau_interval_TCC13 0
   (horizontal_WCV_tau_interval_TCC13-1 nil 3620471110
    ("" (subtype-tcc) nil nil)
    ((AND const-decl "[bool, bool -> bool]" booleans nil)
-    (Vect2 type-eq-decl nil vectors_2D_def "vectors/")
-    (Vector type-eq-decl nil vectors_2D "vectors/")
+    (Vect2 type-eq-decl nil vectors_2D_def vectors)
+    (Vector type-eq-decl nil vectors_2D vectors)
     (/= const-decl "boolean" notequal nil)
-    (zero const-decl "Vector" vectors_2D "vectors/")
-    (Nz_vect2 type-eq-decl nil vectors_2D "vectors/")
+    (zero const-decl "Vector" vectors_2D vectors)
+    (Nz_vect2 type-eq-decl nil vectors_2D vectors)
     (DTHR formal-const-decl "posreal" horizontal_WCV_tau nil)
     (rational_pred const-decl "[real -> boolean]" rationals nil)
     (rational nonempty-type-from-decl nil rationals nil)
@@ -828,14 +797,14 @@
     (= const-decl "[T, T -> boolean]" equalities nil)
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (- const-decl "[numfield -> numfield]" number_fields nil)
-    (Sign type-eq-decl nil sign "reals/")
+    (Sign type-eq-decl nil sign reals)
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
-     "vect_analysis/")
-    (sq_nz_pos application-judgement "posreal" sq "reals/")
+     vect_analysis)
+    (sq_nz_pos application-judgement "posreal" sq reals)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_lt_is_strict_total_order name-judgement
@@ -855,16 +824,16 @@
     (> const-decl "bool" reals nil)
     (posreal nonempty-type-eq-decl nil real_types nil)
     (nnreal type-eq-decl nil real_types nil)
-    (* const-decl "real" vectors_2D "vectors/")
-    (sqv const-decl "nnreal" vectors_2D "vectors/")
-    (sq const-decl "nonneg_real" sq "reals/")
-    (det const-decl "real" det_2D "vectors/")
-    (Delta const-decl "real" horizontal "ACCoRD/")
-    (discr const-decl "real" quadratic "reals/")
-    (root const-decl "real" quadratic "reals/")
-    (discr2b const-decl "real" quadratic_2b "reals/")
-    (root2b const-decl "real" quadratic_2b "reals/")
-    (Theta_D const-decl "real" horizontal "ACCoRD/")
+    (* const-decl "real" vectors_2D vectors)
+    (sqv const-decl "nnreal" vectors_2D vectors)
+    (sq const-decl "nonneg_real" sq reals)
+    (det const-decl "real" det_2D vectors)
+    (Delta const-decl "real" horizontal ACCoRD)
+    (discr const-decl "real" quadratic reals)
+    (root const-decl "real" quadratic reals)
+    (discr2b const-decl "real" quadratic_2b reals)
+    (root2b const-decl "real" quadratic_2b reals)
+    (Theta_D const-decl "real" horizontal ACCoRD)
     (real_times_real_is_real application-judgement "real" reals nil)
     (real_plus_real_is_real application-judgement "real" reals nil)
     (real_minus_real_is_real application-judgement "real" reals nil)
@@ -875,16 +844,18 @@
     (real_div_nzreal_is_real application-judgement "real" reals nil)
     (posreal_times_posreal_is_posreal application-judgement "posreal"
      real_types nil))
-   nil))
+   nil
+   (horizontal_WCV_tau_interval subtype "horizontal_WCV_tau.Dout"
+    "Lookahead[0, T]")))
  (horizontal_WCV_tau_interval_TCC14 0
   (horizontal_WCV_tau_interval_TCC14-1 nil 3620471110
    ("" (subtype-tcc) nil nil)
    ((AND const-decl "[bool, bool -> bool]" booleans nil)
-    (Vect2 type-eq-decl nil vectors_2D_def "vectors/")
-    (Vector type-eq-decl nil vectors_2D "vectors/")
+    (Vect2 type-eq-decl nil vectors_2D_def vectors)
+    (Vector type-eq-decl nil vectors_2D vectors)
     (/= const-decl "boolean" notequal nil)
-    (zero const-decl "Vector" vectors_2D "vectors/")
-    (Nz_vect2 type-eq-decl nil vectors_2D "vectors/")
+    (zero const-decl "Vector" vectors_2D vectors)
+    (Nz_vect2 type-eq-decl nil vectors_2D vectors)
     (DTHR formal-const-decl "posreal" horizontal_WCV_tau nil)
     (rational_pred const-decl "[real -> boolean]" rationals nil)
     (rational nonempty-type-from-decl nil rationals nil)
@@ -895,14 +866,14 @@
     (= const-decl "[T, T -> boolean]" equalities nil)
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (- const-decl "[numfield -> numfield]" number_fields nil)
-    (Sign type-eq-decl nil sign "reals/")
+    (Sign type-eq-decl nil sign reals)
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
-     "vect_analysis/")
-    (sq_nz_pos application-judgement "posreal" sq "reals/")
+     vect_analysis)
+    (sq_nz_pos application-judgement "posreal" sq reals)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_lt_is_strict_total_order name-judgement
@@ -922,16 +893,16 @@
     (> const-decl "bool" reals nil)
     (posreal nonempty-type-eq-decl nil real_types nil)
     (nnreal type-eq-decl nil real_types nil)
-    (* const-decl "real" vectors_2D "vectors/")
-    (sqv const-decl "nnreal" vectors_2D "vectors/")
-    (sq const-decl "nonneg_real" sq "reals/")
-    (det const-decl "real" det_2D "vectors/")
-    (Delta const-decl "real" horizontal "ACCoRD/")
-    (discr const-decl "real" quadratic "reals/")
-    (root const-decl "real" quadratic "reals/")
-    (discr2b const-decl "real" quadratic_2b "reals/")
-    (root2b const-decl "real" quadratic_2b "reals/")
-    (Theta_D const-decl "real" horizontal "ACCoRD/")
+    (* const-decl "real" vectors_2D vectors)
+    (sqv const-decl "nnreal" vectors_2D vectors)
+    (sq const-decl "nonneg_real" sq reals)
+    (det const-decl "real" det_2D vectors)
+    (Delta const-decl "real" horizontal ACCoRD)
+    (discr const-decl "real" quadratic reals)
+    (root const-decl "real" quadratic reals)
+    (discr2b const-decl "real" quadratic_2b reals)
+    (root2b const-decl "real" quadratic_2b reals)
+    (Theta_D const-decl "real" horizontal ACCoRD)
     (real_times_real_is_real application-judgement "real" reals nil)
     (real_plus_real_is_real application-judgement "real" reals nil)
     (real_minus_real_is_real application-judgement "real" reals nil)
@@ -942,16 +913,18 @@
     (real_div_nzreal_is_real application-judgement "real" reals nil)
     (posreal_times_posreal_is_posreal application-judgement "posreal"
      real_types nil))
-   nil))
+   nil
+   (horizontal_WCV_tau_interval subtype "horizontal_WCV_tau.tauin"
+    "Lookahead[0, T]")))
  (horizontal_WCV_tau_interval_TCC15 0
   (horizontal_WCV_tau_interval_TCC15-1 nil 3630334949
    ("" (subtype-tcc) nil nil)
    ((AND const-decl "[bool, bool -> bool]" booleans nil)
-    (Vect2 type-eq-decl nil vectors_2D_def "vectors/")
-    (Vector type-eq-decl nil vectors_2D "vectors/")
+    (Vect2 type-eq-decl nil vectors_2D_def vectors)
+    (Vector type-eq-decl nil vectors_2D vectors)
     (/= const-decl "boolean" notequal nil)
-    (zero const-decl "Vector" vectors_2D "vectors/")
-    (Nz_vect2 type-eq-decl nil vectors_2D "vectors/")
+    (zero const-decl "Vector" vectors_2D vectors)
+    (Nz_vect2 type-eq-decl nil vectors_2D vectors)
     (DTHR formal-const-decl "posreal" horizontal_WCV_tau nil)
     (rational_pred const-decl "[real -> boolean]" rationals nil)
     (rational nonempty-type-from-decl nil rationals nil)
@@ -962,14 +935,14 @@
     (= const-decl "[T, T -> boolean]" equalities nil)
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (- const-decl "[numfield -> numfield]" number_fields nil)
-    (Sign type-eq-decl nil sign "reals/")
+    (Sign type-eq-decl nil sign reals)
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
-     "vect_analysis/")
-    (sq_nz_pos application-judgement "posreal" sq "reals/")
+     vect_analysis)
+    (sq_nz_pos application-judgement "posreal" sq reals)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_lt_is_strict_total_order name-judgement
@@ -989,16 +962,16 @@
     (> const-decl "bool" reals nil)
     (posreal nonempty-type-eq-decl nil real_types nil)
     (nnreal type-eq-decl nil real_types nil)
-    (* const-decl "real" vectors_2D "vectors/")
-    (sqv const-decl "nnreal" vectors_2D "vectors/")
-    (sq const-decl "nonneg_real" sq "reals/")
-    (det const-decl "real" det_2D "vectors/")
-    (Delta const-decl "real" horizontal "ACCoRD/")
-    (discr const-decl "real" quadratic "reals/")
-    (root const-decl "real" quadratic "reals/")
-    (discr2b const-decl "real" quadratic_2b "reals/")
-    (root2b const-decl "real" quadratic_2b "reals/")
-    (Theta_D const-decl "real" horizontal "ACCoRD/")
+    (* const-decl "real" vectors_2D vectors)
+    (sqv const-decl "nnreal" vectors_2D vectors)
+    (sq const-decl "nonneg_real" sq reals)
+    (det const-decl "real" det_2D vectors)
+    (Delta const-decl "real" horizontal ACCoRD)
+    (discr const-decl "real" quadratic reals)
+    (root const-decl "real" quadratic reals)
+    (discr2b const-decl "real" quadratic_2b reals)
+    (root2b const-decl "real" quadratic_2b reals)
+    (Theta_D const-decl "real" horizontal ACCoRD)
     (real_times_real_is_real application-judgement "real" reals nil)
     (real_plus_real_is_real application-judgement "real" reals nil)
     (real_minus_real_is_real application-judgement "real" reals nil)
@@ -1009,16 +982,18 @@
     (real_div_nzreal_is_real application-judgement "real" reals nil)
     (posreal_times_posreal_is_posreal application-judgement "posreal"
      real_types nil))
-   nil))
+   nil
+   (horizontal_WCV_tau_interval subtype "horizontal_WCV_tau.tauout"
+    "Lookahead[0, T]")))
  (horizontal_WCV_tau_interval_TCC16 0
   (horizontal_WCV_tau_interval_TCC16-1 nil 3630334949
    ("" (subtype-tcc) nil nil)
    ((AND const-decl "[bool, bool -> bool]" booleans nil)
-    (Vect2 type-eq-decl nil vectors_2D_def "vectors/")
-    (Vector type-eq-decl nil vectors_2D "vectors/")
+    (Vect2 type-eq-decl nil vectors_2D_def vectors)
+    (Vector type-eq-decl nil vectors_2D vectors)
     (/= const-decl "boolean" notequal nil)
-    (zero const-decl "Vector" vectors_2D "vectors/")
-    (Nz_vect2 type-eq-decl nil vectors_2D "vectors/")
+    (zero const-decl "Vector" vectors_2D vectors)
+    (Nz_vect2 type-eq-decl nil vectors_2D vectors)
     (DTHR formal-const-decl "posreal" horizontal_WCV_tau nil)
     (rational_pred const-decl "[real -> boolean]" rationals nil)
     (rational nonempty-type-from-decl nil rationals nil)
@@ -1029,7 +1004,7 @@
     (= const-decl "[T, T -> boolean]" equalities nil)
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (- const-decl "[numfield -> numfield]" number_fields nil)
-    (Sign type-eq-decl nil sign "reals/")
+    (Sign type-eq-decl nil sign reals)
     (nonneg_real_min application-judgement
      "{z: nonneg_real | z <= x AND z <= y}" real_defs nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
@@ -1037,8 +1012,8 @@
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
-     "vect_analysis/")
-    (sq_nz_pos application-judgement "posreal" sq "reals/")
+     vect_analysis)
+    (sq_nz_pos application-judgement "posreal" sq reals)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_lt_is_strict_total_order name-judgement
@@ -1058,16 +1033,16 @@
     (> const-decl "bool" reals nil)
     (posreal nonempty-type-eq-decl nil real_types nil)
     (nnreal type-eq-decl nil real_types nil)
-    (* const-decl "real" vectors_2D "vectors/")
-    (sqv const-decl "nnreal" vectors_2D "vectors/")
-    (sq const-decl "nonneg_real" sq "reals/")
-    (det const-decl "real" det_2D "vectors/")
-    (Delta const-decl "real" horizontal "ACCoRD/")
-    (discr const-decl "real" quadratic "reals/")
-    (root const-decl "real" quadratic "reals/")
-    (discr2b const-decl "real" quadratic_2b "reals/")
-    (root2b const-decl "real" quadratic_2b "reals/")
-    (Theta_D const-decl "real" horizontal "ACCoRD/")
+    (* const-decl "real" vectors_2D vectors)
+    (sqv const-decl "nnreal" vectors_2D vectors)
+    (sq const-decl "nonneg_real" sq reals)
+    (det const-decl "real" det_2D vectors)
+    (Delta const-decl "real" horizontal ACCoRD)
+    (discr const-decl "real" quadratic reals)
+    (root const-decl "real" quadratic reals)
+    (discr2b const-decl "real" quadratic_2b reals)
+    (root2b const-decl "real" quadratic_2b reals)
+    (Theta_D const-decl "real" horizontal ACCoRD)
     (real_times_real_is_real application-judgement "real" reals nil)
     (real_plus_real_is_real application-judgement "real" reals nil)
     (real_minus_real_is_real application-judgement "real" reals nil)
@@ -1078,7 +1053,10 @@
     (real_div_nzreal_is_real application-judgement "real" reals nil)
     (posreal_times_posreal_is_posreal application-judgement "posreal"
      real_types nil))
-   nil))
+   nil
+   (horizontal_WCV_tau_interval subtype
+    "real_defs.min(horizontal_WCV_tau.tauin, horizontal_WCV_tau.Din)"
+    "Lookahead[0, T]")))
  (horizontal_WCV_tau_interval_TCC17 0
   (horizontal_WCV_tau_interval_TCC17-1 nil 3630334949
    ("" (skeep*)
@@ -1098,19 +1076,21 @@
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
-     "vect_analysis/")
-    (sq_nz_pos application-judgement "posreal" sq "reals/")
+     vect_analysis)
+    (sq_nz_pos application-judgement "posreal" sq reals)
     (posreal_times_posreal_is_posreal application-judgement "posreal"
      real_types nil)
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (sq const-decl "nonneg_real" sq "reals/")
-    (sqv const-decl "nnreal" vectors_2D "vectors/")
-    (* const-decl "real" vectors_2D "vectors/")
+    (sq const-decl "nonneg_real" sq reals)
+    (sqv const-decl "nnreal" vectors_2D vectors)
+    (* const-decl "real" vectors_2D vectors)
     (boolean nonempty-type-decl nil booleans nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (TRUE const-decl "bool" booleans nil))
-   nil))
+   nil
+   (horizontal_WCV_tau_interval subtype "horizontal_WCV_tau.Dout"
+    "Lookahead[0, T]")))
  (horizontal_WCV_tau_interval_sound 0
   (horizontal_WCV_tau_interval_sound-2 nil 3630411619
    ("" (expand "horizontal_interval_sound?")
@@ -3265,99 +3245,83 @@
         nil))
       nil))
     nil)
-   ((Lookahead type-eq-decl nil Lookahead "ACCoRD/")
+   ((Lookahead type-eq-decl nil Lookahead ACCoRD)
     (horizontal_WCV_tau_interval const-decl
      "[# entry: Lookahead[0, T], exit: Lookahead[0, T] #]"
      horizontal_WCV_tau nil)
     (IF const-decl "[boolean, T, T -> T]" if_def nil)
     (max const-decl "{p: real | p >= m AND p >= n}" real_defs nil)
-    (sq_nz_pos application-judgement "posreal" sq "reals/")
+    (sq_nz_pos application-judgement "posreal" sq reals)
     (timevar? const-decl "bool" timevars nil)
-    (TimeVar type-eq-decl nil timevars nil)
-    (P skolem-const-decl "[[Vect2, Vect2] -> bool]" horizontal_WCV_tau
-     nil)
-    (Q skolem-const-decl "[[Vect2, Vect2] -> boolean]"
-     horizontal_WCV_tau nil)
-    (Din skolem-const-decl
-     "{p: real | p >= 0 AND p >= Theta_D[DTHR](s, v, -1)}"
-     horizontal_WCV_tau nil)
-    (Dout skolem-const-decl
-     "{p: real | p <= T AND p <= Theta_D[DTHR](s, v, 1)}"
-     horizontal_WCV_tau nil)
+    (TimeVar type-eq-decl nil timevars nil) nil nil nil nil
     (div_mult_neg_le2 formula-decl nil real_props nil)
     (both_sides_times_pos_lt1 formula-decl nil real_props nil)
-    (horizontal_tca_le_D formula-decl nil horizontal "ACCoRD/")
+    (horizontal_tca_le_D formula-decl nil horizontal ACCoRD)
     (both_sides_times1 formula-decl nil real_props nil)
     (div_cancel2 formula-decl nil real_props nil)
     (bijective? const-decl "bool" functions nil)
-    (id const-decl "(bijective?[T, T])" identity nil)
-    (tauout skolem-const-decl "real" horizontal_WCV_tau nil)
-    (a_gt_0_discr_ge_0 formula-decl nil quadratic "reals/")
-    (tau const-decl "real" timevars nil)
-    (c skolem-const-decl "real" horizontal_WCV_tau nil)
-    (b skolem-const-decl "real" horizontal_WCV_tau nil)
+    (id const-decl "(bijective?[T, T])" identity nil) nil
+    (a_gt_0_discr_ge_0 formula-decl nil quadratic reals)
+    (tau const-decl "real" timevars nil) nil nil
     (negreal nonempty-type-eq-decl nil real_types nil)
     (< const-decl "bool" reals nil)
     (nonpos_real nonempty-type-eq-decl nil real_types nil)
     (div_mult_neg_le1 formula-decl nil real_props nil)
-    (quadratic_le_0 formula-decl nil quadratic "reals/")
-    (tauin skolem-const-decl "real" horizontal_WCV_tau nil)
+    (quadratic_le_0 formula-decl nil quadratic reals) nil
     (IFF const-decl "[bool, bool -> bool]" booleans nil)
-    (dot_zero_right formula-decl nil vectors_2D "vectors/")
+    (dot_zero_right formula-decl nil vectors_2D vectors)
     (div_mult_pos_ge2 formula-decl nil real_props nil)
     (sqv_increasing_after_horizontal_tca formula-decl nil definitions
-     "ACCoRD/")
+     ACCoRD)
     (both_sides_times_pos_ge1_imp formula-decl nil extra_real_props
      nil)
     (tcpa const-decl "real" timevars nil)
     (posreal_times_posreal_is_posreal application-judgement "posreal"
      real_types nil)
     (not_horiz_sep_inside_closed_Theta formula-decl nil horizontal
-     "ACCoRD/")
-    (scal_0 formula-decl nil vectors_2D "vectors/")
-    (Delta_ge_0_2 formula-decl nil horizontal "ACCoRD/")
-    (* const-decl "Vector" vectors_2D "vectors/")
-    (+ const-decl "Vector" vectors_2D "vectors/")
+     ACCoRD)
+    (scal_0 formula-decl nil vectors_2D vectors)
+    (Delta_ge_0_2 formula-decl nil horizontal ACCoRD)
+    (* const-decl "Vector" vectors_2D vectors)
+    (+ const-decl "Vector" vectors_2D vectors)
     (both_sides_times_pos_le1 formula-decl nil real_props nil)
-    (horizontal_tca_dot_zero formula-decl nil definitions "ACCoRD/")
+    (horizontal_tca_dot_zero formula-decl nil definitions ACCoRD)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (tcpa_timevar name-judgement "TimeVar" timevars nil)
     (safe_tau const-decl "real" horizontal_WCV_tau nil)
-    (nonempty? const-decl "bool" EntryExit_interval nil)
-    (a skolem-const-decl "nnreal" horizontal_WCV_tau nil)
+    (nonempty? const-decl "bool" EntryExit_interval nil) nil
     (horizontal_WCV const-decl "bool" horizontal_WCV nil)
-    (add_zero_right formula-decl nil vectors_2D "vectors/")
-    (scal_zero formula-decl nil vectors_2D "vectors/")
-    (sqv_zero formula-decl nil vectors_2D "vectors/")
+    (add_zero_right formula-decl nil vectors_2D vectors)
+    (scal_zero formula-decl nil vectors_2D vectors)
+    (sqv_zero formula-decl nil vectors_2D vectors)
     (safe_tau_pre_timevar name-judgement "(pre_timevar?)"
      horizontal_WCV_tau nil)
-    (sqv_eq_0 formula-decl nil vectors_2D "vectors/")
+    (sqv_eq_0 formula-decl nil vectors_2D vectors)
     (TRUE const-decl "bool" booleans nil)
     (min const-decl "{p: real | p <= m AND p <= n}" real_defs nil)
-    (horizontal_tca_midpoint formula-decl nil horizontal "ACCoRD/")
+    (horizontal_tca_midpoint formula-decl nil horizontal ACCoRD)
     (real_div_nzreal_is_real application-judgement "real" reals nil)
     (minus_odd_is_odd application-judgement "odd_int" integers nil)
-    (Theta_D_le formula-decl nil horizontal "ACCoRD/")
+    (Theta_D_le formula-decl nil horizontal ACCoRD)
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
-    (sqrt const-decl "{nnz: nnreal | nnz * nnz = nnx}" sqrt "reals/")
-    (sq_le formula-decl nil sq "reals/")
-    (sq_sqrt formula-decl nil sqrt "reals/")
-    (sq_plus formula-decl nil sq "reals/")
+    (sqrt const-decl "{nnz: nnreal | nnz * nnz = nnx}" sqrt reals)
+    (sq_le formula-decl nil sq reals)
+    (sq_sqrt formula-decl nil sqrt reals)
+    (sq_plus formula-decl nil sq reals)
     (real_minus_real_is_real application-judgement "real" reals nil)
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
-    (sq const-decl "nonneg_real" sq "reals/")
-    (cauchy_schwarz formula-decl nil vectors_2D "vectors/")
+    (sq const-decl "nonneg_real" sq reals)
+    (cauchy_schwarz formula-decl nil vectors_2D vectors)
     (nnreal_plus_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
-    (DD skolem-const-decl "real" horizontal_WCV_tau nil)
-    (gg skolem-const-decl "real" horizontal_WCV_tau nil)
+    nil nil
     (nzreal_div_nzreal_is_nzreal application-judgement "nzreal"
      real_types nil)
     (both_sides_times_pos_le1_imp formula-decl nil extra_real_props
      nil)
-    (v skolem-const-decl "Vect2" horizontal_WCV_tau nil)
+    nil
     (/ const-decl "[numfield, nznum -> numfield]" number_fields nil)
     (nznum nonempty-type-eq-decl nil number_fields nil)
     (minus_nzint_is_nzint application-judgement "nzint" integers nil)
@@ -3367,7 +3331,7 @@
     (div_mult_pos_ge1 formula-decl nil real_props nil)
     (minus_real_is_real application-judgement "real" reals nil)
     (sqv_cont name-judgement "continuous_vr_fun" vect_cont_2D
-     "vect_analysis/")
+     vect_analysis)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_times_real_is_real application-judgement "real" reals nil)
@@ -3386,27 +3350,27 @@
     (real_pred const-decl "[number_field -> boolean]" reals nil)
     (real nonempty-type-from-decl nil reals nil)
     (>= const-decl "bool" reals nil)
-    (Vect2 type-eq-decl nil vectors_2D_def "vectors/")
+    (Vect2 type-eq-decl nil vectors_2D_def vectors)
     (nonneg_real nonempty-type-eq-decl nil real_types nil)
     (> const-decl "bool" reals nil)
     (posreal nonempty-type-eq-decl nil real_types nil)
     (DTHR formal-const-decl "posreal" horizontal_WCV_tau nil)
-    (Delta const-decl "real" horizontal "ACCoRD/")
+    (Delta const-decl "real" horizontal ACCoRD)
     (/= const-decl "boolean" notequal nil)
-    (Vector type-eq-decl nil vectors_2D "vectors/")
-    (zero const-decl "Vector" vectors_2D "vectors/")
+    (Vector type-eq-decl nil vectors_2D vectors)
+    (zero const-decl "Vector" vectors_2D vectors)
     (nonzero_real nonempty-type-eq-decl nil reals nil)
-    (discr const-decl "real" quadratic "reals/")
+    (discr const-decl "real" quadratic reals)
     (nnreal type-eq-decl nil real_types nil)
-    (sqv const-decl "nnreal" vectors_2D "vectors/")
+    (sqv const-decl "nnreal" vectors_2D vectors)
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (+ const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (* const-decl "[numfield, numfield -> numfield]" number_fields nil)
-    (* const-decl "real" vectors_2D "vectors/")
+    (* const-decl "real" vectors_2D vectors)
     (TAU formal-const-decl "nnreal" horizontal_WCV_tau nil)
     (<= const-decl "bool" reals nil)
-    (Nz_vect2 type-eq-decl nil vectors_2D "vectors/")
-    (horizontal_tca const-decl "real" definitions "ACCoRD/")
+    (Nz_vect2 type-eq-decl nil vectors_2D vectors)
+    (horizontal_tca const-decl "real" definitions ACCoRD)
     (rational_pred const-decl "[real -> boolean]" rationals nil)
     (rational nonempty-type-from-decl nil rationals nil)
     (integer_pred const-decl "[rational -> boolean]" integers nil)
@@ -3415,9 +3379,9 @@
     (OR const-decl "[bool, bool -> bool]" booleans nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
     (- const-decl "[numfield -> numfield]" number_fields nil)
-    (Sign type-eq-decl nil sign "reals/")
-    (Theta_D const-decl "real" horizontal "ACCoRD/")
-    (root const-decl "real" quadratic "reals/")
+    (Sign type-eq-decl nil sign reals)
+    (Theta_D const-decl "real" horizontal ACCoRD)
+    (root const-decl "real" quadratic reals)
     (horizontal_interval_sound? const-decl "bool" horizontal_WCV nil))
    nil)
   (horizontal_WCV_tau_interval_sound-1 nil 3630321195

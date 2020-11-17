@@ -137,7 +137,7 @@ BEGIN
           T,B2,T2,so,vo,AL,MinAlt,MaxAlt,AltStep)
       IN (FORALL (j:nat,air:below(length(AL))):
         (LET testalt = MinAlt+j*AltStep,
-  	    newso = (LAMBDA (t:nnreal):(so+t*vo) WITH [z:=testalt]),
+  	    newso : [nnreal -> vectors@vectors_3D.Vector]  = (LAMBDA (t:nnreal):(so+t*vo) WITH [z:=testalt]),
   	    newvo = (vo WITH [z:=0]),
 	    intr  = nth(AL,air),
 	    (si,vi) = (intr`s,intr`v)

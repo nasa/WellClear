@@ -131,8 +131,8 @@ kinematic_core : THEORY
 
   defcore: Core = (# outdated:=TRUE,
 		  cd2:= cylinder_cd(NMAC_D, NMAC_H),
-		  ownship:= (#s:=zero, v:=(# x:=0,y:=1,z:=0 #), id:="?"#),
-		  traffic:=(: (#s:=zero, v:=zero, id:="?"#) :),
+		  ownship:= (#s:=zero, v:=(# x:=0,y:=1,z:=0 #), id:=list2finseq("?")#),
+		  traffic:=(: (#s:=zero, v:=zero, id:=list2finseq("?")#) :),
 		  conf_traffic_split:= null[[nat,[Traffic,Traffic]]],
 		  turn_rate:=0.0523598776,
 		  min_horizontal_recovery:= NMAC_D, 

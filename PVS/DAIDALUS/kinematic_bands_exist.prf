@@ -5,8 +5,7 @@
     (("" (lemma "nnreal_times_nnreal_is_nnreal")
       (("" (inst?) (("" (assert) nil nil)) nil)) nil))
     nil)
-   ((nnreal_times_nnreal_is_nnreal judgement-tcc nil real_types nil)
-    (real_le_is_total_order name-judgement "(total_order?[real])"
+   ((real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (i skolem-const-decl "int" kinematic_bands_exist nil)
     (posreal nonempty-type-eq-decl nil real_types nil)
@@ -25,11 +24,24 @@
     (number nonempty-type-decl nil numbers nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
+    (nnreal_times_nnreal_is_nnreal judgement-tcc nil real_types nil)
     (boolean nonempty-type-decl nil booleans nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (TRUE const-decl "bool" booleans nil))
-   nil))
+   nil
+   (first_conf_step? subtype
+    "number_fields.*(kinematic_bands_exist.i, kinematic_bands_exist.ts)"
+    "nnreal")))
  (first_conflict_step_TCC1 0
+  (first_conflict_step_TCC1-2 "" 3813484684
+   ("" (skeep)
+    (("" (lemma "nnreal_times_nnreal_is_nnreal")
+      (("" (inst?) (("" (assert) nil nil)) nil)) nil))
+    nil)
+   nil shostak
+   (first_conflict_step subtype
+    "real_defs.max((number_fields.+)((number_fields.-)(kinematic_bands_exist.MaxN, kinematic_bands_exist.k), 1), 0)"
+    "naturalnumber"))
   (first_conflict_step_TCC1-1 nil 3631533677
    ("" (skeep)
     (("" (skeep*)
@@ -38,6 +50,21 @@
       nil))
     nil)
    ((nnreal_times_nnreal_is_nnreal judgement-tcc nil real_types nil)
+    (number nonempty-type-decl nil numbers nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (>= const-decl "bool" reals nil)
+    (nonneg_real nonempty-type-eq-decl nil real_types nil)
+    (rational_pred const-decl "[real -> boolean]" rationals nil)
+    (rational nonempty-type-from-decl nil rationals nil)
+    (integer_pred const-decl "[rational -> boolean]" integers nil)
+    (int nonempty-type-eq-decl nil integers nil)
+    (nat nonempty-type-eq-decl nil naturalnumbers nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
@@ -48,39 +75,29 @@
      real_defs nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
-    (nat nonempty-type-eq-decl nil naturalnumbers nil)
-    (int nonempty-type-eq-decl nil integers nil)
-    (integer_pred const-decl "[rational -> boolean]" integers nil)
-    (rational nonempty-type-from-decl nil rationals nil)
-    (rational_pred const-decl "[real -> boolean]" rationals nil)
-    (nonneg_real nonempty-type-eq-decl nil real_types nil)
-    (>= const-decl "bool" reals nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
-    (real nonempty-type-from-decl nil reals nil)
-    (real_pred const-decl "[number_field -> boolean]" reals nil)
-    (number_field nonempty-type-from-decl nil number_fields nil)
-    (number_field_pred const-decl "[number -> boolean]" number_fields
-     nil)
-    (boolean nonempty-type-decl nil booleans nil)
-    (number nonempty-type-decl nil numbers nil)
     (posint_plus_nnint_is_posint application-judgement "posint"
      integers nil))
-   nil))
+   nil
+   (first_conflict_step subtype
+    "real_defs.max((number_fields.+)((number_fields.-)(kinematic_bands_exist.MaxN, kinematic_bands_exist.k), 1), 0)"
+    "naturalnumber")))
  (first_conflict_step_TCC2 0
   (first_conflict_step_TCC2-1 nil 3631533677
    ("" (skeep)
     (("" (expand "first_conf_step?")
       (("" (skeep) (("" (assert) nil nil)) nil)) nil))
     nil)
-   ((minus_odd_is_odd application-judgement "odd_int" integers nil)
-    (first_conf_step? const-decl "bool" kinematic_bands_exist nil)
-    (real_le_is_total_order name-judgement "(total_order?[real])"
-     real_props nil)
+   ((real_gt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (real_gt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil))
-   nil))
+    (real_le_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (first_conf_step? const-decl "bool" kinematic_bands_exist nil)
+    (minus_odd_is_odd application-judgement "odd_int" integers nil))
+   nil
+   (first_conflict_step subtype "(number_fields.-)(1)"
+    "(kinematic_bands_exist.first_conf_step?(kinematic_bands_exist.CD, kinematic_bands_exist.B, kinematic_bands_exist.T, kinematic_bands_exist.traj, kinematic_bands_exist.k, kinematic_bands_exist.ts, kinematic_bands_exist.MaxN, kinematic_bands_exist.AL))")))
  (first_conflict_step_TCC3 0
   (first_conflict_step_TCC3-1 nil 3631533677
    ("" (skeep*)
@@ -115,69 +132,76 @@
         nil))
       nil))
     nil)
-   ((first_conf_step? const-decl "bool" kinematic_bands_exist nil)
-    (number nonempty-type-decl nil numbers nil)
-    (= const-decl "[T, T -> boolean]" equalities nil)
-    (number_field_pred const-decl "[number -> boolean]" number_fields
-     nil)
-    (number_field nonempty-type-from-decl nil number_fields nil)
-    (real_pred const-decl "[number_field -> boolean]" reals nil)
-    (real nonempty-type-from-decl nil reals nil)
-    (>= const-decl "bool" reals nil)
-    (nnreal type-eq-decl nil real_types nil)
-    (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
-    (Traj type-eq-decl nil int_bands nil)
-    (rational_pred const-decl "[real -> boolean]" rationals nil)
-    (rational nonempty-type-from-decl nil rationals nil)
-    (integer_pred const-decl "[rational -> boolean]" integers nil)
-    (int nonempty-type-eq-decl nil integers nil)
-    (nat nonempty-type-eq-decl nil naturalnumbers nil)
-    (string type-eq-decl nil strings nil)
-    (Aircraft type-eq-decl nil int_bands nil)
-    (list type-decl nil list_adt nil)
-    (AircraftList type-eq-decl nil int_bands nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil)
-    (IFF const-decl "[bool, bool -> bool]" booleans nil)
-    (<= const-decl "bool" reals nil) (< const-decl "bool" reals nil)
-    (length def-decl "nat" list_props nil)
-    (CD_future_traj const-decl "bool" int_bands nil)
-    (numfield nonempty-type-eq-decl nil number_fields nil)
-    (* const-decl "[numfield, numfield -> numfield]" number_fields nil)
-    (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
-    (NOT const-decl "[bool -> bool]" booleans nil)
-    (first_conflict_aircraft def-decl "{j: int |
-         (j >= 0 IFF
-           (i <= j AND
-             j < length(AL) AND
-              CD_future_traj(CD, B, T, traj, k * tsn, AL, j) AND
-               (FORALL (q: int):
-                  q >= i AND q < j IMPLIES
-                   NOT CD_future_traj(CD, B, T, traj, k * tsn, AL, q))))
-          AND
-          (j < 0 IFF
-            (FORALL (q: int):
-               q >= i AND q < length(AL) IMPLIES
-                NOT CD_future_traj(CD, B, T, traj, k * tsn, AL, q)))}"
-     int_bands nil)
-    (nonneg_real nonempty-type-eq-decl nil real_types nil)
-    (> const-decl "bool" reals nil)
-    (posreal nonempty-type-eq-decl nil real_types nil)
-    (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
-     real_types nil)
+   ((q skolem-const-decl "int" kinematic_bands_exist nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (q skolem-const-decl "int" kinematic_bands_exist nil)
-    (real_ge_is_total_order name-judgement "(total_order?[real])"
-     real_props nil)
+    (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
+     real_types nil)
+    (posreal nonempty-type-eq-decl nil real_types nil)
+    (> const-decl "bool" reals nil)
+    (nonneg_real nonempty-type-eq-decl nil real_types nil)
+    (first_conflict_aircraft def-decl "{j: int |
+   (j >= 0 IFF
+     (i <= j AND
+       j < length(AL) AND
+        CD_future_traj(CD, B, T, traj, k * tsn, AL, j) AND
+         (FORALL (q: int):
+            q >= i AND q < j IMPLIES
+             NOT CD_future_traj(CD, B, T, traj, k * tsn, AL, q))))
+    AND
+    (j < 0 IFF
+      (FORALL (q: int):
+         q >= i AND q < length(AL) IMPLIES
+          NOT CD_future_traj(CD, B, T, traj, k * tsn, AL, q)))}"
+     int_bands nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
+    (* const-decl "[numfield, numfield -> numfield]" number_fields nil)
+    (numfield nonempty-type-eq-decl nil number_fields nil)
+    (CD_future_traj const-decl "bool" int_bands nil)
+    (length def-decl "nat" list_props nil)
+    (< const-decl "bool" reals nil) (<= const-decl "bool" reals nil)
+    (IFF const-decl "[bool, bool -> bool]" booleans nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (AircraftList type-eq-decl nil int_bands nil)
+    (list type-decl nil list_adt nil)
+    (Aircraft type-eq-decl nil int_bands nil)
+    (string type-eq-decl nil strings nil)
+    (nat nonempty-type-eq-decl nil naturalnumbers nil)
+    (int nonempty-type-eq-decl nil integers nil)
+    (integer_pred const-decl "[rational -> boolean]" integers nil)
+    (rational nonempty-type-from-decl nil rationals nil)
+    (rational_pred const-decl "[real -> boolean]" rationals nil)
+    (Traj type-eq-decl nil int_bands nil)
+    (Vect3 type-eq-decl nil vectors_3D_def vectors)
+    (nnreal type-eq-decl nil real_types nil)
+    (>= const-decl "bool" reals nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (number nonempty-type-decl nil numbers nil)
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
+    (first_conf_step? const-decl "bool" kinematic_bands_exist nil)
     (boolean nonempty-type-decl nil booleans nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (TRUE const-decl "bool" booleans nil))
-   nil))
+   nil
+   (first_conflict_step subtype "kinematic_bands_exist.k"
+    "(kinematic_bands_exist.first_conf_step?(kinematic_bands_exist.CD, kinematic_bands_exist.B, kinematic_bands_exist.T, kinematic_bands_exist.traj, kinematic_bands_exist.k, kinematic_bands_exist.ts, kinematic_bands_exist.MaxN, kinematic_bands_exist.AL))")))
  (first_conflict_step_TCC4 0
+  (first_conflict_step_TCC4-3 "" 3813484684
+   ("" (skeep) (("" (ground) nil nil)) nil) nil shostak
+   (first_conflict_step termination
+    "kinematic_bands_exist.first_conflict_step(kinematic_bands_exist.CD, kinematic_bands_exist.B, kinematic_bands_exist.T, kinematic_bands_exist.traj, (number_fields.+)(kinematic_bands_exist.k, 1), kinematic_bands_exist.ts, kinematic_bands_exist.MaxN, kinematic_bands_exist.AL)"
+    "nil"))
   (first_conflict_step_TCC4-2 nil 3631966500
    ("" (skeep)
     (("" (ground)
@@ -211,24 +235,27 @@
         nil))
       nil))
     nil)
-   ((real_ge_is_total_order name-judgement "(total_order?[real])"
+   ((max_nnreal_0 formula-decl nil min_max reals)
+    (nnint_plus_posint_is_posint application-judgement "posint"
+     integers nil)
+    (int_minus_int_is_int application-judgement "int" integers nil)
+    (int_plus_int_is_int application-judgement "int" integers nil)
+    (rat_max application-judgement "{s: rat | s >= q AND s >= r}"
+     real_defs nil)
+    (int_max application-judgement "{k: int | i <= k AND j <= k}"
+     real_defs nil)
+    (real_lt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (real_lt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil)
-    (int_max application-judgement "{k: int | i <= k AND j <= k}"
-     real_defs nil)
-    (rat_max application-judgement "{s: rat | s >= q AND s >= r}"
-     real_defs nil)
-    (int_plus_int_is_int application-judgement "int" integers nil)
-    (int_minus_int_is_int application-judgement "int" integers nil)
-    (nnint_plus_posint_is_posint application-judgement "posint"
-     integers nil)
-    (max_nnreal_0 formula-decl nil min_max "reals/")
     (posint_plus_nnint_is_posint application-judgement "posint"
      integers nil))
-   nil)
+   nil
+   (first_conflict_step termination
+    "kinematic_bands_exist.first_conflict_step(kinematic_bands_exist.CD, kinematic_bands_exist.B, kinematic_bands_exist.T, kinematic_bands_exist.traj, (number_fields.+)(kinematic_bands_exist.k, 1), kinematic_bands_exist.ts, kinematic_bands_exist.MaxN, kinematic_bands_exist.AL)"
+    "nil"))
   (first_conflict_step_TCC4-1 nil 3631533677
    ("" (skeep*)
     (("" (assert)
@@ -332,35 +359,37 @@
         nil))
       nil))
     nil)
-   ((Vect3 type-eq-decl nil vectors_3D_def "vectors/")) nil))
+   ((Vect3 type-eq-decl nil vectors_3D_def vectors)) nil
+   (first_conflict_step termination
+    "kinematic_bands_exist.first_conflict_step(kinematic_bands_exist.CD, kinematic_bands_exist.B, kinematic_bands_exist.T, kinematic_bands_exist.traj, (number_fields.+)(kinematic_bands_exist.k, 1), kinematic_bands_exist.ts, kinematic_bands_exist.MaxN, kinematic_bands_exist.AL)"
+    "nil")))
  (first_conflict_step_TCC5 0
   (first_conflict_step_TCC5-1 nil 3631966127
    ("" (skeep*)
-    (("" (invoke (name "az" "%1") (! 1 1))
+    (("" (invoke (name "az" "%1") (! 2 1))
       (("" (replaces -1)
         (("" (typepred "az")
           (("" (assert)
-            (("" (hide (-1 -2 -4))
-              (("" (hide 1)
+            (("" (eval-expr "FALSE")
+              (("" (replace -1 :hide? t)
                 (("" (expand "first_conf_step?")
-                  (("" (assert)
-                    ((""
-                      (name "G"
-                            "v(CD, B, T, traj, 1 + k, ts, MaxN, AL)")
-                      (("" (replaces -1)
-                        (("" (assert)
-                          (("" (typepred "G")
-                            (("" (expand "first_conf_step?")
+                  ((""
+                    (name "G" "v(CD, B, T, traj, 1 + k, ts, MaxN, AL)")
+                    (("" (replaces -1)
+                      (("" (assert)
+                        (("" (typepred "G")
+                          (("" (expand "first_conf_step?")
+                            (("" (flatten)
                               ((""
-                                (flatten)
-                                ((""
-                                  (split +)
+                                (split +)
+                                (("1"
+                                  (flatten)
                                   (("1"
-                                    (flatten)
+                                    (assert)
                                     (("1"
-                                      (assert)
+                                      (eval-expr "FALSE")
                                       (("1"
-                                        (hide (-3 -4))
+                                        (replace -1 :hide? t)
                                         (("1"
                                           (flatten)
                                           (("1"
@@ -407,49 +436,46 @@
                                           nil))
                                         nil))
                                       nil))
-                                    nil)
-                                   ("2"
-                                    (flatten)
-                                    (("2" (assert) nil nil))
-                                    nil)
-                                   ("3"
-                                    (flatten)
+                                    nil))
+                                  nil)
+                                 ("2"
+                                  (flatten)
+                                  (("2" (assert) nil nil))
+                                  nil)
+                                 ("3"
+                                  (flatten)
+                                  (("3"
+                                    (assert)
                                     (("3"
-                                      (assert)
+                                      (eval-expr "FALSE")
                                       (("3"
-                                        (hide (-2 -3))
+                                        (replace -1 :hide? t)
                                         (("3"
-                                          (hide -3)
+                                          (skeep)
                                           (("3"
-                                            (skeep)
-                                            (("3"
-                                              (case "NOT j = k")
-                                              (("1"
-                                                (inst - "p" "j")
-                                                (("1"
-                                                  (assert)
-                                                  nil
-                                                  nil))
-                                                nil)
-                                               ("2"
-                                                (inst -8 "p")
-                                                (("2"
-                                                  (assert)
-                                                  nil
-                                                  nil))
-                                                nil))
+                                            (case "NOT j = k")
+                                            (("1"
+                                              (inst - "p" "j")
+                                              (("1" (assert) nil nil))
+                                              nil)
+                                             ("2"
+                                              (inst -8 "p")
+                                              (("2" (assert) nil nil))
                                               nil))
                                             nil))
                                           nil))
                                         nil))
                                       nil))
-                                    nil)
-                                   ("4"
-                                    (flatten)
+                                    nil))
+                                  nil)
+                                 ("4"
+                                  (flatten)
+                                  (("4"
+                                    (assert)
                                     (("4"
-                                      (assert)
+                                      (eval-expr "FALSE")
                                       (("4"
-                                        (hide (-3 -4))
+                                        (replace -1 :hide? t)
                                         (("4"
                                           (flatten)
                                           (("4"
@@ -495,54 +521,7 @@
         nil))
       nil))
     nil)
-   ((number nonempty-type-decl nil numbers nil)
-    (= const-decl "[T, T -> boolean]" equalities nil)
-    (number_field_pred const-decl "[number -> boolean]" number_fields
-     nil)
-    (number_field nonempty-type-from-decl nil number_fields nil)
-    (real_pred const-decl "[number_field -> boolean]" reals nil)
-    (real nonempty-type-from-decl nil reals nil)
-    (>= const-decl "bool" reals nil)
-    (nnreal type-eq-decl nil real_types nil)
-    (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
-    (Traj type-eq-decl nil int_bands nil)
-    (rational_pred const-decl "[real -> boolean]" rationals nil)
-    (rational nonempty-type-from-decl nil rationals nil)
-    (integer_pred const-decl "[rational -> boolean]" integers nil)
-    (int nonempty-type-eq-decl nil integers nil)
-    (nat nonempty-type-eq-decl nil naturalnumbers nil)
-    (string type-eq-decl nil strings nil)
-    (Aircraft type-eq-decl nil int_bands nil)
-    (list type-decl nil list_adt nil)
-    (AircraftList type-eq-decl nil int_bands nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil)
-    (IFF const-decl "[bool, bool -> bool]" booleans nil)
-    (<= const-decl "bool" reals nil) (< const-decl "bool" reals nil)
-    (length def-decl "nat" list_props nil)
-    (CD_future_traj const-decl "bool" int_bands nil)
-    (numfield nonempty-type-eq-decl nil number_fields nil)
-    (* const-decl "[numfield, numfield -> numfield]" number_fields nil)
-    (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
-    (NOT const-decl "[bool -> bool]" booleans nil)
-    (first_conflict_aircraft def-decl "{j: int |
-         (j >= 0 IFF
-           (i <= j AND
-             j < length(AL) AND
-              CD_future_traj(CD, B, T, traj, k * tsn, AL, j) AND
-               (FORALL (q: int):
-                  q >= i AND q < j IMPLIES
-                   NOT CD_future_traj(CD, B, T, traj, k * tsn, AL, q))))
-          AND
-          (j < 0 IFF
-            (FORALL (q: int):
-               q >= i AND q < length(AL) IMPLIES
-                NOT CD_future_traj(CD, B, T, traj, k * tsn, AL, q)))}"
-     int_bands nil)
-    (nonneg_real nonempty-type-eq-decl nil real_types nil)
-    (> const-decl "bool" reals nil)
-    (posreal nonempty-type-eq-decl nil real_types nil)
-    (first_conf_step? const-decl "bool" kinematic_bands_exist nil)
-    (int_plus_int_is_int application-judgement "int" integers nil)
+   ((int_plus_int_is_int application-judgement "int" integers nil)
     (rat_max application-judgement "{s: rat | s >= q AND s >= r}"
      real_defs nil)
     (int_max application-judgement "{k: int | i <= k AND j <= k}"
@@ -550,10 +529,14 @@
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (+ const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (max const-decl "{p: real | p >= m AND p >= n}" real_defs nil)
-    (real_ge_is_total_order name-judgement "(total_order?[real])"
-     real_props nil)
+    (first_conf_step? const-decl "bool" kinematic_bands_exist nil)
+    (FALSE const-decl "bool" booleans nil)
+    (bijective? const-decl "bool" functions nil)
+    (id const-decl "(bijective?[T, T])" identity nil)
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
     (nnint_plus_posint_is_posint application-judgement "posint"
      integers nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
@@ -562,16 +545,68 @@
      "(strict_total_order?[real])" real_props nil)
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
+    (posreal nonempty-type-eq-decl nil real_types nil)
+    (> const-decl "bool" reals nil)
+    (nonneg_real nonempty-type-eq-decl nil real_types nil)
+    (first_conflict_aircraft def-decl "{j: int |
+   (j >= 0 IFF
+     (i <= j AND
+       j < length(AL) AND
+        CD_future_traj(CD, B, T, traj, k * tsn, AL, j) AND
+         (FORALL (q: int):
+            q >= i AND q < j IMPLIES
+             NOT CD_future_traj(CD, B, T, traj, k * tsn, AL, q))))
+    AND
+    (j < 0 IFF
+      (FORALL (q: int):
+         q >= i AND q < length(AL) IMPLIES
+          NOT CD_future_traj(CD, B, T, traj, k * tsn, AL, q)))}"
+     int_bands nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
+    (* const-decl "[numfield, numfield -> numfield]" number_fields nil)
+    (numfield nonempty-type-eq-decl nil number_fields nil)
+    (CD_future_traj const-decl "bool" int_bands nil)
+    (length def-decl "nat" list_props nil)
+    (< const-decl "bool" reals nil) (<= const-decl "bool" reals nil)
+    (IFF const-decl "[bool, bool -> bool]" booleans nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (AircraftList type-eq-decl nil int_bands nil)
+    (list type-decl nil list_adt nil)
+    (Aircraft type-eq-decl nil int_bands nil)
+    (string type-eq-decl nil strings nil)
+    (nat nonempty-type-eq-decl nil naturalnumbers nil)
+    (int nonempty-type-eq-decl nil integers nil)
+    (integer_pred const-decl "[rational -> boolean]" integers nil)
+    (rational nonempty-type-from-decl nil rationals nil)
+    (rational_pred const-decl "[real -> boolean]" rationals nil)
+    (Traj type-eq-decl nil int_bands nil)
+    (Vect3 type-eq-decl nil vectors_3D_def vectors)
+    (nnreal type-eq-decl nil real_types nil)
+    (>= const-decl "bool" reals nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (number nonempty-type-decl nil numbers nil)
     (boolean nonempty-type-decl nil booleans nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (TRUE const-decl "bool" booleans nil)
     (posint_plus_nnint_is_posint application-judgement "posint"
      integers nil)
     (int_minus_int_is_int application-judgement "int" integers nil))
-   nil))
+   nil
+   (first_conflict_step subtype
+    "kinematic_bands_exist.first_conflict_step(kinematic_bands_exist.CD, kinematic_bands_exist.B, kinematic_bands_exist.T, kinematic_bands_exist.traj, (number_fields.+)(kinematic_bands_exist.k, 1), kinematic_bands_exist.ts, kinematic_bands_exist.MaxN, kinematic_bands_exist.AL)"
+    "(kinematic_bands_exist.first_conf_step?(kinematic_bands_exist.CD, kinematic_bands_exist.B, kinematic_bands_exist.T, kinematic_bands_exist.traj, kinematic_bands_exist.k, kinematic_bands_exist.ts, kinematic_bands_exist.MaxN, kinematic_bands_exist.AL))")))
  (red_band_exist_TCC1 0
   (red_band_exist_TCC1-1 nil 3633369317 ("" (subtype-tcc) nil nil) nil
-   nil))
+   nil
+   (red_band_exist subtype
+    "kinematic_bands_exist.most_urgent(kinematic_bands_exist.so, kinematic_bands_exist.vo, kinematic_bands_exist.AL)"
+    "below[length[Aircraft](AL)]")))
  (red_band_exist_def_TCC1 0
   (red_band_exist_def_TCC1-1 nil 3633369317 ("" (subtype-tcc) nil nil)
    ((real_gt_is_strict_total_order name-judgement
@@ -580,18 +615,22 @@
      real_props nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (* const-decl "Vector" vectors_3D "vectors/")
-    (+ const-decl "Vector" vectors_3D "vectors/")
+    (* const-decl "Vector" vectors_3D vectors)
+    (+ const-decl "Vector" vectors_3D vectors)
     (detector? const-decl "bool" int_bands nil)
     (real_times_real_is_real application-judgement "real" reals nil))
-   nil))
+   nil
+   (red_band_exist_def subtype "kinematic_bands_exist.AL"
+    "{AL | reals.>(list_props[Aircraft].length(kinematic_bands_exist.AL), 0)}")))
  (red_band_exist_def_TCC2 0
   (red_band_exist_def_TCC2-1 nil 3633369317 ("" (subtype-tcc) nil nil)
-   ((* const-decl "Vector" vectors_3D "vectors/")
-    (+ const-decl "Vector" vectors_3D "vectors/")
+   ((* const-decl "Vector" vectors_3D vectors)
+    (+ const-decl "Vector" vectors_3D vectors)
     (detector? const-decl "bool" int_bands nil)
     (real_times_real_is_real application-judgement "real" reals nil))
-   nil))
+   nil
+   (red_band_exist_def subtype "kinematic_bands_exist.most_urgent"
+    "{most_urgent | booleans.AND(reals.>=(kinematic_bands_exist.most_urgent(kinematic_bands_exist.so, kinematic_bands_exist.vo, kinematic_bands_exist.AL), 0), reals.<(kinematic_bands_exist.most_urgent(kinematic_bands_exist.so, kinematic_bands_exist.vo, kinematic_bands_exist.AL), list_props[Aircraft].length(kinematic_bands_exist.AL)))}")))
  (red_band_exist_def 0
   (red_band_exist_def-1 nil 3631538827
    ("" (skeep)
@@ -1457,148 +1496,23 @@
         nil))
       nil))
     nil)
-   ((> const-decl "bool" reals nil)
-    (length def-decl "nat" list_props nil)
-    (nat nonempty-type-eq-decl nil naturalnumbers nil)
-    (< const-decl "bool" reals nil)
-    (int nonempty-type-eq-decl nil integers nil)
-    (integer_pred const-decl "[rational -> boolean]" integers nil)
-    (rational nonempty-type-from-decl nil rationals nil)
-    (rational_pred const-decl "[real -> boolean]" rationals nil)
-    (AircraftList type-eq-decl nil int_bands nil)
-    (list type-decl nil list_adt nil)
-    (Aircraft type-eq-decl nil int_bands nil)
-    (string type-eq-decl nil strings nil)
-    (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
-    (>= const-decl "bool" reals nil)
-    (real nonempty-type-from-decl nil reals nil)
-    (real_pred const-decl "[number_field -> boolean]" reals nil)
-    (number_field nonempty-type-from-decl nil number_fields nil)
-    (number_field_pred const-decl "[number -> boolean]" number_fields
-     nil)
-    (number nonempty-type-decl nil numbers nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil)
-    (NOT const-decl "[bool -> bool]" booleans nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
-    (boolean nonempty-type-decl nil booleans nil)
-    (TRUE const-decl "bool" booleans nil)
-    (IFF const-decl "[bool, bool -> bool]" booleans nil)
-    (= const-decl "[T, T -> boolean]" equalities nil)
-    (nnreal type-eq-decl nil real_types nil)
-    (Traj type-eq-decl nil int_bands nil)
-    (nonneg_real nonempty-type-eq-decl nil real_types nil)
-    (posreal nonempty-type-eq-decl nil real_types nil)
-    (/= const-decl "boolean" notequal nil)
-    (nzint nonempty-type-eq-decl nil integers nil)
-    (OR const-decl "[bool, bool -> bool]" booleans nil)
-    (numfield nonempty-type-eq-decl nil number_fields nil)
-    (- const-decl "[numfield -> numfield]" number_fields nil)
-    (Sign type-eq-decl nil sign "reals/")
-    (red_band_exist const-decl "bool" kinematic_bands_exist nil)
-    (kinematic_bands const-decl "(proper?(MaxN))" kinematic_bands nil)
-    (proper? const-decl "bool" int_bands nil)
-    (nth def-decl "T" list_props nil)
-    (below type-eq-decl nil nat_types nil)
-    (in? const-decl "bool" real_bands nil)
-    (RealBand type-eq-decl nil real_bands nil)
-    (below type-eq-decl nil naturalnumbers nil)
-    (subrange type-eq-decl nil integers nil)
-    (<= const-decl "bool" reals nil)
-    (IntBand type-eq-decl nil int_bands nil)
-    (kinematic_bands_def formula-decl nil kinematic_bands nil)
-    (rbe skolem-const-decl "bool" kinematic_bands_exist nil)
-    (first_nonrepulsive_step def-decl "{i: int |
-         (i >= 0 IFF
-           ((k <= i AND
-              i <= MaxN AND NOT repulsive_at(traj, i, ts, si, vi, eps))
-             AND
-             (FORALL (j: nat):
-                k <= j AND j < i IMPLIES
-                 repulsive_at(traj, j, ts, si, vi, eps))))
-          AND
-          (i < 0 IFF
-            (FORALL (j: nat):
-               k <= j AND j <= MaxN IMPLIES
-                repulsive_at(traj, j, ts, si, vi, eps)))}" int_bands
-     nil)
-    (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
-    (repulsive_at const-decl "bool" int_bands nil)
-    (real_le_is_total_order name-judgement "(total_order?[real])"
-     real_props nil)
-    (MaxN skolem-const-decl "nat" kinematic_bands_exist nil)
-    (traj skolem-const-decl "Traj" kinematic_bands_exist nil)
-    (ts skolem-const-decl "posreal" kinematic_bands_exist nil)
-    (AL skolem-const-decl "AircraftList" kinematic_bands_exist nil)
-    (most_urgent skolem-const-decl
-     "[[Vect3, Vect3, AircraftList] -> int]" kinematic_bands_exist nil)
-    (so skolem-const-decl "Vect3" kinematic_bands_exist nil)
-    (vo skolem-const-decl "Vect3" kinematic_bands_exist nil)
-    (epsH skolem-const-decl "Sign" kinematic_bands_exist nil)
-    (az skolem-const-decl "{i: int |
-         (i >= 0 IFF
-           ((0 <= i AND
-              i <= MaxN AND
-               NOT repulsive_at(traj, i, ts,
-                                nth(AL, most_urgent(so, vo, AL))`s,
-                                nth(AL, most_urgent(so, vo, AL))`v, epsH))
-             AND
-             (FORALL (j: nat):
-                j < i IMPLIES
-                 repulsive_at(traj, j, ts,
-                              nth(AL, most_urgent(so, vo, AL))`s,
-                              nth(AL, most_urgent(so, vo, AL))`v, epsH))))
-          AND
-          (i < 0 IFF
-            (FORALL (j: nat):
-               j <= MaxN IMPLIES
-                repulsive_at(traj, j, ts,
-                             nth(AL, most_urgent(so, vo, AL))`s,
-                             nth(AL, most_urgent(so, vo, AL))`v, epsH)))}"
+   ((traj_velocity const-decl "Vect3" int_bands nil)
+    (traj_position const-decl "Vect3" int_bands nil)
+    (position const-decl "Vect3" int_bands nil)
+    (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
+     real_types nil)
+    (az skolem-const-decl
+     "(first_conf_step?(CD2, B2, T2, traj, 0, ts, MaxN, AL))"
      kinematic_bands_exist nil)
-    (upto nonempty-type-eq-decl nil naturalnumbers nil)
-    (in? const-decl "bool" int_bands nil)
-    (conflict_step const-decl "bool" int_bands nil)
-    (first_nonvert_repul_step def-decl "{i: int |
-         (i >= 0 IFF
-           ((k <= i AND
-              i <= MaxN AND NOT vert_repul_at(traj, i, ts, si, vi, eps))
-             AND
-             (FORALL (j: nat):
-                k <= j AND j < i IMPLIES
-                 vert_repul_at(traj, j, ts, si, vi, eps))))
-          AND
-          (i < 0 IFF
-            (FORALL (j: nat):
-               k <= j AND j <= MaxN IMPLIES
-                vert_repul_at(traj, j, ts, si, vi, eps)))}" int_bands
-     nil)
-    (vert_repul_at const-decl "bool" int_bands nil)
-    (epsV skolem-const-decl "Sign" kinematic_bands_exist nil)
-    (az skolem-const-decl "{i: int |
-         (i >= 0 IFF
-           ((0 <= i AND
-              i <= MaxN AND
-               NOT vert_repul_at(traj, i, ts,
-                                 nth(AL, most_urgent(so, vo, AL))`s,
-                                 nth(AL, most_urgent(so, vo, AL))`v, epsV))
-             AND
-             (FORALL (j: nat):
-                j < i IMPLIES
-                 vert_repul_at(traj, j, ts,
-                               nth(AL, most_urgent(so, vo, AL))`s,
-                               nth(AL, most_urgent(so, vo, AL))`v, epsV))))
-          AND
-          (i < 0 IFF
-            (FORALL (j: nat):
-               j <= MaxN IMPLIES
-                vert_repul_at(traj, j, ts,
-                              nth(AL, most_urgent(so, vo, AL))`s,
-                              nth(AL, most_urgent(so, vo, AL))`v, epsV)))}"
+    (T2 skolem-const-decl "nnreal" kinematic_bands_exist nil)
+    (B2 skolem-const-decl "nnreal" kinematic_bands_exist nil)
+    (CD2 skolem-const-decl
+     "[[nnreal, nnreal, Vect3, Vect3, Vect3, Vect3] -> bool]"
      kinematic_bands_exist nil)
-    (CD_future_traj_def formula-decl nil int_bands nil)
     (nnreal_times_nnreal_is_nnreal judgement-tcc nil real_types nil)
     (* const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (real_times_real_is_real application-judgement "real" reals nil)
+    (CD_future_traj_def formula-decl nil int_bands nil)
     (az skolem-const-decl
      "(first_conf_step?(CD, B, T, traj, 0, ts, MaxN, AL))"
      kinematic_bands_exist nil)
@@ -1611,24 +1525,142 @@
     (first_conflict_step def-decl
      "(first_conf_step?(CD, B, T, traj, k, ts, MaxN, AL))"
      kinematic_bands_exist nil)
-    (CD2 skolem-const-decl
-     "[[nnreal, nnreal, Vect3, Vect3, Vect3, Vect3] -> bool]"
+    (az skolem-const-decl "{i: int |
+   (i >= 0 IFF
+     ((0 <= i AND
+        i <= MaxN AND
+         NOT vert_repul_at(traj, i, ts, nth(AL, most_urgent(so, vo, AL))`s,
+                           nth(AL, most_urgent(so, vo, AL))`v, epsV))
+       AND
+       FORALL (j: nat):
+         j < i IMPLIES
+          vert_repul_at(traj, j, ts, nth(AL, most_urgent(so, vo, AL))`s,
+                        nth(AL, most_urgent(so, vo, AL))`v, epsV)))
+    AND
+    (i < 0 IFF
+      FORALL (j: nat):
+        j <= MaxN IMPLIES
+         vert_repul_at(traj, j, ts, nth(AL, most_urgent(so, vo, AL))`s,
+                       nth(AL, most_urgent(so, vo, AL))`v, epsV))}"
      kinematic_bands_exist nil)
-    (B2 skolem-const-decl "nnreal" kinematic_bands_exist nil)
-    (T2 skolem-const-decl "nnreal" kinematic_bands_exist nil)
-    (az skolem-const-decl
-     "(first_conf_step?(CD2, B2, T2, traj, 0, ts, MaxN, AL))"
+    (epsV skolem-const-decl "Sign" kinematic_bands_exist nil)
+    (vert_repul_at const-decl "bool" int_bands nil)
+    (first_nonvert_repul_step def-decl "{i: int |
+   (i >= 0 IFF
+     ((k <= i AND
+        i <= MaxN AND NOT vert_repul_at(traj, i, ts, si, vi, eps))
+       AND
+       (FORALL (j: nat):
+          k <= j AND j < i IMPLIES
+           vert_repul_at(traj, j, ts, si, vi, eps))))
+    AND
+    (i < 0 IFF
+      (FORALL (j: nat):
+         k <= j AND j <= MaxN IMPLIES
+          vert_repul_at(traj, j, ts, si, vi, eps)))}" int_bands nil)
+    (in? const-decl "bool" int_bands nil)
+    (conflict_step const-decl "bool" int_bands nil)
+    (upto nonempty-type-eq-decl nil naturalnumbers nil)
+    (az skolem-const-decl "{i: int |
+   (i >= 0 IFF
+     ((0 <= i AND
+        i <= MaxN AND
+         NOT repulsive_at(traj, i, ts, nth(AL, most_urgent(so, vo, AL))`s,
+                          nth(AL, most_urgent(so, vo, AL))`v, epsH))
+       AND
+       FORALL (j: nat):
+         j < i IMPLIES
+          repulsive_at(traj, j, ts, nth(AL, most_urgent(so, vo, AL))`s,
+                       nth(AL, most_urgent(so, vo, AL))`v, epsH)))
+    AND
+    (i < 0 IFF
+      FORALL (j: nat):
+        j <= MaxN IMPLIES
+         repulsive_at(traj, j, ts, nth(AL, most_urgent(so, vo, AL))`s,
+                      nth(AL, most_urgent(so, vo, AL))`v, epsH))}"
      kinematic_bands_exist nil)
-    (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
-     real_types nil)
-    (traj_position const-decl "Vect3" int_bands nil)
-    (traj_velocity const-decl "Vect3" int_bands nil)
-    (position const-decl "Vect3" int_bands nil)
+    (epsH skolem-const-decl "Sign" kinematic_bands_exist nil)
+    (vo skolem-const-decl "Vect3" kinematic_bands_exist nil)
+    (so skolem-const-decl "Vect3" kinematic_bands_exist nil)
+    (most_urgent skolem-const-decl
+     "[[Vect3, Vect3, AircraftList] -> int]" kinematic_bands_exist nil)
+    (AL skolem-const-decl "AircraftList" kinematic_bands_exist nil)
+    (ts skolem-const-decl "posreal" kinematic_bands_exist nil)
+    (traj skolem-const-decl "Traj" kinematic_bands_exist nil)
+    (MaxN skolem-const-decl "nat" kinematic_bands_exist nil)
+    (real_le_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (repulsive_at const-decl "bool" int_bands nil)
+    (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
+    (first_nonrepulsive_step def-decl "{i: int |
+   (i >= 0 IFF
+     ((k <= i AND i <= MaxN AND NOT repulsive_at(traj, i, ts, si, vi, eps))
+       AND
+       (FORALL (j: nat):
+          k <= j AND j < i IMPLIES
+           repulsive_at(traj, j, ts, si, vi, eps))))
+    AND
+    (i < 0 IFF
+      (FORALL (j: nat):
+         k <= j AND j <= MaxN IMPLIES
+          repulsive_at(traj, j, ts, si, vi, eps)))}" int_bands nil)
+    (rbe skolem-const-decl "bool" kinematic_bands_exist nil)
     (bands_sound? const-decl "bool" int_bands nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_lt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil))
+     "(strict_total_order?[real])" real_props nil)
+    (kinematic_bands_def formula-decl nil kinematic_bands nil)
+    (IntBand type-eq-decl nil int_bands nil)
+    (<= const-decl "bool" reals nil)
+    (subrange type-eq-decl nil integers nil)
+    (below type-eq-decl nil naturalnumbers nil)
+    (RealBand type-eq-decl nil real_bands nil)
+    (in? const-decl "bool" real_bands nil)
+    (below type-eq-decl nil nat_types nil)
+    (nth def-decl "T" list_props nil)
+    (proper? const-decl "bool" int_bands nil)
+    (kinematic_bands const-decl "(proper?(MaxN))" kinematic_bands nil)
+    (red_band_exist const-decl "bool" kinematic_bands_exist nil)
+    (Sign type-eq-decl nil sign reals)
+    (- const-decl "[numfield -> numfield]" number_fields nil)
+    (numfield nonempty-type-eq-decl nil number_fields nil)
+    (OR const-decl "[bool, bool -> bool]" booleans nil)
+    (nzint nonempty-type-eq-decl nil integers nil)
+    (/= const-decl "boolean" notequal nil)
+    (posreal nonempty-type-eq-decl nil real_types nil)
+    (nonneg_real nonempty-type-eq-decl nil real_types nil)
+    (Traj type-eq-decl nil int_bands nil)
+    (nnreal type-eq-decl nil real_types nil)
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (IFF const-decl "[bool, bool -> bool]" booleans nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (bijective? const-decl "bool" functions nil)
+    (id const-decl "(bijective?[T, T])" identity nil)
+    (TRUE const-decl "bool" booleans nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (number nonempty-type-decl nil numbers nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (>= const-decl "bool" reals nil)
+    (Vect3 type-eq-decl nil vectors_3D_def vectors)
+    (string type-eq-decl nil strings nil)
+    (Aircraft type-eq-decl nil int_bands nil)
+    (list type-decl nil list_adt nil)
+    (AircraftList type-eq-decl nil int_bands nil)
+    (rational_pred const-decl "[real -> boolean]" rationals nil)
+    (rational nonempty-type-from-decl nil rationals nil)
+    (integer_pred const-decl "[rational -> boolean]" integers nil)
+    (int nonempty-type-eq-decl nil integers nil)
+    (< const-decl "bool" reals nil)
+    (nat nonempty-type-eq-decl nil naturalnumbers nil)
+    (length def-decl "nat" list_props nil)
+    (> const-decl "bool" reals nil))
    shostak))
  (first_green?_TCC1 0
   (first_green?_TCC1-1 nil 3633345572 ("" (subtype-tcc) nil nil)
@@ -1649,7 +1681,7 @@
     (nat nonempty-type-eq-decl nil naturalnumbers nil)
     (> const-decl "bool" reals nil)
     (string type-eq-decl nil strings nil)
-    (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
+    (Vect3 type-eq-decl nil vectors_3D_def vectors)
     (Aircraft type-eq-decl nil int_bands nil)
     (list type-decl nil list_adt nil)
     (length def-decl "nat" list_props nil)
@@ -1662,8 +1694,7 @@
     (= const-decl "[T, T -> boolean]" equalities nil)
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (- const-decl "[numfield -> numfield]" number_fields nil)
-    (Sign type-eq-decl nil sign "reals/")
-    (<= const-decl "bool" reals nil)
+    (Sign type-eq-decl nil sign reals) (<= const-decl "bool" reals nil)
     (subrange type-eq-decl nil integers nil)
     (minus_odd_is_odd application-judgement "odd_int" integers nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
@@ -1674,8 +1705,12 @@
      "(strict_total_order?[real])" real_props nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil))
-   nil))
+   nil (first_green? subtype "kinematic_bands_exist.j" "nat")))
  (first_green_rec_TCC1 0
+  (first_green_rec_TCC1-2 "" 3813484689
+   ("" (skeep*) (("" (assert) nil nil)) nil) nil shostak
+   (first_green_rec subtype "(number_fields.-)(1)"
+    "integers.subrange((number_fields.-)(1), kinematic_bands_exist.MaxN)"))
   (first_green_rec_TCC1-1 nil 3631879146
    ("" (skeep*)
     (("" (assert)
@@ -1698,16 +1733,22 @@
         nil))
       nil))
     nil)
-   ((minus_odd_is_odd application-judgement "odd_int" integers nil)
+   ((real_gt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
-    (real_gt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil)
+    (minus_odd_is_odd application-judgement "odd_int" integers nil)
     (boolean nonempty-type-decl nil booleans nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (TRUE const-decl "bool" booleans nil))
-   nil))
+   nil
+   (first_green_rec subtype "(number_fields.-)(1)"
+    "integers.subrange((number_fields.-)(1), kinematic_bands_exist.MaxN)")))
  (first_green_rec_TCC2 0
+  (first_green_rec_TCC2-2 "" 3813484689
+   ("" (skeep*) (("" (assert) nil nil)) nil) nil shostak
+   (first_green_rec subtype "(number_fields.-)(1)"
+    "integers.subrange((number_fields.-)(1), kinematic_bands_exist.MaxN)"))
   (first_green_rec_TCC2-1 nil 3631881565
    ("" (skeep*)
     (("" (assert)
@@ -1769,20 +1810,26 @@
         nil))
       nil))
     nil)
-   ((minus_odd_is_odd application-judgement "odd_int" integers nil)
-    (real_gt_is_strict_total_order name-judgement
+   ((real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (real_le_is_total_order name-judgement "(total_order?[real])"
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
-    (real_ge_is_total_order name-judgement "(total_order?[real])"
+    (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
+    (minus_odd_is_odd application-judgement "odd_int" integers nil)
     (boolean nonempty-type-decl nil booleans nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (TRUE const-decl "bool" booleans nil))
-   nil))
+   nil
+   (first_green_rec subtype "(number_fields.-)(1)"
+    "integers.subrange((number_fields.-)(1), kinematic_bands_exist.MaxN)")))
  (first_green_rec_TCC3 0
+  (first_green_rec_TCC3-2 "" 3813484689
+   ("" (skeep*) (("" (assert) nil nil)) nil) nil shostak
+   (first_green_rec subtype "(number_fields.-)(1)"
+    "integers.subrange((number_fields.-)(1), kinematic_bands_exist.MaxN)"))
   (first_green_rec_TCC3-1 nil 3631881565
    ("" (skeep*)
     (("" (assert)
@@ -1818,20 +1865,26 @@
         nil))
       nil))
     nil)
-   ((minus_odd_is_odd application-judgement "odd_int" integers nil)
-    (real_gt_is_strict_total_order name-judgement
+   ((real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (real_le_is_total_order name-judgement "(total_order?[real])"
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
-    (real_ge_is_total_order name-judgement "(total_order?[real])"
+    (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
+    (minus_odd_is_odd application-judgement "odd_int" integers nil)
     (boolean nonempty-type-decl nil booleans nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (TRUE const-decl "bool" booleans nil))
-   nil))
+   nil
+   (first_green_rec subtype "(number_fields.-)(1)"
+    "integers.subrange((number_fields.-)(1), kinematic_bands_exist.MaxN)")))
  (first_green_rec_TCC4 0
+  (first_green_rec_TCC4-2 "" 3813484690
+   ("" (skeep*) (("" (assert) nil nil)) nil) nil shostak
+   (first_green_rec subtype "(number_fields.-)(1)"
+    "integers.subrange((number_fields.-)(1), kinematic_bands_exist.MaxN)"))
   (first_green_rec_TCC4-1 nil 3631881565
    ("" (skeep*)
     (("" (assert)
@@ -1866,20 +1919,26 @@
         nil))
       nil))
     nil)
-   ((minus_odd_is_odd application-judgement "odd_int" integers nil)
-    (real_le_is_total_order name-judgement "(total_order?[real])"
+   ((real_gt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
-    (real_ge_is_total_order name-judgement "(total_order?[real])"
+    (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
-    (real_gt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil)
+    (minus_odd_is_odd application-judgement "odd_int" integers nil)
     (boolean nonempty-type-decl nil booleans nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (TRUE const-decl "bool" booleans nil))
-   nil))
+   nil
+   (first_green_rec subtype "(number_fields.-)(1)"
+    "integers.subrange((number_fields.-)(1), kinematic_bands_exist.MaxN)")))
  (first_green_rec_TCC5 0
+  (first_green_rec_TCC5-2 "" 3813484690
+   ("" (skeep*) (("" (assert) nil nil)) nil) nil shostak
+   (first_green_rec subtype "(number_fields.-)(1)"
+    "integers.subrange((number_fields.-)(1), kinematic_bands_exist.MaxN)"))
   (first_green_rec_TCC5-1 nil 3631881565
    ("" (skeep*)
     (("" (assert)
@@ -1981,20 +2040,26 @@
         nil))
       nil))
     nil)
-   ((minus_odd_is_odd application-judgement "odd_int" integers nil)
-    (real_le_is_total_order name-judgement "(total_order?[real])"
+   ((real_gt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
-    (real_ge_is_total_order name-judgement "(total_order?[real])"
+    (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
-    (real_gt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil)
+    (minus_odd_is_odd application-judgement "odd_int" integers nil)
     (boolean nonempty-type-decl nil booleans nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (TRUE const-decl "bool" booleans nil))
-   nil))
+   nil
+   (first_green_rec subtype "(number_fields.-)(1)"
+    "integers.subrange((number_fields.-)(1), kinematic_bands_exist.MaxN)")))
  (first_green_rec_TCC6 0
+  (first_green_rec_TCC6-2 "" 3813484690
+   ("" (skeep*) (("" (assert) nil nil)) nil) nil shostak
+   (first_green_rec subtype "kinematic_bands_exist.k"
+    "integers.subrange((number_fields.-)(1), kinematic_bands_exist.MaxN)"))
   (first_green_rec_TCC6-1 nil 3631881565
    ("" (skeep*)
     (("" (assert)
@@ -2066,19 +2131,21 @@
         nil))
       nil))
     nil)
-   ((minus_odd_is_odd application-judgement "odd_int" integers nil)
-    (real_le_is_total_order name-judgement "(total_order?[real])"
-     real_props nil)
-    (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
-     real_types nil)
-    (real_gt_is_strict_total_order name-judgement
+   ((real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
+    (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
+     real_types nil)
+    (real_le_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (minus_odd_is_odd application-judgement "odd_int" integers nil)
     (boolean nonempty-type-decl nil booleans nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (TRUE const-decl "bool" booleans nil))
-   nil))
+   nil
+   (first_green_rec subtype "kinematic_bands_exist.k"
+    "integers.subrange((number_fields.-)(1), kinematic_bands_exist.MaxN)")))
  (first_green_rec_TCC7 0
   (first_green_rec_TCC7-1 nil 3638007036 ("" (termination-tcc) nil nil)
    ((boolean nonempty-type-decl nil booleans nil)
@@ -2101,7 +2168,7 @@
     (> const-decl "bool" reals nil)
     (posreal nonempty-type-eq-decl nil real_types nil)
     (string type-eq-decl nil strings nil)
-    (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
+    (Vect3 type-eq-decl nil vectors_3D_def vectors)
     (Aircraft type-eq-decl nil int_bands nil)
     (list type-decl nil list_adt nil)
     (length def-decl "nat" list_props nil)
@@ -2113,7 +2180,7 @@
     (= const-decl "[T, T -> boolean]" equalities nil)
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (- const-decl "[numfield -> numfield]" number_fields nil)
-    (Sign type-eq-decl nil sign "reals/")
+    (Sign type-eq-decl nil sign reals)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_gt_is_strict_total_order name-judgement
@@ -2122,54 +2189,54 @@
      "(strict_total_order?[real])" real_props nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
     (nth def-decl "T" list_props nil)
-    (* const-decl "Vector" vectors_3D "vectors/")
-    (+ const-decl "Vector" vectors_3D "vectors/")
+    (* const-decl "Vector" vectors_3D vectors)
+    (+ const-decl "Vector" vectors_3D vectors)
+    (first_los_aircraft def-decl "{j: int |
+   (j >= 0 IFF
+     (i <= j AND
+       j < length(AL) AND
+        LOS(traj(k * ts)`1, traj(k * ts)`2,
+            nth(AL, j)`s + (k * ts) * nth(AL, j)`v, nth(AL, j)`v)
+         AND
+         (FORALL (q: int):
+            q >= i AND q < j IMPLIES
+             NOT LOS(traj(k * ts)`1, traj(k * ts)`2,
+                     nth(AL, q)`s + (k * ts) * nth(AL, q)`v,
+                     nth(AL, q)`v))))
+    AND
+    (j < 0 IFF
+      (FORALL (q: int):
+         q >= i AND q < length(AL) IMPLIES
+          NOT LOS(traj(k * ts)`1, traj(k * ts)`2,
+                  nth(AL, q)`s + (k * ts) * nth(AL, q)`v, nth(AL, q)`v)))}"
+     int_bands nil)
+    (- const-decl "Vector" vectors_3D vectors)
+    (vect2 const-decl "Vect2" vect_3D_2D vectors)
+    (linvel const-decl "Vect3" int_bands nil)
+    (/= const-decl "boolean" notequal nil)
+    (det const-decl "real" det_2D vectors)
+    (* const-decl "real" vectors_2D vectors)
+    (repulsive_criteria const-decl "bool" repulsive ACCoRD)
+    (repulsive_at const-decl "bool" int_bands nil)
+    (vertical_repulsive_crit const-decl "bool" repulsive_vertical_it
+     ACCoRD)
+    (vert_repul_at const-decl "bool" int_bands nil)
     (aircraft_at const-decl "Aircraft" int_bands nil)
     (CD_future_traj const-decl "bool" int_bands nil)
     (first_conflict_aircraft def-decl "{j: int |
-         (j >= 0 IFF
-           (i <= j AND
-             j < length(AL) AND
-              CD_future_traj(CD, B, T, traj, k * tsn, AL, j) AND
-               (FORALL (q: int):
-                  q >= i AND q < j IMPLIES
-                   NOT CD_future_traj(CD, B, T, traj, k * tsn, AL, q))))
-          AND
-          (j < 0 IFF
-            (FORALL (q: int):
-               q >= i AND q < length(AL) IMPLIES
-                NOT CD_future_traj(CD, B, T, traj, k * tsn, AL, q)))}"
+   (j >= 0 IFF
+     (i <= j AND
+       j < length(AL) AND
+        CD_future_traj(CD, B, T, traj, k * tsn, AL, j) AND
+         (FORALL (q: int):
+            q >= i AND q < j IMPLIES
+             NOT CD_future_traj(CD, B, T, traj, k * tsn, AL, q))))
+    AND
+    (j < 0 IFF
+      (FORALL (q: int):
+         q >= i AND q < length(AL) IMPLIES
+          NOT CD_future_traj(CD, B, T, traj, k * tsn, AL, q)))}"
      int_bands nil)
-    (- const-decl "Vector" vectors_3D "vectors/")
-    (linvel const-decl "Vect3" int_bands nil)
-    (vertical_repulsive_crit const-decl "bool" repulsive_vertical_it
-     "ACCoRD/")
-    (vert_repul_at const-decl "bool" int_bands nil)
-    (vect2 const-decl "Vect2" vect_3D_2D "vectors/")
-    (/= const-decl "boolean" notequal nil)
-    (det const-decl "real" det_2D "vectors/")
-    (* const-decl "real" vectors_2D "vectors/")
-    (repulsive_criteria const-decl "bool" repulsive "ACCoRD/")
-    (repulsive_at const-decl "bool" int_bands nil)
-    (first_los_aircraft def-decl "{j: int |
-         (j >= 0 IFF
-           (i <= j AND
-             j < length(AL) AND
-              LOS(traj(k * ts)`1, traj(k * ts)`2,
-                  nth(AL, j)`s + (k * ts) * nth(AL, j)`v, nth(AL, j)`v)
-               AND
-               (FORALL (q: int):
-                  q >= i AND q < j IMPLIES
-                   NOT LOS(traj(k * ts)`1, traj(k * ts)`2,
-                           nth(AL, q)`s + (k * ts) * nth(AL, q)`v,
-                           nth(AL, q)`v))))
-          AND
-          (j < 0 IFF
-            (FORALL (q: int):
-               q >= i AND q < length(AL) IMPLIES
-                NOT LOS(traj(k * ts)`1, traj(k * ts)`2,
-                        nth(AL, q)`s + (k * ts) * nth(AL, q)`v,
-                        nth(AL, q)`v)))}" int_bands nil)
     (max const-decl "{p: real | p >= m AND p >= n}" real_defs nil)
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
@@ -2178,11 +2245,13 @@
      real_types nil)
     (real_minus_real_is_real application-judgement "real" reals nil)
     (real_plus_real_is_real application-judgement "real" reals nil)
-    (mult_divides1 application-judgement "(divides(n))" divides nil)
-    (mult_divides2 application-judgement "(divides(m))" divides nil)
+    (int_times_int_is_int application-judgement "int" integers nil)
     (posint_plus_nnint_is_posint application-judgement "posint"
      integers nil))
-   nil))
+   nil
+   (first_green_rec termination
+    "kinematic_bands_exist.first_green_rec(kinematic_bands_exist.LOS, kinematic_bands_exist.CD, kinematic_bands_exist.LOS2, kinematic_bands_exist.CD2, kinematic_bands_exist.useLOS2, kinematic_bands_exist.B, kinematic_bands_exist.T, kinematic_bands_exist.B2, kinematic_bands_exist.T2, kinematic_bands_exist.so, kinematic_bands_exist.vo, kinematic_bands_exist.traj, kinematic_bands_exist.MaxN, kinematic_bands_exist.ts, kinematic_bands_exist.AL, kinematic_bands_exist.most_urgent, kinematic_bands_exist.epsH, kinematic_bands_exist.epsV, kinematic_bands_exist.UseHCrit, kinematic_bands_exist.UseVCrit, (number_fields.+)(kinematic_bands_exist.k, 1))"
+    "nil")))
  (first_green_types 0
   (first_green_types-1 nil 3638015576
    ("" (skeep*)
@@ -3308,99 +3377,60 @@
         nil))
       nil))
     nil)
-   ((IFF const-decl "[bool, bool -> bool]" booleans nil)
-    (number nonempty-type-decl nil numbers nil)
-    (= const-decl "[T, T -> boolean]" equalities nil)
-    (real nonempty-type-from-decl nil reals nil)
-    (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
-    (number_field_pred const-decl "[number -> boolean]" number_fields
-     nil)
-    (number_field nonempty-type-from-decl nil number_fields nil)
-    (real_pred const-decl "[number_field -> boolean]" reals nil)
-    (>= const-decl "bool" reals nil)
-    (nnreal type-eq-decl nil real_types nil)
-    (Traj type-eq-decl nil int_bands nil)
-    (rational_pred const-decl "[real -> boolean]" rationals nil)
-    (rational nonempty-type-from-decl nil rationals nil)
-    (integer_pred const-decl "[rational -> boolean]" integers nil)
-    (int nonempty-type-eq-decl nil integers nil)
-    (nat nonempty-type-eq-decl nil naturalnumbers nil)
-    (nonneg_real nonempty-type-eq-decl nil real_types nil)
-    (> const-decl "bool" reals nil)
-    (posreal nonempty-type-eq-decl nil real_types nil)
-    (string type-eq-decl nil strings nil)
-    (Aircraft type-eq-decl nil int_bands nil)
-    (list type-decl nil list_adt nil)
-    (AircraftList type-eq-decl nil int_bands nil)
-    (length def-decl "nat" list_props nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil)
-    (< const-decl "bool" reals nil)
-    (/= const-decl "boolean" notequal nil)
-    (nzint nonempty-type-eq-decl nil integers nil)
-    (OR const-decl "[bool, bool -> bool]" booleans nil)
-    (numfield nonempty-type-eq-decl nil number_fields nil)
-    (- const-decl "[numfield -> numfield]" number_fields nil)
-    (Sign type-eq-decl nil sign "reals/")
-    (<= const-decl "bool" reals nil)
-    (subrange type-eq-decl nil integers nil)
-    (first_green const-decl "subrange(-1, MaxN)" kinematic_bands_exist
-     nil)
-    (first_green? const-decl "bool" kinematic_bands_exist nil)
-    (real_times_real_is_real application-judgement "real" reals nil)
-    (real_gt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil)
+   ((nnreal_times_nnreal_is_nnreal judgement-tcc nil real_types nil)
     (CD_future_traj_def formula-decl nil int_bands nil)
-    (nnreal_times_nnreal_is_nnreal judgement-tcc nil real_types nil)
     (CD_future_traj const-decl "bool" int_bands nil)
     (first_conflict_aircraft def-decl "{j: int |
-         (j >= 0 IFF
-           (i <= j AND
-             j < length(AL) AND
-              CD_future_traj(CD, B, T, traj, k * tsn, AL, j) AND
-               (FORALL (q: int):
-                  q >= i AND q < j IMPLIES
-                   NOT CD_future_traj(CD, B, T, traj, k * tsn, AL, q))))
-          AND
-          (j < 0 IFF
-            (FORALL (q: int):
-               q >= i AND q < length(AL) IMPLIES
-                NOT CD_future_traj(CD, B, T, traj, k * tsn, AL, q)))}"
+   (j >= 0 IFF
+     (i <= j AND
+       j < length(AL) AND
+        CD_future_traj(CD, B, T, traj, k * tsn, AL, j) AND
+         (FORALL (q: int):
+            q >= i AND q < j IMPLIES
+             NOT CD_future_traj(CD, B, T, traj, k * tsn, AL, q))))
+    AND
+    (j < 0 IFF
+      (FORALL (q: int):
+         q >= i AND q < length(AL) IMPLIES
+          NOT CD_future_traj(CD, B, T, traj, k * tsn, AL, q)))}"
      int_bands nil)
     (i skolem-const-decl "nat" kinematic_bands_exist nil)
     (k skolem-const-decl "nat" kinematic_bands_exist nil)
     (upto nonempty-type-eq-decl nil naturalnumbers nil)
     (below type-eq-decl nil naturalnumbers nil)
     (* const-decl "[numfield, numfield -> numfield]" number_fields nil)
-    (Vector type-eq-decl nil vectors_3D "vectors/")
-    (+ const-decl "Vector" vectors_3D "vectors/")
+    (Vector type-eq-decl nil vectors_3D vectors)
+    (+ const-decl "Vector" vectors_3D vectors)
     (below type-eq-decl nil nat_types nil)
     (nth def-decl "T" list_props nil)
-    (* const-decl "Vector" vectors_3D "vectors/")
+    (* const-decl "Vector" vectors_3D vectors)
     (NOT const-decl "[bool -> bool]" booleans nil)
     (first_los_aircraft def-decl "{j: int |
-         (j >= 0 IFF
-           (i <= j AND
-             j < length(AL) AND
-              LOS(traj(k * ts)`1, traj(k * ts)`2,
-                  nth(AL, j)`s + (k * ts) * nth(AL, j)`v, nth(AL, j)`v)
-               AND
-               (FORALL (q: int):
-                  q >= i AND q < j IMPLIES
-                   NOT LOS(traj(k * ts)`1, traj(k * ts)`2,
-                           nth(AL, q)`s + (k * ts) * nth(AL, q)`v,
-                           nth(AL, q)`v))))
-          AND
-          (j < 0 IFF
-            (FORALL (q: int):
-               q >= i AND q < length(AL) IMPLIES
-                NOT LOS(traj(k * ts)`1, traj(k * ts)`2,
-                        nth(AL, q)`s + (k * ts) * nth(AL, q)`v,
-                        nth(AL, q)`v)))}" int_bands nil)
+   (j >= 0 IFF
+     (i <= j AND
+       j < length(AL) AND
+        LOS(traj(k * ts)`1, traj(k * ts)`2,
+            nth(AL, j)`s + (k * ts) * nth(AL, j)`v, nth(AL, j)`v)
+         AND
+         (FORALL (q: int):
+            q >= i AND q < j IMPLIES
+             NOT LOS(traj(k * ts)`1, traj(k * ts)`2,
+                     nth(AL, q)`s + (k * ts) * nth(AL, q)`v,
+                     nth(AL, q)`v))))
+    AND
+    (j < 0 IFF
+      (FORALL (q: int):
+         q >= i AND q < length(AL) IMPLIES
+          NOT LOS(traj(k * ts)`1, traj(k * ts)`2,
+                  nth(AL, q)`s + (k * ts) * nth(AL, q)`v, nth(AL, q)`v)))}"
+     int_bands nil)
     (real_minus_real_is_real application-judgement "real" reals nil)
+    (real_gt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
+    (real_times_real_is_real application-judgement "real" reals nil)
+    (conflict_step const-decl "bool" int_bands nil)
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
-    (minus_odd_is_odd application-judgement "odd_int" integers nil)
-    (conflict_step const-decl "bool" int_bands nil)
     (nat_induction formula-decl nil naturalnumbers nil)
     (pred type-eq-decl nil defined_types nil)
     (LOS skolem-const-decl "[[Vect3, Vect3, Vect3, Vect3] -> bool]"
@@ -3438,16 +3468,55 @@
      real_props nil)
     (posint_plus_nnint_is_posint application-judgement "posint"
      integers nil)
-    (nnint_plus_posint_is_posint application-judgement "posint"
-     integers nil)
-    (int_minus_int_is_int application-judgement "int" integers nil)
-    (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
-    (+ const-decl "[numfield, numfield -> numfield]" number_fields nil)
-    (all_conflict_steps_before const-decl "bool" kinematic_bands_exist
-     nil)
-    (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (first_green_rec def-decl "subrange(-1, MaxN)"
      kinematic_bands_exist nil)
+    (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
+    (all_conflict_steps_before const-decl "bool" kinematic_bands_exist
+     nil)
+    (+ const-decl "[numfield, numfield -> numfield]" number_fields nil)
+    (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
+    (int_minus_int_is_int application-judgement "int" integers nil)
+    (nnint_plus_posint_is_posint application-judgement "posint"
+     integers nil)
+    (first_green? const-decl "bool" kinematic_bands_exist nil)
+    (first_green const-decl "subrange(-1, MaxN)" kinematic_bands_exist
+     nil)
+    (subrange type-eq-decl nil integers nil)
+    (<= const-decl "bool" reals nil) (Sign type-eq-decl nil sign reals)
+    (- const-decl "[numfield -> numfield]" number_fields nil)
+    (numfield nonempty-type-eq-decl nil number_fields nil)
+    (OR const-decl "[bool, bool -> bool]" booleans nil)
+    (nzint nonempty-type-eq-decl nil integers nil)
+    (/= const-decl "boolean" notequal nil)
+    (< const-decl "bool" reals nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (length def-decl "nat" list_props nil)
+    (AircraftList type-eq-decl nil int_bands nil)
+    (list type-decl nil list_adt nil)
+    (Aircraft type-eq-decl nil int_bands nil)
+    (string type-eq-decl nil strings nil)
+    (posreal nonempty-type-eq-decl nil real_types nil)
+    (> const-decl "bool" reals nil)
+    (nonneg_real nonempty-type-eq-decl nil real_types nil)
+    (nat nonempty-type-eq-decl nil naturalnumbers nil)
+    (int nonempty-type-eq-decl nil integers nil)
+    (integer_pred const-decl "[rational -> boolean]" integers nil)
+    (rational nonempty-type-from-decl nil rationals nil)
+    (rational_pred const-decl "[real -> boolean]" rationals nil)
+    (Traj type-eq-decl nil int_bands nil)
+    (nnreal type-eq-decl nil real_types nil)
+    (>= const-decl "bool" reals nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (Vect3 type-eq-decl nil vectors_3D_def vectors)
+    (real nonempty-type-from-decl nil reals nil)
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (number nonempty-type-decl nil numbers nil)
+    (IFF const-decl "[bool, bool -> bool]" booleans nil)
+    (bijective? const-decl "bool" functions nil)
+    (id const-decl "(bijective?[T, T])" identity nil)
     (boolean nonempty-type-decl nil booleans nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (TRUE const-decl "bool" booleans nil))
@@ -3584,65 +3653,66 @@
         nil))
       nil))
     nil)
-   ((IFF const-decl "[bool, bool -> bool]" booleans nil)
-    (number nonempty-type-decl nil numbers nil)
-    (= const-decl "[T, T -> boolean]" equalities nil)
-    (real nonempty-type-from-decl nil reals nil)
-    (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
-    (number_field_pred const-decl "[number -> boolean]" number_fields
-     nil)
-    (number_field nonempty-type-from-decl nil number_fields nil)
-    (real_pred const-decl "[number_field -> boolean]" reals nil)
-    (>= const-decl "bool" reals nil)
-    (nnreal type-eq-decl nil real_types nil)
-    (Traj type-eq-decl nil int_bands nil)
-    (rational_pred const-decl "[real -> boolean]" rationals nil)
-    (rational nonempty-type-from-decl nil rationals nil)
-    (integer_pred const-decl "[rational -> boolean]" integers nil)
-    (int nonempty-type-eq-decl nil integers nil)
-    (nat nonempty-type-eq-decl nil naturalnumbers nil)
-    (nonneg_real nonempty-type-eq-decl nil real_types nil)
-    (> const-decl "bool" reals nil)
-    (posreal nonempty-type-eq-decl nil real_types nil)
-    (string type-eq-decl nil strings nil)
-    (Aircraft type-eq-decl nil int_bands nil)
-    (list type-decl nil list_adt nil)
-    (AircraftList type-eq-decl nil int_bands nil)
-    (length def-decl "nat" list_props nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil)
-    (< const-decl "bool" reals nil)
-    (/= const-decl "boolean" notequal nil)
-    (nzint nonempty-type-eq-decl nil integers nil)
-    (OR const-decl "[bool, bool -> bool]" booleans nil)
-    (numfield nonempty-type-eq-decl nil number_fields nil)
-    (- const-decl "[numfield -> numfield]" number_fields nil)
-    (Sign type-eq-decl nil sign "reals/")
-    (<= const-decl "bool" reals nil)
-    (subrange type-eq-decl nil integers nil)
-    (first_green const-decl "subrange(-1, MaxN)" kinematic_bands_exist
-     nil)
-    (kinematic_bands const-decl "(proper?(MaxN))" kinematic_bands nil)
-    (proper? const-decl "bool" int_bands nil)
-    (nth def-decl "T" list_props nil)
-    (below type-eq-decl nil nat_types nil)
-    (in? const-decl "bool" real_bands nil)
-    (RealBand type-eq-decl nil real_bands nil)
-    (below type-eq-decl nil naturalnumbers nil)
-    (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
-    (IntBand type-eq-decl nil int_bands nil)
-    (first_green_types formula-decl nil kinematic_bands_exist nil)
-    (real_lt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil)
-    (real_ge_is_total_order name-judgement "(total_order?[real])"
-     real_props nil)
-    (first_green? const-decl "bool" kinematic_bands_exist nil)
-    (kinematic_bands_def formula-decl nil kinematic_bands nil)
-    (bands_sound? const-decl "bool" int_bands nil)
-    (in? const-decl "bool" int_bands nil)
+   ((in? const-decl "bool" int_bands nil)
     (upto nonempty-type-eq-decl nil naturalnumbers nil)
     (minus_odd_is_odd application-judgement "odd_int" integers nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
+    (bands_sound? const-decl "bool" int_bands nil)
+    (kinematic_bands_def formula-decl nil kinematic_bands nil)
+    (first_green? const-decl "bool" kinematic_bands_exist nil)
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (real_lt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
+    (first_green_types formula-decl nil kinematic_bands_exist nil)
+    (IntBand type-eq-decl nil int_bands nil)
+    (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
+    (below type-eq-decl nil naturalnumbers nil)
+    (RealBand type-eq-decl nil real_bands nil)
+    (in? const-decl "bool" real_bands nil)
+    (below type-eq-decl nil nat_types nil)
+    (nth def-decl "T" list_props nil)
+    (proper? const-decl "bool" int_bands nil)
+    (kinematic_bands const-decl "(proper?(MaxN))" kinematic_bands nil)
+    (first_green const-decl "subrange(-1, MaxN)" kinematic_bands_exist
+     nil)
+    (subrange type-eq-decl nil integers nil)
+    (<= const-decl "bool" reals nil) (Sign type-eq-decl nil sign reals)
+    (- const-decl "[numfield -> numfield]" number_fields nil)
+    (numfield nonempty-type-eq-decl nil number_fields nil)
+    (OR const-decl "[bool, bool -> bool]" booleans nil)
+    (nzint nonempty-type-eq-decl nil integers nil)
+    (/= const-decl "boolean" notequal nil)
+    (< const-decl "bool" reals nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (length def-decl "nat" list_props nil)
+    (AircraftList type-eq-decl nil int_bands nil)
+    (list type-decl nil list_adt nil)
+    (Aircraft type-eq-decl nil int_bands nil)
+    (string type-eq-decl nil strings nil)
+    (posreal nonempty-type-eq-decl nil real_types nil)
+    (> const-decl "bool" reals nil)
+    (nonneg_real nonempty-type-eq-decl nil real_types nil)
+    (nat nonempty-type-eq-decl nil naturalnumbers nil)
+    (int nonempty-type-eq-decl nil integers nil)
+    (integer_pred const-decl "[rational -> boolean]" integers nil)
+    (rational nonempty-type-from-decl nil rationals nil)
+    (rational_pred const-decl "[real -> boolean]" rationals nil)
+    (Traj type-eq-decl nil int_bands nil)
+    (nnreal type-eq-decl nil real_types nil)
+    (>= const-decl "bool" reals nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (Vect3 type-eq-decl nil vectors_3D_def vectors)
+    (real nonempty-type-from-decl nil reals nil)
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (number nonempty-type-decl nil numbers nil)
+    (IFF const-decl "[bool, bool -> bool]" booleans nil)
+    (bijective? const-decl "bool" functions nil)
+    (id const-decl "(bijective?[T, T])" identity nil)
     (boolean nonempty-type-decl nil booleans nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (TRUE const-decl "bool" booleans nil))
@@ -3787,12 +3857,12 @@
         nil))
       nil))
     nil)
-   ((Vect3 type-eq-decl nil vectors_3D_def "vectors/")
+   ((Vect3 type-eq-decl nil vectors_3D_def vectors)
     (detector? const-decl "bool" int_bands nil)
     (Traj type-eq-decl nil int_bands nil)
     (Aircraft type-eq-decl nil int_bands nil)
     (AircraftList type-eq-decl nil int_bands nil)
-    (Sign type-eq-decl nil sign "reals/")
+    (Sign type-eq-decl nil sign reals)
     (kinematic_bands const-decl "(proper?(MaxN))" kinematic_bands nil)
     (proper? const-decl "bool" int_bands nil)
     (in? const-decl "bool" real_bands nil)

@@ -1,5 +1,9 @@
 (ereal
  (difference_TCC1 0
+  (difference_TCC1-2 "" 3813485060
+   ("" (skeep) (("" (ground) nil nil)) nil) nil shostak
+   (difference subtype "ereal.e"
+    "(union_adt[real, ereal.extended].inl?)"))
   (difference_TCC1-1 nil 3671805686
    ("" (skeep)
     (("" (ground)
@@ -12,7 +16,9 @@
         nil))
       nil))
     nil)
-   nil nil))
+   nil nil
+   (difference subtype "ereal.e"
+    "(union_adt[real, ereal.extended].inl?)")))
  (difference_TCC2 0
   (difference_TCC2-1 nil 3671805686 ("" (subtype-tcc) nil nil)
    ((boolean nonempty-type-decl nil booleans nil)
@@ -30,7 +36,9 @@
     (real_pred const-decl "[number_field -> boolean]" reals nil)
     (TRUE const-decl "bool" booleans nil)
     (ereal type-eq-decl nil ereal nil))
-   nil))
+   nil
+   (difference subtype "ereal.e"
+    "(union_adt[real, ereal.extended].inr?)")))
  (close_TCC1 0
   (close_TCC1-1 nil 3671805686 ("" (subtype-tcc) nil nil)
    ((boolean nonempty-type-decl nil booleans nil)
@@ -48,7 +56,8 @@
     (real_pred const-decl "[number_field -> boolean]" reals nil)
     (TRUE const-decl "bool" booleans nil)
     (ereal type-eq-decl nil ereal nil))
-   nil))
+   nil
+   (close subtype "ereal.a" "(union_adt[real, ereal.extended].inl?)")))
  (close_TCC2 0
   (close_TCC2-1 nil 3671895416 ("" (subtype-tcc) nil nil)
    ((boolean nonempty-type-decl nil booleans nil)
@@ -66,7 +75,8 @@
     (real_pred const-decl "[number_field -> boolean]" reals nil)
     (TRUE const-decl "bool" booleans nil)
     (ereal type-eq-decl nil ereal nil))
-   nil))
+   nil
+   (close subtype "ereal.b" "(union_adt[real, ereal.extended].inl?)")))
  (ereal2str_TCC1 0
   (ereal2str_TCC1-1 nil 3671895416 ("" (subtype-tcc) nil nil)
    ((boolean nonempty-type-decl nil booleans nil)
@@ -84,5 +94,7 @@
     (real_pred const-decl "[number_field -> boolean]" reals nil)
     (TRUE const-decl "bool" booleans nil)
     (ereal type-eq-decl nil ereal nil))
-   nil)))
+   nil
+   (ereal2str subtype "ereal.e"
+    "(union_adt[real, ereal.extended].inl?)"))))
 

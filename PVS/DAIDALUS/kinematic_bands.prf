@@ -26,51 +26,53 @@
         nil))
       nil))
     nil)
-   ((string type-eq-decl nil strings nil)
-    (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
-    (Aircraft type-eq-decl nil int_bands nil)
-    (list type-decl nil list_adt nil)
-    (AircraftList type-eq-decl nil int_bands nil)
-    (number nonempty-type-decl nil numbers nil)
-    (number_field_pred const-decl "[number -> boolean]" number_fields
-     nil)
-    (number_field nonempty-type-from-decl nil number_fields nil)
-    (real_pred const-decl "[number_field -> boolean]" reals nil)
-    (real nonempty-type-from-decl nil reals nil)
-    (> const-decl "bool" reals nil)
-    (rational_pred const-decl "[real -> boolean]" rationals nil)
-    (rational nonempty-type-from-decl nil rationals nil)
-    (integer_pred const-decl "[rational -> boolean]" integers nil)
-    (int nonempty-type-eq-decl nil integers nil)
-    (>= const-decl "bool" reals nil)
-    (nat nonempty-type-eq-decl nil naturalnumbers nil)
-    (length def-decl "nat" list_props nil)
-    (nnreal type-eq-decl nil real_types nil)
-    (Traj type-eq-decl nil int_bands nil)
-    (nonneg_real nonempty-type-eq-decl nil real_types nil)
-    (posreal nonempty-type-eq-decl nil real_types nil)
-    (minus_odd_is_odd application-judgement "odd_int" integers nil)
-    (real_ge_is_total_order name-judgement "(total_order?[real])"
+   ((real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
-    (nonneg_floor_is_nat application-judgement "nat" floor_ceil nil)
-    (posint_plus_nnint_is_posint application-judgement "posint"
-     integers nil)
-    (nnint_plus_posint_is_posint application-judgement "posint"
-     integers nil)
-    (real_lt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil)
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (real_le_is_total_order name-judgement "(total_order?[real])"
+    (real_lt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
+    (nnint_plus_posint_is_posint application-judgement "posint"
+     integers nil)
+    (posint_plus_nnint_is_posint application-judgement "posint"
+     integers nil)
+    (nonneg_floor_is_nat application-judgement "nat" floor_ceil nil)
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
+    (minus_odd_is_odd application-judgement "odd_int" integers nil)
     (min const-decl "{p: real | p <= m AND p <= n}" real_defs nil)
+    (posreal nonempty-type-eq-decl nil real_types nil)
+    (nonneg_real nonempty-type-eq-decl nil real_types nil)
+    (Traj type-eq-decl nil int_bands nil)
+    (nnreal type-eq-decl nil real_types nil)
+    (length def-decl "nat" list_props nil)
+    (nat nonempty-type-eq-decl nil naturalnumbers nil)
+    (>= const-decl "bool" reals nil)
+    (int nonempty-type-eq-decl nil integers nil)
+    (integer_pred const-decl "[rational -> boolean]" integers nil)
+    (rational nonempty-type-from-decl nil rationals nil)
+    (rational_pred const-decl "[real -> boolean]" rationals nil)
+    (> const-decl "bool" reals nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (number nonempty-type-decl nil numbers nil)
+    (AircraftList type-eq-decl nil int_bands nil)
+    (list type-decl nil list_adt nil)
+    (Aircraft type-eq-decl nil int_bands nil)
+    (Vect3 type-eq-decl nil vectors_3D_def vectors)
+    (string type-eq-decl nil strings nil)
     (first_los_step_range formula-decl nil int_bands nil)
     (boolean nonempty-type-decl nil booleans nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (TRUE const-decl "bool" booleans nil)
     (nnreal_div_posreal_is_nnreal application-judgement "nnreal"
      real_types nil))
-   nil))
+   nil
+   (first_los_search_index subtype "kinematic_bands.FirstLosInd"
+    "integers.subrange(0, (number_fields.+)(1, kinematic_bands.MaxN))")))
  (first_los_search_index_def_TCC1 0
   (first_los_search_index_def_TCC1-1 nil 3637424497
    ("" (subtype-tcc) nil nil)
@@ -80,11 +82,13 @@
      real_props nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (* const-decl "Vector" vectors_3D "vectors/")
-    (+ const-decl "Vector" vectors_3D "vectors/")
+    (* const-decl "Vector" vectors_3D vectors)
+    (+ const-decl "Vector" vectors_3D vectors)
     (detector? const-decl "bool" int_bands nil)
     (real_times_real_is_real application-judgement "real" reals nil))
-   nil))
+   nil
+   (first_los_search_index_def subtype "kinematic_bands.AL"
+    "{AL | reals.>(list_props[Aircraft].length(kinematic_bands.AL), 0)}")))
  (first_los_search_index_def 0
   (first_los_search_index_def-1 nil 3637424966
    ("" (skeep*)
@@ -779,105 +783,104 @@
         nil))
       nil))
     nil)
-   ((IFF const-decl "[bool, bool -> bool]" booleans nil)
-    (number nonempty-type-decl nil numbers nil)
-    (= const-decl "[T, T -> boolean]" equalities nil)
-    (real nonempty-type-from-decl nil reals nil)
-    (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
-    (number_field_pred const-decl "[number -> boolean]" number_fields
-     nil)
-    (number_field nonempty-type-from-decl nil number_fields nil)
-    (real_pred const-decl "[number_field -> boolean]" reals nil)
-    (>= const-decl "bool" reals nil)
-    (nnreal type-eq-decl nil real_types nil)
-    (Traj type-eq-decl nil int_bands nil)
-    (rational_pred const-decl "[real -> boolean]" rationals nil)
-    (rational nonempty-type-from-decl nil rationals nil)
-    (integer_pred const-decl "[rational -> boolean]" integers nil)
-    (int nonempty-type-eq-decl nil integers nil)
-    (nat nonempty-type-eq-decl nil naturalnumbers nil)
-    (nonneg_real nonempty-type-eq-decl nil real_types nil)
-    (> const-decl "bool" reals nil)
-    (posreal nonempty-type-eq-decl nil real_types nil)
-    (string type-eq-decl nil strings nil)
-    (Aircraft type-eq-decl nil int_bands nil)
-    (list type-decl nil list_adt nil)
-    (AircraftList type-eq-decl nil int_bands nil)
-    (length def-decl "nat" list_props nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil)
-    (<= const-decl "bool" reals nil)
-    (numfield nonempty-type-eq-decl nil number_fields nil)
-    (+ const-decl "[numfield, numfield -> numfield]" number_fields nil)
-    (subrange type-eq-decl nil integers nil)
-    (first_los_search_index const-decl "subrange(0, MaxN + 1)"
-     kinematic_bands nil)
-    (floor const-decl "{i | i <= x & x < i + 1}" floor_ceil nil)
-    (min const-decl "{p: real | p <= m AND p <= n}" real_defs nil)
-    (/ const-decl "[numfield, nznum -> numfield]" number_fields nil)
-    (nznum nonempty-type-eq-decl nil number_fields nil)
-    (/= const-decl "boolean" notequal nil)
-    (ceiling const-decl "{i | x <= i & i < x + 1}" floor_ceil nil)
-    (integer nonempty-type-from-decl nil integers nil)
-    (first_los_step def-decl "{i: int |
-         (i >= 0 IFF
-           (k <= i AND
-             i <= MaxN AND
-              (EXISTS (p: nat):
-                 p < length(AL) AND
-                  LOS(traj(i * ts)`1, traj(i * ts)`2,
-                      nth(AL, p)`s + (i * ts) * nth(AL, p)`v,
-                      nth(AL, p)`v))
-               AND
-               (FORALL (j: nat):
-                  k <= j AND j < i IMPLIES
-                   (FORALL (p: nat):
-                      p < length(AL) IMPLIES
-                       NOT LOS(traj(j * ts)`1, traj(j * ts)`2,
-                               nth(AL, p)`s + (j * ts) * nth(AL, p)`v,
-                               nth(AL, p)`v)))))
-          AND
-          (i < 0 IFF
-            (FORALL (p, j: nat):
-               p < length(AL) AND k <= j AND j <= MaxN IMPLIES
-                NOT LOS(traj(j * ts)`1, traj(j * ts)`2,
-                        nth(AL, p)`s + (j * ts) * nth(AL, p)`v,
-                        nth(AL, p)`v)))}" int_bands nil)
-    (NOT const-decl "[bool -> bool]" booleans nil)
-    (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
-    (* const-decl "Vector" vectors_3D "vectors/")
-    (nth def-decl "T" list_props nil)
-    (below type-eq-decl nil nat_types nil)
-    (+ const-decl "Vector" vectors_3D "vectors/")
-    (Vector type-eq-decl nil vectors_3D "vectors/")
-    (* const-decl "[numfield, numfield -> numfield]" number_fields nil)
-    (< const-decl "bool" reals nil)
-    (OR const-decl "[bool, bool -> bool]" booleans nil)
-    (nat_min application-judgement "{k: nat | k <= i AND k <= j}"
-     real_defs nil)
-    (nonneg_ceiling_is_nat application-judgement "nat" floor_ceil nil)
-    (real_ge_is_total_order name-judgement "(total_order?[real])"
-     real_props nil)
-    (nonneg_floor_is_nat application-judgement "nat" floor_ceil nil)
-    (minus_odd_is_odd application-judgement "odd_int" integers nil)
-    (nnint_plus_posint_is_posint application-judgement "posint"
-     integers nil)
-    (int_min application-judgement "{k: int | k <= i AND k <= j}"
-     real_defs nil)
-    (IF const-decl "[boolean, T, T -> T]" if_def nil)
-    (- const-decl "[numfield -> numfield]" number_fields nil)
-    (id const-decl "(bijective?[T, T])" identity nil)
-    (bijective? const-decl "bool" functions nil)
-    (posint_plus_nnint_is_posint application-judgement "posint"
-     integers nil)
+   ((FirstLosN skolem-const-decl
+     "{k: nat | k <= floor(T / ts) AND k <= MaxN}" kinematic_bands nil)
+    (real_times_real_is_real application-judgement "real" reals nil)
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (real_times_real_is_real application-judgement "real" reals nil)
-    (FirstLosN skolem-const-decl
-     "{k: nat | k <= floor(T / ts) AND k <= MaxN}" kinematic_bands nil)
+    (posint_plus_nnint_is_posint application-judgement "posint"
+     integers nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
+    (- const-decl "[numfield -> numfield]" number_fields nil)
+    (IF const-decl "[boolean, T, T -> T]" if_def nil)
+    (int_min application-judgement "{k: int | k <= i AND k <= j}"
+     real_defs nil)
+    (nnint_plus_posint_is_posint application-judgement "posint"
+     integers nil)
+    (minus_odd_is_odd application-judgement "odd_int" integers nil)
+    (nonneg_floor_is_nat application-judgement "nat" floor_ceil nil)
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (nonneg_ceiling_is_nat application-judgement "nat" floor_ceil nil)
+    (nat_min application-judgement "{k: nat | k <= i AND k <= j}"
+     real_defs nil)
+    (OR const-decl "[bool, bool -> bool]" booleans nil)
+    (< const-decl "bool" reals nil)
+    (* const-decl "[numfield, numfield -> numfield]" number_fields nil)
+    (Vector type-eq-decl nil vectors_3D vectors)
+    (+ const-decl "Vector" vectors_3D vectors)
+    (below type-eq-decl nil nat_types nil)
+    (nth def-decl "T" list_props nil)
+    (* const-decl "Vector" vectors_3D vectors)
+    (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (first_los_step def-decl "{i: int |
+   (i >= 0 IFF
+     (k <= i AND
+       i <= MaxN AND
+        (EXISTS (p: nat):
+           p < length(AL) AND
+            LOS(traj(i * ts)`1, traj(i * ts)`2,
+                nth(AL, p)`s + (i * ts) * nth(AL, p)`v, nth(AL, p)`v))
+         AND
+         (FORALL (j: nat):
+            k <= j AND j < i IMPLIES
+             (FORALL (p: nat):
+                p < length(AL) IMPLIES
+                 NOT LOS(traj(j * ts)`1, traj(j * ts)`2,
+                         nth(AL, p)`s + (j * ts) * nth(AL, p)`v,
+                         nth(AL, p)`v)))))
+    AND
+    (i < 0 IFF
+      (FORALL (p, j: nat):
+         p < length(AL) AND k <= j AND j <= MaxN IMPLIES
+          NOT LOS(traj(j * ts)`1, traj(j * ts)`2,
+                  nth(AL, p)`s + (j * ts) * nth(AL, p)`v, nth(AL, p)`v)))}"
+     int_bands nil)
+    (integer nonempty-type-from-decl nil integers nil)
+    (ceiling const-decl "{i | x <= i & i < x + 1}" floor_ceil nil)
+    (/= const-decl "boolean" notequal nil)
+    (nznum nonempty-type-eq-decl nil number_fields nil)
+    (/ const-decl "[numfield, nznum -> numfield]" number_fields nil)
+    (min const-decl "{p: real | p <= m AND p <= n}" real_defs nil)
+    (floor const-decl "{i | i <= x & x < i + 1}" floor_ceil nil)
+    (first_los_search_index const-decl "subrange(0, MaxN + 1)"
+     kinematic_bands nil)
+    (subrange type-eq-decl nil integers nil)
+    (+ const-decl "[numfield, numfield -> numfield]" number_fields nil)
+    (numfield nonempty-type-eq-decl nil number_fields nil)
+    (<= const-decl "bool" reals nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (length def-decl "nat" list_props nil)
+    (AircraftList type-eq-decl nil int_bands nil)
+    (list type-decl nil list_adt nil)
+    (Aircraft type-eq-decl nil int_bands nil)
+    (string type-eq-decl nil strings nil)
+    (posreal nonempty-type-eq-decl nil real_types nil)
+    (> const-decl "bool" reals nil)
+    (nonneg_real nonempty-type-eq-decl nil real_types nil)
+    (nat nonempty-type-eq-decl nil naturalnumbers nil)
+    (int nonempty-type-eq-decl nil integers nil)
+    (integer_pred const-decl "[rational -> boolean]" integers nil)
+    (rational nonempty-type-from-decl nil rationals nil)
+    (rational_pred const-decl "[real -> boolean]" rationals nil)
+    (Traj type-eq-decl nil int_bands nil)
+    (nnreal type-eq-decl nil real_types nil)
+    (>= const-decl "bool" reals nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (Vect3 type-eq-decl nil vectors_3D_def vectors)
+    (real nonempty-type-from-decl nil reals nil)
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (number nonempty-type-decl nil numbers nil)
+    (IFF const-decl "[bool, bool -> bool]" booleans nil)
+    (bijective? const-decl "bool" functions nil)
+    (id const-decl "(bijective?[T, T])" identity nil)
     (boolean nonempty-type-decl nil booleans nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (TRUE const-decl "bool" booleans nil)
@@ -886,17 +889,22 @@
    shostak))
  (bands_search_index_TCC1 0
   (bands_search_index_TCC1-1 nil 3633705670 ("" (subtype-tcc) nil nil)
-   nil nil))
+   nil nil
+   (bands_search_index subtype
+    "kinematic_bands.most_urgent(kinematic_bands.so, kinematic_bands.vo, kinematic_bands.AL)"
+    "below[length[Aircraft](AL)]")))
  (bands_search_index_TCC2 0
   (bands_search_index_TCC2-1 nil 3633705670
    ("" (skeep*) (("" (assert) nil nil)) nil)
-   ((int_minus_int_is_int application-judgement "int" integers nil)
-    (real_ge_is_total_order name-judgement "(total_order?[real])"
+   ((real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
+    (int_minus_int_is_int application-judgement "int" integers nil)
     (boolean nonempty-type-decl nil booleans nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (TRUE const-decl "bool" booleans nil))
-   nil))
+   nil
+   (bands_search_index subtype
+    "(number_fields.-)(kinematic_bands.FirstLos, 1)" "nat")))
  (bands_search_index_TCC3 0
   (bands_search_index_TCC3-1 nil 3633705670 ("" (subtype-tcc) nil nil)
    ((boolean nonempty-type-decl nil booleans nil)
@@ -919,7 +927,7 @@
     (> const-decl "bool" reals nil)
     (posreal nonempty-type-eq-decl nil real_types nil)
     (string type-eq-decl nil strings nil)
-    (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
+    (Vect3 type-eq-decl nil vectors_3D_def vectors)
     (Aircraft type-eq-decl nil int_bands nil)
     (list type-decl nil list_adt nil)
     (length def-decl "nat" list_props nil)
@@ -932,18 +940,19 @@
     (= const-decl "[T, T -> boolean]" equalities nil)
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (- const-decl "[numfield -> numfield]" number_fields nil)
-    (Sign type-eq-decl nil sign "reals/")
-    (real_ge_is_total_order name-judgement "(total_order?[real])"
-     real_props nil)
-    (real_gt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil)
+    (Sign type-eq-decl nil sign reals)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
+    (real_gt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
     (first_los_search_index const-decl "subrange(0, MaxN + 1)"
      kinematic_bands nil)
     (nnreal_div_posreal_is_nnreal application-judgement "nnreal"
      real_types nil))
-   nil))
+   nil
+   (bands_search_index subtype "kinematic_bands.FirstNonHRep" "nat")))
  (bands_search_index_TCC4 0
   (bands_search_index_TCC4-1 nil 3633705670
    ("" (skeep*)
@@ -958,31 +967,38 @@
         nil))
       nil))
     nil)
-   ((real_lt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil)
-    (int_min application-judgement "{k: int | k <= i AND k <= j}"
-     real_defs nil)
-    (real_ge_is_total_order name-judgement "(total_order?[real])"
-     real_props nil)
-    (real_gt_is_strict_total_order name-judgement
+   ((real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (min const-decl "{p: real | p <= m AND p <= n}" real_defs nil)
-    (boolean nonempty-type-decl nil booleans nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
-    (TRUE const-decl "bool" booleans nil))
-   nil))
- (bands_search_index_TCC5 0
-  (bands_search_index_TCC5-1 nil 3633705670
-   ("" (skeep*) (("" (assert) nil nil)) nil)
-   ((int_minus_int_is_int application-judgement "int" integers nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (int_min application-judgement "{k: int | k <= i AND k <= j}"
      real_defs nil)
+    (real_lt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
     (boolean nonempty-type-decl nil booleans nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (TRUE const-decl "bool" booleans nil))
-   nil))
+   nil
+   (bands_search_index subtype
+    "real_defs.min(kinematic_bands.FirstLos, kinematic_bands.FirstProbHcrit)"
+    "nat")))
+ (bands_search_index_TCC5 0
+  (bands_search_index_TCC5-1 nil 3633705670
+   ("" (skeep* :preds? t)
+    (("" (expand ">=")
+      (("" (hide-all-but (3 4 -4)) (("" (assert) nil nil)) nil)) nil))
+    nil)
+   ((real_le_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (int_minus_int_is_int application-judgement "int" integers nil)
+    (>= const-decl "bool" reals nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (TRUE const-decl "bool" booleans nil))
+   nil
+   (bands_search_index subtype
+    "(number_fields.-)(kinematic_bands.FirstProbHL, 1)" "nat")))
  (bands_search_index_TCC6 0
   (bands_search_index_TCC6-1 nil 3633705670 ("" (subtype-tcc) nil nil)
    ((boolean nonempty-type-decl nil booleans nil)
@@ -1005,7 +1021,7 @@
     (> const-decl "bool" reals nil)
     (posreal nonempty-type-eq-decl nil real_types nil)
     (string type-eq-decl nil strings nil)
-    (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
+    (Vect3 type-eq-decl nil vectors_3D_def vectors)
     (Aircraft type-eq-decl nil int_bands nil)
     (list type-decl nil list_adt nil)
     (length def-decl "nat" list_props nil)
@@ -1018,7 +1034,7 @@
     (= const-decl "[T, T -> boolean]" equalities nil)
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (- const-decl "[numfield -> numfield]" number_fields nil)
-    (Sign type-eq-decl nil sign "reals/")
+    (Sign type-eq-decl nil sign reals)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (real_gt_is_strict_total_order name-judgement
@@ -1031,8 +1047,13 @@
      kinematic_bands nil)
     (nnreal_div_posreal_is_nnreal application-judgement "nnreal"
      real_types nil))
-   nil))
+   nil
+   (bands_search_index subtype "kinematic_bands.FirstNonVRep" "nat")))
  (bands_search_index_TCC7 0
+  (bands_search_index_TCC7-2 "" 3813484670
+   ("" (skeep*) (("" (assert) nil nil)) nil) nil shostak
+   (bands_search_index subtype "kinematic_bands.FirstProbVHL"
+    "integers.subrange(0, (number_fields.+)(1, kinematic_bands.MaxN))"))
   (bands_search_index_TCC7-1 nil 3633705670
    ("" (skeep*)
     (("" (assert)
@@ -1056,27 +1077,1239 @@
         nil))
       nil))
     nil)
-   ((real_le_is_total_order name-judgement "(total_order?[real])"
-     real_props nil)
-    (real_lt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil)
+   ((int_min application-judgement "{k: int | k <= i AND k <= j}"
+     real_defs nil)
     (nat_min application-judgement "{k: nat | k <= i AND k <= j}"
      real_defs nil)
-    (int_min application-judgement "{k: int | k <= i AND k <= j}"
-     real_defs nil)
+    (real_lt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
+    (real_le_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
     (boolean nonempty-type-decl nil booleans nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (TRUE const-decl "bool" booleans nil))
-   nil))
+   nil
+   (bands_search_index subtype "kinematic_bands.FirstProbVHL"
+    "integers.subrange(0, (number_fields.+)(1, kinematic_bands.MaxN))")))
  (bands_search_index_def_TCC1 0
   (bands_search_index_def_TCC1-1 nil 3633705670
    ("" (subtype-tcc) nil nil)
-   ((* const-decl "Vector" vectors_3D "vectors/")
-    (+ const-decl "Vector" vectors_3D "vectors/")
+   ((* const-decl "Vector" vectors_3D vectors)
+    (+ const-decl "Vector" vectors_3D vectors)
     (detector? const-decl "bool" int_bands nil)
     (real_times_real_is_real application-judgement "real" reals nil))
-   nil))
+   nil
+   (bands_search_index_def subtype "kinematic_bands.most_urgent"
+    "{most_urgent | booleans.AND(reals.>=(kinematic_bands.most_urgent(kinematic_bands.so, kinematic_bands.vo, kinematic_bands.AL), 0), reals.<(kinematic_bands.most_urgent(kinematic_bands.so, kinematic_bands.vo, kinematic_bands.AL), list_props[Aircraft].length(kinematic_bands.AL)))}")))
  (bands_search_index_def 0
+  (bands_search_index_def-3 "" 3813484673
+   ("" (skeep)
+    (("" (label "det" -4)
+      (("" (skoletin 1)
+        (("" (label "inddef" -1)
+          (("" (label "hyp" +)
+            (("" (hide "hyp")
+              (("" (expand "bands_search_index" :assert? none)
+                (("" (name "MI" "nth(AL, most_urgent(so, vo, AL))")
+                  (("1" (replace -1)
+                    (("1"
+                      (name "FirstLos" "first_los_search_index(LOS,
+                                    CD,
+                                    LOS2,
+                                    CD2,
+                                    useLOS2,
+                                    B,
+                                    T,
+                                    B2,
+                                    T2,
+                                    traj,
+                                    MaxN,
+                                    ts,
+                                    AL)")
+                      (("1" (replace -1)
+                        (("1"
+                          (name "FirstNonHRep"
+                                "(IF (NOT UseHCrit) OR FirstLos = 0 THEN FirstLos
+                                                                                                       ELSE first_nonrepulsive_step(traj,
+                                                                                                                                    0,
+                                                                                                                                    ts,
+                                                                                                                                    FirstLos - 1,
+                                                                                                                                    MI`s,
+                                                                                                                                    MI`v,
+                                                                                                                                    epsH)
+                                                                                                       ENDIF)")
+                          (("1"
+                            (name "FirstProbHcrit"
+                                  "IF FirstNonHRep < 0 THEN MaxN + 1 ELSE FirstNonHRep ENDIF")
+                            (("1"
+                              (name "FirstProbHL"
+                                    "min(FirstLos, FirstProbHcrit)")
+                              (("1"
+                                (name
+                                 "FirstNonVRep"
+                                 "(IF (NOT UseVCrit) OR FirstProbHL = 0 THEN FirstProbHL
+                                                                                                   ELSE first_nonvert_repul_step(traj,
+                                                                                                                                 0,
+                                                                                                                                 ts,
+                                                                                                                                 FirstProbHL - 1,
+                                                                                                                                 MI`s,
+                                                                                                                                 MI`v,
+                                                                                                                                 epsV)
+                                                                                                   ENDIF)")
+                                (("1"
+                                  (name
+                                   "FirstProbVcrit"
+                                   "IF FirstNonVRep < 0 THEN MaxN + 1 ELSE FirstNonVRep ENDIF")
+                                  (("1"
+                                    (name
+                                     "FirstProbVHL"
+                                     "min(FirstProbHL, FirstProbVcrit)")
+                                    (("1"
+                                      (assert)
+                                      (("1"
+                                        (replace -6)
+                                        (("1"
+                                          (replace -5)
+                                          (("1"
+                                            (replace -4)
+                                            (("1"
+                                              (replace -3)
+                                              (("1"
+                                                (replace -2)
+                                                (("1"
+                                                  (reveal "hyp")
+                                                  (("1"
+                                                    (replace "inddef")
+                                                    (("1"
+                                                      (skeep)
+                                                      (("1"
+                                                        (replace
+                                                         -4
+                                                         1
+                                                         :dir
+                                                         rl)
+                                                        (("1"
+                                                          (case
+                                                           "NOT (j >= min(min(FirstLos, FirstProbHcrit), FirstProbVcrit)) = (j>=FirstLos OR j>= FirstProbHcrit OR j>=FirstProbVcrit)")
+                                                          (("1"
+                                                            (hide-all-but
+                                                             1)
+                                                            (("1"
+                                                              (iff)
+                                                              (("1"
+                                                                (expand
+                                                                 "min")
+                                                                (("1"
+                                                                  (lift-if)
+                                                                  (("1"
+                                                                    (lift-if)
+                                                                    (("1"
+                                                                      (assert)
+                                                                      (("1"
+                                                                        (lift-if)
+                                                                        (("1"
+                                                                          (ground)
+                                                                          nil
+                                                                          nil))
+                                                                        nil))
+                                                                      nil))
+                                                                    nil))
+                                                                  nil))
+                                                                nil))
+                                                              nil))
+                                                            nil)
+                                                           ("2"
+                                                            (replaces
+                                                             -1)
+                                                            (("2"
+                                                              (split +)
+                                                              (("1"
+                                                                (flatten)
+                                                                (("1"
+                                                                  (case
+                                                                   "j>=FirstLos")
+                                                                  (("1"
+                                                                    (hide
+                                                                     -2)
+                                                                    (("1"
+                                                                      (lemma
+                                                                       "first_los_search_index_def")
+                                                                      (("1"
+                                                                        (insteep
+                                                                         -)
+                                                                        (("1"
+                                                                          (replace
+                                                                           -10)
+                                                                          (("1"
+                                                                            (replace
+                                                                             -17
+                                                                             :dir
+                                                                             rl)
+                                                                            (("1"
+                                                                              (replace
+                                                                               -18
+                                                                               :dir
+                                                                               rl)
+                                                                              (("1"
+                                                                                (assert)
+                                                                                (("1"
+                                                                                  (replace
+                                                                                   -9)
+                                                                                  (("1"
+                                                                                    (inst
+                                                                                     -
+                                                                                     "j")
+                                                                                    (("1"
+                                                                                      (assert)
+                                                                                      nil
+                                                                                      nil))
+                                                                                    nil))
+                                                                                  nil))
+                                                                                nil))
+                                                                              nil))
+                                                                            nil))
+                                                                          nil))
+                                                                        nil))
+                                                                      nil))
+                                                                    nil)
+                                                                   ("2"
+                                                                    (assert)
+                                                                    (("2"
+                                                                      (case
+                                                                       "j>=FirstProbHcrit")
+                                                                      (("1"
+                                                                        (hide
+                                                                         -2)
+                                                                        (("1"
+                                                                          (replace
+                                                                           -6
+                                                                           -1
+                                                                           :dir
+                                                                           rl)
+                                                                          (("1"
+                                                                            (lift-if
+                                                                             -1)
+                                                                            (("1"
+                                                                              (split
+                                                                               -)
+                                                                              (("1"
+                                                                                (flatten)
+                                                                                (("1"
+                                                                                  (assert)
+                                                                                  nil
+                                                                                  nil))
+                                                                                nil)
+                                                                               ("2"
+                                                                                (flatten)
+                                                                                (("2"
+                                                                                  (assert)
+                                                                                  (("2"
+                                                                                    (replace
+                                                                                     -7
+                                                                                     -1
+                                                                                     :dir
+                                                                                     rl)
+                                                                                    (("2"
+                                                                                      (lift-if
+                                                                                       -1)
+                                                                                      (("2"
+                                                                                        (split
+                                                                                         -1)
+                                                                                        (("1"
+                                                                                          (flatten)
+                                                                                          nil
+                                                                                          nil)
+                                                                                         ("2"
+                                                                                          (assert)
+                                                                                          (("2"
+                                                                                            (flatten)
+                                                                                            (("2"
+                                                                                              (assert)
+                                                                                              (("2"
+                                                                                                (replace
+                                                                                                 -8
+                                                                                                 1
+                                                                                                 :dir
+                                                                                                 rl)
+                                                                                                (("2"
+                                                                                                  (invoke
+                                                                                                   (name
+                                                                                                    "az"
+                                                                                                    "%1")
+                                                                                                   (!
+                                                                                                    1
+                                                                                                    1))
+                                                                                                  (("2"
+                                                                                                    (replaces
+                                                                                                     -1)
+                                                                                                    (("2"
+                                                                                                      (typepred
+                                                                                                       "az")
+                                                                                                      (("2"
+                                                                                                        (assert)
+                                                                                                        (("2"
+                                                                                                          (hide
+                                                                                                           1)
+                                                                                                          (("2"
+                                                                                                            (flatten)
+                                                                                                            (("2"
+                                                                                                              (hide
+                                                                                                               (-2
+                                                                                                                -3))
+                                                                                                              (("2"
+                                                                                                                (invoke
+                                                                                                                 (name
+                                                                                                                  "bb"
+                                                                                                                  "%1")
+                                                                                                                 (!
+                                                                                                                  6
+                                                                                                                  1))
+                                                                                                                (("2"
+                                                                                                                  (replaces
+                                                                                                                   -1)
+                                                                                                                  (("2"
+                                                                                                                    (typepred
+                                                                                                                     "bb")
+                                                                                                                    (("2"
+                                                                                                                      (assert)
+                                                                                                                      (("2"
+                                                                                                                        (inst
+                                                                                                                         -
+                                                                                                                         "az")
+                                                                                                                        (("2"
+                                                                                                                          (assert)
+                                                                                                                          nil
+                                                                                                                          nil))
+                                                                                                                        nil))
+                                                                                                                      nil))
+                                                                                                                    nil))
+                                                                                                                  nil))
+                                                                                                                nil))
+                                                                                                              nil))
+                                                                                                            nil))
+                                                                                                          nil))
+                                                                                                        nil))
+                                                                                                      nil))
+                                                                                                    nil))
+                                                                                                  nil))
+                                                                                                nil))
+                                                                                              nil))
+                                                                                            nil))
+                                                                                          nil))
+                                                                                        nil))
+                                                                                      nil))
+                                                                                    nil))
+                                                                                  nil))
+                                                                                nil))
+                                                                              nil))
+                                                                            nil))
+                                                                          nil))
+                                                                        nil)
+                                                                       ("2"
+                                                                        (assert)
+                                                                        (("2"
+                                                                          (replace
+                                                                           -3
+                                                                           -1
+                                                                           :dir
+                                                                           rl)
+                                                                          (("2"
+                                                                            (lift-if
+                                                                             -1)
+                                                                            (("2"
+                                                                              (split
+                                                                               -)
+                                                                              (("1"
+                                                                                (flatten)
+                                                                                (("1"
+                                                                                  (assert)
+                                                                                  nil
+                                                                                  nil))
+                                                                                nil)
+                                                                               ("2"
+                                                                                (flatten)
+                                                                                (("2"
+                                                                                  (assert)
+                                                                                  (("2"
+                                                                                    (replace
+                                                                                     -4
+                                                                                     -1
+                                                                                     :dir
+                                                                                     rl)
+                                                                                    (("2"
+                                                                                      (assert)
+                                                                                      (("2"
+                                                                                        (lift-if
+                                                                                         -1)
+                                                                                        (("2"
+                                                                                          (split
+                                                                                           -)
+                                                                                          (("1"
+                                                                                            (flatten)
+                                                                                            (("1"
+                                                                                              (assert)
+                                                                                              (("1"
+                                                                                                (split
+                                                                                                 -)
+                                                                                                (("1"
+                                                                                                  (assert)
+                                                                                                  (("1"
+                                                                                                    (expand
+                                                                                                     "min"
+                                                                                                     -5)
+                                                                                                    (("1"
+                                                                                                      (lift-if
+                                                                                                       -5)
+                                                                                                      (("1"
+                                                                                                        (split
+                                                                                                         -)
+                                                                                                        (("1"
+                                                                                                          (flatten)
+                                                                                                          (("1"
+                                                                                                            (assert)
+                                                                                                            nil
+                                                                                                            nil))
+                                                                                                          nil)
+                                                                                                         ("2"
+                                                                                                          (flatten)
+                                                                                                          (("2"
+                                                                                                            (assert)
+                                                                                                            nil
+                                                                                                            nil))
+                                                                                                          nil))
+                                                                                                        nil))
+                                                                                                      nil))
+                                                                                                    nil))
+                                                                                                  nil)
+                                                                                                 ("2"
+                                                                                                  (assert)
+                                                                                                  (("2"
+                                                                                                    (expand
+                                                                                                     "min"
+                                                                                                     -6)
+                                                                                                    (("2"
+                                                                                                      (lift-if
+                                                                                                       -6)
+                                                                                                      (("2"
+                                                                                                        (split
+                                                                                                         -)
+                                                                                                        (("1"
+                                                                                                          (flatten)
+                                                                                                          (("1"
+                                                                                                            (assert)
+                                                                                                            nil
+                                                                                                            nil))
+                                                                                                          nil)
+                                                                                                         ("2"
+                                                                                                          (flatten)
+                                                                                                          (("2"
+                                                                                                            (assert)
+                                                                                                            nil
+                                                                                                            nil))
+                                                                                                          nil))
+                                                                                                        nil))
+                                                                                                      nil))
+                                                                                                    nil))
+                                                                                                  nil))
+                                                                                                nil))
+                                                                                              nil))
+                                                                                            nil)
+                                                                                           ("2"
+                                                                                            (flatten)
+                                                                                            (("2"
+                                                                                              (assert)
+                                                                                              (("2"
+                                                                                                (replace
+                                                                                                 -5
+                                                                                                 +
+                                                                                                 :dir
+                                                                                                 rl)
+                                                                                                (("2"
+                                                                                                  (invoke
+                                                                                                   (name
+                                                                                                    "az"
+                                                                                                    "%1")
+                                                                                                   (!
+                                                                                                    2
+                                                                                                    1))
+                                                                                                  (("1"
+                                                                                                    (replaces
+                                                                                                     -1)
+                                                                                                    (("1"
+                                                                                                      (assert)
+                                                                                                      (("1"
+                                                                                                        (typepred
+                                                                                                         "az")
+                                                                                                        (("1"
+                                                                                                          (assert)
+                                                                                                          (("1"
+                                                                                                            (hide
+                                                                                                             (-2
+                                                                                                              -3))
+                                                                                                            (("1"
+                                                                                                              (flatten)
+                                                                                                              (("1"
+                                                                                                                (assert)
+                                                                                                                (("1"
+                                                                                                                  (invoke
+                                                                                                                   (name
+                                                                                                                    "bb"
+                                                                                                                    "%1")
+                                                                                                                   (!
+                                                                                                                    10
+                                                                                                                    1))
+                                                                                                                  (("1"
+                                                                                                                    (assert)
+                                                                                                                    (("1"
+                                                                                                                      (replaces
+                                                                                                                       -1)
+                                                                                                                      (("1"
+                                                                                                                        (typepred
+                                                                                                                         "bb")
+                                                                                                                        (("1"
+                                                                                                                          (assert)
+                                                                                                                          (("1"
+                                                                                                                            (inst
+                                                                                                                             -
+                                                                                                                             "az")
+                                                                                                                            (("1"
+                                                                                                                              (assert)
+                                                                                                                              nil
+                                                                                                                              nil))
+                                                                                                                            nil))
+                                                                                                                          nil))
+                                                                                                                        nil))
+                                                                                                                      nil))
+                                                                                                                    nil))
+                                                                                                                  nil))
+                                                                                                                nil))
+                                                                                                              nil))
+                                                                                                            nil))
+                                                                                                          nil))
+                                                                                                        nil))
+                                                                                                      nil))
+                                                                                                    nil)
+                                                                                                   ("2"
+                                                                                                    (assert)
+                                                                                                    (("2"
+                                                                                                      (case
+                                                                                                       "FirstProbHL>=0")
+                                                                                                      (("1"
+                                                                                                        (hide-all-but
+                                                                                                         (-1
+                                                                                                          1
+                                                                                                          2))
+                                                                                                        (("1"
+                                                                                                          (case
+                                                                                                           "FORALL (zz:nat): zz-1>=0 OR zz=0")
+                                                                                                          (("1"
+                                                                                                            (inst
+                                                                                                             -
+                                                                                                             "FirstProbHL")
+                                                                                                            (("1"
+                                                                                                              (ground)
+                                                                                                              nil
+                                                                                                              nil))
+                                                                                                            nil)
+                                                                                                           ("2"
+                                                                                                            (hide-all-but
+                                                                                                             1)
+                                                                                                            (("2"
+                                                                                                              (grind)
+                                                                                                              nil
+                                                                                                              nil))
+                                                                                                            nil))
+                                                                                                          nil))
+                                                                                                        nil)
+                                                                                                       ("2"
+                                                                                                        (hide
+                                                                                                         (2
+                                                                                                          3))
+                                                                                                        (("2"
+                                                                                                          (replace
+                                                                                                           -6
+                                                                                                           1
+                                                                                                           :dir
+                                                                                                           rl)
+                                                                                                          (("2"
+                                                                                                            (expand
+                                                                                                             "min"
+                                                                                                             1)
+                                                                                                            (("2"
+                                                                                                              (lift-if
+                                                                                                               1)
+                                                                                                              (("2"
+                                                                                                                (split
+                                                                                                                 1)
+                                                                                                                (("1"
+                                                                                                                  (flatten)
+                                                                                                                  (("1"
+                                                                                                                    (assert)
+                                                                                                                    nil
+                                                                                                                    nil))
+                                                                                                                  nil)
+                                                                                                                 ("2"
+                                                                                                                  (flatten)
+                                                                                                                  (("2"
+                                                                                                                    (assert)
+                                                                                                                    nil
+                                                                                                                    nil))
+                                                                                                                  nil))
+                                                                                                                nil))
+                                                                                                              nil))
+                                                                                                            nil))
+                                                                                                          nil))
+                                                                                                        nil))
+                                                                                                      nil))
+                                                                                                    nil))
+                                                                                                  nil))
+                                                                                                nil))
+                                                                                              nil))
+                                                                                            nil))
+                                                                                          nil))
+                                                                                        nil))
+                                                                                      nil))
+                                                                                    nil))
+                                                                                  nil))
+                                                                                nil))
+                                                                              nil))
+                                                                            nil))
+                                                                          nil))
+                                                                        nil))
+                                                                      nil))
+                                                                    nil))
+                                                                  nil))
+                                                                nil)
+                                                               ("2"
+                                                                (flatten)
+                                                                (("2"
+                                                                  (case
+                                                                   "(first_los_step(LOS, traj, ceiling(B / ts), ts,
+                       min(floor(T / ts), j), AL)
+         >= 0)
+        OR
+        (useLOS2 AND
+          first_los_step(LOS2, traj, ceiling(B2 / ts), ts,
+                         min(floor(T2 / ts), j), AL)
+           >= 0)")
+                                                                  (("1"
+                                                                    (hide
+                                                                     -2)
+                                                                    (("1"
+                                                                      (lemma
+                                                                       "first_los_search_index_def")
+                                                                      (("1"
+                                                                        (insteep
+                                                                         -)
+                                                                        (("1"
+                                                                          (assert)
+                                                                          (("1"
+                                                                            (replace
+                                                                             -9)
+                                                                            (("1"
+                                                                              (inst
+                                                                               -
+                                                                               "j")
+                                                                              (("1"
+                                                                                (assert)
+                                                                                nil
+                                                                                nil))
+                                                                              nil))
+                                                                            nil))
+                                                                          nil))
+                                                                        nil))
+                                                                      nil))
+                                                                    nil)
+                                                                   ("2"
+                                                                    (flatten)
+                                                                    (("2"
+                                                                      (assert)
+                                                                      (("2"
+                                                                        (replace
+                                                                         2)
+                                                                        (("2"
+                                                                          (assert)
+                                                                          (("2"
+                                                                            (split
+                                                                             -)
+                                                                            (("1"
+                                                                              (flatten)
+                                                                              (("1"
+                                                                                (assert)
+                                                                                (("1"
+                                                                                  (invoke
+                                                                                   (name
+                                                                                    "az"
+                                                                                    "%1")
+                                                                                   (!
+                                                                                    -2
+                                                                                    1))
+                                                                                  (("1"
+                                                                                    (replaces
+                                                                                     -1)
+                                                                                    (("1"
+                                                                                      (typepred
+                                                                                       "az")
+                                                                                      (("1"
+                                                                                        (hide
+                                                                                         -9)
+                                                                                        (("1"
+                                                                                          (assert)
+                                                                                          (("1"
+                                                                                            (hide
+                                                                                             (-2
+                                                                                              -3))
+                                                                                            (("1"
+                                                                                              (flatten)
+                                                                                              (("1"
+                                                                                                (assert)
+                                                                                                (("1"
+                                                                                                  (replace
+                                                                                                   -8
+                                                                                                   +
+                                                                                                   :dir
+                                                                                                   rl)
+                                                                                                  (("1"
+                                                                                                    (lift-if
+                                                                                                     +)
+                                                                                                    (("1"
+                                                                                                      (split
+                                                                                                       "hyp")
+                                                                                                      (("1"
+                                                                                                        (flatten)
+                                                                                                        (("1"
+                                                                                                          (assert)
+                                                                                                          (("1"
+                                                                                                            (replace
+                                                                                                             -10
+                                                                                                             -1
+                                                                                                             :dir
+                                                                                                             rl)
+                                                                                                            (("1"
+                                                                                                              (invoke
+                                                                                                               (name
+                                                                                                                "bb"
+                                                                                                                "%1")
+                                                                                                               (!
+                                                                                                                -1
+                                                                                                                1))
+                                                                                                              (("1"
+                                                                                                                (replaces
+                                                                                                                 -1)
+                                                                                                                (("1"
+                                                                                                                  (typepred
+                                                                                                                   "bb")
+                                                                                                                  (("1"
+                                                                                                                    (assert)
+                                                                                                                    (("1"
+                                                                                                                      (inst
+                                                                                                                       -
+                                                                                                                       "az")
+                                                                                                                      (("1"
+                                                                                                                        (assert)
+                                                                                                                        nil
+                                                                                                                        nil))
+                                                                                                                      nil))
+                                                                                                                    nil))
+                                                                                                                  nil))
+                                                                                                                nil))
+                                                                                                              nil))
+                                                                                                            nil))
+                                                                                                          nil))
+                                                                                                        nil)
+                                                                                                       ("2"
+                                                                                                        (flatten)
+                                                                                                        (("2"
+                                                                                                          (assert)
+                                                                                                          (("2"
+                                                                                                            (replace
+                                                                                                             -9
+                                                                                                             +
+                                                                                                             :dir
+                                                                                                             rl)
+                                                                                                            (("2"
+                                                                                                              (invoke
+                                                                                                               (name
+                                                                                                                "bb"
+                                                                                                                "%1")
+                                                                                                               (!
+                                                                                                                1
+                                                                                                                1))
+                                                                                                              (("2"
+                                                                                                                (replaces
+                                                                                                                 -1)
+                                                                                                                (("2"
+                                                                                                                  (typepred
+                                                                                                                   "bb")
+                                                                                                                  (("2"
+                                                                                                                    (assert)
+                                                                                                                    (("2"
+                                                                                                                      (hide
+                                                                                                                       (-2
+                                                                                                                        -3))
+                                                                                                                      (("2"
+                                                                                                                        (flatten)
+                                                                                                                        (("2"
+                                                                                                                          (inst
+                                                                                                                           -
+                                                                                                                           "az")
+                                                                                                                          (("2"
+                                                                                                                            (assert)
+                                                                                                                            nil
+                                                                                                                            nil))
+                                                                                                                          nil))
+                                                                                                                        nil))
+                                                                                                                      nil))
+                                                                                                                    nil))
+                                                                                                                  nil))
+                                                                                                                nil))
+                                                                                                              nil))
+                                                                                                            nil))
+                                                                                                          nil))
+                                                                                                        nil))
+                                                                                                      nil))
+                                                                                                    nil))
+                                                                                                  nil))
+                                                                                                nil))
+                                                                                              nil))
+                                                                                            nil))
+                                                                                          nil))
+                                                                                        nil))
+                                                                                      nil))
+                                                                                    nil))
+                                                                                  nil))
+                                                                                nil))
+                                                                              nil)
+                                                                             ("2"
+                                                                              (flatten)
+                                                                              (("2"
+                                                                                (assert)
+                                                                                (("2"
+                                                                                  (invoke
+                                                                                   (name
+                                                                                    "az"
+                                                                                    "%1")
+                                                                                   (!
+                                                                                    -2
+                                                                                    1))
+                                                                                  (("2"
+                                                                                    (replaces
+                                                                                     -1)
+                                                                                    (("2"
+                                                                                      (typepred
+                                                                                       "az")
+                                                                                      (("2"
+                                                                                        (assert)
+                                                                                        (("2"
+                                                                                          (hide
+                                                                                           (-2
+                                                                                            -3))
+                                                                                          (("2"
+                                                                                            (flatten)
+                                                                                            (("2"
+                                                                                              (assert)
+                                                                                              (("2"
+                                                                                                (hide
+                                                                                                 -10)
+                                                                                                (("2"
+                                                                                                  (replaces
+                                                                                                   -6
+                                                                                                   :dir
+                                                                                                   rl)
+                                                                                                  (("2"
+                                                                                                    (lift-if
+                                                                                                     +)
+                                                                                                    (("2"
+                                                                                                      (split
+                                                                                                       "hyp")
+                                                                                                      (("1"
+                                                                                                        (flatten)
+                                                                                                        (("1"
+                                                                                                          (assert)
+                                                                                                          (("1"
+                                                                                                            (replaces
+                                                                                                             -7
+                                                                                                             -1
+                                                                                                             :dir
+                                                                                                             rl)
+                                                                                                            (("1"
+                                                                                                              (lift-if
+                                                                                                               -1)
+                                                                                                              (("1"
+                                                                                                                (split
+                                                                                                                 -1)
+                                                                                                                (("1"
+                                                                                                                  (flatten)
+                                                                                                                  (("1"
+                                                                                                                    (assert)
+                                                                                                                    nil
+                                                                                                                    nil))
+                                                                                                                  nil)
+                                                                                                                 ("2"
+                                                                                                                  (flatten)
+                                                                                                                  (("2"
+                                                                                                                    (assert)
+                                                                                                                    (("2"
+                                                                                                                      (invoke
+                                                                                                                       (name
+                                                                                                                        "bb"
+                                                                                                                        "%1")
+                                                                                                                       (!
+                                                                                                                        -1
+                                                                                                                        1))
+                                                                                                                      (("1"
+                                                                                                                        (replaces
+                                                                                                                         -1)
+                                                                                                                        (("1"
+                                                                                                                          (typepred
+                                                                                                                           "bb")
+                                                                                                                          (("1"
+                                                                                                                            (assert)
+                                                                                                                            (("1"
+                                                                                                                              (hide
+                                                                                                                               (-1
+                                                                                                                                -2
+                                                                                                                                -4))
+                                                                                                                              (("1"
+                                                                                                                                (inst
+                                                                                                                                 -
+                                                                                                                                 "az")
+                                                                                                                                (("1"
+                                                                                                                                  (assert)
+                                                                                                                                  (("1"
+                                                                                                                                    (replace
+                                                                                                                                     -7
+                                                                                                                                     1
+                                                                                                                                     :dir
+                                                                                                                                     rl)
+                                                                                                                                    (("1"
+                                                                                                                                      (expand
+                                                                                                                                       "min"
+                                                                                                                                       1)
+                                                                                                                                      (("1"
+                                                                                                                                        (lift-if
+                                                                                                                                         1)
+                                                                                                                                        (("1"
+                                                                                                                                          (split
+                                                                                                                                           1)
+                                                                                                                                          (("1"
+                                                                                                                                            (flatten)
+                                                                                                                                            (("1"
+                                                                                                                                              (assert)
+                                                                                                                                              nil
+                                                                                                                                              nil))
+                                                                                                                                            nil)
+                                                                                                                                           ("2"
+                                                                                                                                            (flatten)
+                                                                                                                                            (("2"
+                                                                                                                                              (assert)
+                                                                                                                                              nil
+                                                                                                                                              nil))
+                                                                                                                                            nil))
+                                                                                                                                          nil))
+                                                                                                                                        nil))
+                                                                                                                                      nil))
+                                                                                                                                    nil))
+                                                                                                                                  nil))
+                                                                                                                                nil))
+                                                                                                                              nil))
+                                                                                                                            nil))
+                                                                                                                          nil))
+                                                                                                                        nil)
+                                                                                                                       ("2"
+                                                                                                                        (assert)
+                                                                                                                        (("2"
+                                                                                                                          (case
+                                                                                                                           "FirstProbHL>=0")
+                                                                                                                          (("1"
+                                                                                                                            (hide-all-but
+                                                                                                                             (-1
+                                                                                                                              1
+                                                                                                                              2))
+                                                                                                                            (("1"
+                                                                                                                              (case
+                                                                                                                               "FORALL (zz:nat): zz-1>=0 OR zz=0")
+                                                                                                                              (("1"
+                                                                                                                                (inst
+                                                                                                                                 -
+                                                                                                                                 "FirstProbHL")
+                                                                                                                                (("1"
+                                                                                                                                  (assert)
+                                                                                                                                  nil
+                                                                                                                                  nil))
+                                                                                                                                nil)
+                                                                                                                               ("2"
+                                                                                                                                (grind)
+                                                                                                                                nil
+                                                                                                                                nil))
+                                                                                                                              nil))
+                                                                                                                            nil)
+                                                                                                                           ("2"
+                                                                                                                            (hide
+                                                                                                                             (2
+                                                                                                                              3))
+                                                                                                                            (("2"
+                                                                                                                              (assert)
+                                                                                                                              nil
+                                                                                                                              nil))
+                                                                                                                            nil))
+                                                                                                                          nil))
+                                                                                                                        nil))
+                                                                                                                      nil))
+                                                                                                                    nil))
+                                                                                                                  nil))
+                                                                                                                nil))
+                                                                                                              nil))
+                                                                                                            nil))
+                                                                                                          nil))
+                                                                                                        nil)
+                                                                                                       ("2"
+                                                                                                        (flatten)
+                                                                                                        (("2"
+                                                                                                          (assert)
+                                                                                                          (("2"
+                                                                                                            (replaces
+                                                                                                             -6
+                                                                                                             +
+                                                                                                             :dir
+                                                                                                             rl)
+                                                                                                            (("2"
+                                                                                                              (lift-if
+                                                                                                               +)
+                                                                                                              (("2"
+                                                                                                                (split
+                                                                                                                 +)
+                                                                                                                (("1"
+                                                                                                                  (flatten)
+                                                                                                                  (("1"
+                                                                                                                    (assert)
+                                                                                                                    nil
+                                                                                                                    nil))
+                                                                                                                  nil)
+                                                                                                                 ("2"
+                                                                                                                  (flatten)
+                                                                                                                  (("2"
+                                                                                                                    (assert)
+                                                                                                                    (("2"
+                                                                                                                      (invoke
+                                                                                                                       (name
+                                                                                                                        "bb"
+                                                                                                                        "%1")
+                                                                                                                       (!
+                                                                                                                        2
+                                                                                                                        1))
+                                                                                                                      (("1"
+                                                                                                                        (replaces
+                                                                                                                         -1)
+                                                                                                                        (("1"
+                                                                                                                          (assert)
+                                                                                                                          (("1"
+                                                                                                                            (typepred
+                                                                                                                             "bb")
+                                                                                                                            (("1"
+                                                                                                                              (assert)
+                                                                                                                              (("1"
+                                                                                                                                (hide
+                                                                                                                                 (-2
+                                                                                                                                  -3))
+                                                                                                                                (("1"
+                                                                                                                                  (flatten)
+                                                                                                                                  (("1"
+                                                                                                                                    (assert)
+                                                                                                                                    (("1"
+                                                                                                                                      (inst
+                                                                                                                                       -
+                                                                                                                                       "az")
+                                                                                                                                      (("1"
+                                                                                                                                        (assert)
+                                                                                                                                        nil
+                                                                                                                                        nil))
+                                                                                                                                      nil))
+                                                                                                                                    nil))
+                                                                                                                                  nil))
+                                                                                                                                nil))
+                                                                                                                              nil))
+                                                                                                                            nil))
+                                                                                                                          nil))
+                                                                                                                        nil)
+                                                                                                                       ("2"
+                                                                                                                        (assert)
+                                                                                                                        (("2"
+                                                                                                                          (case
+                                                                                                                           "FirstProbHL>=0")
+                                                                                                                          (("1"
+                                                                                                                            (hide-all-but
+                                                                                                                             (-1
+                                                                                                                              1
+                                                                                                                              2))
+                                                                                                                            (("1"
+                                                                                                                              (case
+                                                                                                                               "FORALL (zz:nat): zz-1>=0 OR zz=0")
+                                                                                                                              (("1"
+                                                                                                                                (inst
+                                                                                                                                 -
+                                                                                                                                 "FirstProbHL")
+                                                                                                                                (("1"
+                                                                                                                                  (assert)
+                                                                                                                                  nil
+                                                                                                                                  nil))
+                                                                                                                                nil)
+                                                                                                                               ("2"
+                                                                                                                                (grind)
+                                                                                                                                nil
+                                                                                                                                nil))
+                                                                                                                              nil))
+                                                                                                                            nil)
+                                                                                                                           ("2"
+                                                                                                                            (hide
+                                                                                                                             (2
+                                                                                                                              3))
+                                                                                                                            (("2"
+                                                                                                                              (replace
+                                                                                                                               -6
+                                                                                                                               1
+                                                                                                                               :dir
+                                                                                                                               rl)
+                                                                                                                              (("2"
+                                                                                                                                (expand
+                                                                                                                                 "min"
+                                                                                                                                 1)
+                                                                                                                                (("2"
+                                                                                                                                  (lift-if
+                                                                                                                                   1)
+                                                                                                                                  (("2"
+                                                                                                                                    (split
+                                                                                                                                     +)
+                                                                                                                                    (("1"
+                                                                                                                                      (flatten)
+                                                                                                                                      (("1"
+                                                                                                                                        (assert)
+                                                                                                                                        nil
+                                                                                                                                        nil))
+                                                                                                                                      nil)
+                                                                                                                                     ("2"
+                                                                                                                                      (flatten)
+                                                                                                                                      (("2"
+                                                                                                                                        (assert)
+                                                                                                                                        nil
+                                                                                                                                        nil))
+                                                                                                                                      nil))
+                                                                                                                                    nil))
+                                                                                                                                  nil))
+                                                                                                                                nil))
+                                                                                                                              nil))
+                                                                                                                            nil))
+                                                                                                                          nil))
+                                                                                                                        nil))
+                                                                                                                      nil))
+                                                                                                                    nil))
+                                                                                                                  nil))
+                                                                                                                nil))
+                                                                                                              nil))
+                                                                                                            nil))
+                                                                                                          nil))
+                                                                                                        nil))
+                                                                                                      nil))
+                                                                                                    nil))
+                                                                                                  nil))
+                                                                                                nil))
+                                                                                              nil))
+                                                                                            nil))
+                                                                                          nil))
+                                                                                        nil))
+                                                                                      nil))
+                                                                                    nil))
+                                                                                  nil))
+                                                                                nil))
+                                                                              nil))
+                                                                            nil))
+                                                                          nil))
+                                                                        nil))
+                                                                      nil))
+                                                                    nil))
+                                                                  nil))
+                                                                nil))
+                                                              nil))
+                                                            nil))
+                                                          nil))
+                                                        nil))
+                                                      nil))
+                                                    nil))
+                                                  nil))
+                                                nil))
+                                              nil))
+                                            nil))
+                                          nil))
+                                        nil))
+                                      nil))
+                                    nil))
+                                  nil)
+                                 ("2"
+                                  (hide "inddef")
+                                  (("2"
+                                    (flatten)
+                                    (("2"
+                                      (assert)
+                                      (("2"
+                                        (case "FirstProbHL>=0")
+                                        (("1" (assert) nil nil)
+                                         ("2"
+                                          (replace -2 1 :dir rl)
+                                          (("2"
+                                            (expand "min" +)
+                                            (("2"
+                                              (lift-if +)
+                                              (("2"
+                                                (split)
+                                                (("1"
+                                                  (flatten)
+                                                  (("1"
+                                                    (assert)
+                                                    (("1"
+                                                      (lift-if)
+                                                      (("1"
+                                                        (ground)
+                                                        nil
+                                                        nil))
+                                                      nil))
+                                                    nil))
+                                                  nil)
+                                                 ("2"
+                                                  (flatten)
+                                                  (("2"
+                                                    (assert)
+                                                    nil
+                                                    nil))
+                                                  nil))
+                                                nil))
+                                              nil))
+                                            nil))
+                                          nil))
+                                        nil))
+                                      nil))
+                                    nil))
+                                  nil))
+                                nil))
+                              nil))
+                            nil)
+                           ("2" (hide -4) (("2" (ground) nil nil))
+                            nil))
+                          nil))
+                        nil)
+                       ("2" (hide "inddef") (("2" (assert) nil nil))
+                        nil))
+                      nil))
+                    nil)
+                   ("2" (propax) nil nil))
+                  nil))
+                nil))
+              nil))
+            nil))
+          nil))
+        nil))
+      nil))
+    nil)
+   nil shostak)
   (bands_search_index_def-2 nil 3633706572
    ("" (skeep)
     (("" (label "det" -4)
@@ -2287,62 +3520,61 @@
         nil))
       nil))
     nil)
-   ((real_ge_is_total_order name-judgement "(total_order?[real])"
+   ((real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
-    (first_los_search_index const-decl "subrange(0, MaxN + 1)"
-     kinematic_bands nil)
-    (real_gt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil)
-    (posint_plus_nnint_is_posint application-judgement "posint"
-     integers nil)
-    (int_minus_int_is_int application-judgement "int" integers nil)
-    (IF const-decl "[boolean, T, T -> T]" if_def nil)
-    (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
-    (int_min application-judgement "{k: int | k <= i AND k <= j}"
-     real_defs nil)
+    (nonneg_floor_is_nat application-judgement "nat" floor_ceil nil)
+    (first_los_search_index_def formula-decl nil kinematic_bands nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (first_los_search_index_def formula-decl nil kinematic_bands nil)
-    (nonneg_floor_is_nat application-judgement "nat" floor_ceil nil)
-    (real_le_is_total_order name-judgement "(total_order?[real])"
-     real_props nil)
+    (int_min application-judgement "{k: int | k <= i AND k <= j}"
+     real_defs nil)
     (nnint_plus_posint_is_posint application-judgement "posint"
      integers nil)
+    (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
+    (IF const-decl "[boolean, T, T -> T]" if_def nil)
+    (int_minus_int_is_int application-judgement "int" integers nil)
+    (posint_plus_nnint_is_posint application-judgement "posint"
+     integers nil)
+    (real_gt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
+    (first_los_search_index const-decl "subrange(0, MaxN + 1)"
+     kinematic_bands nil)
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
     (nonneg_ceiling_is_nat application-judgement "nat" floor_ceil nil)
     (nat_min application-judgement "{k: nat | k <= i AND k <= j}"
      real_defs nil)
     (* const-decl "[numfield, numfield -> numfield]" number_fields nil)
-    (Vector type-eq-decl nil vectors_3D "vectors/")
-    (+ const-decl "Vector" vectors_3D "vectors/")
+    (Vector type-eq-decl nil vectors_3D vectors)
+    (+ const-decl "Vector" vectors_3D vectors)
     (below type-eq-decl nil nat_types nil)
     (nth def-decl "T" list_props nil)
-    (* const-decl "Vector" vectors_3D "vectors/")
+    (* const-decl "Vector" vectors_3D vectors)
     (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
     (first_los_step def-decl "{i: int |
-         (i >= 0 IFF
-           (k <= i AND
-             i <= MaxN AND
-              (EXISTS (p: nat):
-                 p < length(AL) AND
-                  LOS(traj(i * ts)`1, traj(i * ts)`2,
-                      nth(AL, p)`s + (i * ts) * nth(AL, p)`v,
-                      nth(AL, p)`v))
-               AND
-               (FORALL (j: nat):
-                  k <= j AND j < i IMPLIES
-                   (FORALL (p: nat):
-                      p < length(AL) IMPLIES
-                       NOT LOS(traj(j * ts)`1, traj(j * ts)`2,
-                               nth(AL, p)`s + (j * ts) * nth(AL, p)`v,
-                               nth(AL, p)`v)))))
-          AND
-          (i < 0 IFF
-            (FORALL (p, j: nat):
-               p < length(AL) AND k <= j AND j <= MaxN IMPLIES
-                NOT LOS(traj(j * ts)`1, traj(j * ts)`2,
-                        nth(AL, p)`s + (j * ts) * nth(AL, p)`v,
-                        nth(AL, p)`v)))}" int_bands nil)
+   (i >= 0 IFF
+     (k <= i AND
+       i <= MaxN AND
+        (EXISTS (p: nat):
+           p < length(AL) AND
+            LOS(traj(i * ts)`1, traj(i * ts)`2,
+                nth(AL, p)`s + (i * ts) * nth(AL, p)`v, nth(AL, p)`v))
+         AND
+         (FORALL (j: nat):
+            k <= j AND j < i IMPLIES
+             (FORALL (p: nat):
+                p < length(AL) IMPLIES
+                 NOT LOS(traj(j * ts)`1, traj(j * ts)`2,
+                         nth(AL, p)`s + (j * ts) * nth(AL, p)`v,
+                         nth(AL, p)`v)))))
+    AND
+    (i < 0 IFF
+      (FORALL (p, j: nat):
+         p < length(AL) AND k <= j AND j <= MaxN IMPLIES
+          NOT LOS(traj(j * ts)`1, traj(j * ts)`2,
+                  nth(AL, p)`s + (j * ts) * nth(AL, p)`v, nth(AL, p)`v)))}"
+     int_bands nil)
     (integer nonempty-type-from-decl nil integers nil)
     (ceiling const-decl "{i | x <= i & i < x + 1}" floor_ceil nil)
     (nznum nonempty-type-eq-decl nil number_fields nil)
@@ -2351,40 +3583,36 @@
     (floor const-decl "{i | i <= x & x < i + 1}" floor_ceil nil)
     (repulsive_at const-decl "bool" int_bands nil)
     (first_nonrepulsive_step def-decl "{i: int |
-         (i >= 0 IFF
-           ((k <= i AND
-              i <= MaxN AND NOT repulsive_at(traj, i, ts, si, vi, eps))
-             AND
-             (FORALL (j: nat):
-                k <= j AND j < i IMPLIES
-                 repulsive_at(traj, j, ts, si, vi, eps))))
-          AND
-          (i < 0 IFF
-            (FORALL (j: nat):
-               k <= j AND j <= MaxN IMPLIES
-                repulsive_at(traj, j, ts, si, vi, eps)))}" int_bands
-     nil)
+   (i >= 0 IFF
+     ((k <= i AND i <= MaxN AND NOT repulsive_at(traj, i, ts, si, vi, eps))
+       AND
+       (FORALL (j: nat):
+          k <= j AND j < i IMPLIES
+           repulsive_at(traj, j, ts, si, vi, eps))))
+    AND
+    (i < 0 IFF
+      (FORALL (j: nat):
+         k <= j AND j <= MaxN IMPLIES
+          repulsive_at(traj, j, ts, si, vi, eps)))}" int_bands nil)
     (vert_repul_at const-decl "bool" int_bands nil)
     (first_nonvert_repul_step def-decl "{i: int |
-         (i >= 0 IFF
-           ((k <= i AND
-              i <= MaxN AND NOT vert_repul_at(traj, i, ts, si, vi, eps))
-             AND
-             (FORALL (j: nat):
-                k <= j AND j < i IMPLIES
-                 vert_repul_at(traj, j, ts, si, vi, eps))))
-          AND
-          (i < 0 IFF
-            (FORALL (j: nat):
-               k <= j AND j <= MaxN IMPLIES
-                vert_repul_at(traj, j, ts, si, vi, eps)))}" int_bands
-     nil)
+   (i >= 0 IFF
+     ((k <= i AND
+        i <= MaxN AND NOT vert_repul_at(traj, i, ts, si, vi, eps))
+       AND
+       (FORALL (j: nat):
+          k <= j AND j < i IMPLIES
+           vert_repul_at(traj, j, ts, si, vi, eps))))
+    AND
+    (i < 0 IFF
+      (FORALL (j: nat):
+         k <= j AND j <= MaxN IMPLIES
+          vert_repul_at(traj, j, ts, si, vi, eps)))}" int_bands nil)
     (bands_search_index const-decl "subrange(0, MaxN + 1)"
      kinematic_bands nil)
     (subrange type-eq-decl nil integers nil)
     (+ const-decl "[numfield, numfield -> numfield]" number_fields nil)
-    (<= const-decl "bool" reals nil)
-    (Sign type-eq-decl nil sign "reals/")
+    (<= const-decl "bool" reals nil) (Sign type-eq-decl nil sign reals)
     (- const-decl "[numfield -> numfield]" number_fields nil)
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (OR const-decl "[bool, bool -> bool]" booleans nil)
@@ -2412,13 +3640,15 @@
     (number_field nonempty-type-from-decl nil number_fields nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
-    (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
+    (Vect3 type-eq-decl nil vectors_3D_def vectors)
     (real nonempty-type-from-decl nil reals nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
     (number nonempty-type-decl nil numbers nil)
     (IFF const-decl "[bool, bool -> bool]" booleans nil)
     (boolean nonempty-type-decl nil booleans nil)
     (bool nonempty-type-eq-decl nil booleans nil)
+    (bijective? const-decl "bool" functions nil)
+    (id const-decl "(bijective?[T, T])" identity nil)
     (TRUE const-decl "bool" booleans nil)
     (nnreal_div_posreal_is_nnreal application-judgement "nnreal"
      real_types nil))
@@ -2455,7 +3685,9 @@
     (boolean nonempty-type-decl nil booleans nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (TRUE const-decl "bool" booleans nil))
-   nil))
+   nil
+   (kinematic_bands subtype "(: :)"
+    "(int_bands.proper?(kinematic_bands.MaxN))")))
  (kinematic_bands_TCC2 0
   (kinematic_bands_TCC2-1 nil 3631294873
    ("" (skeep*) (("" (hide -) (("" (grind) nil nil)) nil)) nil)
@@ -2467,7 +3699,9 @@
     (boolean nonempty-type-decl nil booleans nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (TRUE const-decl "bool" booleans nil))
-   nil))
+   nil
+   (kinematic_bands subtype "(number_fields.-)(kinematic_bands.bsi, 1)"
+    "nat")))
  (kinematic_bands_TCC3 0
   (kinematic_bands_TCC3-1 nil 3631294873
    ("" (skeep*)
@@ -2503,9 +3737,64 @@
        ("2" (assert) nil nil))
       nil))
     nil)
-   ((subrange type-eq-decl nil integers nil)
-    (+ const-decl "[numfield, numfield -> numfield]" number_fields nil)
-    (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
+   ((below type-eq-decl nil naturalnumbers nil)
+    (real_le_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (proper? const-decl "bool" int_bands nil)
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (posint_plus_nnint_is_posint application-judgement "posint"
+     integers nil)
+    (int_minus_int_is_int application-judgement "int" integers nil)
+    (int nonempty-type-eq-decl nil integers nil)
+    (IntBand type-eq-decl nil int_bands nil)
+    (list type-decl nil list_adt nil)
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (number nonempty-type-decl nil numbers nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (>= const-decl "bool" reals nil)
+    (nnreal type-eq-decl nil real_types nil)
+    (Vect3 type-eq-decl nil vectors_3D_def vectors)
+    (Traj type-eq-decl nil int_bands nil)
+    (rational_pred const-decl "[real -> boolean]" rationals nil)
+    (rational nonempty-type-from-decl nil rationals nil)
+    (integer_pred const-decl "[rational -> boolean]" integers nil)
+    (nat nonempty-type-eq-decl nil naturalnumbers nil)
+    (nonneg_real nonempty-type-eq-decl nil real_types nil)
+    (> const-decl "bool" reals nil)
+    (posreal nonempty-type-eq-decl nil real_types nil)
+    (string type-eq-decl nil strings nil)
+    (Aircraft type-eq-decl nil int_bands nil)
+    (AircraftList type-eq-decl nil int_bands nil)
+    (Bands? const-decl "bool" int_bands nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (IFF const-decl "[bool, bool -> bool]" booleans nil)
+    (<= const-decl "bool" reals nil) (< const-decl "bool" reals nil)
+    (length def-decl "nat" list_props nil)
+    (CD_future_traj const-decl "bool" int_bands nil)
+    (numfield nonempty-type-eq-decl nil number_fields nil)
+    (* const-decl "[numfield, numfield -> numfield]" number_fields nil)
+    (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
+    (first_conflict_aircraft def-decl "{j: int |
+   (j >= 0 IFF
+     (i <= j AND
+       j < length(AL) AND
+        CD_future_traj(CD, B, T, traj, k * tsn, AL, j) AND
+         (FORALL (q: int):
+            q >= i AND q < j IMPLIES
+             NOT CD_future_traj(CD, B, T, traj, k * tsn, AL, q))))
+    AND
+    (j < 0 IFF
+      (FORALL (q: int):
+         q >= i AND q < length(AL) IMPLIES
+          NOT CD_future_traj(CD, B, T, traj, k * tsn, AL, q)))}"
+     int_bands nil)
+    (- const-decl "[numfield -> numfield]" number_fields nil)
     (traj_conflict_only_bands const-decl "(Bands?(maxi, 0, maxi,
         (LAMBDA (j: nat):
            (NOT first_conflict_aircraft(CD, B, T, traj, j, ts, 0, AL) >= 0)
@@ -2514,68 +3803,16 @@
                    first_conflict_aircraft(CD2, B2, T2, traj, j, ts, 0, AL)
                     >= 0))),
         -1))" int_bands nil)
-    (- const-decl "[numfield -> numfield]" number_fields nil)
-    (first_conflict_aircraft def-decl "{j: int |
-         (j >= 0 IFF
-           (i <= j AND
-             j < length(AL) AND
-              CD_future_traj(CD, B, T, traj, k * tsn, AL, j) AND
-               (FORALL (q: int):
-                  q >= i AND q < j IMPLIES
-                   NOT CD_future_traj(CD, B, T, traj, k * tsn, AL, q))))
-          AND
-          (j < 0 IFF
-            (FORALL (q: int):
-               q >= i AND q < length(AL) IMPLIES
-                NOT CD_future_traj(CD, B, T, traj, k * tsn, AL, q)))}"
-     int_bands nil)
-    (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
-    (* const-decl "[numfield, numfield -> numfield]" number_fields nil)
-    (numfield nonempty-type-eq-decl nil number_fields nil)
-    (CD_future_traj const-decl "bool" int_bands nil)
-    (length def-decl "nat" list_props nil)
-    (< const-decl "bool" reals nil) (<= const-decl "bool" reals nil)
-    (IFF const-decl "[bool, bool -> bool]" booleans nil)
-    (NOT const-decl "[bool -> bool]" booleans nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil)
-    (Bands? const-decl "bool" int_bands nil)
-    (AircraftList type-eq-decl nil int_bands nil)
-    (Aircraft type-eq-decl nil int_bands nil)
-    (string type-eq-decl nil strings nil)
-    (posreal nonempty-type-eq-decl nil real_types nil)
-    (> const-decl "bool" reals nil)
-    (nonneg_real nonempty-type-eq-decl nil real_types nil)
-    (nat nonempty-type-eq-decl nil naturalnumbers nil)
-    (integer_pred const-decl "[rational -> boolean]" integers nil)
-    (rational nonempty-type-from-decl nil rationals nil)
-    (rational_pred const-decl "[real -> boolean]" rationals nil)
-    (Traj type-eq-decl nil int_bands nil)
-    (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
-    (nnreal type-eq-decl nil real_types nil)
-    (>= const-decl "bool" reals nil)
-    (real nonempty-type-from-decl nil reals nil)
-    (real_pred const-decl "[number_field -> boolean]" reals nil)
-    (number_field nonempty-type-from-decl nil number_fields nil)
-    (number_field_pred const-decl "[number -> boolean]" number_fields
-     nil)
-    (number nonempty-type-decl nil numbers nil)
-    (= const-decl "[T, T -> boolean]" equalities nil)
-    (list type-decl nil list_adt nil)
-    (IntBand type-eq-decl nil int_bands nil)
-    (int nonempty-type-eq-decl nil integers nil)
-    (int_minus_int_is_int application-judgement "int" integers nil)
-    (posint_plus_nnint_is_posint application-judgement "posint"
-     integers nil)
-    (real_ge_is_total_order name-judgement "(total_order?[real])"
-     real_props nil)
-    (proper? const-decl "bool" int_bands nil)
-    (real_le_is_total_order name-judgement "(total_order?[real])"
-     real_props nil)
-    (below type-eq-decl nil naturalnumbers nil)
+    (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
+    (+ const-decl "[numfield, numfield -> numfield]" number_fields nil)
+    (subrange type-eq-decl nil integers nil)
     (boolean nonempty-type-decl nil booleans nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (TRUE const-decl "bool" booleans nil))
-   nil))
+   nil
+   (kinematic_bands subtype
+    "int_bands.traj_conflict_only_bands(kinematic_bands.CD, kinematic_bands.CD2, kinematic_bands.useLOS2, kinematic_bands.B, kinematic_bands.T, kinematic_bands.B2, kinematic_bands.T2, kinematic_bands.traj, (number_fields.-)(kinematic_bands.bsi, 1), kinematic_bands.ts, kinematic_bands.AL)"
+    "(int_bands.proper?(kinematic_bands.MaxN))")))
  (kinematic_bands_def_TCC1 0
   (kinematic_bands_def_TCC1-1 nil 3633711380 ("" (subtype-tcc) nil nil)
    ((real_gt_is_strict_total_order name-judgement
@@ -2584,18 +3821,22 @@
      real_props nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (* const-decl "Vector" vectors_3D "vectors/")
-    (+ const-decl "Vector" vectors_3D "vectors/")
+    (* const-decl "Vector" vectors_3D vectors)
+    (+ const-decl "Vector" vectors_3D vectors)
     (detector? const-decl "bool" int_bands nil)
     (real_times_real_is_real application-judgement "real" reals nil))
-   nil))
+   nil
+   (kinematic_bands_def subtype "kinematic_bands.AL"
+    "{AL | reals.>(list_props[Aircraft].length(kinematic_bands.AL), 0)}")))
  (kinematic_bands_def_TCC2 0
   (kinematic_bands_def_TCC2-1 nil 3633711380 ("" (subtype-tcc) nil nil)
-   ((* const-decl "Vector" vectors_3D "vectors/")
-    (+ const-decl "Vector" vectors_3D "vectors/")
+   ((* const-decl "Vector" vectors_3D vectors)
+    (+ const-decl "Vector" vectors_3D vectors)
     (detector? const-decl "bool" int_bands nil)
     (real_times_real_is_real application-judgement "real" reals nil))
-   nil))
+   nil
+   (kinematic_bands_def subtype "kinematic_bands.most_urgent"
+    "{most_urgent | booleans.AND(reals.>=(kinematic_bands.most_urgent(kinematic_bands.so, kinematic_bands.vo, kinematic_bands.AL), 0), reals.<(kinematic_bands.most_urgent(kinematic_bands.so, kinematic_bands.vo, kinematic_bands.AL), list_props[Aircraft].length(kinematic_bands.AL)))}")))
  (kinematic_bands_def 0
   (kinematic_bands_def-2 nil 3631357963
    ("" (skeep)
@@ -3084,91 +4325,10 @@
         nil))
       nil))
     nil)
-   ((TRUE const-decl "bool" booleans nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
-    (boolean nonempty-type-decl nil booleans nil)
-    (IFF const-decl "[bool, bool -> bool]" booleans nil)
-    (int nonempty-type-eq-decl nil integers nil)
-    (IntBand type-eq-decl nil int_bands nil)
-    (list type-decl nil list_adt nil)
-    (= const-decl "[T, T -> boolean]" equalities nil)
-    (real nonempty-type-from-decl nil reals nil)
-    (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
-    (number nonempty-type-decl nil numbers nil)
-    (number_field_pred const-decl "[number -> boolean]" number_fields
-     nil)
-    (number_field nonempty-type-from-decl nil number_fields nil)
-    (real_pred const-decl "[number_field -> boolean]" reals nil)
-    (>= const-decl "bool" reals nil)
-    (nnreal type-eq-decl nil real_types nil)
-    (Traj type-eq-decl nil int_bands nil)
-    (rational_pred const-decl "[real -> boolean]" rationals nil)
-    (rational nonempty-type-from-decl nil rationals nil)
-    (integer_pred const-decl "[rational -> boolean]" integers nil)
-    (nat nonempty-type-eq-decl nil naturalnumbers nil)
-    (nonneg_real nonempty-type-eq-decl nil real_types nil)
-    (> const-decl "bool" reals nil)
-    (posreal nonempty-type-eq-decl nil real_types nil)
-    (string type-eq-decl nil strings nil)
-    (Aircraft type-eq-decl nil int_bands nil)
-    (AircraftList type-eq-decl nil int_bands nil)
-    (length def-decl "nat" list_props nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil)
-    (< const-decl "bool" reals nil)
-    (/= const-decl "boolean" notequal nil)
-    (nzint nonempty-type-eq-decl nil integers nil)
-    (OR const-decl "[bool, bool -> bool]" booleans nil)
-    (numfield nonempty-type-eq-decl nil number_fields nil)
-    (- const-decl "[numfield -> numfield]" number_fields nil)
-    (Sign type-eq-decl nil sign "reals/")
-    (proper? const-decl "bool" int_bands nil)
-    (kinematic_bands const-decl "(proper?(MaxN))" kinematic_bands nil)
-    (bands_sound? const-decl "bool" int_bands nil)
-    (<= const-decl "bool" reals nil)
-    (+ const-decl "[numfield, numfield -> numfield]" number_fields nil)
-    (subrange type-eq-decl nil integers nil)
-    (bands_search_index const-decl "subrange(0, MaxN + 1)"
-     kinematic_bands nil)
-    (real_lt_is_strict_total_order name-judgement
+   ((real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (real_ge_is_total_order name-judgement "(total_order?[real])"
-     real_props nil)
-    (posint_plus_nnint_is_posint application-judgement "posint"
-     integers nil)
-    (int_minus_int_is_int application-judgement "int" integers nil)
-    (NOT const-decl "[bool -> bool]" booleans nil)
-    (below type-eq-decl nil naturalnumbers nil)
-    (conflict_step_rew formula-decl nil int_bands nil)
-    (nonneg_floor_is_nat application-judgement "nat" floor_ceil nil)
-    (below type-eq-decl nil nat_types nil)
-    (nth def-decl "T" list_props nil)
-    (bands_search_index_def formula-decl nil kinematic_bands nil)
-    (real_le_is_total_order name-judgement "(total_order?[real])"
-     real_props nil)
-    (nonneg_ceiling_is_nat application-judgement "nat" floor_ceil nil)
-    (nat_min application-judgement "{k: nat | k <= i AND k <= j}"
-     real_defs nil)
-    (upto nonempty-type-eq-decl nil naturalnumbers nil)
-    (nnreal_div_posreal_is_nnreal application-judgement "nnreal"
-     real_types nil)
-    (Bands? const-decl "bool" int_bands nil)
-    (CD_future_traj const-decl "bool" int_bands nil)
-    (* const-decl "[numfield, numfield -> numfield]" number_fields nil)
-    (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
-    (first_conflict_aircraft def-decl "{j: int |
-         (j >= 0 IFF
-           (i <= j AND
-             j < length(AL) AND
-              CD_future_traj(CD, B, T, traj, k * tsn, AL, j) AND
-               (FORALL (q: int):
-                  q >= i AND q < j IMPLIES
-                   NOT CD_future_traj(CD, B, T, traj, k * tsn, AL, q))))
-          AND
-          (j < 0 IFF
-            (FORALL (q: int):
-               q >= i AND q < length(AL) IMPLIES
-                NOT CD_future_traj(CD, B, T, traj, k * tsn, AL, q)))}"
-     int_bands nil)
+    (in? const-decl "bool" int_bands nil)
+    (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (traj_conflict_only_bands const-decl "(Bands?(maxi, 0, maxi,
         (LAMBDA (j: nat):
            (NOT first_conflict_aircraft(CD, B, T, traj, j, ts, 0, AL) >= 0)
@@ -3177,10 +4337,93 @@
                    first_conflict_aircraft(CD2, B2, T2, traj, j, ts, 0, AL)
                     >= 0))),
         -1))" int_bands nil)
-    (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
-    (in? const-decl "bool" int_bands nil)
-    (real_gt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil))
+    (first_conflict_aircraft def-decl "{j: int |
+   (j >= 0 IFF
+     (i <= j AND
+       j < length(AL) AND
+        CD_future_traj(CD, B, T, traj, k * tsn, AL, j) AND
+         (FORALL (q: int):
+            q >= i AND q < j IMPLIES
+             NOT CD_future_traj(CD, B, T, traj, k * tsn, AL, q))))
+    AND
+    (j < 0 IFF
+      (FORALL (q: int):
+         q >= i AND q < length(AL) IMPLIES
+          NOT CD_future_traj(CD, B, T, traj, k * tsn, AL, q)))}"
+     int_bands nil)
+    (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
+    (* const-decl "[numfield, numfield -> numfield]" number_fields nil)
+    (CD_future_traj const-decl "bool" int_bands nil)
+    (Bands? const-decl "bool" int_bands nil)
+    (nth def-decl "T" list_props nil)
+    (below type-eq-decl nil nat_types nil)
+    (bands_search_index_def formula-decl nil kinematic_bands nil)
+    (nonneg_floor_is_nat application-judgement "nat" floor_ceil nil)
+    (real_le_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (nonneg_ceiling_is_nat application-judgement "nat" floor_ceil nil)
+    (nat_min application-judgement "{k: nat | k <= i AND k <= j}"
+     real_defs nil)
+    (upto nonempty-type-eq-decl nil naturalnumbers nil)
+    (nnreal_div_posreal_is_nnreal application-judgement "nnreal"
+     real_types nil)
+    (conflict_step_rew formula-decl nil int_bands nil)
+    (below type-eq-decl nil naturalnumbers nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (int_minus_int_is_int application-judgement "int" integers nil)
+    (posint_plus_nnint_is_posint application-judgement "posint"
+     integers nil)
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (real_lt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
+    (bands_search_index const-decl "subrange(0, MaxN + 1)"
+     kinematic_bands nil)
+    (subrange type-eq-decl nil integers nil)
+    (+ const-decl "[numfield, numfield -> numfield]" number_fields nil)
+    (<= const-decl "bool" reals nil)
+    (bands_sound? const-decl "bool" int_bands nil)
+    (kinematic_bands const-decl "(proper?(MaxN))" kinematic_bands nil)
+    (proper? const-decl "bool" int_bands nil)
+    (Sign type-eq-decl nil sign reals)
+    (- const-decl "[numfield -> numfield]" number_fields nil)
+    (numfield nonempty-type-eq-decl nil number_fields nil)
+    (OR const-decl "[bool, bool -> bool]" booleans nil)
+    (nzint nonempty-type-eq-decl nil integers nil)
+    (/= const-decl "boolean" notequal nil)
+    (< const-decl "bool" reals nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (length def-decl "nat" list_props nil)
+    (AircraftList type-eq-decl nil int_bands nil)
+    (Aircraft type-eq-decl nil int_bands nil)
+    (string type-eq-decl nil strings nil)
+    (posreal nonempty-type-eq-decl nil real_types nil)
+    (> const-decl "bool" reals nil)
+    (nonneg_real nonempty-type-eq-decl nil real_types nil)
+    (nat nonempty-type-eq-decl nil naturalnumbers nil)
+    (integer_pred const-decl "[rational -> boolean]" integers nil)
+    (rational nonempty-type-from-decl nil rationals nil)
+    (rational_pred const-decl "[real -> boolean]" rationals nil)
+    (Traj type-eq-decl nil int_bands nil)
+    (nnreal type-eq-decl nil real_types nil)
+    (>= const-decl "bool" reals nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (number nonempty-type-decl nil numbers nil)
+    (Vect3 type-eq-decl nil vectors_3D_def vectors)
+    (real nonempty-type-from-decl nil reals nil)
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (list type-decl nil list_adt nil)
+    (IntBand type-eq-decl nil int_bands nil)
+    (int nonempty-type-eq-decl nil integers nil)
+    (IFF const-decl "[bool, bool -> bool]" booleans nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (bijective? const-decl "bool" functions nil)
+    (id const-decl "(bijective?[T, T])" identity nil)
+    (TRUE const-decl "bool" booleans nil))
    nil)
   (kinematic_bands_def-1 nil 3631353696
    ("" (skeep)
@@ -3733,7 +4976,7 @@
     (= const-decl "[T, T -> boolean]" equalities nil)
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (- const-decl "[numfield -> numfield]" number_fields nil)
-    (Sign type-eq-decl nil sign "reals/")
+    (Sign type-eq-decl nil sign reals)
     (nonneg_real nonempty-type-eq-decl nil real_types nil)
     (> const-decl "bool" reals nil)
     (posreal nonempty-type-eq-decl nil real_types nil)
@@ -3754,8 +4997,8 @@
     (IntBand type-eq-decl nil int_bands nil)
     (list type-decl nil list_adt nil)
     (proper? const-decl "bool" int_bands nil)
-    (* const-decl "Vector" vectors_3D "vectors/")
-    (+ const-decl "Vector" vectors_3D "vectors/")
+    (* const-decl "Vector" vectors_3D vectors)
+    (+ const-decl "Vector" vectors_3D vectors)
     (detector? const-decl "bool" int_bands nil)
     (first_los_search_index const-decl "subrange(0, MaxN + 1)"
      kinematic_bands nil)
@@ -3764,7 +5007,9 @@
     (real_times_real_is_real application-judgement "real" reals nil)
     (nnreal_div_posreal_is_nnreal application-judgement "nnreal"
      real_types nil))
-   nil))
+   nil
+   (kinematic_bands_connected subtype "kinematic_bands.i"
+    "below[length[IntBand](kb)]")))
  (kinematic_bands_connected 0
   (kinematic_bands_connected-2 nil 3633780975
    ("" (skeep)
@@ -3832,79 +5077,7 @@
         nil))
       nil))
     nil)
-   ((int_minus_int_is_int application-judgement "int" integers nil)
-    (boolean nonempty-type-decl nil booleans nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
-    (bijective? const-decl "bool" functions nil)
-    (id const-decl "(bijective?[T, T])" identity nil)
-    (TRUE const-decl "bool" booleans nil)
-    (int nonempty-type-eq-decl nil integers nil)
-    (IntBand type-eq-decl nil int_bands nil)
-    (list type-decl nil list_adt nil)
-    (number nonempty-type-decl nil numbers nil)
-    (number_field_pred const-decl "[number -> boolean]" number_fields
-     nil)
-    (number_field nonempty-type-from-decl nil number_fields nil)
-    (real_pred const-decl "[number_field -> boolean]" reals nil)
-    (real nonempty-type-from-decl nil reals nil)
-    (rational_pred const-decl "[real -> boolean]" rationals nil)
-    (rational nonempty-type-from-decl nil rationals nil)
-    (integer_pred const-decl "[rational -> boolean]" integers nil)
-    (>= const-decl "bool" reals nil)
-    (nat nonempty-type-eq-decl nil naturalnumbers nil)
-    (proper? const-decl "bool" int_bands nil)
-    (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil)
-    (< const-decl "bool" reals nil)
-    (length def-decl "nat" list_props nil)
-    (= const-decl "[T, T -> boolean]" equalities nil)
-    (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
-    (nnreal type-eq-decl nil real_types nil)
-    (Traj type-eq-decl nil int_bands nil)
-    (nonneg_real nonempty-type-eq-decl nil real_types nil)
-    (> const-decl "bool" reals nil)
-    (posreal nonempty-type-eq-decl nil real_types nil)
-    (string type-eq-decl nil strings nil)
-    (Aircraft type-eq-decl nil int_bands nil)
-    (AircraftList type-eq-decl nil int_bands nil)
-    (/= const-decl "boolean" notequal nil)
-    (nzint nonempty-type-eq-decl nil integers nil)
-    (OR const-decl "[bool, bool -> bool]" booleans nil)
-    (numfield nonempty-type-eq-decl nil number_fields nil)
-    (- const-decl "[numfield -> numfield]" number_fields nil)
-    (Sign type-eq-decl nil sign "reals/")
-    (kinematic_bands const-decl "(proper?(MaxN))" kinematic_bands nil)
-    (IFF const-decl "[bool, bool -> bool]" booleans nil)
-    (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
-    (below type-eq-decl nil nat_types nil)
-    (nth def-decl "T" list_props nil)
-    (real_ge_is_total_order name-judgement "(total_order?[real])"
-     real_props nil)
-    (real_lt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil)
-    (<= const-decl "bool" reals nil)
-    (+ const-decl "[numfield, numfield -> numfield]" number_fields nil)
-    (subrange type-eq-decl nil integers nil)
-    (bands_search_index const-decl "subrange(0, MaxN + 1)"
-     kinematic_bands nil)
-    (Bands? const-decl "bool" int_bands nil)
-    (NOT const-decl "[bool -> bool]" booleans nil)
-    (CD_future_traj const-decl "bool" int_bands nil)
-    (* const-decl "[numfield, numfield -> numfield]" number_fields nil)
-    (first_conflict_aircraft def-decl "{j: int |
-         (j >= 0 IFF
-           (i <= j AND
-             j < length(AL) AND
-              CD_future_traj(CD, B, T, traj, k * tsn, AL, j) AND
-               (FORALL (q: int):
-                  q >= i AND q < j IMPLIES
-                   NOT CD_future_traj(CD, B, T, traj, k * tsn, AL, q))))
-          AND
-          (j < 0 IFF
-            (FORALL (q: int):
-               q >= i AND q < length(AL) IMPLIES
-                NOT CD_future_traj(CD, B, T, traj, k * tsn, AL, q)))}"
-     int_bands nil)
+   ((below type-eq-decl nil naturalnumbers nil)
     (traj_conflict_only_bands const-decl "(Bands?(maxi, 0, maxi,
         (LAMBDA (j: nat):
            (NOT first_conflict_aircraft(CD, B, T, traj, j, ts, 0, AL) >= 0)
@@ -3913,12 +5086,84 @@
                    first_conflict_aircraft(CD2, B2, T2, traj, j, ts, 0, AL)
                     >= 0))),
         -1))" int_bands nil)
-    (below type-eq-decl nil naturalnumbers nil)
-    (length_null formula-decl nil more_list_props "structures/")
+    (first_conflict_aircraft def-decl "{j: int |
+   (j >= 0 IFF
+     (i <= j AND
+       j < length(AL) AND
+        CD_future_traj(CD, B, T, traj, k * tsn, AL, j) AND
+         (FORALL (q: int):
+            q >= i AND q < j IMPLIES
+             NOT CD_future_traj(CD, B, T, traj, k * tsn, AL, q))))
+    AND
+    (j < 0 IFF
+      (FORALL (q: int):
+         q >= i AND q < length(AL) IMPLIES
+          NOT CD_future_traj(CD, B, T, traj, k * tsn, AL, q)))}"
+     int_bands nil)
+    (* const-decl "[numfield, numfield -> numfield]" number_fields nil)
+    (CD_future_traj const-decl "bool" int_bands nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (Bands? const-decl "bool" int_bands nil)
+    (length_null formula-decl nil more_list_props structures)
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (posint_plus_nnint_is_posint application-judgement "posint"
-     integers nil))
+     integers nil)
+    (bands_search_index const-decl "subrange(0, MaxN + 1)"
+     kinematic_bands nil)
+    (subrange type-eq-decl nil integers nil)
+    (+ const-decl "[numfield, numfield -> numfield]" number_fields nil)
+    (<= const-decl "bool" reals nil)
+    (real_lt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (nth def-decl "T" list_props nil)
+    (below type-eq-decl nil nat_types nil)
+    (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
+    (IFF const-decl "[bool, bool -> bool]" booleans nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (bijective? const-decl "bool" functions nil)
+    (id const-decl "(bijective?[T, T])" identity nil)
+    (TRUE const-decl "bool" booleans nil)
+    (kinematic_bands const-decl "(proper?(MaxN))" kinematic_bands nil)
+    (Sign type-eq-decl nil sign reals)
+    (- const-decl "[numfield -> numfield]" number_fields nil)
+    (numfield nonempty-type-eq-decl nil number_fields nil)
+    (OR const-decl "[bool, bool -> bool]" booleans nil)
+    (nzint nonempty-type-eq-decl nil integers nil)
+    (/= const-decl "boolean" notequal nil)
+    (< const-decl "bool" reals nil)
+    (length def-decl "nat" list_props nil)
+    (AircraftList type-eq-decl nil int_bands nil)
+    (Aircraft type-eq-decl nil int_bands nil)
+    (string type-eq-decl nil strings nil)
+    (posreal nonempty-type-eq-decl nil real_types nil)
+    (> const-decl "bool" reals nil)
+    (nonneg_real nonempty-type-eq-decl nil real_types nil)
+    (Traj type-eq-decl nil int_bands nil)
+    (nnreal type-eq-decl nil real_types nil)
+    (Vect3 type-eq-decl nil vectors_3D_def vectors)
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
+    (proper? const-decl "bool" int_bands nil)
+    (nat nonempty-type-eq-decl nil naturalnumbers nil)
+    (>= const-decl "bool" reals nil)
+    (integer_pred const-decl "[rational -> boolean]" integers nil)
+    (rational nonempty-type-from-decl nil rationals nil)
+    (rational_pred const-decl "[real -> boolean]" rationals nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (number nonempty-type-decl nil numbers nil)
+    (list type-decl nil list_adt nil)
+    (IntBand type-eq-decl nil int_bands nil)
+    (int nonempty-type-eq-decl nil integers nil)
+    (int_minus_int_is_int application-judgement "int" integers nil))
    nil)
   (kinematic_bands_connected-1 nil 3633684505
    ("" (skeep)
@@ -4658,64 +5903,9 @@
         nil))
       nil))
     nil)
-   ((TRUE const-decl "bool" booleans nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
-    (boolean nonempty-type-decl nil booleans nil)
-    (IFF const-decl "[bool, bool -> bool]" booleans nil)
-    (int nonempty-type-eq-decl nil integers nil)
-    (IntBand type-eq-decl nil int_bands nil)
-    (list type-decl nil list_adt nil)
-    (= const-decl "[T, T -> boolean]" equalities nil)
-    (real nonempty-type-from-decl nil reals nil)
-    (Vect3 type-eq-decl nil vectors_3D_def "vectors/")
-    (number nonempty-type-decl nil numbers nil)
-    (number_field_pred const-decl "[number -> boolean]" number_fields
-     nil)
-    (number_field nonempty-type-from-decl nil number_fields nil)
-    (real_pred const-decl "[number_field -> boolean]" reals nil)
-    (>= const-decl "bool" reals nil)
-    (nnreal type-eq-decl nil real_types nil)
-    (Traj type-eq-decl nil int_bands nil)
-    (rational_pred const-decl "[real -> boolean]" rationals nil)
-    (rational nonempty-type-from-decl nil rationals nil)
-    (integer_pred const-decl "[rational -> boolean]" integers nil)
-    (nat nonempty-type-eq-decl nil naturalnumbers nil)
-    (nonneg_real nonempty-type-eq-decl nil real_types nil)
-    (> const-decl "bool" reals nil)
-    (posreal nonempty-type-eq-decl nil real_types nil)
-    (string type-eq-decl nil strings nil)
-    (Aircraft type-eq-decl nil int_bands nil)
-    (AircraftList type-eq-decl nil int_bands nil)
-    (length def-decl "nat" list_props nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil)
-    (< const-decl "bool" reals nil)
-    (/= const-decl "boolean" notequal nil)
-    (nzint nonempty-type-eq-decl nil integers nil)
-    (OR const-decl "[bool, bool -> bool]" booleans nil)
-    (numfield nonempty-type-eq-decl nil number_fields nil)
-    (- const-decl "[numfield -> numfield]" number_fields nil)
-    (Sign type-eq-decl nil sign "reals/")
-    (proper? const-decl "bool" int_bands nil)
-    (kinematic_bands const-decl "(proper?(MaxN))" kinematic_bands nil)
-    (strictly_increasing_int? const-decl "bool" int_bands nil)
-    (Bands? const-decl "bool" int_bands nil)
-    (CD_future_traj const-decl "bool" int_bands nil)
-    (* const-decl "[numfield, numfield -> numfield]" number_fields nil)
-    (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
-    (first_conflict_aircraft def-decl "{j: int |
-         (j >= 0 IFF
-           (i <= j AND
-             j < length(AL) AND
-              CD_future_traj(CD, B, T, traj, k * tsn, AL, j) AND
-               (FORALL (q: int):
-                  q >= i AND q < j IMPLIES
-                   NOT CD_future_traj(CD, B, T, traj, k * tsn, AL, q))))
-          AND
-          (j < 0 IFF
-            (FORALL (q: int):
-               q >= i AND q < length(AL) IMPLIES
-                NOT CD_future_traj(CD, B, T, traj, k * tsn, AL, q)))}"
-     int_bands nil)
+   ((real_le_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (traj_conflict_only_bands const-decl "(Bands?(maxi, 0, maxi,
         (LAMBDA (j: nat):
            (NOT first_conflict_aircraft(CD, B, T, traj, j, ts, 0, AL) >= 0)
@@ -4724,10 +5914,25 @@
                    first_conflict_aircraft(CD2, B2, T2, traj, j, ts, 0, AL)
                     >= 0))),
         -1))" int_bands nil)
-    (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
-    (real_le_is_total_order name-judgement "(total_order?[real])"
-     real_props nil)
-    (length_null formula-decl nil more_list_props "structures/")
+    (first_conflict_aircraft def-decl "{j: int |
+   (j >= 0 IFF
+     (i <= j AND
+       j < length(AL) AND
+        CD_future_traj(CD, B, T, traj, k * tsn, AL, j) AND
+         (FORALL (q: int):
+            q >= i AND q < j IMPLIES
+             NOT CD_future_traj(CD, B, T, traj, k * tsn, AL, q))))
+    AND
+    (j < 0 IFF
+      (FORALL (q: int):
+         q >= i AND q < length(AL) IMPLIES
+          NOT CD_future_traj(CD, B, T, traj, k * tsn, AL, q)))}"
+     int_bands nil)
+    (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
+    (* const-decl "[numfield, numfield -> numfield]" number_fields nil)
+    (CD_future_traj const-decl "bool" int_bands nil)
+    (Bands? const-decl "bool" int_bands nil)
+    (length_null formula-decl nil more_list_props structures)
     (below type-eq-decl nil naturalnumbers nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
@@ -4742,6 +5947,48 @@
      real_props nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (kinematic_bands_connected formula-decl nil kinematic_bands nil))
+    (kinematic_bands_connected formula-decl nil kinematic_bands nil)
+    (strictly_increasing_int? const-decl "bool" int_bands nil)
+    (kinematic_bands const-decl "(proper?(MaxN))" kinematic_bands nil)
+    (proper? const-decl "bool" int_bands nil)
+    (Sign type-eq-decl nil sign reals)
+    (- const-decl "[numfield -> numfield]" number_fields nil)
+    (numfield nonempty-type-eq-decl nil number_fields nil)
+    (OR const-decl "[bool, bool -> bool]" booleans nil)
+    (nzint nonempty-type-eq-decl nil integers nil)
+    (/= const-decl "boolean" notequal nil)
+    (< const-decl "bool" reals nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (length def-decl "nat" list_props nil)
+    (AircraftList type-eq-decl nil int_bands nil)
+    (Aircraft type-eq-decl nil int_bands nil)
+    (string type-eq-decl nil strings nil)
+    (posreal nonempty-type-eq-decl nil real_types nil)
+    (> const-decl "bool" reals nil)
+    (nonneg_real nonempty-type-eq-decl nil real_types nil)
+    (nat nonempty-type-eq-decl nil naturalnumbers nil)
+    (integer_pred const-decl "[rational -> boolean]" integers nil)
+    (rational nonempty-type-from-decl nil rationals nil)
+    (rational_pred const-decl "[real -> boolean]" rationals nil)
+    (Traj type-eq-decl nil int_bands nil)
+    (nnreal type-eq-decl nil real_types nil)
+    (>= const-decl "bool" reals nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (number nonempty-type-decl nil numbers nil)
+    (Vect3 type-eq-decl nil vectors_3D_def vectors)
+    (real nonempty-type-from-decl nil reals nil)
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (list type-decl nil list_adt nil)
+    (IntBand type-eq-decl nil int_bands nil)
+    (int nonempty-type-eq-decl nil integers nil)
+    (IFF const-decl "[bool, bool -> bool]" booleans nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (bijective? const-decl "bool" functions nil)
+    (id const-decl "(bijective?[T, T])" identity nil)
+    (TRUE const-decl "bool" booleans nil))
    nil)))
 
