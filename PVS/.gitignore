@@ -21,4 +21,5 @@ orphaned-proofs.prf
 alltheories-*.*
 *.old
 *.tmp
+*.tccs
 tmp/
